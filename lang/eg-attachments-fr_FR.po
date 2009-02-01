@@ -1,0 +1,100 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: EG-Attachments 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-14 11:00-0000\n"
+"PO-Revision-Date: 2009-01-28 10:03+0100\n"
+"Last-Translator: Emmanuel GEORJON <blog@georjon.eu>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: eg-attachments.php:147
+msgid " MB"
+msgstr " Mo"
+
+#: eg-attachments.php:148
+msgid " KB"
+msgstr " Ko"
+
+#: eg-attachments.php:149
+msgid " bytes"
+msgstr " octets"
+
+#: eg-attachments.php:221
+msgid "Size: "
+msgstr "Taille: "
+
+#: eg-attachments.php:224
+#: window.php:98
+msgid "Title: "
+msgstr "Titre: "
+
+#: eg-attachments.php:225
+#: eg-attachments.php:237
+msgid "Description: "
+msgstr "Description: "
+
+#: eg-attachments.php:226
+#: eg-attachments.php:236
+msgid "File: "
+msgstr "Fichier: "
+
+#: window.php:31
+msgid "No attachment available for this post"
+msgstr "Pas de pi&egrave;ces jointes attach&eacute;es &agrave; cet article."
+
+#: window.php:55
+msgid "Order by: "
+msgstr "Tri&eacute; par: "
+
+#: window.php:58
+msgid "Title"
+msgstr "Titre"
+
+#: window.php:59
+msgid "ID"
+msgstr "ID"
+
+#: window.php:64
+msgid "Sort Order: "
+msgstr "Ordre de tri: "
+
+#: window.php:67
+msgid "Ascending"
+msgstr "Ascendant"
+
+#: window.php:68
+msgid "Descending"
+msgstr "Descendant"
+
+#: window.php:73
+msgid "List size: "
+msgstr "Taille: "
+
+#: window.php:83
+msgid "Document type: "
+msgstr "Type de document: "
+
+#: window.php:92
+msgid "Document list: "
+msgstr "Liste des documents: "
+
+#: window.php:102
+msgid "Title tag: "
+msgstr "Tags pour le titre: "
+
+#: eg-plugin.inc.php:382
+msgid " requires "
+msgstr " n&eacute;cessite "
+
+#: eg-plugin.inc.php:383
+#: eg-plugin.inc.php:385
+msgid " to "
+msgstr " &agrave; "
+
+#: eg-plugin.inc.php:384
+msgid ", or "
+msgstr ", ou "
+
