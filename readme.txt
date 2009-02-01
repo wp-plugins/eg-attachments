@@ -16,12 +16,14 @@ But you don't need to know all of these options, because the plugin is "TinyMCE 
 But you can insert the **shortcode** by hand if you want, or use it in a template using the **do_shortcode** function.
 
 The list includes for each attachments:
+
 * Icon, 
 * Title, 
 * Description, 
 * Size.
 
 Options are 
+
 * Icon size, 
 * Sort order, 
 * Document type,
@@ -46,6 +48,7 @@ You can also use the WordPress 2.7 features, and install the plugin directly fro
 * In a template file, add the following code: `<?php do_shortcode('[attachments *options*]'); ?>`
 
 The shortcode options are:
+
 * **size:** size of the icon. Values: large, medium or small. Default: large,
 * **doctype:** type of documents to display. Values: image or document. Defaults: document,
 * **docid** list of attachments' id (comma separated) you want to display. Default: nothing to display all attachments,
@@ -59,15 +62,15 @@ The shortcode options are:
 
 = How can I change the styles? =
 The stylesheet is named eg-attachments.css, and can be stored in two places:
+
 * In the plugin directory,
 * In the directory of your current theme
 
 Use FTP client and text editor to modify it.
 
 = I would like to change the icons =
-Just copy your own icons in the `images` subdirectory of the plugin.
-Size of icons must be 52x52 or 48x48.
-Name of icons must be the mimetype.
+Just copy/upload your own icons in the `images` subdirectory of the plugin.
+Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file extension.
 
 == Screenshots ==
 
@@ -76,6 +79,14 @@ Name of icons must be the mimetype.
 3. List of attachments, with large icons,
 4. EG-Attachments button in the TinyMCE toolbar,
 5. Insert attachments window.
+
+== Version history ==
+
+* Version 1.0 - Feb 2nd, 2009
+	* First release
+	
+* Version 1.0.1 - Feb 2nd, 2009
+	* Just update readme.txt file (author and plugin URL)
 
 == Licence ==
 

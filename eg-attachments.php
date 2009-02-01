@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: EG-Attachments
-Plugin URI:  http://wordpress.org/extend/plugins/eg-attachments
+Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
 Description: Shortcode displaying lists of attachments for a post
 Version: 1.00
 Author: Emmanuel GEORJON
-Author URI: http://www.emmanuelgeorjon.com/en/eg-attachments-plugin
+Author URI: http://www.emmanuelgeorjon.com/
 */
 
 /*  Copyright 2009 Emmanuel GEORJON  (email : blog@georjon.eu)
