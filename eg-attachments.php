@@ -257,7 +257,7 @@ if (! class_exists('EG_Attachments')) {
 	} /* End of Class */
 } /* End of if class_exists */
 
-$eg_attach = new EG_Attachments('EG-Attachments',	'1.0.2',__FILE__);
+$eg_attach = new EG_Attachments('EG-Attachments',	'1.1.0',__FILE__);
 $eg_attach->set_textdomain('eg-attachments');
 $eg_attach->set_stylesheets('eg-attachments.css', FALSE);
 $eg_attach->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
