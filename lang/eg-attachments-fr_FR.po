@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-01-28 10:03+0100\n"
-"Last-Translator: Emmanuel GEORJON <blog@georjon.eu>\n"
+"PO-Revision-Date: 2009-02-09 15:31+0100\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -27,7 +27,7 @@ msgid "Size: "
 msgstr "Taille: "
 
 #: eg-attachments.php:224
-#: window.php:98
+#: window.php:105
 msgid "Title: "
 msgstr "Titre: "
 
@@ -45,45 +45,69 @@ msgstr "Fichier: "
 msgid "No attachment available for this post"
 msgstr "Pas de pi&egrave;ces jointes attach&eacute;es &agrave; cet article."
 
-#: window.php:55
+#: window.php:53
 msgid "Order by: "
 msgstr "Tri&eacute; par: "
 
-#: window.php:58
+#: window.php:56
 msgid "Title"
 msgstr "Titre"
 
-#: window.php:59
+#: window.php:57
 msgid "ID"
 msgstr "ID"
 
-#: window.php:64
+#: window.php:62
 msgid "Sort Order: "
 msgstr "Ordre de tri: "
 
-#: window.php:67
+#: window.php:65
 msgid "Ascending"
 msgstr "Ascendant"
 
-#: window.php:68
+#: window.php:66
 msgid "Descending"
 msgstr "Descendant"
 
-#: window.php:73
+#: window.php:71
 msgid "List size: "
 msgstr "Taille: "
 
-#: window.php:83
+#: window.php:74
+msgid "Large"
+msgstr "Grande"
+
+#: window.php:75
+msgid "Medium"
+msgstr "Moyenne"
+
+#: window.php:76
+msgid "Small"
+msgstr "Petite"
+
+#: window.php:81
+msgid "Document label"
+msgstr "Label des documents"
+
+#: window.php:84
+msgid "File name"
+msgstr "Nom du fichier"
+
+#: window.php:85
+msgid "Document title"
+msgstr "Titre du document"
+
+#: window.php:90
 msgid "Document type: "
 msgstr "Type de document: "
 
-#: window.php:92
+#: window.php:99
 msgid "Document list: "
 msgstr "Liste des documents: "
 
-#: window.php:102
+#: window.php:109
 msgid "Title tag: "
-msgstr "Tags pour le titre: "
+msgstr "Tags HTML pour le titre: "
 
 #: eg-plugin.inc.php:382
 msgid " requires "

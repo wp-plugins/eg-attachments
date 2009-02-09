@@ -4,7 +4,7 @@ Donate link:
 Tags: post, attachment
 Requires at least: 2.5.0
 Tested up to: 2.7.0
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -29,6 +29,7 @@ Options are
 * Document type,
 * Document list,
 * Title of the list
+* Label of each document
 
 == Installation ==
 
@@ -55,6 +56,7 @@ The shortcode options are:
 * **orderby:** sort option. Values: ID, post_title, and ASC or DESC. Default: `post_title ASC`.
 * **title:** title to display before the list. Default: '',
 * **titletag:** tag to add before and after the title. Default: h2
+* **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
 
 **Exemple:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="post_title ASC"]`
 
@@ -81,12 +83,18 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 5. Insert attachments window.
 
 == Version history ==
+	
+* Version 1.1.0 - Feb 9th, 2009
+	* Add option (label) to choose file label (filename or document title)
+	* Sanitize title
+	* Improve some translations (french)
+	* Internal changes
+
+* Version 1.0.1 - Feb 2nd, 2009
+	* Just update readme.txt file (author and plugin URL)
 
 * Version 1.0 - Feb 2nd, 2009
 	* First release
-	
-* Version 1.0.1 - Feb 2nd, 2009
-	* Just update readme.txt file (author and plugin URL)
 
 == Licence ==
 

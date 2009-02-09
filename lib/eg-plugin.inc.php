@@ -3,7 +3,7 @@
 Plugin Name: EG-Plugin
 Plugin URI:
 Description: Framework for plugin development
-Version: 1.00
+Version: 1.0.0
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -48,21 +48,23 @@ if (!class_exists('EG_Plugin_100')) {
 
 		var $stylesheet;
 		var $admin_stylesheet;
-		
+
 		var $options_entry;
 		var $options;
 		var $default_options;
 
 		var $tinyMCE_button;
+		var $cacheexpiration = 0;
+		var $textdomain      = '';
 
-		var $wp_version_min;
+		var $wp_version_min = '2.5';
 		var $wp_version_max;
 		var $wpmu_version_min;
 		var $wpmu_version_max;
 
-		var $textdomain;
 		var $pages;
-		
+		// var $widgets;
+
 		/**
 		  * Class contructor for PHP 4 compatibility
 		  *
@@ -70,42 +72,10 @@ if (!class_exists('EG_Plugin_100')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_100($name,
-							 $version,
-							 $core_file,
-							 $options_entry,
-							 $default_options,
-							 $textdomain,
-							 $stylesheet,
-							 $admin_stylesheet,
-							 $author_name      = '',
-							 $author_url       = '',
-							 $author_email	   = '',
-							 $tinyMCE_button   = FALSE,
-							 $cacheexpiration  = 0,
-							 $wp_version_min,
-							 $wp_version_max   = FALSE,
-							 $wpmu_version_min = FALSE,
-							 $wpmu_version_max = FALSE) {
+		function EG_Plugin_100($name, $version, $core_file) {
 
 			register_shutdown_function(array(&$this, "__destruct"));
-			$this->__construct($name,
-							 $version,
-							 $core_file,
-							 $options_entry,
-							 $default_options,
-							 $textdomain,
-							 $stylesheet,
-							 $admin_stylesheet,
-							 $author_name,
-							 $author_url,
-							 $author_email,
-							 $tinyMCE_button,
-							 $cacheexpiration,
-							 $wp_version_min,
-							 $wp_version_max,
-							 $wpmu_version_min,
-							 $wpmu_version_max);
+			$this->__construct($name, $version, $core_file);
 		}
 
 		/**
@@ -115,79 +85,33 @@ if (!class_exists('EG_Plugin_100')) {
 		  * @package EG-Plugins
 		  * @return object
 		  */
-		function __construct($name,
-							 $version,
-							 $core_file,
-							 $options_entry,
-							 $default_options,
-							 $textdomain,
-							 $stylesheet,
-							 $admin_stylesheet,
-							 $author_name      = '',
-							 $author_url       = '',
-							 $author_email	   = '',
-							 $tinyMCE_button   = FALSE,
-							 $cacheexpiration  = 0,
-							 $wp_version_min,
-							 $wp_version_max   = FALSE,
-							 $wpmu_version_min = FALSE,
-							 $wpmu_version_max = FALSE)	{
+		function __construct($name, $version, $core_file) {
 
-			$this->plugin_name        = $name;
-			$this->plugin_version     = $version;
-			$this->options_entry      = $options_entry;
-			$this->default_options    = $default_options;
-			$this->textdomain         = $textdomain;
-			$this->stylesheet         = $stylesheet;
-			$this->admin_stylesheet   = $admin_stylesheet;
-			$this->plugin_author_name = $author_name;
-			$this->plugin_author_url  = $author_url;
-			$this->plugin_author_email= $author_email;
-			$this->tinyMCE_button     = $tinyMCE_button;
-			$this->cacheexpiration	  = $cacheexpiration;
-			$this->wp_version_min	  = $wp_version_min;
-			$this->wp_version_max	  = $wp_version_max;
-			$this->wpmu_version_min	  = $wpmu_version_min;
-			$this->wpmu_version_max	  = $wpmu_version_max;
+			$this->plugin_name    = $name;
+			$this->plugin_version = $version;
+			$this->before_270     = FALSE;
 
 			// Define WP_CONTENT_URL and WP_CONTENT_DIR for WordPress < 2.6
-			if ( !defined('WP_CONTENT_URL') )
+			if ( !defined('WP_CONTENT_URL') ) {
+				$this->before_270 = TRUE;
 			    define( 'WP_CONTENT_URL', get_option('siteurl') . '/wp-content');
+			}
 			if ( !defined('WP_CONTENT_DIR') )
 			    define( 'WP_CONTENT_DIR', str_replace('\\', '/', ABSPATH) . 'wp-content' );
 
 			if ( !defined( 'WP_PLUGIN_URL' ) )
 				define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
+
 			if ( !defined('WP_PLUGIN_DIR') )
 			    define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 
 			/* Define the plugin path */
-			$plugin_base_path = str_replace('\\','/',plugin_basename(dirname($core_file)));
-
+			$plugin_base_path       = str_replace('\\','/',plugin_basename(dirname($core_file)));
 			$this->plugin_path 		= trailingslashit(WP_PLUGIN_DIR.'/'.$plugin_base_path);
 			$this->plugin_url  		= trailingslashit(WP_PLUGIN_URL.'/'.$plugin_base_path);
 			$this->plugin_core_file = $this->plugin_path.'/'.basename($core_file);
 
-			/* --- Get Plugin options --- */
-			$this->options = $this->get_option();
-
-			add_action('init',           array( &$this, 'init'));
 			add_action('plugins_loaded', array(&$this, 'plugins_loaded'), 0);
-			
-			if (is_admin()) {
-				/* Register install and uninstall methods */
-				register_activation_hook($this->plugin_core_file, array(&$this, 'install') );
-
-				if ( function_exists('register_uninstall_hook') ) {
-					register_uninstall_hook ($this->plugin_core_file, array(&$this, 'uninstall') );
-				}
-				add_action('admin_header', array( &$this, 'admin_head'));
-				add_action('admin_footer', array( &$this, 'admin_footer'));
-			}
-			else {
-				add_action('wp_head',   array( &$this, 'head')  );
-				add_action('wp_footer', array( &$this, 'footer'));
-			}
 		}
 
 		/**
@@ -201,42 +125,213 @@ if (!class_exists('EG_Plugin_100')) {
 		}
 
 		/**
-		 * Object initialization
+		 * set_owner
 		 *
-		 * Call internationalization features. Add TinyMCE button if required
+		 * Set owner parameters
 		 *
 		 * @package EG-Plugins
-		 * @param none
+		 *
+		 * @param	string	$author_name	Name of the plugin author
+		 * @param	string	$author_url	Url of site or blog
+		 * @param	string	$author_email	email of the author
+		 *
 		 * @return none
 		 */
-		function init () {
+		function set_owner($author_name='', $author_url='', $author_email='') {
+			$this->plugin_author_name  = $author_name;
+			$this->plugin_author_url   = $author_url;
+			$this->plugin_author_email = $author_email;
+		}
 
-			/* --- Check if WP version is correct --- */
-			$this->check_requirements(TRUE);
+		/**
+		 * set_stylesheet
+		 *
+		 * Set stylesheet for public and admin interface
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	string	$stylesheet			stylesheet for the public side
+		 * @param	string	$admin_stylesheet	stylesheet for the admin side
+		 * @return none
+		 */
+		function set_stylesheets($stylesheet='', $admin_stylesheet='') {
+			$this->stylesheet       = $stylesheet;
+			$this->admin_stylesheet = $admin_stylesheet;
+		}
 
-			/* --- Load translations file --- */
-			if (function_exists('load_plugin_textdomain')) {
-				if ($this->textdomain != '') {
-					if ( !defined('WP_PLUGIN_DIR') ) {
-						// for WP < 2.6
-						load_plugin_textdomain( $this->textdomain, 'wp-content/plugins/'. dirname(plugin_basename($this->plugin_core_file)).'/lang');
-					} else {
-						// for WP >= 2.6
-						load_plugin_textdomain( $this->textdomain, false, dirname(plugin_basename($this->plugin_core_file)) . '/lang');
-					}
-				}
+		/**
+		 * set_options
+		 *
+		 * Set options parameters
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	string	$options_entry		entry to use to store options
+		 * @param	string	$default_options		values for default options
+		 * @return none
+		 */
+		function set_options($options_entry='', $default_options='') {
+			$this->options_entry   = $options_entry;
+			$this->default_options = $default_options;
+		}
+
+		/**
+		 * set_textdomain
+		 *
+		 * Set internationalization parameters
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	string	$textdomain		text domain
+		 * @return none
+		 */
+		function set_textdomain($textdomain='') {
+			$this->textdomain = $textdomain;
+		}
+		
+		/**
+		 * get_textdomain
+		 *
+		 * 
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param none
+		 * @return string $textdomain
+		 */
+		function get_textdomain() {
+			return ($this->textdomain);
+		}
+
+		/**
+		 * set_wp_versions
+		 *
+		 * Set compliance parameters with WordPress and WordPress MU
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	string	$wp_version_min		minimum version for WordPress
+		 * @param	string	$wp_version_max	maximum version for WordPress
+		 * @param	string	$wpmu_version_min	minimum version for WordPress MU
+		 * @param	string	$wpmu_version_max	maximum version for WordPress MU
+		 * @return none
+		 */
+		function set_wp_versions($wp_version_min='', $wp_version_max='', $wpmu_version_min='', $wpmu_version_max='') {
+			$this->wp_version_min	= $wp_version_min;
+			$this->wp_version_max	= $wp_version_max;
+			$this->wpmu_version_min	= $wpmu_version_min;
+			$this->wpmu_version_max	= $wpmu_version_max;
+		}
+
+		/**
+		 * add_tinymce_button
+		 *
+		 * Add a TinyMCE button
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	string	$button_name	Name of the button
+		 * @return none
+		 */
+		function add_tinymce_button($button_name, $tinymce_plugin_path) {
+			$this->tinyMCE_button[]->name                                = $button_name;
+			$this->tinyMCE_button[sizeof($this->tinyMCE_button)-1]->path = $tinymce_plugin_path;
+		}
+		
+		/**
+		 * add_shortcode
+		 *
+		 * Add a shortcode
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	string	$shortcode_tag		shortcode tag	
+		 * @param	string	$shortcode_callback	shortcode callback
+		 * @return none
+		 */
+		function add_shortcode($shortcode_tag, $shortcode_callback) {
+			$this->shortcodes[]->tag                                 = $shortcode_tag;
+			$this->shortcodes[sizeof($this->shortcodes)-1]->callback = $shortcode_callback;
+		}	
+	
+		/**
+		 * add_page
+		 *
+		 * Add a shortcode
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	
+		 * @param	
+		 * @return none
+		 */		
+		function add_page($page_type, $page_title, $menu_title, $access_level, $page_url, $callback) {
+			$index = sizeof($this->pages);
+			$this->pages[$index]->type         = $page_type;
+			$this->pages[$index]->page_title   = $page_title;
+			$this->pages[$index]->menu_title   = $menu_title;
+			$this->pages[$index]->access_level = $access_level;
+			$this->pages[$index]->page_url     = $page_url;
+			$this->pages[$index]->callback     = $callback;
+		}		
+		
+		/**
+		 * active_cache
+		 *
+		 * Active cache and set the expiration duration
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	int	$expiration	Expiration duration (in second)
+		 * @return none
+		 */
+		function active_cache($expiration = 3600) {
+			$this->cacheexpiration = $expiration;
+		}
+
+		/**
+		 * admin_init
+		 *
+		 * Perform init at admin level (add TinyMCE button ...)
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	none
+		 * @return	none
+		 */		
+		function admin_init() {
+			// Add only in Rich Editor mode
+			if ( isset($this->tinyMCE_button) &&
+				 get_user_option('rich_editing') == 'true' &&
+				 current_user_can('edit_posts') &&
+				 current_user_can('edit_pages') )  {
+
+				// add the button for wp2.5 in a new way
+				add_filter('mce_external_plugins', array (&$this, 'add_tinymce_plugin' ), 5);
+				add_filter('mce_buttons',          array (&$this, 'register_button' ),    5);
 			}
-			if (is_admin()) {
-				// Add only in Rich Editor mode
-				if ( $this->tinyMCE_button && get_user_option('rich_editing') == 'true') {
+		}
 
-					// add the button for wp2.5 in a new way
-					add_filter('mce_external_plugins', array (&$this, 'add_tinymce_plugin' ), 5);
-					add_filter('mce_buttons', array (&$this, 'register_button' ), 5);
+		/**
+		 * init
+		 *
+		 * Perform init 
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	none
+		 * @return	none
+		 */		
+		function init() {
+			/* --- Load translations file --- */
+			if (function_exists('load_plugin_textdomain') && $this->textdomain != '') {
+				if ( $this->before_270 ) {
+					// for WP < 2.6
+					load_plugin_textdomain( $this->textdomain, 'wp-content/plugins/'. dirname(plugin_basename($this->plugin_core_file)).'/lang');
+				} else {
+					// for WP >= 2.6
+					load_plugin_textdomain( $this->textdomain, false, dirname(plugin_basename($this->plugin_core_file)) . '/lang');
 				}
-
-				if (sizeof($this->pages) > 0)
-					add_action( 'admin_menu', array(&$this, 'add_plugin_pages') );
 			}
 		}
 
@@ -250,20 +345,35 @@ if (!class_exists('EG_Plugin_100')) {
 		 * @return none
 		 */
 		function plugins_loaded () {
-			$this->create_widgets();
-		}
-		
-		/**
-		 * create_widgets
-		 *
-		 * Create widgets if required 
-		 *
-		 * @package EG-Plugins
-		 * @param none
-		 * @return none
-		 */
-		function create_widgets () {
-			/* nothing at this level */
+
+			/* --- Check if WP version is correct --- */
+			$this->check_requirements(TRUE);
+
+			if (is_admin()) {
+				// Register install and uninstall methods 
+				// register_activation_hook( plugin_basename($this->plugin_core_file), array(&$this, 'install') );
+
+				if ( function_exists('register_uninstall_hook') ) {
+					register_uninstall_hook ($this->plugin_core_file, array(&$this, 'uninstall') );
+				}
+			}
+
+			/* --- Get Plugin options --- */
+			$this->options = $this->get_option();
+
+			if (is_admin()) {
+				add_action('admin_init',   array( &$this, 'admin_init')   );
+				add_action('admin_header', array( &$this, 'admin_head')   );
+				add_action('admin_footer', array( &$this, 'admin_footer') );
+
+				if (sizeof($this->pages) > 0)
+					add_action( 'admin_menu', array(&$this, 'add_plugin_pages') );
+			}
+			else {
+				add_action('init',      array( &$this, 'init'));
+				add_action('wp_head',   array( &$this, 'head')  );
+				add_action('wp_footer', array( &$this, 'footer'));
+			}
 		}
 
 		/**
@@ -276,11 +386,12 @@ if (!class_exists('EG_Plugin_100')) {
 		 * @return none
 		 */
 		function head() {
+
 			if (isset($this->options['load_css'])) $load_css = $this->options['load_css'];
-			else $load_css = TRUE;
-	
+			else $load_css = 1;
+
 			$string = '';
-			if ($this->stylesheet != '' && $load_css === TRUE) {
+			if ($this->stylesheet != '' && $load_css) {
 				$string = "\n".'<!-- Generated by '.$this->plugin_name.' '.$this->plugin_version.' by '.$this->plugin_author_name.' ('.$this->plugin_author_url.') -->';
 				if(@file_exists(TEMPLATEPATH.'/'.$this->stylesheet)) {
 					// Use stylesheet file stored in the current theme directory
@@ -322,7 +433,7 @@ if (!class_exists('EG_Plugin_100')) {
 		function footer() {
 			// Nothing here
 		}
-		
+
 		/**
 		 * admin_footer
 		 *
@@ -336,7 +447,7 @@ if (!class_exists('EG_Plugin_100')) {
 
 			// Nothing here
 		}
-		
+
 		/**
 		 * register_button()
 		 * Insert button in wordpress post editor
@@ -347,7 +458,9 @@ if (!class_exists('EG_Plugin_100')) {
 		 */
 		function register_button($buttons) {
 
-			array_push($buttons, $this->tinyMCE_button );
+			foreach ($this->tinyMCE_button as $value) {
+				array_push($buttons, $value->name );
+			}
 			return $buttons;
 		}
 
@@ -361,22 +474,12 @@ if (!class_exists('EG_Plugin_100')) {
 		 */
 		function add_tinymce_plugin($plugin_array) {
 
-			$plugin_array[$this->tinyMCE_button] = $this->plugin_url.'tinymce/editor_plugin.js';
-			
+			foreach ($this->tinyMCE_button as $value) {
+				$plugin_array[$value->name] = $this->plugin_url.$value->path.'/editor_plugin.js';
+			}
 			return $plugin_array;
 		}
 
-		function add_page($page_type, $page_title, $menu_title, $access_level, $page_url, $callback) {
-			$index = sizeof($this->pages);
-			$this->pages[$index]->type         = $page_type;
-			$this->pages[$index]->page_title   = $page_title;
-			$this->pages[$index]->menu_title   = $menu_title;
-			$this->pages[$index]->access_level = $access_level;
-			$this->pages[$index]->page_url     = $page_url;
-			$this->pages[$index]->callback     = $callback;
-		}
-		
-		
 		/**
 		 * get_option
 		 *
@@ -471,10 +574,10 @@ if (!class_exists('EG_Plugin_100')) {
 		  * @param 		none
 		  * @return 		none
 		  */
-		function install() {
+//		function install() {
 			// Run get_option to create the options
-			$this->get_option();
-		}
+//			$this->get_option();
+//		}
 
 		/**
 		  * Uninstall
@@ -486,7 +589,7 @@ if (!class_exists('EG_Plugin_100')) {
 		  * @return 		none
 		 */
 		function uninstall() {
-			if ($this->options_entry) delete_option($this->options_entry);
+			if ( isset($this->options_entry) ) delete_option($this->options_entry);
 		}
 
 		/**
@@ -499,31 +602,19 @@ if (!class_exists('EG_Plugin_100')) {
 		  * @return 		none
 		 */
 		function add_plugin_pages() {
+
+			$page_list = array ( 'posts'   => 'add_posts_page',
+								 'options' => 'add_options_page',
+								 'tools'   => 'add_management_page');
+
 			// Add a new submenu under Options:
 			foreach ($this->pages as $page) {
-				switch ($page->type) {
-					case 'posts': 
-						add_posts_page($page->page_title,
-								     $page->menu_title,
-									 $page->access_level,
-									 $page->page_url,
-									 array(&$this, $page->callback));
-						break;
-					case 'options': 
-						add_options_page($page->page_title,
-								     $page->menu_title,
-									 $page->access_level,
-									 $page->page_url,
-									 array(&$this, $page->callback));
-						break;
-					case 'tools':
-						add_management_page($page->page_title,
-								     $page->menu_title,
-									 $page->access_level,
-									 $page->page_url,
-									 array(&$this, $page->callback));
-						break;
-				}
+				call_user_func($page_list[$page->type],
+								$page->page_title,
+								$page->menu_title,
+								$page->access_level,
+								$page->page_url,
+								array(&$this, $page->callback));
 			}
 		}
 
@@ -551,7 +642,7 @@ if (!class_exists('EG_Plugin_100')) {
 		  *
 		  * @package EG-Plugins
 		  * @param 	string	$message	message to display
-		  * @param 	string	$status	update, error, warning, information
+		  * @param 	string	$status	update, error
 		  * @return 		none
 		  */
 		function display_message($message, $status ='') {

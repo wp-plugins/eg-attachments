@@ -3,12 +3,13 @@
 Plugin Name: EG-Attachments
 Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 1.0.1
+Version: 1.1.0
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
-/*  Copyright 2009 Emmanuel GEORJON  (email : blog@georjon.eu)
+/* 
+     Copyright 2009 Emmanuel GEORJON  (email : blog@georjon.eu)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +24,19 @@ Author URI: http://www.emmanuelgeorjon.com/
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
+/*
+CHANGELOG:
+	- Feb 9th, 2009:
+		. Add option to choose label (file name or document title)
+		. New EG-Plugin library
+*/
+
+/*
+NEXT:
+	- Widgets to display attachments in a Widget ?
+	- 
 */
 
 require_once('lib/eg-plugin.inc.php');
@@ -47,12 +61,12 @@ if (! class_exists('EG_Attachments')) {
 			'doctype'  => 'document',
 			'docid'    => 0,
 			'title'    => '',
-			'titletag' => 'h2'
+			'titletag' => 'h2',
+			'label'    => 'filename'
 		);
-		
-		
+
 		/**
-		 * Implement INIT action
+		 * Implement plugins_loaded action
 		 *
 		 * Add filter, hooks or action.
 		 *
@@ -64,30 +78,11 @@ if (! class_exists('EG_Attachments')) {
 
 			parent::init();
 
-			// Add only in Rich Editor mode
-			if ( current_user_can('edit_posts') && current_user_can('edit_pages') && get_user_option('rich_editing') == 'true') {
-				// add the button for wp2.5 in a new way
-				add_filter("mce_external_plugins", array (&$this, 'add_tinymce_plugin' ), 5);
-				add_filter('mce_buttons', array (&$this, 'register_button' ), 5);
-			}
 			if (! is_admin()) {
 				add_shortcode('attachments', array(&$this, 'get_attachments'));
 			}
-		} /* End of init */
+		} /* End of plugins_loaded */
 
-		/**
-		 * Implement Head action
-		 *
-		 * Add links to the style sheet
-		 *
-		 * @package EG-Attachments
-		 * @param none
-		 * @return htm code
-		 */
-		function head() {
-			parent::head();
-			echo "\n".'<!-- End of eg-attachments -->'."\n";
-		} /* End of Head */
 
 		/**
 		  *  icon_dirs() - Add the icon path of the plugin, to the list of paths of WordPress icons
@@ -215,12 +210,13 @@ if (! class_exists('EG_Attachments')) {
 					if ( ($doctype == 'image' && $mime_type == 'image') ||
 					     ($doctype == 'document' && $mime_type != 'image') ) {
 						$file_size = $this->get_file_size($attachment->guid);
+						$attachment_title = htmlspecialchars(strip_tags($attachment->post_title));
 						switch ($size) {
 							case 'large':
 								if ($file_size != '') $string_file_size = '<strong>'.__('Size: ', $this->text_domain).'</strong>'.$file_size;
 								$output .= '<dl class="attachments attachments-large"><dt class="icon">'.
-										   '<a href="'.$attachment->guid.'" title="'.$attachment->post_title.'">'.$this->get_icon($attach_id, $attachment, $size).'</a></dt>'.
-									 '<dd class="caption"><strong>'.__('Title: ', $this->text_domain).'</strong>'.'<a href="'.$attachment->guid.'" title="'.$attachment->post_title.'">'.$attachment->post_title.'</a><br />'.
+										   '<a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.$this->get_icon($attach_id, $attachment, $size).'</a></dt>'.
+									 '<dd class="caption"><strong>'.__('Title: ', $this->text_domain).'</strong>'.'<a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.$attachment_title.'</a><br />'.
 									 '<strong>'.__('Description: ', $this->text_domain).'</strong>'.$attachment->post_excerpt.'<br />'.
 									 '<strong>'.__('File: ', $this->text_domain).'</strong>'.basename($attachment->guid).'<br />'.
 									$string_file_size.
@@ -231,17 +227,23 @@ if (! class_exists('EG_Attachments')) {
 							case 'medium':
 								if ($file_size != '') $string_file_size = '('.$file_size.')';
 								$output .= '<dl class="attachments attachments-medium">'.
-										'<dt class="icon">'.'<a href="'.$attachment->guid.'" title="'.$attachment->post_title.'">'.$this->get_icon($attach_id, $attachment, $size).'</a></dt>'.
-									 '<dd class="caption"><strong>'.__('File: ', $this->text_domain).'</strong><a href="'.$attachment->guid.'" title="'.$attachment->post_title.'">'.basename($attachment->guid).'</a> '.$string_file_size.'<br />'.
-									 '<strong>'.__('Description: ', $this->text_domain).'</strong>'.$attachment->post_excerpt.'</dd>'.
+										'<dt class="icon">'.'<a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.$this->get_icon($attach_id, $attachment, $size).'</a></dt>'.
+									 '<dd class="caption"><strong>';
+								if  ($label == 'doctitle') {
+									$output .= __('Title: ', $this->text_domain).'</strong><a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.$attachment_title.'</a> '.$string_file_size.'<br />';
+								} 
+								else {
+									$output .= __('File: ', $this->text_domain).'</strong><a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.basename($attachment->guid).'</a> '.$string_file_size.'<br />';
+								}
+								$output .= '<strong>'.__('Description: ', $this->text_domain).'</strong>'.$attachment->post_excerpt.'</dd>'.
 									 '</dl>';
 							break;
 
 							case 'small':
 								if ($file_size != '') $string_file_size = '('.$file_size.')';
 								$output .= '<dl class="attachments attachments-small"><dt class="icon">'.
-								           '<a href="'.$attachment->guid.'" title="'.$attachment->post_title.'">'.$this->get_icon($attach_id, $attachment, $size).'</a></dt>'.
-										   '<dd class="caption"><a href="'.$attachment->guid.'" title="'.$attachment->post_title.'">'.basename($attachment->guid).'</a> '.$string_file_size.'</dd></dl>';
+								           '<a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.$this->get_icon($attach_id, $attachment, $size).'</a></dt>'.
+										   '<dd class="caption"><a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.($label=="doctitle"?$attachment_title:basename($attachment->guid)).'</a> '.$string_file_size.'</dd></dl>';
 							break;
 						}
 					}
@@ -255,21 +257,12 @@ if (! class_exists('EG_Attachments')) {
 	} /* End of Class */
 } /* End of if class_exists */
 
-$eg_attach = new EG_Attachments('EG-Attachments',				/* plugin name 		*/
-							'1.0.0',							/* plugin version 		*/
-							__FILE__, 							/* pluginbasename	*/
-							'',									/* option entry 		*/
-							FALSE,								/* default options 	*/
-							'eg-attachments',					/*  text domain 		*/
-							'eg-attachments.css',				/* stylesheet file name 	*/
-							FALSE,								/* admin stylesheet         */
-							'Emmanuel GEORJON',					/* author name 		*/
-							'http://www.emmanuelgeorjon.com/',	/* author url 		*/
-							'blog@georjon.eu',					/* author email		*/
-							'EGAttachments',					/* tinyMCE button 	*/
-							3600,								/* Cache expiration         */
-							'2.5',								/* First WP release          */
-							FALSE,								/* Last WP release	*/
-							FALSE,								/* First WP MU release	*/
-							FALSE);								/* Last WP MU release	*/
+$eg_attach = new EG_Attachments('EG-Attachments',	'1.0.2',__FILE__);
+$eg_attach->set_textdomain('eg-attachments');
+$eg_attach->set_stylesheets('eg-attachments.css', FALSE);
+$eg_attach->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
+$eg_attach->set_wp_versions('2.5',	FALSE, FALSE, FALSE);
+$eg_attach->add_tinymce_button( 'EGAttachments', 'tinymce');
+$eg_attach->active_cache(3600);
+
 ?>

@@ -43,9 +43,7 @@ if (isset($_GET['post_id'])) {
 <head>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
 	<title>EG Attachments</title>	
-	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/tiny_mce_popup.js"></script>
-	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/mctabs.js"></script>
-	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/form_utils.js"></script>	
+	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/tiny_mce_popup.js"></script>	
 	<script language="javascript" type="text/javascript" src="eg-attachments.js"></script>
 </head>
 <body id="link" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';">
@@ -73,9 +71,18 @@ if (isset($_GET['post_id'])) {
 				<td><label for="listsize"><?php _e('List size: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td>
 					<select id="listsize" name="listsize">
-						<option value="0">Large</option>
-						<option value="medium">Medium</option>
-						<option value="small">Small</option>
+						<option value="0"><?php _e('Large', EG_ATTACHMENT_DOMAIN); ?></option>
+						<option value="medium"><?php _e('Medium', EG_ATTACHMENT_DOMAIN); ?></option>
+						<option value="small"><?php _e('Small', EG_ATTACHMENT_DOMAIN); ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><label for="doclabel"><?php _e('Document title: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td>
+					<select id="doclabel" name="doclabel">
+						<option value="0"><?php _e('File name', EG_ATTACHMENT_DOMAIN); ?></option>
+						<option value="doctitle"><?php _e('Document title', EG_ATTACHMENT_DOMAIN); ?></option>
 					</select>
 				</td>
 			</tr>

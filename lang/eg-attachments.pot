@@ -27,6 +27,7 @@ msgid "Size: "
 msgstr ""
 
 #: eg-attachments.php:224
+#: window.php:105
 msgid "Title: "
 msgstr ""
 
@@ -44,47 +45,67 @@ msgstr ""
 msgid "No attachment available for this post"
 msgstr ""
 
-#: window.php:55
+#: window.php:53
 msgid "Order by: "
 msgstr ""
 
-#: window.php:58
+#: window.php:56
 msgid "Title"
 msgstr ""
 
-#: window.php:59
+#: window.php:57
 msgid "ID"
 msgstr ""
 
-#: window.php:64
+#: window.php:62
 msgid "Sort Order: "
 msgstr ""
 
-#: window.php:67
+#: window.php:65
 msgid "Ascending"
 msgstr ""
 
-#: window.php:68
+#: window.php:66
 msgid "Descending"
 msgstr ""
 
-#: window.php:73
+#: window.php:71
 msgid "List size: "
 msgstr ""
 
-#: window.php:83
+#: window.php:74
+msgid "Large"
+msgstr ""
+
+#: window.php:75
+msgid "Medium"
+msgstr ""
+
+#: window.php:76
+msgid "Small"
+msgstr ""
+
+#: window.php:81
+msgid "Document label"
+msgstr ""
+
+#: window.php:84
+msgid "File name"
+msgstr ""
+
+#: window.php:85
+msgid "Document title"
+msgstr ""
+
+#: window.php:90
 msgid "Document type: "
 msgstr ""
 
-#: window.php:92
+#: window.php:99
 msgid "Document list: "
 msgstr ""
 
-#: window.php:98
-msgid "Title: "
-msgstr ""
-
-#: window.php:102
+#: window.php:109
 msgid "Title tag: "
 msgstr ""
 

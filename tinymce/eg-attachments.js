@@ -14,11 +14,14 @@ function insertEGAttachmentsShortCode() {
 	var listsize = document.getElementById('listsize').value;
 	if (listsize != 0 )
 		tagtext = tagtext + " size=" + listsize;
-	
+
+	var doclabel = document.getElementById('doclabel').value;
+	if (doclabel != 0 )
+		tagtext = tagtext + " label=" + doclabel;
+
 	var doctype = document.getElementById('doctype').value;
 	if (doctype != 0 )
 		tagtext = tagtext + " doctype=" + doctype;
-
 	var doclist = document.getElementById('doclist').options;
 	id_list = ""
 	if ( doclist.length > 0 ) {
