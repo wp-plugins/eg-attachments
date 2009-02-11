@@ -3,7 +3,7 @@
 Plugin Name: EG-Attachments
 Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 1.1.0
+Version: 1.1.1
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -189,11 +189,11 @@ if (! class_exists('EG_Attachments')) {
 			else $doc_list = array();
 
 			// get attachments
-			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
-			if (! $attachments) {
+			//$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
+			//if (! $attachments) {
 				$attachments = get_children('post_parent='.$id.'&post_type=attachment&orderby="'.$orderby.'"');
-				wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
-			}
+			//	wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
+			//}
 			// if no attachments, stop and exit
 			if (! $attachments) {
 				return '';
@@ -257,7 +257,7 @@ if (! class_exists('EG_Attachments')) {
 	} /* End of Class */
 } /* End of if class_exists */
 
-$eg_attach = new EG_Attachments('EG-Attachments',	'1.1.0',__FILE__);
+$eg_attach = new EG_Attachments('EG-Attachments',	'1.1.1',__FILE__);
 $eg_attach->set_textdomain('eg-attachments');
 $eg_attach->set_stylesheets('eg-attachments.css', FALSE);
 $eg_attach->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');

@@ -361,6 +361,8 @@ if (!class_exists('EG_Plugin_100')) {
 			/* --- Get Plugin options --- */
 			$this->options = $this->get_option();
 
+			add_action('init', array( &$this, 'init'));
+
 			if (is_admin()) {
 				add_action('admin_init',   array( &$this, 'admin_init')   );
 				add_action('admin_header', array( &$this, 'admin_head')   );
@@ -370,7 +372,6 @@ if (!class_exists('EG_Plugin_100')) {
 					add_action( 'admin_menu', array(&$this, 'add_plugin_pages') );
 			}
 			else {
-				add_action('init',      array( &$this, 'init'));
 				add_action('wp_head',   array( &$this, 'head')  );
 				add_action('wp_footer', array( &$this, 'footer'));
 			}
