@@ -3,7 +3,7 @@
 Plugin Name: EG-Attachments
 Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 1.1.1
+Version: 1.1.3
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -78,12 +78,19 @@ if (! class_exists('EG_Attachments')) {
 
 			parent::init();
 
+			add_action('add_attachment',    array(&$this, 'clean_cache' ));
+			add_action('delete_attachment', array(&$this, 'clean_cache' ));
+
 			if (! is_admin()) {
 				add_shortcode('attachments', array(&$this, 'get_attachments'));
 			}
 		} /* End of plugins_loaded */
 
 
+		function clean_cache($id) {
+			wp_cache_delete( 'attachments', 'eg-attachments' );
+		}
+		
 		/**
 		  *  icon_dirs() - Add the icon path of the plugin, to the list of paths of WordPress icons
 		  *
@@ -189,13 +196,16 @@ if (! class_exists('EG_Attachments')) {
 			else $doc_list = array();
 
 			// get attachments
-			//$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
-			//if (! $attachments) {
-				$attachments = get_children('post_parent='.$id.'&post_type=attachment&orderby="'.$orderby.'"');
-			//	wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
-			//}
+			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
+			if ($attachments===FALSE || !isset($attachments[$id])) {
+				$attachment_list = get_children('post_parent='.$id.'&post_type=attachment&orderby="'.$orderby.'"');
+				if ($attachment_list) {
+					$attachments[$id] = get_children('post_parent='.$id.'&post_type=attachment&orderby="'.$orderby.'"');
+					wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
+				}
+			}
 			// if no attachments, stop and exit
-			if (! $attachments) {
+			if ($attachments === FALSE || !isset($attachments[$id])) {
 				return '';
 			}
 
@@ -204,7 +214,7 @@ if (! class_exists('EG_Attachments')) {
 			if ($title != '') $output .= '<'.$titletag.'>'.htmlspecialchars(stripslashes(strip_tags($title))).'</'.$titletag.'>';
 
 			// Display attachment list
-			foreach ( $attachments as $attach_id => $attachment ) {
+			foreach ( $attachments[$id] as $attach_id => $attachment ) {
 				if (sizeof($doc_list) == 0 || array_search($attach_id, $doc_list) !== FALSE) {
 					$mime_type = substr($attachment->post_mime_type,0,5);
 					if ( ($doctype == 'image' && $mime_type == 'image') ||
@@ -257,7 +267,7 @@ if (! class_exists('EG_Attachments')) {
 	} /* End of Class */
 } /* End of if class_exists */
 
-$eg_attach = new EG_Attachments('EG-Attachments',	'1.1.1',__FILE__);
+$eg_attach = new EG_Attachments('EG-Attachments', '1.1.3',__FILE__);
 $eg_attach->set_textdomain('eg-attachments');
 $eg_attach->set_stylesheets('eg-attachments.css', FALSE);
 $eg_attach->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');

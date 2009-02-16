@@ -63,7 +63,6 @@ if (!class_exists('EG_Plugin_100')) {
 		var $wpmu_version_max;
 
 		var $pages;
-		// var $widgets;
 
 		/**
 		  * Class contructor for PHP 4 compatibility
@@ -89,15 +88,14 @@ if (!class_exists('EG_Plugin_100')) {
 
 			$this->plugin_name    = $name;
 			$this->plugin_version = $version;
-			$this->before_270     = FALSE;
 
 			// Define WP_CONTENT_URL and WP_CONTENT_DIR for WordPress < 2.6
+
 			if ( !defined('WP_CONTENT_URL') ) {
-				$this->before_270 = TRUE;
 			    define( 'WP_CONTENT_URL', get_option('siteurl') . '/wp-content');
 			}
 			if ( !defined('WP_CONTENT_DIR') )
-			    define( 'WP_CONTENT_DIR', str_replace('\\', '/', ABSPATH) . 'wp-content' );
+			    define( 'WP_CONTENT_DIR', trailingslashit(ABSPATH).'wp-content' );
 
 			if ( !defined( 'WP_PLUGIN_URL' ) )
 				define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
@@ -106,12 +104,13 @@ if (!class_exists('EG_Plugin_100')) {
 			    define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 
 			/* Define the plugin path */
-			$plugin_base_path       = str_replace('\\','/',plugin_basename(dirname($core_file)));
-			$this->plugin_path 		= trailingslashit(WP_PLUGIN_DIR.'/'.$plugin_base_path);
+			$plugin_base_path  		= basename( dirname($core_file) );
+			$this->plugin_path 		= trailingslashit(str_replace('\\','/',WP_PLUGIN_DIR.'/'.$plugin_base_path));
 			$this->plugin_url  		= trailingslashit(WP_PLUGIN_URL.'/'.$plugin_base_path);
-			$this->plugin_core_file = $this->plugin_path.'/'.basename($core_file);
+			$this->plugin_core_file = $this->plugin_path.basename($core_file);
 
 			add_action('plugins_loaded', array(&$this, 'plugins_loaded'), 0);
+			add_action('init', array( &$this, 'init'));
 		}
 
 		/**
@@ -188,11 +187,11 @@ if (!class_exists('EG_Plugin_100')) {
 		function set_textdomain($textdomain='') {
 			$this->textdomain = $textdomain;
 		}
-		
+
 		/**
 		 * get_textdomain
 		 *
-		 * 
+		 *
 		 *
 		 * @package EG-Plugins
 		 *
@@ -237,23 +236,7 @@ if (!class_exists('EG_Plugin_100')) {
 			$this->tinyMCE_button[]->name                                = $button_name;
 			$this->tinyMCE_button[sizeof($this->tinyMCE_button)-1]->path = $tinymce_plugin_path;
 		}
-		
-		/**
-		 * add_shortcode
-		 *
-		 * Add a shortcode
-		 *
-		 * @package EG-Plugins
-		 *
-		 * @param	string	$shortcode_tag		shortcode tag	
-		 * @param	string	$shortcode_callback	shortcode callback
-		 * @return none
-		 */
-		function add_shortcode($shortcode_tag, $shortcode_callback) {
-			$this->shortcodes[]->tag                                 = $shortcode_tag;
-			$this->shortcodes[sizeof($this->shortcodes)-1]->callback = $shortcode_callback;
-		}	
-	
+
 		/**
 		 * add_page
 		 *
@@ -261,10 +244,10 @@ if (!class_exists('EG_Plugin_100')) {
 		 *
 		 * @package EG-Plugins
 		 *
-		 * @param	
-		 * @param	
+		 * @param
+		 * @param
 		 * @return none
-		 */		
+		 */
 		function add_page($page_type, $page_title, $menu_title, $access_level, $page_url, $callback) {
 			$index = sizeof($this->pages);
 			$this->pages[$index]->type         = $page_type;
@@ -273,8 +256,8 @@ if (!class_exists('EG_Plugin_100')) {
 			$this->pages[$index]->access_level = $access_level;
 			$this->pages[$index]->page_url     = $page_url;
 			$this->pages[$index]->callback     = $callback;
-		}		
-		
+		}
+
 		/**
 		 * active_cache
 		 *
@@ -298,7 +281,7 @@ if (!class_exists('EG_Plugin_100')) {
 		 *
 		 * @param	none
 		 * @return	none
-		 */		
+		 */
 		function admin_init() {
 			// Add only in Rich Editor mode
 			if ( isset($this->tinyMCE_button) &&
@@ -313,26 +296,41 @@ if (!class_exists('EG_Plugin_100')) {
 		}
 
 		/**
-		 * init
+		 * widgets_init
 		 *
-		 * Perform init 
+		 * Declare and register widgets here
 		 *
 		 * @package EG-Plugins
 		 *
 		 * @param	none
 		 * @return	none
-		 */		
+		 */
+		function widgets_init() {
+			// empty for this class
+		}
+
+		/**
+		 * init
+		 *
+		 * Perform init
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	none
+		 * @return	none
+		 */
 		function init() {
 			/* --- Load translations file --- */
 			if (function_exists('load_plugin_textdomain') && $this->textdomain != '') {
-				if ( $this->before_270 ) {
+				if (version_compare($wp_version, '2.6', '<')) {
 					// for WP < 2.6
-					load_plugin_textdomain( $this->textdomain, 'wp-content/plugins/'. dirname(plugin_basename($this->plugin_core_file)).'/lang');
+					load_plugin_textdomain( $this->textdomain, substr(dirname($this->plugin_core_file), strlen(ABSPATH)).'/lang');
 				} else {
 					// for WP >= 2.6
-					load_plugin_textdomain( $this->textdomain, false, dirname(plugin_basename($this->plugin_core_file)) . '/lang');
+					load_plugin_textdomain( $this->textdomain, FALSE , substr(dirname($this->plugin_core_file), strlen(ABSPATH)).'/lang');
 				}
 			}
+			$this->widgets_init();
 		}
 
 		/**
@@ -350,7 +348,7 @@ if (!class_exists('EG_Plugin_100')) {
 			$this->check_requirements(TRUE);
 
 			if (is_admin()) {
-				// Register install and uninstall methods 
+				// Register install and uninstall methods
 				// register_activation_hook( plugin_basename($this->plugin_core_file), array(&$this, 'install') );
 
 				if ( function_exists('register_uninstall_hook') ) {
@@ -360,8 +358,6 @@ if (!class_exists('EG_Plugin_100')) {
 
 			/* --- Get Plugin options --- */
 			$this->options = $this->get_option();
-
-			add_action('init', array( &$this, 'init'));
 
 			if (is_admin()) {
 				add_action('admin_init',   array( &$this, 'admin_init')   );
@@ -565,21 +561,6 @@ if (!class_exists('EG_Plugin_100')) {
 			return ($value);
 		}
 
-
-		/**
-		  * Install
- 		  *
-		  * Actions required to install the plugin
-		  *
-		  * @package EG-Plugins
-		  * @param 		none
-		  * @return 		none
-		  */
-//		function install() {
-			// Run get_option to create the options
-//			$this->get_option();
-//		}
-
 		/**
 		  * Uninstall
 		  *
@@ -611,8 +592,8 @@ if (!class_exists('EG_Plugin_100')) {
 			// Add a new submenu under Options:
 			foreach ($this->pages as $page) {
 				call_user_func($page_list[$page->type],
-								$page->page_title,
-								$page->menu_title,
+								__($page->page_title, $this->textdomain),
+								__($page->menu_title, $this->textdomain),
 								$page->access_level,
 								$page->page_url,
 								array(&$this, $page->callback));
@@ -620,26 +601,9 @@ if (!class_exists('EG_Plugin_100')) {
 		}
 
 		/**
-		 * Adds an action link to the plugins page
-		 */
-		/*
-		function settings_plugin_page($links, $file) {
-			static $this_plugin;
-
-			if( !$this_plugin ) $this_plugin = plugin_basename(__FILE__);
-
-			if( $file == $this_plugin ){
-				$settings_link = '<a href="index.php?page=sayfa_sayac/sayfa_sayac_de.php">' . __('Settings') . '</a>';
-				$links = array_merge( array($settings_link), $links);
-			}
-			return $links;
-		}
-		*/
-
-		/**
 		  * display_message
 		  *
-		  * Generates a complete html form for widget control panel
+		  * Display message at the top of page
 		  *
 		  * @package EG-Plugins
 		  * @param 	string	$message	message to display

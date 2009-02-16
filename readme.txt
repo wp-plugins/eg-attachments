@@ -4,7 +4,7 @@ Donate link:
 Tags: post, attachment
 Requires at least: 2.5.0
 Tested up to: 2.7.0
-Stable tag: 1.1.1
+Stable tag: 1.1.3
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -34,7 +34,7 @@ Options are
 == Installation ==
 
 # Installation #
-* The plugin is available for download on the WordPress site,
+* The plugin is available for download on the WordPress repository,
 * Once downloaded, uncompress the file eg-attachments.zip,
 * Copy or upload the uncompressed files in the directory wp-content/plugins in your WordPress platform
 * Activate the plugin, in the administration interface, through the menu Plugins
@@ -62,6 +62,9 @@ The shortcode options are:
 
 == Frequently Asked Questions ==
 
+= How can I display attachments by modifying my templates? =
+In your `single.php` file, add the following code: `<?php echo do_shortcode('[attachments *shortcode options*]'); ?>`
+
 = How can I change the styles? =
 The stylesheet is named eg-attachments.css, and can be stored in two places:
 
@@ -83,6 +86,12 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 5. Insert attachments window.
 
 == Version history ==
+
+* Version 1.1.3 - Feb 16th, 2009
+	* Buf fix: in some cases, the icon didn't appear in the TinyMCE button bar
+
+* Version 1.1.2 - Feb 13th, 2009 (not published)
+	* Enable cache management again
 
 * Version 1.1.1 - Feb 11th, 2009
 	* Disable temporarily the management of the cache
