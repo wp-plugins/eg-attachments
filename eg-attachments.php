@@ -3,12 +3,12 @@
 Plugin Name: EG-Attachments
 Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 1.1.3
+Version: 1.1.4
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
-/* 
+/*
      Copyright 2009 Emmanuel GEORJON  (email : blog@georjon.eu)
 
     This program is free software; you can redistribute it and/or modify
@@ -24,19 +24,6 @@ Author URI: http://www.emmanuelgeorjon.com/
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-
-/*
-CHANGELOG:
-	- Feb 9th, 2009:
-		. Add option to choose label (file name or document title)
-		. New EG-Plugin library
-*/
-
-/*
-NEXT:
-	- Widgets to display attachments in a Widget ?
-	- 
 */
 
 require_once('lib/eg-plugin.inc.php');
@@ -64,9 +51,9 @@ if (! class_exists('EG_Attachments')) {
 			'titletag' => 'h2',
 			'label'    => 'filename'
 		);
-
+		
 		/**
-		 * Implement plugins_loaded action
+		 * Implement init action
 		 *
 		 * Add filter, hooks or action.
 		 *
@@ -78,19 +65,29 @@ if (! class_exists('EG_Attachments')) {
 
 			parent::init();
 
+			// Clear cache when adding or delete attachment
 			add_action('add_attachment',    array(&$this, 'clean_cache' ));
 			add_action('delete_attachment', array(&$this, 'clean_cache' ));
 
 			if (! is_admin()) {
 				add_shortcode('attachments', array(&$this, 'get_attachments'));
 			}
-		} /* End of plugins_loaded */
+		} /* End of init */
 
 
+		/**
+		 * clean_cache
+		 *
+		 * Clear cache containing lists of attachments per post
+		 *
+		 * @package EG-Attachments
+		 * @param int	$id	(unused) id of post
+		 * @return none
+		 */
 		function clean_cache($id) {
 			wp_cache_delete( 'attachments', 'eg-attachments' );
 		}
-		
+
 		/**
 		  *  icon_dirs() - Add the icon path of the plugin, to the list of paths of WordPress icons
 		  *
@@ -102,7 +99,8 @@ if (! class_exists('EG_Attachments')) {
 		  */
 		function icon_dirs($args) {
 			// If $args is not an array => return directly the value
-			if (!is_array($args)) $new_args = $args ;
+			if (!is_array($args)) 
+				$new_args = $args ;
 			else {
 				// Add the icons path of the current plugin
 				$new_args = array_merge(array($this->plugin_path.'images' => $this->plugin_url.'images'),$args);
@@ -128,13 +126,10 @@ if (! class_exists('EG_Attachments')) {
 			$site_url  = get_bloginfo('siteurl');
 
 			// Parse the site url, to detect if we have only hostname, or hostname/path
-			$url_array = parse_url($site_url);
+			// $url_array = parse_url($site_url);
 
 			// Replace backslashes with slashes in case of windows hosting
 			$abspath   = str_replace('\\','/', ABSPATH);
-
-			// Remove the path part from the ABSPATH
-			//if (isset($url_array['path']) && $url_array['path'] != '') $abspath = str_replace(trailingslashit($url_array['path']), '', $abspath);
 
 			// Get the path of the file
 			$file_path = $abspath.str_replace($site_url, '', $file_url);
@@ -142,11 +137,13 @@ if (! class_exists('EG_Attachments')) {
 			// size calculation
 			$docsize = @filesize($file_path);
 			if ($docsize === FALSE) $docsize = '';
-			else {
+			else $docsize = size_format($docsize, 0);  // WP function found in file wp-includes/functions.php
+/*			else {
 				if ($docsize > 1000000) $docsize = intval($docsize/100000)/10 . __(' MB', $this->text_domain);
 				else if ($docsize > 1000) $docsize = intval($docsize/100)/10 . __(' KB', $this->text_domain);
 				else $docsize = $docsize . __(' bytes', $this->text_domain);
 			}
+*/
 			return ($docsize);
 		} /* End of get_file_size */
 
@@ -183,9 +180,9 @@ if (! class_exists('EG_Attachments')) {
 		  */
 		function get_attachments($attr)  {
 			global $post;
-		
+
 			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
-			
+
 			// Preparing parameters and query
 			$this->eg_attachment_shortcode_defaults['id'] = $post->ID;
 			extract( shortcode_atts( $this->eg_attachment_shortcode_defaults, $attr ));
@@ -198,9 +195,9 @@ if (! class_exists('EG_Attachments')) {
 			// get attachments
 			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
 			if ($attachments===FALSE || !isset($attachments[$id])) {
-				$attachment_list = get_children('post_parent='.$id.'&post_type=attachment&orderby="'.$orderby.'"');
+				$attachment_list  = get_children('post_parent='.$id.'&post_type=attachment&orderby="'.$orderby.'"');
 				if ($attachment_list) {
-					$attachments[$id] = get_children('post_parent='.$id.'&post_type=attachment&orderby="'.$orderby.'"');
+					$attachments[$id] = $attachment_list;
 					wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
 				}
 			}
@@ -241,7 +238,7 @@ if (! class_exists('EG_Attachments')) {
 									 '<dd class="caption"><strong>';
 								if  ($label == 'doctitle') {
 									$output .= __('Title: ', $this->text_domain).'</strong><a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.$attachment_title.'</a> '.$string_file_size.'<br />';
-								} 
+								}
 								else {
 									$output .= __('File: ', $this->text_domain).'</strong><a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.basename($attachment->guid).'</a> '.$string_file_size.'<br />';
 								}
@@ -260,19 +257,20 @@ if (! class_exists('EG_Attachments')) {
 				}
 			}
 			remove_filter('icon_dirs', array(&$this, 'icon_dirs'));
-			
+
 			return $output;
 		} /* --- End of get_attachments -- */
 
 	} /* End of Class */
 } /* End of if class_exists */
 
-$eg_attach = new EG_Attachments('EG-Attachments', '1.1.3',__FILE__);
+$eg_attach = new EG_Attachments('EG-Attachments', '1.1.4', __FILE__);
+
 $eg_attach->set_textdomain('eg-attachments');
 $eg_attach->set_stylesheets('eg-attachments.css', FALSE);
 $eg_attach->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
 $eg_attach->set_wp_versions('2.5',	FALSE, FALSE, FALSE);
 $eg_attach->add_tinymce_button( 'EGAttachments', 'tinymce');
 $eg_attach->active_cache(3600);
-
+$eg_attach->load();
 ?>
