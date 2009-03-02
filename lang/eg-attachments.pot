@@ -1,44 +1,131 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: EG-Attachments 1.0\n"
+"Project-Id-Version: EG-Attachments 1.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2008-12-17 11:00+0100\n"
-"Last-Translator: Emmanuel GEORJON <blog@georjon.eu>\n"
+"PO-Revision-Date: 2009-02-28 13:52+0100\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eg-attachments.php:147
-msgid " MB"
+#: eg-attachments-public.inc.php:118
+msgid "TB"
 msgstr ""
 
-#: eg-attachments.php:148
-msgid " KB"
+#: eg-attachments-public.inc.php:118
+msgid "MB"
 msgstr ""
 
-#: eg-attachments.php:149
-msgid " bytes"
+#: eg-attachments-public.inc.php:118
+msgid "kB"
 msgstr ""
 
-#: eg-attachments.php:221
+#: eg-attachments-public.inc.php:118
+msgid "B"
+msgstr ""
+
+#: eg-attachments-public.inc.php:210
+#: eg-attachments-public.inc.php:222
+#: eg-attachments-public.inc.php:237
 msgid "Size: "
 msgstr ""
 
-#: eg-attachments.php:224
-#: window.php:105
+#: eg-attachments-public.inc.php:213
+#: window.php:227
 msgid "Title: "
 msgstr ""
 
-#: eg-attachments.php:225
-#: eg-attachments.php:237
+#: eg-attachments-public.inc.php:214
+#: eg-attachments-public.inc.php:232
 msgid "Description: "
 msgstr ""
 
-#: eg-attachments.php:226
-#: eg-attachments.php:236
+#: eg-attachments-public.inc.php:215
+#: eg-attachments-public.inc.php:230
 msgid "File: "
+msgstr ""
+
+#: eg-attachments-admin.inc.php:26
+#: eg-attachments-admin.inc.php:60
+msgid "EG-Attachments Options"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:27
+msgid "EG-Attachments"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:69
+msgid "Auto shortcode"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:70
+msgid "Activation"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:71
+msgid "With this option, you can automaticaly add the list of attachments in your blog, without using shortcode"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:71
+msgid "Not activated"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:71
+msgid "At the end"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:73
+msgid "Where"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:73
+msgid "List of attachments can be displayed everywhere posts are displayed, or only when a single post or a single page is displayed"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:73
+msgid "in all pages"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:73
+msgid "Only for posts and pages"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:75
+msgid "Auto Shortcode Options"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:76
+msgid "Title of the list: "
+msgstr ""
+
+#: eg-attachments-admin.inc.php:78
+msgid "Force \"Save As\""
+msgstr ""
+
+#: eg-attachments-admin.inc.php:82
+msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
+msgstr ""
+
+#: eg-attachments-admin.inc.php:83
+msgid "\"Save As\" activation"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:84
+msgid "Force \"Save As\" when users click on the attachments"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:86
+msgid "Save changes"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:87
+msgid "Cancel changes"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:88
+msgid "Reset to defaults"
 msgstr ""
 
 #: window.php:31
@@ -70,43 +157,60 @@ msgid "Descending"
 msgstr ""
 
 #: window.php:71
+#: eg-attachments-admin.inc.php:78
 msgid "List size: "
 msgstr ""
 
+#: eg-attachments-admin.inc.php:78
 #: window.php:74
 msgid "Large"
 msgstr ""
 
+#: eg-attachments-admin.inc.php:78
 #: window.php:75
 msgid "Medium"
 msgstr ""
 
+#: eg-attachments-admin.inc.php:78
 #: window.php:76
 msgid "Small"
 msgstr ""
 
 #: window.php:81
+#: eg-attachments-admin.inc.php:80
 msgid "Document label"
 msgstr ""
 
 #: window.php:84
+#: eg-attachments-admin.inc.php:80
 msgid "File name"
 msgstr ""
 
 #: window.php:85
+#: eg-attachments-admin.inc.php:80
 msgid "Document title"
 msgstr ""
 
 #: window.php:90
-msgid "Document type: "
+#: eg-attachments-admin.inc.php:79
+msgid "Document type"
 msgstr ""
 
 #: window.php:99
 msgid "Document list: "
 msgstr ""
 
+#: window.php:119
+msgid "Insert"
+msgstr ""
+
+#: window.php:115
+msgid "Cancel"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:77
 #: window.php:109
-msgid "Title tag: "
+msgid "HTML Tag for title: "
 msgstr ""
 
 #: eg-plugin.inc.php:382
@@ -121,3 +225,4 @@ msgstr ""
 #: eg-plugin.inc.php:384
 msgid ", or "
 msgstr ""
+

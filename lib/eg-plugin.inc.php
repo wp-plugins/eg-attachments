@@ -103,7 +103,7 @@ if (!class_exists('EG_Plugin_100')) {
 			if ( !defined('WP_PLUGIN_DIR') )
 			    define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 
-			// Sanitize windows path (with backslash)
+			// Sanitize windows path (with backslashes)
 			$wp_plugin_dir = str_replace('\\', '/', WP_PLUGIN_DIR);
 			$abspath       = str_replace('\\', '/', ABSPATH);
 				
@@ -128,6 +128,7 @@ if (!class_exists('EG_Plugin_100')) {
 
 		function load() {
 			add_action('plugins_loaded', array(&$this, 'plugins_loaded'), 0);
+			add_action('init', array( &$this, 'init'));			
 		}
 		
 		/**
@@ -258,11 +259,15 @@ if (!class_exists('EG_Plugin_100')) {
 		function add_page($page_type, $page_title, $menu_title, $access_level, $page_url, $callback) {
 			$index = sizeof($this->pages);
 			$this->pages[$index]->type         = $page_type;
-			$this->pages[$index]->page_title   = $page_title;
-			$this->pages[$index]->menu_title   = $menu_title;
+			$this->pages[$index]->page_title   = __($page_title, $this->textdomain);
+			$this->pages[$index]->menu_title   = __($menu_title, $this->textdomain);
 			$this->pages[$index]->access_level = $access_level;
 			$this->pages[$index]->page_url     = $page_url;
 			$this->pages[$index]->callback     = $callback;
+			
+			if ($page_type == 'options' && !isset($this->option_page_url))
+				$this->option_page_url = $page_url;
+			
 		}
 
 		/**
@@ -328,7 +333,8 @@ if (!class_exists('EG_Plugin_100')) {
 		 * @return	none
 		 */
 		function init() {
-		
+			global $wp_version;
+
 			/* --- Load translations file --- */
 			if (function_exists('load_plugin_textdomain') && $this->textdomain != '') {
 				if (version_compare($wp_version, '2.6', '<')) {
@@ -340,6 +346,19 @@ if (!class_exists('EG_Plugin_100')) {
 				}
 			}
 			$this->widgets_init();
+
+			if (sizeof($this->pages) > 0) {
+				add_action( 'admin_menu', array(&$this, 'add_plugin_pages') );
+				if ($this->option_page_url) {
+					if (version_compare($wp_version, '2.7', '<')) {
+						add_filter('plugin_action_links', array(&$this, 'filter_plugin_actions_before_27'), 10, 2);
+					}
+					else {
+						add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_core_file), 
+									array( &$this, 'filter_plugin_actions_27_and_after') );
+					}
+				}
+			}
 		}
 
 		/**
@@ -356,27 +375,20 @@ if (!class_exists('EG_Plugin_100')) {
 			/* --- Check if WP version is correct --- */
 			$this->check_requirements(TRUE);
 
-			if (is_admin()) {
-				// Register install and uninstall methods
-				// register_activation_hook( plugin_basename($this->plugin_core_file), array(&$this, 'install') );
-
-				if ( function_exists('register_uninstall_hook') ) {
-					register_uninstall_hook ($this->plugin_core_file, array(&$this, 'uninstall') );
-				}
-			}
-
 			/* --- Get Plugin options --- */
 			$this->options = $this->get_option();
 
-			add_action('init', array( &$this, 'init'));
-			
 			if (is_admin()) {
+
+				// Register install and uninstall methods
+				// register_activation_hook( plugin_basename($this->plugin_core_file), array(&$this, 'install') );
+				if ( function_exists('register_uninstall_hook') ) {
+					register_uninstall_hook ($this->plugin_core_file, array(&$this, 'uninstall') );
+				}
+
 				add_action('admin_init',   array( &$this, 'admin_init')   );
 				add_action('admin_header', array( &$this, 'admin_head')   );
 				add_action('admin_footer', array( &$this, 'admin_footer') );
-
-				if (sizeof($this->pages) > 0)
-					add_action( 'admin_menu', array(&$this, 'add_plugin_pages') );
 			}
 			else {
 				add_action('wp_head',   array( &$this, 'head')  );
@@ -457,6 +469,47 @@ if (!class_exists('EG_Plugin_100')) {
 			// Nothing here
 		}
 
+		/**
+		 * Filter_plugin_actions_27_and_after
+		 * Filter dedicated to WP 27 and later versions
+		 *
+		 * Add a "settings" link to access to the option page from the plugin list
+		 *
+		 * @package EG-Plugins
+		 * @param string	$link	list of existings links
+		 * @return none
+		 */
+		function filter_plugin_actions_27_and_after($links) {
+
+			$settings_link = '<a href="options-general.php?page='.$this->option_page_url.'">' . __('Settings') . '</a>';
+			array_unshift( $links, $settings_link );
+			
+			return $links;
+		}
+		
+		/**
+		 * Filter_plugin_actions_27_and_after
+		 * Function for version prior WP 2.7
+		 *
+		 * Add a "settings" link to access to the option page from the plugin list
+		 *
+		 * @package EG-Plugins
+		 * @param string	$link	list of existings links
+		 * @param string	$file	plugin core file path
+		 * @return none
+		 */
+		function filter_plugin_actions_before_27($links, $file){
+			static $this_plugin;
+
+			if ( !$this_plugin ) $this_plugin = plugin_basename($this->plugin_core_file);
+
+			if ( $file == $this_plugin ) {
+				$settings_link = '<a href="options-general.php?page='.$this->option_page_url.'">' . __('Settings') . '</a>';
+				$links = array_merge( array($settings_link), $links); 
+			}
+			return $links;
+		}
+		
 		/**
 		 * register_button()
 		 * Insert button in wordpress post editor
@@ -602,7 +655,11 @@ if (!class_exists('EG_Plugin_100')) {
 								 'tools'   => 'add_management_page');
 
 			// Add a new submenu under Options:
+			$option_page_url = '';
 			foreach ($this->pages as $page) {
+				if ($page->type == 'options') {
+					$option_page_url = $page->page_url;
+				}
 				call_user_func($page_list[$page->type],
 								__($page->page_title, $this->textdomain),
 								__($page->menu_title, $this->textdomain),
@@ -610,6 +667,7 @@ if (!class_exists('EG_Plugin_100')) {
 								$page->page_url,
 								array(&$this, $page->callback));
 			}
+			return ($option_page_url);
 		}
 
 		/**

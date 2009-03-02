@@ -30,11 +30,11 @@ if (isset($_GET['post_id'])) {
 
 	$attachment_string = __('No attachment available for this post', EG_ATTACHMENT_DOMAIN);
 	if ($attachment_list) {
-		$attachment_string = '<select id="doclist" name="doclist" size="5" multiple>';
+		$attachment_string = '<select id="doclist" name="doclist" size="5" multiple><option value="first">'.__('First',EG_ATTACHMENT_DOMAIN).'</option>';
 		foreach ($attachment_list as $key => $attachment) {
-			$attachment_string .= '<option id="doclist" value="'.$attachment->ID.'">'.$attachment->post_title.'</option>';
+			$attachment_string .= '<option value="'.$attachment->ID.'">'.$attachment->post_title.'</option>';
 		}
-		$attachment_string .= '</select>';
+		$attachment_string .= '<option value="last">'.__('Last',EG_ATTACHMENT_DOMAIN).'</option></select>';
 	}
 }
 ?>
@@ -87,7 +87,7 @@ if (isset($_GET['post_id'])) {
 				</td>
 			</tr>
 			<tr>
-				<td><label for="doctype"><?php _e('Document type: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td><label for="doctype"><?php _e('Document type',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td>
 					<select id="doctype" name="doctype">
 						<option value="0">Document</option>
@@ -106,7 +106,7 @@ if (isset($_GET['post_id'])) {
 				<td><input id="title" name="title" type="text" value="" /></td>
 			</tr>
 			<tr>
-				<td><label for="titletag"><?php _e('Title tag: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td><label for="titletag"><?php _e('HTML Tag for title: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td><input id="titletag" name="titletag" type="text" value="h2" /></td>
 			</tr>
 		</table>

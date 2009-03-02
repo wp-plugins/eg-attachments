@@ -4,7 +4,7 @@ Donate link:
 Tags: post, attachment
 Requires at least: 2.5.0
 Tested up to: 2.7.0
-Stable tag: 1.1.4
+Stable tag: 1.2.0
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -12,8 +12,11 @@ This plugin add a shortcode to display the list of attachments of a post, with i
 
 EG-Attachments add a new shortcode attachements. This shortcode can be used with many options.
 But you don't need to know all of these options, because the plugin is "TinyMCE integrated" : from the post editor, just click on the EG-Attachments button, and a window allows you to choose documents to display, title of the list, size of icons ... Nothing to learn.
+This feature is only available since WordPress 2.7 and above.
 
-But you can insert the **shortcode** by hand if you want, or use it in a template using the **do_shortcode** function.
+You can insert the **shortcode** by hand if you want, or use it in a template using the **do_shortcode** function.
+
+An another way is to activate option **auto shortcode** that adds automaticaly lists of attachments at the end of posts or pages.
 
 The list includes for each attachments:
 
@@ -30,6 +33,7 @@ Options are
 * Document list,
 * Title of the list
 * Label of each document
+* Force "Save as" (rather than display document)
 
 == Installation ==
 
@@ -41,6 +45,8 @@ Options are
 
 The plugin is now ready to be used.
 You can also use the WordPress 2.7 features, and install the plugin directly from the WordPress interface.
+
+Then you can go to menu **Settings / EG-Attachments** to set plugin parameters
 
 # Usage #
 
@@ -57,6 +63,9 @@ The shortcode options are:
 * **title:** title to display before the list. Default: '',
 * **titletag:** tag to add before and after the title. Default: h2
 * **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
+* **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
+
+Two specific keywords can be used with **docid** option: **first** and **last** allow to display the first and the last attachment of list. Be careful, **first** or **last** can change according the sort option ! These keywords must be used alone. You can have syntax such as: first,10,11.
 
 **Exemple:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="post_title ASC"]`
 
@@ -84,8 +93,15 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 3. List of attachments, with large icons,
 4. EG-Attachments button in the TinyMCE toolbar,
 5. Insert attachments window.
+6. Opions page in administration interface
 
 == Version history ==
+
+* Version 1.2.0 - Mar 2nd, 2009
+	* Bug fix: Translation of TB, MB, kB, B in french,
+	* New features: 
+		* Add automatically the list of attachments in the post content (optional),
+		* Force the "Save-as" dialog box (optional and experimental)
 
 * Version 1.1.4 - Feb 21th, 2009
 	* Bug fix: plugin didn't work properly with PHP 4
