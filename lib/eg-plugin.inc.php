@@ -376,7 +376,7 @@ if (!class_exists('EG_Plugin_100')) {
 			$this->check_requirements(TRUE);
 
 			/* --- Get Plugin options --- */
-			$this->options = $this->get_option();
+			$this->options = $this->get_plugin_option();
 
 			if (is_admin()) {
 
@@ -543,7 +543,7 @@ if (!class_exists('EG_Plugin_100')) {
 		}
 
 		/**
-		 * get_option
+		 * get_plugin_option
 		 *
 		 * Get the plugin options. If options don't exists, create them. In case of plugin upgrate, update them.
 		 *
@@ -551,7 +551,7 @@ if (!class_exists('EG_Plugin_100')) {
 		 * @param 		none
 		 * @return array	$options	list of the options and values
 		 */
-		function get_option() {
+		function get_plugin_option() {
 			// if option_entry === FALSE, plugin hasn't any options
 			if (! $this->options_entry) {
 				$options = FALSE;
@@ -575,7 +575,7 @@ if (!class_exists('EG_Plugin_100')) {
 						$new_options['version'] = $this->plugin_version;
 						update_option($this->options_entry, $new_options);
 						// $this->options = $new_options;
-						$optios = $new_options;
+						$options = $new_options;
 					}
 				}
 			}
