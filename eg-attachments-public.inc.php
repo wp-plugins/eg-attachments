@@ -15,7 +15,7 @@ if (! class_exists('EG_Attachments')) {
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
 
 		var $eg_attachment_shortcode_defaults = array(
-			'orderby'  		=> 'post_title ASC',
+			'orderby'  		=> 'title ASC',
 			'size'     		=> 'large',
 			'doctype'  		=> 'document',
 			'docid'    		=> 0,
@@ -24,7 +24,7 @@ if (! class_exists('EG_Attachments')) {
 			'label'    		=> 'filename',
 			'force_saveas'	=> -1,
 		);
-		
+
 		/**
 		 * Implement init action
 		 *
@@ -75,7 +75,7 @@ if (! class_exists('EG_Attachments')) {
 		  */
 		function icon_dirs($args) {
 			// If $args is not an array => return directly the value
-			if (!is_array($args)) 
+			if (!is_array($args))
 				$new_args = $args ;
 			else {
 				// Add the icons path of the current plugin
@@ -116,7 +116,7 @@ if (! class_exists('EG_Attachments')) {
 			else {
 				$size_value = split(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
 				$docsize = $size_value[0].' '.__($size_value[1], $this->textdomain);
-			} 
+			}
 
 			return ($docsize);
 		} /* End of get_file_size */
@@ -143,6 +143,17 @@ if (! class_exists('EG_Attachments')) {
 			return ($output);
 		} /* end of get_icon */
 
+
+		function mime_type_cmp_asc($a, $b)
+		{
+			return strcmp($a->post_mime_type, $b->post_mime_type);
+		}
+
+		function mime_type_cmp_desc($a, $b)
+		{
+			return strcmp($b->post_mime_type,$a->post_mime_type);
+		}
+
 		/**
 		  *  get_attachments() - Display the list of attachments
 		  *
@@ -167,19 +178,36 @@ if (! class_exists('EG_Attachments')) {
 				// Take default options
 				$force_saveas = $this->options['force_saveas'];
 			}
-			
+
+			list($order_by, $order) = split(' ', $orderby);
+			if ($order == '') $order = 'ASC';
+
 			// get attachments
 			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
 			if ($attachments===FALSE || !isset($attachments[$id])) {
-				$attachment_list  = get_children('post_parent='.$id.'&post_type=attachment&orderby="'.$orderby.'"');
+				$attachment_list  = get_posts( array('post_parent' => $id,
+											         'post_type'   => 'attachment',
+													 'orderby'     => $order_by,
+													 'order'	   => $order
+													)
+											);
+
 				if ($attachment_list) {
 					$attachments[$id] = $attachment_list;
 					wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
 				}
 			}
+
 			// if no attachments, stop and exit
 			if ($attachments === FALSE || !isset($attachments[$id])) {
 				return '';
+			}
+
+			if ($order_by == 'mime') {
+				if ($order == 'ASC')
+					usort($attachments[$id], array(&$this, 'mime_type_cmp_asc'));
+				else
+					usort($attachments[$id], array(&$this, 'mime_type_cmp_desc'));
 			}
 
 			if ($docid == '0') {
@@ -198,32 +226,32 @@ if (! class_exists('EG_Attachments')) {
 					$doc_list = split(',', $docid);
 				}
 			}
-			
+
 			// Display title
 			$output = '';
 			if ($title != '') $output .= '<'.$titletag.'>'.htmlspecialchars(stripslashes(strip_tags($title))).'</'.$titletag.'>';
 
 			// Display attachment list
-			foreach ( $attachments[$id] as $attach_id => $attachment ) {
-				if (sizeof($doc_list) == 0 || array_search($attach_id, $doc_list) !== FALSE) {
+			foreach ( $attachments[$id] as $attachment ) {
+				if (sizeof($doc_list) == 0 || array_search($attachment->ID, $doc_list) !== FALSE) {
 					$mime_type = substr($attachment->post_mime_type,0,5);
 					if ( ($doctype == 'image' && $mime_type == 'image') ||
 					     ($doctype == 'document' && $mime_type != 'image') ) {
 						$file_size = $this->get_file_size($attachment->guid);
 						$attachment_title = htmlspecialchars(strip_tags($attachment->post_title));
-			
+
 						if ($force_saveas) {
 							$link = '<a target="_blank" title="'.$attachment_title.'" href="'.$this->plugin_url.'eg_attach.php?mime='.$attachment->post_mime_type.'&url='.$attachment->guid.'">';
 						}
 						else {
 							$link = '<a title="'.$attachment_title.'" href="'.$attachment->guid.'">';
 						}
-						
+
 						switch ($size) {
 							case 'large':
 								if ($file_size != '') $string_file_size = '<strong>'.__('Size: ', $this->text_domain).'</strong>'.$file_size;
 								$output .= '<dl class="attachments attachments-large"><dt class="icon">'.
-										   $link.$this->get_icon($attach_id, $attachment, $size).'</a></dt>'.
+										   $link.$this->get_icon($attachment->ID, $attachment, $size).'</a></dt>'.
 									 '<dd class="caption"><strong>'.__('Title: ', $this->text_domain).'</strong>'.$link.$attachment_title.'</a><br />'.
 									 '<strong>'.__('Description: ', $this->text_domain).'</strong>'.$attachment->post_excerpt.'<br />'.
 									 '<strong>'.__('File: ', $this->text_domain).'</strong>'.basename($attachment->guid).'<br />'.
@@ -235,7 +263,7 @@ if (! class_exists('EG_Attachments')) {
 							case 'medium':
 								if ($file_size != '') $string_file_size = '('.$file_size.')';
 								$output .= '<dl class="attachments attachments-medium">'.
-										'<dt class="icon">'.$link.$this->get_icon($attach_id, $attachment, $size).'</a></dt>'.
+										'<dt class="icon">'.$link.$this->get_icon($attachment->ID, $attachment, $size).'</a></dt>'.
 									 '<dd class="caption"><strong>';
 								if  ($label == 'doctitle') {
 									$output .= __('Title: ', $this->text_domain).'</strong>'.$link.$attachment_title.'</a> '.$string_file_size.'<br />';
@@ -250,7 +278,7 @@ if (! class_exists('EG_Attachments')) {
 							case 'small':
 								if ($file_size != '') $string_file_size = '('.$file_size.')';
 								$output .= '<dl class="attachments attachments-small"><dt class="icon">'.
-								           $link.$this->get_icon($attach_id, $attachment, $size).'</a></dt>'.
+								           $link.$this->get_icon($attachment->ID, $attachment, $size).'</a></dt>'.
 										   '<dd class="caption">'.$link.($label=="doctitle"?$attachment_title:basename($attachment->guid)).'</a> '.$string_file_size.'</dd></dl>';
 							break;
 						}
@@ -261,7 +289,7 @@ if (! class_exists('EG_Attachments')) {
 
 			return $output;
 		} /* --- End of get_attachments -- */
-		
+
 		/**
 		 * shortcode_auto
 		 *
@@ -279,8 +307,10 @@ if (! class_exists('EG_Attachments')) {
 									'doctype'  	=> $this->options['shortcode_auto_doc_type'],
 									'title'    	=> $this->options['shortcode_auto_title'],
 									'titletag' 	=> $this->options['shortcode_auto_title_tag'],
-									'label'    	=> $this->options['shortcode_auto_label']
+									'label'    	=> $this->options['shortcode_auto_label'],
+									'orderby'   => $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order']
 						);
+
 					$content .= $this->get_attachments($attrs);
 				}
 			}

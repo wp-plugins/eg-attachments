@@ -79,6 +79,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'select', 'List size: ', 'shortcode_auto_size', '', '', '', '', 'regular', array( 'small' => 'Small', 'medium' => 'Medium', 'large' => 'Large'));
 			$form->add_field($id_section, $id_group, 'select', 'Document type: ', 'shortcode_auto_doc_type', '', '', '', '', 'regular', array( 'document' => 'Documents', 'image' => 'Images', '' => 'All'));
 			$form->add_field($id_section, $id_group, 'select', 'Document label: ', 'shortcode_auto_label', '', '', 'Choose the field that will be displayed as title next icons', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
+			$form->add_field($id_section, $id_group, 'select', 'Order by: ', 'shortcode_auto_orderby', '', '', '', '', 'regular', array( 'ID' => 'ID', '0' => 'Title', 'date' => 'Date', 'mime' => 'Mime type'));
+			$form->add_field($id_section, $id_group, 'select', 'Sort Order: ', 'shortcode_auto_order', '', '', '', '', 'regular', array( 'ASC' => 'Ascending', 'DESC' => 'Descending'));
  
 			$id_section = $form->add_section('Force "Save As"', "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases.");
 			$id_group   = $form->add_group($id_section, '"Save As" activation');

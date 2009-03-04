@@ -4,7 +4,7 @@ Donate link:
 Tags: post, attachment
 Requires at least: 2.5.0
 Tested up to: 2.7.0
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -59,7 +59,7 @@ The shortcode options are:
 * **size:** size of the icon. Values: large, medium or small. Default: large,
 * **doctype:** type of documents to display. Values: image or document. Defaults: document,
 * **docid** list of attachments' id (comma separated) you want to display. Default: nothing to display all attachments,
-* **orderby:** sort option. Values: ID, post_title, and ASC or DESC. Default: `post_title ASC`.
+* **orderby:** sort option. Values: ID, title, date, mime and ASC or DESC. `ASC`is the default sort order. Default: `title ASC`.
 * **title:** title to display before the list. Default: '',
 * **titletag:** tag to add before and after the title. Default: h2
 * **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
@@ -67,9 +67,15 @@ The shortcode options are:
 
 Two specific keywords can be used with **docid** option: **first** and **last** allow to display the first and the last attachment of list. Be careful, **first** or **last** can change according the sort option ! These keywords must be used alone. You can have syntax such as: first,10,11.
 
-**Exemple:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="post_title ASC"]`
+**Exemple 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
+**Exemple 2:** `[attachments size=large title="Documents" titletag=h3 orderby="mime DESC"]`
 
 == Frequently Asked Questions ==
+
+= Could I have some examples of the usage of `orderby` shortcode option? =
+
+* **orderby="mime DESC"** to sort by mime type descending,
+* **orderby=date** to sort by date ascending,
 
 = How can I display attachments by modifying my templates? =
 In your `single.php` file, add the following code: `<?php echo do_shortcode('[attachments *shortcode options*]'); ?>`
@@ -96,6 +102,10 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 6. Opions page in administration interface
 
 == Version history ==
+
+* Version 1.2.1 - Mar 4nd, 2009
+	* Bug fix: sort key and sort order didn't work properly,
+	* New options: Sort key and sort order for the automatic shortcode
 
 * Version 1.2.0 - Mar 2nd, 2009
 	* Bug fix: Translation of TB, MB, kB, B in french,

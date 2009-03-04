@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: EG-Attachments 1.2.0\n"
+"Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-02-28 13:52+0100\n"
+"PO-Revision-Date: 2009-03-04 10:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -74,14 +74,14 @@ msgstr ""
 
 #: eg-attachments-admin.inc.php:71
 msgid "At the end"
-msgstr ""
+msgstr "
 
 #: eg-attachments-admin.inc.php:73
 msgid "Where"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:73
-msgid "List of attachments can be displayed everywhere posts are displayed, or only when a single post or a single page is displayed"
+msgid "Lists of attachments can be displayed everywhere posts are displayed, or only when a single post or a single page is displayed"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:73
@@ -136,18 +136,31 @@ msgstr ""
 msgid "Order by: "
 msgstr ""
 
+#: eg-attachments-admin.inc.php:82
 #: window.php:56
 msgid "Title"
 msgstr ""
 
+#: eg-attachments-admin.inc.php:82
 #: window.php:57
 msgid "ID"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:58
+msgid "Date"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:59
+msgid "Mime type"
 msgstr ""
 
 #: window.php:62
 msgid "Sort Order: "
 msgstr ""
 
+#: eg-attachments-admin.inc.php:83
 #: window.php:65
 msgid "Ascending"
 msgstr ""
@@ -178,7 +191,7 @@ msgstr ""
 
 #: window.php:81
 #: eg-attachments-admin.inc.php:80
-msgid "Document label"
+msgid "Document label: "
 msgstr ""
 
 #: window.php:84
@@ -193,7 +206,7 @@ msgstr ""
 
 #: window.php:90
 #: eg-attachments-admin.inc.php:79
-msgid "Document type"
+msgid "Document type: "
 msgstr ""
 
 #: window.php:99

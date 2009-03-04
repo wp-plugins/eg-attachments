@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-02-28 15:37+0100\n"
+"PO-Revision-Date: 2009-03-04 10:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -102,19 +102,19 @@ msgstr "Titre de la liste: "
 
 #: eg-attachments-admin.inc.php:78
 msgid "Force \"Save As\""
-msgstr "Forcer le \"Sauvegarder sous\""
+msgstr "Forcer le \"T&eacute;l&eacute;chargement\""
 
 #: eg-attachments-admin.inc.php:82
 msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
-msgstr "Habituellement, lorsque l'on clique sur un lien pointant sur une pi&egrave;ce jointe, en fonction du type mime du document, celui-ci est affich&eacute; directement, ou une bo&icirc;te de dialogue appara&icirc;t offrant le choix de sauvegarder le document, ou de lancer une application capable de le lire. En activant cette option, cette bo&icirc;te de dialogue appara&icirc;tra syst&eacute;matiquement."
+msgstr "Habituellement, lorsque l'on clique sur un lien pointant sur une pi&egrave;ce jointe, en fonction du type mime du document, celui-ci est affich&eacute; directement, ou une bo&icirc;te de dialogue appara&icirc;t offrant le choix de t&eacute;l&eacute;charger le document, ou de lancer une application capable de le lire. En activant cette option, cette bo&icirc;te de dialogue appara&icirc;tra syst&eacute;matiquement."
 
 #: eg-attachments-admin.inc.php:83
 msgid "\"Save As\" activation"
-msgstr "Activation de l'option \"Sauvegarder sous\""
+msgstr "Activation de l'option \"T&eacute;l&eacute;chargement\""
 
 #: eg-attachments-admin.inc.php:84
 msgid "Force \"Save As\" when users click on the attachments"
-msgstr "Proposer syst&eacute;matiquement la sauvegarde des documents lorsque les utilisateurs cliquent sur les pi&egrave;ces jointes"
+msgstr "Proposer syst&eacute;matiquement le t&eacute;l&eacute;chargement des documents lorsque les utilisateurs cliquent sur les pi&egrave;ces jointes"
 
 #: eg-attachments-admin.inc.php:86
 msgid "Save changes"
@@ -136,18 +136,31 @@ msgstr "Pas de pi&egrave;ces jointes attach&eacute;es &agrave; cet article."
 msgid "Order by: "
 msgstr "Tri&eacute; par: "
 
+#: eg-attachments-admin.inc.php:82
 #: window.php:56
 msgid "Title"
 msgstr "Titre"
 
+#: eg-attachments-admin.inc.php:82
 #: window.php:57
 msgid "ID"
 msgstr "ID"
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:58
+msgid "Date"
+msgstr "Date"
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:59
+msgid "Mime type"
+msgstr "Type mime"
 
 #: window.php:62
 msgid "Sort Order: "
 msgstr "Ordre de tri: "
 
+#: eg-attachments-admin.inc.php:83
 #: window.php:65
 msgid "Ascending"
 msgstr "Ascendant"

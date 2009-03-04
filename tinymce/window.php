@@ -53,8 +53,10 @@ if (isset($_GET['post_id'])) {
 				<td><label for="orderby"><?php _e('Order by: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td>
 					<select id="orderby" name="orderby">
-						<option value="0"><?php _e('Title', EG_ATTACHMENT_DOMAIN); ?></option>
 						<option value="ID"><?php _e('ID', EG_ATTACHMENT_DOMAIN); ?></option>
+						<option value="0"><?php _e('Title', EG_ATTACHMENT_DOMAIN); ?></option>
+						<option value="date"><?php _e('Date', EG_ATTACHMENT_DOMAIN); ?></option>
+						<option value="mime"><?php _e('Mime type', EG_ATTACHMENT_DOMAIN); ?></option>
 					</select>
 				</td>
 			</tr>
