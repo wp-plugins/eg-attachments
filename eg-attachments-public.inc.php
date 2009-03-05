@@ -185,7 +185,6 @@ if (! class_exists('EG_Attachments')) {
 			// get attachments
 			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
 			if ($attachments===FALSE || !isset($attachments[$id])) {
-<<<<<<< .mine
 				$attachment_list  = get_children( array('post_parent' => $id,
 													'numberposts' => -1,
 													'post_type'   => 'attachment',
@@ -194,15 +193,6 @@ if (! class_exists('EG_Attachments')) {
 												)
 											);
 
-=======
-				$attachment_list  = get_posts( array('post_parent' => $id,
-											         'post_type'   => 'attachment',
-													 'orderby'     => $order_by,
-													 'order'	   => $order
-													)
-											);
-
->>>>>>> .r99697
 				if ($attachment_list) {
 					$attachments[$id] = $attachment_list;
 					wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
