@@ -77,7 +77,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'text', 'Title of the list: ', 'shortcode_auto_title');
 			$form->add_field($id_section, $id_group, 'text', 'HTML Tag for title: ', 'shortcode_auto_title_tag');
 			$form->add_field($id_section, $id_group, 'select', 'List size: ', 'shortcode_auto_size', '', '', '', '', 'regular', array( 'small' => 'Small', 'medium' => 'Medium', 'large' => 'Large'));
-			$form->add_field($id_section, $id_group, 'select', 'Document type: ', 'shortcode_auto_doc_type', '', '', '', '', 'regular', array( 'document' => 'Documents', 'image' => 'Images', '' => 'All'));
+			$form->add_field($id_section, $id_group, 'select', 'Document type: ', 'shortcode_auto_doc_type', '', '', '', '', 'regular', array( 'all' => 'All', 'document' => 'Documents', 'image' => 'Images'));
 			$form->add_field($id_section, $id_group, 'select', 'Document label: ', 'shortcode_auto_label', '', '', 'Choose the field that will be displayed as title next icons', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
 			$form->add_field($id_section, $id_group, 'select', 'Order by: ', 'shortcode_auto_orderby', '', '', '', '', 'regular', array( 'ID' => 'ID', '0' => 'Title', 'date' => 'Date', 'mime' => 'Mime type'));
 			$form->add_field($id_section, $id_group, 'select', 'Sort Order: ', 'shortcode_auto_order', '', '', '', '', 'regular', array( 'ASC' => 'Ascending', 'DESC' => 'Descending'));
@@ -87,8 +87,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'checkbox', 'Force "Save As" when users click on the attachments', 'force_saveas');
 
 			$form->add_button('submit', 'eg_series_options_submit', 'Save changes');
-			$form->add_button('reset', 'eg_series_options_reset', 'Cancel changes');
-			$form->add_button('submit', 'eg_series_options_reset', 'Reset to defaults', 'reset_to_defaults');
+			$form->add_button('reset',  'eg_series_options_reset',  'Cancel changes');
+			$form->add_button('submit', 'eg_series_options_reset',  'Reset to defaults', 'reset_to_defaults');
 	
 		}
 

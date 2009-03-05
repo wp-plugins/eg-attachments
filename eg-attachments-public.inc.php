@@ -185,6 +185,16 @@ if (! class_exists('EG_Attachments')) {
 			// get attachments
 			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
 			if ($attachments===FALSE || !isset($attachments[$id])) {
+<<<<<<< .mine
+				$attachment_list  = get_children( array('post_parent' => $id,
+													'numberposts' => -1,
+													'post_type'   => 'attachment',
+													'orderby'     => $order_by,
+													'order'	   => $order
+												)
+											);
+
+=======
 				$attachment_list  = get_posts( array('post_parent' => $id,
 											         'post_type'   => 'attachment',
 													 'orderby'     => $order_by,
@@ -192,6 +202,7 @@ if (! class_exists('EG_Attachments')) {
 													)
 											);
 
+>>>>>>> .r99697
 				if ($attachment_list) {
 					$attachments[$id] = $attachment_list;
 					wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
@@ -235,7 +246,8 @@ if (! class_exists('EG_Attachments')) {
 			foreach ( $attachments[$id] as $attachment ) {
 				if (sizeof($doc_list) == 0 || array_search($attachment->ID, $doc_list) !== FALSE) {
 					$mime_type = substr($attachment->post_mime_type,0,5);
-					if ( ($doctype == 'image' && $mime_type == 'image') ||
+					if ( $doctype == 'all' ||
+					     ($doctype == 'image' && $mime_type == 'image') ||
 					     ($doctype == 'document' && $mime_type != 'image') ) {
 						$file_size = $this->get_file_size($attachment->guid);
 						$attachment_title = htmlspecialchars(strip_tags($attachment->post_title));
