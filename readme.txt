@@ -4,7 +4,7 @@ Donate link:
 Tags: post, attachment
 Requires at least: 2.5.0
 Tested up to: 2.7.0
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -102,6 +102,9 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 6. Opions page in administration interface
 
 == Version history ==
+
+* Version 1.2.3 - Mar 5th, 2009
+	* Bug fix: Mistake during SVN transfer from my PC to the wordpress repository
 
 * Version 1.2.2 - Mar 5th, 2009
 	* Bug fix: bad behavior with doctype
