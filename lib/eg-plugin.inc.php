@@ -106,14 +106,13 @@ if (!class_exists('EG_Plugin_100')) {
 			// Sanitize windows path (with backslashes)
 			$wp_plugin_dir = str_replace('\\', '/', WP_PLUGIN_DIR);
 			$abspath       = str_replace('\\', '/', ABSPATH);
-				
+
 			/* Define the plugin path */
 			$plugin_base_path		= basename( dirname($core_file) );
 			$this->plugin_path 		= trailingslashit($wp_plugin_dir.'/'.$plugin_base_path);
 			$this->plugin_url  		= trailingslashit(WP_PLUGIN_URL.'/'.$plugin_base_path);
 			$this->plugin_core_file = $this->plugin_path.basename($core_file);
 			$this->plugin_lang_path = str_replace($abspath, '', $wp_plugin_dir).'/'.$plugin_base_path.'/lang';
-	
 		}
 
 		/**
@@ -128,9 +127,9 @@ if (!class_exists('EG_Plugin_100')) {
 
 		function load() {
 			add_action('plugins_loaded', array(&$this, 'plugins_loaded'), 0);
-			add_action('init', array( &$this, 'init'));			
+			add_action('init', array( &$this, 'init'));
 		}
-		
+
 		/**
 		 * set_owner
 		 *
@@ -264,10 +263,9 @@ if (!class_exists('EG_Plugin_100')) {
 			$this->pages[$index]->access_level = $access_level;
 			$this->pages[$index]->page_url     = $page_url;
 			$this->pages[$index]->callback     = $callback;
-			
+
 			if ($page_type == 'options' && !isset($this->option_page_url))
 				$this->option_page_url = $page_url;
-			
 		}
 
 		/**
@@ -354,7 +352,7 @@ if (!class_exists('EG_Plugin_100')) {
 						add_filter('plugin_action_links', array(&$this, 'filter_plugin_actions_before_27'), 10, 2);
 					}
 					else {
-						add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_core_file), 
+						add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_core_file),
 									array( &$this, 'filter_plugin_actions_27_and_after') );
 					}
 				}
@@ -409,7 +407,7 @@ if (!class_exists('EG_Plugin_100')) {
 
 			if (isset($this->options['load_css'])) $load_css = $this->options['load_css'];
 			else $load_css = 1;
-	
+
 			$string = '';
 
 			if ($this->stylesheet != '' && $load_css) {
@@ -483,10 +481,10 @@ if (!class_exists('EG_Plugin_100')) {
 
 			$settings_link = '<a href="options-general.php?page='.$this->option_page_url.'">' . __('Settings') . '</a>';
 			array_unshift( $links, $settings_link );
-			
+
 			return $links;
 		}
-		
+
 		/**
 		 * Filter_plugin_actions_27_and_after
 		 * Function for version prior WP 2.7
@@ -505,11 +503,11 @@ if (!class_exists('EG_Plugin_100')) {
 
 			if ( $file == $this_plugin ) {
 				$settings_link = '<a href="options-general.php?page='.$this->option_page_url.'">' . __('Settings') . '</a>';
-				$links = array_merge( array($settings_link), $links); 
+				$links = array_merge( array($settings_link), $links);
 			}
 			return $links;
 		}
-		
+
 		/**
 		 * register_button()
 		 * Insert button in wordpress post editor
@@ -605,7 +603,8 @@ if (!class_exists('EG_Plugin_100')) {
 						$value = version_compare($wpmu_version, $this->wpmu_version_min, '>=');
 						if ($this->wpmu_version_max) $value = $value && version_compare($wpmu_version, $this->wpmu_version_max, '<=');
 					}
-				} else {
+				}
+				else {
 					$value = version_compare($wp_version, $this->wp_version_min, '>=');
 					if ($this->wp_version_max) $value = $value && version_compare($wp_version, $this->wp_version_max, '<=');
 				}
@@ -649,10 +648,30 @@ if (!class_exists('EG_Plugin_100')) {
 		  * @return 		none
 		 */
 		function add_plugin_pages() {
+			global $wp_version;
 
-			$page_list = array ( 'posts'   => 'add_posts_page',
-								 'options' => 'add_options_page',
-								 'tools'   => 'add_management_page');
+			if (version_compare($wp_version, '2.7', '<')) {
+				$page_list = array ( 'posts'	=> 'add_management_page',
+								 'options'	=> 'add_options_page',
+								 'settings'	=> 'add_options_page',
+								 'tools'	=> 'add_options_page',
+								 'theme'	=> 'add_theme_page',
+								 'users'	=> 'add_users_page',
+								 'media'	=> 'add_management_page',
+								 'links'	=> 'add_management_page',
+								 'pages'	=> 'add_management_page');
+			}
+			else {
+				$page_list = array ( 'posts'	=> 'add_posts_page',
+								 'options'	=> 'add_options_page',
+								 'settings'	=> 'add_options_page',
+								 'tools'	=> 'add_management_page',
+								 'theme'	=> 'add_theme_page',
+								 'users'	=> 'add_users_page',
+								 'media'	=> 'add_media_page',
+								 'links'	=> 'add_links_page',
+								 'pages'	=> 'add_pages_page');
+			}
 
 			// Add a new submenu under Options:
 			$option_page_url = '';

@@ -19,8 +19,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			parent::plugins_loaded();
 
-			$this->add_form();
-
 			// Add plugin options page
 			$this->add_page('options', 					/* page type: post, page, option, tool 	*/
 							'EG-Attachments Options',	/* Page title 							*/
@@ -49,7 +47,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 			// Clear cache when adding or delete attachment
 			add_action('add_attachment',    array(&$this, 'clean_cache' ));
 			add_action('delete_attachment', array(&$this, 'clean_cache' ));
-			
+
 		} /* End of init */
 
 		/**
@@ -64,12 +62,12 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function add_form() {
 
-			$this->options_form = new EG_Forms('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.$this->plugin_author_email);
+			$this->options_form = new EG_Forms_100('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.$this->plugin_author_email);
 			$form = & $this->options_form;
-			
+
 			$id_section = $form->add_section('Auto shortcode');
 			$id_group   = $form->add_group($id_section, 'Activation');
-			$form->add_field($id_section, $id_group, 'select', 'Activation', 'shortcode_auto', '', '', 'With this option, you can automaticaly add the list of attachments in your blog, without using shortcode', '', 'regular', array( 0 => 'Not activated', 2 => 'At the end')); 
+			$form->add_field($id_section, $id_group, 'select', 'Activation', 'shortcode_auto', '', '', 'With this option, you can automaticaly add the list of attachments in your blog, without using shortcode', '', 'regular', array( 0 => 'Not activated', 2 => 'At the end'));
 
 			$id_group   = $form->add_group($id_section, 'Where');
 			$form->add_field($id_section, $id_group, 'select', 'Where', 'shortcode_auto_where', '', '', 'Lists of attachments can be displayed everywhere posts are displayed, or only when a single post or a single page is displayed', '', 'regular', array( 'all' => 'in all pages', 'post' => 'Only for posts and pages'));
@@ -78,10 +76,11 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'text', 'HTML Tag for title: ', 'shortcode_auto_title_tag');
 			$form->add_field($id_section, $id_group, 'select', 'List size: ', 'shortcode_auto_size', '', '', '', '', 'regular', array( 'small' => 'Small', 'medium' => 'Medium', 'large' => 'Large'));
 			$form->add_field($id_section, $id_group, 'select', 'Document type: ', 'shortcode_auto_doc_type', '', '', '', '', 'regular', array( 'all' => 'All', 'document' => 'Documents', 'image' => 'Images'));
-			$form->add_field($id_section, $id_group, 'select', 'Document label: ', 'shortcode_auto_label', '', '', 'Choose the field that will be displayed as title next icons', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
+			$form->add_field($id_section, $id_group, 'select', 'Document label: ', 'shortcode_auto_label', '', '', 'Choose the field that will be displayed as title of documents', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
 			$form->add_field($id_section, $id_group, 'select', 'Order by: ', 'shortcode_auto_orderby', '', '', '', '', 'regular', array( 'ID' => 'ID', '0' => 'Title', 'date' => 'Date', 'mime' => 'Mime type'));
 			$form->add_field($id_section, $id_group, 'select', 'Sort Order: ', 'shortcode_auto_order', '', '', '', '', 'regular', array( 'ASC' => 'Ascending', 'DESC' => 'Descending'));
- 
+			$form->add_field($id_section, $id_group, 'checkbox', 'Fields: ', 'shortcode_auto_fields', 'Which fields do you want to display (large and medium size only)?', '', '', '', 'regular', array( 'caption' => 'Caption', 'description' => 'Description'));
+
 			$id_section = $form->add_section('Force "Save As"', "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases.");
 			$id_group   = $form->add_group($id_section, '"Save As" activation');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Force "Save As" when users click on the attachments', 'force_saveas');
@@ -89,8 +88,23 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_button('submit', 'eg_series_options_submit', 'Save changes');
 			$form->add_button('reset',  'eg_series_options_reset',  'Cancel changes');
 			$form->add_button('submit', 'eg_series_options_reset',  'Reset to defaults', 'reset_to_defaults');
-	
+
 		}
+
+		/**
+		 * reset_to_defaults
+		 *
+		 * Reset options to defaults
+		 *
+		 * @param 	none
+		 * @return 	none
+		 */
+		function reset_to_defaults() {
+			global $EG_ATTACH_DEFAULT_OPTIONS;
+
+			$this->options = $EG_ATTACH_DEFAULT_OPTIONS;
+			update_option($this->options_entry, $this->options);
+		} /* End of reset_to_defaults */
 
 		/**
 		 * options_page
@@ -102,6 +116,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function options_page() {
 			global $EG_ATTACH_DEFAULT_OPTIONS;
+
+			$this->add_form();
 
 			$results = $this->options_form->get_form_values($this->options, $EG_ATTACH_DEFAULT_OPTIONS, $this->options_entry);
 			if ($results) {

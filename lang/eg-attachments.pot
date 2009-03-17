@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-03-04 10:49+0100\n"
+"PO-Revision-Date: 2009-03-17 21:00+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -39,6 +39,10 @@ msgstr ""
 
 #: eg-attachments-public.inc.php:214
 #: eg-attachments-public.inc.php:232
+msgid "Caption: "
+msgstr ""
+
+#: eg-attachments-public.inc.php:266
 msgid "Description: "
 msgstr ""
 
@@ -74,7 +78,7 @@ msgstr ""
 
 #: eg-attachments-admin.inc.php:71
 msgid "At the end"
-msgstr "
+msgstr ""
 
 #: eg-attachments-admin.inc.php:73
 msgid "Where"
@@ -104,8 +108,20 @@ msgstr ""
 msgid "Force \"Save As\""
 msgstr ""
 
-#: eg-attachments-admin.inc.php:82
+#: eg-attachments-admin.inc.php:84
 msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
+msgstr ""
+
+#: eg-attachments-admin.inc.php:82
+msgid "Which fields do you want to display (large and medium size only)?"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:82
+msgid "Caption"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:82
+msgid "Description"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:83
@@ -213,6 +229,10 @@ msgstr ""
 msgid "Document list: "
 msgstr ""
 
+#: window.php:
+msgid "Fields: "
+msgstr ""
+
 #: window.php:119
 msgid "Insert"
 msgstr ""
@@ -237,5 +257,22 @@ msgstr ""
 
 #: eg-plugin.inc.php:384
 msgid ", or "
+msgstr ""
+
+#: window.php:
+msgid "First"
+msgstr ""
+
+#: window.php:
+msgid "Last"
+msgstr ""
+
+#: window.php:
+#: eg-attachments-admin.inc.php:
+msgid "All"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Choose the field that will be displayed as title of documents"
 msgstr ""
 

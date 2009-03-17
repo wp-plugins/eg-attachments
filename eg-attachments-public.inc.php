@@ -13,6 +13,7 @@ if (! class_exists('EG_Attachments')) {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
+		var $wp_before_260;
 
 		var $eg_attachment_shortcode_defaults = array(
 			'orderby'  		=> 'title ASC',
@@ -23,6 +24,7 @@ if (! class_exists('EG_Attachments')) {
 			'titletag' 		=> 'h2',
 			'label'    		=> 'filename',
 			'force_saveas'	=> -1,
+			'fields'		=> 'caption'
 		);
 
 		/**
@@ -42,7 +44,10 @@ if (! class_exists('EG_Attachments')) {
 			add_action('add_attachment',    array(&$this, 'clean_cache' ));
 			add_action('delete_attachment', array(&$this, 'clean_cache' ));
 
+			$this->wp_before_260 = version_compare($wp_version, '2.6', '<');
+
 			if (! is_admin()) {
+
 				add_shortcode('attachments', array(&$this, 'get_attachments'));
 				if ($this->options['shortcode_auto']>0) {
 					add_filter('the_content', array(&$this, 'shortcode_auto'));
@@ -91,7 +96,7 @@ if (! class_exists('EG_Attachments')) {
 		  *
 		  * @package EG-Attachments
 		  * @param 	string	$file_url	url of attachment
-		  * @return	float 		size of the attachment
+		  * @return	float 				size of the attachment
 		  */
 		function get_file_size($file_url) {
 
@@ -125,9 +130,9 @@ if (! class_exists('EG_Attachments')) {
 		  *  get_icon() - Get the thumbnail of the atttachment
 		  *
 		  * @package EG-Attachments
-		  * @param int 	$id			attachment id
-		  * @param object $attachment 	the attachment metadata
-		  * @param string $size 			size of the thumbnail (small, medium or large)
+		  * @param int 		$id				attachment id
+		  * @param object 	$attachment 	the attachment metadata
+		  * @param string 	$size 			size of the thumbnail (small, medium or large)
 		  * @return string html entities IMG
 		  */
 		function get_icon($id, $attachment, $size) {
@@ -160,11 +165,11 @@ if (! class_exists('EG_Attachments')) {
 		  * {@internal Missing Long Description}
 		  *
 		  * @package EG-Attachments
-		  * @param array $attr shortcode attributs list
-		  * @return string List of attachments (dl / dt /dd liste)
+		  * @param 	array 	$attr 	shortcode attributs list
+		  * @return string 			List of attachments (dl / dt /dd liste)
 		  */
 		function get_attachments($attr)  {
-			global $post;
+			global $post, $wp_version;
 
 			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
@@ -180,16 +185,20 @@ if (! class_exists('EG_Attachments')) {
 			}
 
 			list($order_by, $order) = split(' ', $orderby);
+			if ($this->wp_before_260)
+				$order_by = 'post_'.$order_by;
+
 			if ($order == '') $order = 'ASC';
 
 			// get attachments
 			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
-			if ($attachments===FALSE || !isset($attachments[$id])) {
+			if ($attachments === FALSE || !isset($attachments[$id])) {
+
 				$attachment_list  = get_children( array('post_parent' => $id,
-													'numberposts' => -1,
-													'post_type'   => 'attachment',
-													'orderby'     => $order_by,
-													'order'	   => $order
+													'numberposts'	=> -1,
+													'post_type'		=> 'attachment',
+													'orderby'		=> $order_by,
+													'order'			=> $order
 												)
 											);
 
@@ -230,15 +239,14 @@ if (! class_exists('EG_Attachments')) {
 
 			// Display title
 			$output = '';
-			if ($title != '') $output .= '<'.$titletag.'>'.htmlspecialchars(stripslashes(strip_tags($title))).'</'.$titletag.'>';
 
 			// Display attachment list
 			foreach ( $attachments[$id] as $attachment ) {
 				if (sizeof($doc_list) == 0 || array_search($attachment->ID, $doc_list) !== FALSE) {
 					$mime_type = substr($attachment->post_mime_type,0,5);
 					if ( $doctype == 'all' ||
-					     ($doctype == 'image' && $mime_type == 'image') ||
-					     ($doctype == 'document' && $mime_type != 'image') ) {
+					    ($doctype == 'image' && $mime_type == 'image') ||
+					    ($doctype == 'document' && $mime_type != 'image') ) {
 						$file_size = $this->get_file_size($attachment->guid);
 						$attachment_title = htmlspecialchars(strip_tags($attachment->post_title));
 
@@ -251,12 +259,13 @@ if (! class_exists('EG_Attachments')) {
 
 						switch ($size) {
 							case 'large':
-								if ($file_size != '') $string_file_size = '<strong>'.__('Size: ', $this->text_domain).'</strong>'.$file_size;
+								if ($file_size != '') $string_file_size = '<strong>'.__('Size: ', $this->textdomain).'</strong>'.$file_size;
 								$output .= '<dl class="attachments attachments-large"><dt class="icon">'.
 										   $link.$this->get_icon($attachment->ID, $attachment, $size).'</a></dt>'.
-									 '<dd class="caption"><strong>'.__('Title: ', $this->text_domain).'</strong>'.$link.$attachment_title.'</a><br />'.
-									 '<strong>'.__('Description: ', $this->text_domain).'</strong>'.$attachment->post_excerpt.'<br />'.
-									 '<strong>'.__('File: ', $this->text_domain).'</strong>'.basename($attachment->guid).'<br />'.
+									 '<dd class="caption"><strong>'.__('Title: ', $this->textdomain).'</strong>'.$link.$attachment_title.'</a><br />'.
+									(($attachment->post_excerpt==''||strpos($fields,'caption')===FALSE)?'':'<strong>'.__('Caption: ', $this->textdomain).'</strong>'.$attachment->post_excerpt.'<br />').
+									(($attachment->post_content==''||strpos($fields,'description')===FALSE)?'':'<strong>'.__('Description: ', $this->textdomain).'</strong>'.$attachment->post_content.'<br />').
+									'<strong>'.__('File: ', $this->textdomain).'</strong>'.basename($attachment->guid).'<br />'.
 									$string_file_size.
 									'</dd>'.
 									 '</dl>';
@@ -268,13 +277,13 @@ if (! class_exists('EG_Attachments')) {
 										'<dt class="icon">'.$link.$this->get_icon($attachment->ID, $attachment, $size).'</a></dt>'.
 									 '<dd class="caption"><strong>';
 								if  ($label == 'doctitle') {
-									$output .= __('Title: ', $this->text_domain).'</strong>'.$link.$attachment_title.'</a> '.$string_file_size.'<br />';
+									$output .= __('Title: ', $this->textdomain).'</strong>'.$link.$attachment_title.'</a> '.$string_file_size.'<br />';
 								}
 								else {
-									$output .= __('File: ', $this->text_domain).'</strong><a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.basename($attachment->guid).'</a> '.$string_file_size.'<br />';
+									$output .= __('File: ', $this->textdomain).'</strong><a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.basename($attachment->guid).'</a> '.$string_file_size.'<br />';
 								}
-								$output .= '<strong>'.__('Description: ', $this->text_domain).'</strong>'.$attachment->post_excerpt.'</dd>'.
-									 '</dl>';
+								$output .= (($attachment->post_excerpt==''||strpos($fields,'caption')===FALSE)?'':'<strong>'.__('Caption: ', $this->textdomain).'</strong>'.$attachment->post_excerpt).
+								$output .= '</dd></dl>';
 							break;
 
 							case 'small':
@@ -287,6 +296,10 @@ if (! class_exists('EG_Attachments')) {
 					}
 				}
 			}
+			if ($output != '' && $title != '') {
+				$output = '<'.$titletag.'>'.htmlspecialchars(stripslashes(strip_tags($title))).'</'.$titletag.'>'.$output;
+			}
+
 			remove_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
 			return $output;
@@ -305,12 +318,15 @@ if (! class_exists('EG_Attachments')) {
 			if ($this->options['shortcode_auto'] > 0) {
 				$display = ($this->options['shortcode_auto_where'] != 'post' || is_single() || is_page()) ;
 				if ($display) {
+					$fields = implode(',', $this->options['shortcode_auto_fields']);
+					if ($fields == '') $fields = 'none';
 					$attrs = array( 'size'		=> $this->options['shortcode_auto_size'],
 									'doctype'  	=> $this->options['shortcode_auto_doc_type'],
 									'title'    	=> $this->options['shortcode_auto_title'],
 									'titletag' 	=> $this->options['shortcode_auto_title_tag'],
 									'label'    	=> $this->options['shortcode_auto_label'],
-									'orderby'   => $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order']
+									'orderby'   => $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order'],
+									'fields'	=> $fields
 						);
 
 					$content .= $this->get_attachments($attrs);

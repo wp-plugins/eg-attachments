@@ -4,7 +4,7 @@ Donate link:
 Tags: post, attachment
 Requires at least: 2.5.0
 Tested up to: 2.7.0
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -33,6 +33,7 @@ Options are
 * Document list,
 * Title of the list
 * Label of each document
+* Description field to display (caption and/or description)
 * Force "Save as" (rather than display document)
 
 == Installation ==
@@ -63,6 +64,7 @@ The shortcode options are:
 * **title:** title to display before the list. Default: '',
 * **titletag:** tag to add before and after the title. Default: h2
 * **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
+* **fields**, list of fields to display. Values: none, caption, description, or a set of values such as "caption,description" (comma separated). Default: caption (same behavior than previous version)
 * **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
 
 Two specific keywords can be used with **docid** option: **first** and **last** allow to display the first and the last attachment of list. Be careful, **first** or **last** can change according the sort option ! These keywords must be used alone. You can have syntax such as: first,10,11.
@@ -102,6 +104,13 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 6. Opions page in administration interface
 
 == Version history ==
+
+* Version 1.2.4 - Mar 17th, 2009
+	* Bug fix: don't display title when list of attachments is empty (auto shortcode function)
+	* Bug fix: Error when displaying options page
+	* Big fix: translation to french not complete
+	* New option: field choice (caption and/or caption)
+	* Others changes: update internal library
 
 * Version 1.2.3 - Mar 5th, 2009
 	* Bug fix: Mistake during SVN transfer from my PC to the wordpress repository

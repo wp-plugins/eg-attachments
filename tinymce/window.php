@@ -50,18 +50,18 @@ if (isset($_GET['post_id'])) {
 	<form name="EGAttachments" action="#">
 		<table border="0">
 			<tr>
-				<td><label for="orderby"><?php _e('Order by: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td valign="top"><label for="orderby"><?php _e('Order by: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td>
 					<select id="orderby" name="orderby">
 						<option value="ID"><?php _e('ID', EG_ATTACHMENT_DOMAIN); ?></option>
-						<option value="0"><?php _e('Title', EG_ATTACHMENT_DOMAIN); ?></option>
+						<option value="0" selected ><?php _e('Title', EG_ATTACHMENT_DOMAIN); ?></option>
 						<option value="date"><?php _e('Date', EG_ATTACHMENT_DOMAIN); ?></option>
 						<option value="mime"><?php _e('Mime type', EG_ATTACHMENT_DOMAIN); ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td><label for="sortorder"><?php _e('Sort Order: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td valign="top"><label for="sortorder"><?php _e('Sort Order: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td>
 					<select id="sortorder" name="sortorder">
 						<option value="0"><?php _e('Ascending', EG_ATTACHMENT_DOMAIN); ?></option>
@@ -70,7 +70,7 @@ if (isset($_GET['post_id'])) {
 				</td>
 			</tr>
 			<tr>
-				<td><label for="listsize"><?php _e('List size: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td valign="top"><label for="listsize"><?php _e('List size: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td>
 					<select id="listsize" name="listsize">
 						<option value="0"><?php _e('Large', EG_ATTACHMENT_DOMAIN); ?></option>
@@ -80,7 +80,7 @@ if (isset($_GET['post_id'])) {
 				</td>
 			</tr>
 			<tr>
-				<td><label for="doclabel"><?php _e('Document label',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td valign="top"><label for="doclabel"><?php _e('Document label',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td>
 					<select id="doclabel" name="doclabel">
 						<option value="0"><?php _e('File name', EG_ATTACHMENT_DOMAIN); ?></option>
@@ -89,12 +89,20 @@ if (isset($_GET['post_id'])) {
 				</td>
 			</tr>
 			<tr>
-				<td><label for="doctype"><?php _e('Document type',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td valign="top"><label for="doctype"><?php _e('Document type',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td>
 					<select id="doctype" name="doctype">
-						<option value="0">Document</option>
-						<option value="image">Image</option>
+						<option value="all"><?php _e('All',EG_ATTACHMENT_DOMAIN); ?></option>
+						<option value="0" selected ><?php _e('Document',EG_ATTACHMENT_DOMAIN); ?></option>
+						<option value="image"><?php _e('Image',EG_ATTACHMENT_DOMAIN); ?></option>
 					</select>
+				</td>
+			</tr>
+			<tr>
+				<td valign="top"><?php _e('Fields: ',EG_ATTACHMENT_DOMAIN); ?></td>
+				<td>
+					<input type="checkbox" id="field_caption" checked /><?php _e('Caption',EG_ATTACHMENT_DOMAIN); ?><br />
+					<input type="checkbox" id="field_description" /><?php _e('Description',EG_ATTACHMENT_DOMAIN); ?>
 				</td>
 			</tr>
 			<tr>
@@ -104,11 +112,11 @@ if (isset($_GET['post_id'])) {
 				</td>
 			</tr>
 			<tr>
-				<td><label for="title"><?php _e('Title: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td valign="top"><label for="title"><?php _e('Title: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td><input id="title" name="title" type="text" value="" /></td>
 			</tr>
 			<tr>
-				<td><label for="titletag"><?php _e('HTML Tag for title: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
+				<td valign="top"><label for="titletag"><?php _e('HTML Tag for title: ',EG_ATTACHMENT_DOMAIN); ?></label></td>
 				<td><input id="titletag" name="titletag" type="text" value="h2" /></td>
 			</tr>
 		</table>

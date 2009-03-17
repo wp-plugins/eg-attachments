@@ -22,8 +22,9 @@ function insertEGAttachmentsShortCode() {
 	var doctype = document.getElementById('doctype').value;
 	if (doctype != 0 )
 		tagtext = tagtext + " doctype=" + doctype;
+
 	var doclist = document.getElementById('doclist').options;
-	id_list = ""
+	id_list = "";
 	if ( doclist.length > 0 ) {
 		for (var i=0; i<doclist.length; i++) {
 			if (doclist[i].selected) {
@@ -33,7 +34,20 @@ function insertEGAttachmentsShortCode() {
 		}		
 	}
 	tagtext = tagtext + id_list;
+
+	var field_list = '';
+	var field_caption = document.getElementById('field_caption');
+	if (field_caption.checked) field_list = 'caption';
 	
+	var field_description = document.getElementById('field_description');
+	if (field_description.checked) field_list = field_list  + ',description';
+
+	if (field_list == '') field_list = 'none';
+	if (field_list == 'caption') field_list = '';
+	
+	if (field_list != '')
+		tagtext = tagtext + ' fields=' + field_list;
+
 	var title = document.getElementById('title').value;
 	if (title != 0 )
 		tagtext = tagtext + " title=\"" + title + "\"";

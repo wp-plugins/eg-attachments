@@ -26,9 +26,9 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Forms')) {
+if (!class_exists('EG_Forms_100')) {
 
-	Class EG_Forms {
+	Class EG_Forms_100 {
 
 		var $sections = array();
 		var $fields   = array();
@@ -51,7 +51,7 @@ if (!class_exists('EG_Forms')) {
 		 * @param	string	$author_address	author email or URL (must include mailto: or http:
 		 * @return 	none
 		 */
-		function EG_Forms($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address) {
+		function EG_Forms_100($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address) {
 			register_shutdown_function(array(&$this, "__destruct"));
 			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address);
 		}
@@ -197,18 +197,18 @@ if (!class_exists('EG_Forms')) {
 		 *
 		 * @package EG-Forms
 		 *
-		 * @param	string	$section_id	id of the section within we have to add the field
+		 * @param	string	$section_id		id of the section within we have to add the field
 		 * @param 	string	$group_id		id of the group within we have to add the field
-		 * @param 	string	$type		text, select, checkbox, radio
-		 * @param	string	$label		label of the field
+		 * @param 	string	$type			text, select, checkbox, radio
+		 * @param	string	$label			label of the field
 		 * @param	string	$text_before	text to display before the field
-		 * @param	string	$text_after	text to display after the field
+		 * @param	string	$text_after		text to display after the field
 		 * @param	string	$description	description of the field
 		 * @param	string	$option_name	id of the field (must be same name than option entry we want to modify)
-		 * @param	string	$status		disabled for example
+		 * @param	string	$status			disabled for example
 		 * @param	string	$size			small, regular or large
-		 * @param	array		$values		list of values to use (for select and radio only)
-		 * @return 	string				id of the field
+		 * @param	array	$values			list of values to use (for select and radio only)
+		 * @return 	string					id of the field
 		 */
 		function add_field($section_id,
 							$group_id,
@@ -258,7 +258,7 @@ if (!class_exists('EG_Forms')) {
 			$this->buttons[$index]->callback = 'submit';
 			if ($callback != 'submit' &&
 				is_callable(array(&$this, $callback)) &&
-				method_exists(& $this, $callback) ) $this->buttons[$index]->callback = $callback;
+				method_exists($this, $callback) ) $this->buttons[$index]->callback = $callback;
 		}
 
 		/**
@@ -326,7 +326,12 @@ if (!class_exists('EG_Forms')) {
 					foreach ($this->fields as $key => $field) {
 						if (isset($options[$key])) {
 							if (isset($_POST[$key])) {
-								$new_options[$key] = attribute_escape($_POST[$key]);
+								if (!is_array($_POST[$key])) {
+									$new_options[$key] = attribute_escape($_POST[$key]);
+								}
+								else {
+									$new_options[$key] = (array)$_POST[$key];
+								}
 							}
 							elseif ($field->type == 'checkbox') {
 								$new_options[$key] = 0;
@@ -367,47 +372,57 @@ if (!class_exists('EG_Forms')) {
 				$string = ($group?'<li>':'');
 				switch ($field->type) {
 					case 'text':
+					case 'password':
 						if ($field->text_before!= '' || $field->text_after != '') {
 							$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain):'').
-								__($field->before, $this->textdomain).
-								'<input type="text" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'" value="'.$default_values[$option_name].'" '.$field->status.'/> '.
-								__($field->text_after, $this->textdomain).
+								($field->text_before== ''?'':__($field->text_before, $this->textdomain)).
+								'<input type="'.$field->type.'" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'" value="'.$default_values[$option_name].'" '.$field->status.'/> '.
+								($field->text_after== ''?'':__($field->text_after, $this->textdomain)).
 								($group?'</label>':'');
 						} else {
 							$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain).'</label>':'').
-								'<input type="text" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'"/ value="'.$default_values[$option_name].'" '.$field->status.'/> ';
+								'<input type="'.$field->type.'" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'"/ value="'.$default_values[$option_name].'" '.$field->status.'/> ';
 						}
 					break;
 
 					case 'checkbox':
 						if (! is_array($field->values)) {
 							$string .= ($group?'<label for="'.$option_name.'">':'').
+									($field->text_before== ''?'':__($field->text_before, $this->textdomain)).
 									'<input type="checkbox" name="'.$option_name.'" id="'.$option_name.'" value="1" '.($default_values[$option_name]==1?'checked':'').' '.$field->status.' /> '.
 									__($field->label, $this->textdomain).
+									($field->text_after== ''?'':__($field->text_after, $this->textdomain)).
 									($group?'</label>':'');
 						}
 						else {
-							$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend>';
+							$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend>'.
+										($field->text_before== ''?'':__($field->text_before, $this->textdomain).'<br />');
 							foreach ($field->values as $key => $value) {
-								$checked = ($default_values[$option_name]==1?'checked':'');
-								$string .= ($group?'<label for="'.$option_name.'">':'').
-									'<input type="checckbox" name="'.$option_name.'" id="'.$option_name.'" value="'.$key.'" '.$checked.' '.$field->status.'/> '.
+								if (!is_array($default_values[$option_name])) {
+									$checked = ($key === $default_values[$option_name]?'checked':'');
+								}
+								else {
+									$checked = (in_array($key, $default_values[$option_name])===FALSE?'':'checked');
+								}
+								$string .= ($group?'<label for="'.$option_name.'['.$key.']">':'').
+									'<input type="checkbox" name="'.$option_name.'['.$key.']" id="'.$option_name.'['.$key.']" value="'.$key.'" '.$checked.' '.$field->status.' /> '.
 									__($value, $this->textdomain).
 									($group?'</label>':'').
 									'<br />';
 							}
-							$string .= '</fieldset>';
+							$string .= ($field->text_after== ''?'':__($field->text_after, $this->textdomain)).'</fieldset>';
 						}
 					break;
 
 					case 'select':
 						$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain):'').
+									($field->text_before== ''?'':__($field->text_before, $this->textdomain)).
 								  '<select name="'.$option_name.'" id="'.$option_name.'" >';
 						foreach ($field->values as $key => $value) {
 							$selected = ($default_values[$option_name]==$key?'selected':'');
 							$string .= '<option value="'.$key.'" '.$selected.'>'.__($value, $this->textdomain).'</option>';
 						}
-						$string .= '</select>'.($group?'</label>':'');
+						$string .= '</select>'.($field->text_after== ''?'':__($field->text_after, $this->textdomain)).($group?'</label>':'');
 					break;
 
 					case 'radio':
@@ -421,6 +436,28 @@ if (!class_exists('EG_Forms')) {
 								'<br />';
 						}
 						$string .= '</fieldset>';
+					break;
+
+					case 'grid select':
+						$grid_default_values = $default_values[$option_name];
+						$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend><table border="0"><thead><tr>';
+						foreach ($field->values['header'] as $item) {
+							$string .= '<th>'.__($item, $this->textdomain).'</th>';
+						}
+						$string .= '</tr></thead><tbody>';
+						foreach ($field->values['list'] as $item) {
+							$string .= '<tr><td>'.
+								'<input type="text" value="'.$item['value'].'" disabled /></td><td>'.
+								($group?'<label for="'.$option_name.'['.$item['value'].']">':'').
+								'<select name="'.$option_name.'['.$item['value'].']" id="'.$option_name.'['.$item['value'].']" >';
+							foreach ($item['select'] as $key => $value) {
+								if ($key == $grid_default_values[$item['value']]) $selected = 'selected';
+								else $selected = '';
+								$string .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
+							}
+							$string .=	'</select>'.($group?'</label>':'').'</td></tr>';
+						}
+						$string .= '</tbody></table></fieldset>';
 					break;
 				}
 				// Adding description

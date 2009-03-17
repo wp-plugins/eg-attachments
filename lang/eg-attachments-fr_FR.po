@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-03-04 10:49+0100\n"
+"PO-Revision-Date: 2009-03-17 21:00+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -39,6 +39,10 @@ msgstr "Titre: "
 
 #: eg-attachments-public.inc.php:214
 #: eg-attachments-public.inc.php:232
+msgid "Caption: "
+msgstr "L&eacute;gende: "
+
+#: eg-attachments-public.inc.php:266
 msgid "Description: "
 msgstr "Description: "
 
@@ -104,9 +108,21 @@ msgstr "Titre de la liste: "
 msgid "Force \"Save As\""
 msgstr "Forcer le \"T&eacute;l&eacute;chargement\""
 
-#: eg-attachments-admin.inc.php:82
+#: eg-attachments-admin.inc.php:84
 msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
 msgstr "Habituellement, lorsque l'on clique sur un lien pointant sur une pi&egrave;ce jointe, en fonction du type mime du document, celui-ci est affich&eacute; directement, ou une bo&icirc;te de dialogue appara&icirc;t offrant le choix de t&eacute;l&eacute;charger le document, ou de lancer une application capable de le lire. En activant cette option, cette bo&icirc;te de dialogue appara&icirc;tra syst&eacute;matiquement."
+
+#: eg-attachments-admin.inc.php:82
+msgid "Which fields do you want to display (large and medium size only)?"
+msgstr "Quels champs souhaitez-vous afficher (applicable pour les tailles grandes ou moyennes seulement)?"
+
+#: eg-attachments-admin.inc.php:82
+msgid "Caption"
+msgstr "L&eacute;gende"
+
+#: eg-attachments-admin.inc.php:82
+msgid "Description"
+msgstr "Description"
 
 #: eg-attachments-admin.inc.php:83
 msgid "\"Save As\" activation"
@@ -192,7 +208,7 @@ msgstr "Petite"
 #: window.php:81
 #: eg-attachments-admin.inc.php:80
 msgid "Document label: "
-msgstr "Label des documents"
+msgstr "Label des documents: "
 
 #: window.php:84
 #: eg-attachments-admin.inc.php:80
@@ -207,11 +223,15 @@ msgstr "Titre du document"
 #: window.php:90
 #: eg-attachments-admin.inc.php:79
 msgid "Document type: "
-msgstr "Type de document"
+msgstr "Type de document: "
 
 #: window.php:99
 msgid "Document list: "
 msgstr "Liste des documents: "
+
+#: window.php:
+msgid "Fields: "
+msgstr "Champs: "
 
 #: window.php:119
 msgid "Insert"
@@ -238,4 +258,21 @@ msgstr " &agrave; "
 #: eg-plugin.inc.php:384
 msgid ", or "
 msgstr ", ou "
+
+#: window.php:
+msgid "First"
+msgstr "Premier"
+
+#: window.php:
+msgid "Last"
+msgstr "Dernier"
+
+#: window.php:
+#: eg-attachments-admin.inc.php:
+msgid "All"
+msgstr "Tous"
+
+#: eg-attachments-admin.inc.php:
+msgid "Choose the field that will be displayed as title of documents"
+msgstr "Choisissez le champ qui sera affich&eacute; comme titre des documents"
 
