@@ -318,8 +318,12 @@ if (! class_exists('EG_Attachments')) {
 			if ($this->options['shortcode_auto'] > 0) {
 				$display = ($this->options['shortcode_auto_where'] != 'post' || is_single() || is_page()) ;
 				if ($display) {
-					$fields = implode(',', $this->options['shortcode_auto_fields']);
+					if (!is_array($this->options['shortcode_auto_fields']) || 
+						sizeof($this->options['shortcode_auto_fields'])==0) $fields='';
+					else $fields = implode(',', $this->options['shortcode_auto_fields']);
+
 					if ($fields == '') $fields = 'none';
+
 					$attrs = array( 'size'		=> $this->options['shortcode_auto_size'],
 									'doctype'  	=> $this->options['shortcode_auto_doc_type'],
 									'title'    	=> $this->options['shortcode_auto_title'],
