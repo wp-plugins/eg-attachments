@@ -11,7 +11,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_100 {
+	Class EG_Attachments_Admin extends EG_Plugin_101 {
 
 
 		function plugins_loaded() {

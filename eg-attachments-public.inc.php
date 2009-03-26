@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_100 {
+	Class EG_Attachments extends EG_Plugin_101 {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
@@ -201,7 +201,6 @@ if (! class_exists('EG_Attachments')) {
 													'order'			=> $order
 												)
 											);
-
 				if ($attachment_list) {
 					$attachments[$id] = $attachment_list;
 					wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
@@ -282,7 +281,7 @@ if (! class_exists('EG_Attachments')) {
 								else {
 									$output .= __('File: ', $this->textdomain).'</strong><a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.basename($attachment->guid).'</a> '.$string_file_size.'<br />';
 								}
-								$output .= (($attachment->post_excerpt==''||strpos($fields,'caption')===FALSE)?'':'<strong>'.__('Caption: ', $this->textdomain).'</strong>'.$attachment->post_excerpt).
+								$output .= (($attachment->post_excerpt==''||strpos($fields,'caption')===FALSE)?'':'<strong>'.__('Caption: ', $this->textdomain).'</strong>'.$attachment->post_excerpt);
 								$output .= '</dd></dl>';
 							break;
 
