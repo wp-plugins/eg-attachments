@@ -3,7 +3,7 @@
 Plugin Name: EG-Plugin
 Plugin URI:
 Description: Framework for plugin development
-Version: 1.0.0
+Version: 1.0.1
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
