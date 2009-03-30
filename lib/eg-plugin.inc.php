@@ -3,7 +3,7 @@
 Plugin Name: EG-Plugin
 Plugin URI:
 Description: Framework for plugin development
-Version: 1.0.0
+Version: 1.0.1
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -62,6 +62,7 @@ if (!class_exists('EG_Plugin_101')) {
 		var $wp_version_max;
 		var $wpmu_version_min;
 		var $wpmu_version_max;
+		var $php_version_min;
 
 		var $pages;
 
@@ -227,6 +228,20 @@ if (!class_exists('EG_Plugin_101')) {
 			$this->wp_version_max	= $wp_version_max;
 			$this->wpmu_version_min	= $wpmu_version_min;
 			$this->wpmu_version_max	= $wpmu_version_max;
+		}
+
+		/**
+		 * set_php_version
+		 *
+		 * Set compliance parameters with WordPress and WordPress MU
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param	string	$min_version		minimum version for PHP
+		 * @return 	none
+		 */
+		function set_php_version($version_min) {
+			$this->php_version_min = $version_min;
 		}
 
 		/**
@@ -550,13 +565,13 @@ if (!class_exists('EG_Plugin_101')) {
 		 * @return array	$options	list of the options and values
 		 */
 		function get_plugin_option($options_entry=FALSE, $default_options=FALSE) {
-		
+
 			if ($options_entry===FALSE)
 				$options_entry = $this->options_entry;
-	
+
 			if ($default_options===FALSE)
-				$default_options = $this->default_options;			
-	
+				$default_options = $this->default_options;
+
 			// if option_entry === FALSE, plugin hasn't any options
 			if (! $options_entry) {
 				$options = FALSE;
@@ -588,46 +603,102 @@ if (!class_exists('EG_Plugin_101')) {
 		}
 
 		/**
+		  * display_requirements_msg
+		  *
+		  * Display requirements
+		  *
+		  * @package 	EG-Plugins
+		  * @param 		string	name of the software (for example: WP, WP MU, PHP, MySQL)
+		  * @param	 	int		version minimum
+		  * @param 		int 	version maximum
+		  * @return		none
+		  */
+		function display_requirements_msg($soft, $min, $max=FALSE) {
+			$string = '<strong>'.$this->plugin_name.'</strong>';
+			if (! $min) {
+				$string .= __(' cannot run with ', $this->textdomain).$soft.'.';
+			}
+			else {
+				$string .= __(' requires ', $this->textdomain).
+			          $soft.' '.$min.(!$max?__(' and later.', $this->textdomain):'').
+					  ($max?__(' to ', $this->textdomain).$max:'').'.';
+			}
+			// Display the message
+			add_action('admin_notices',
+					create_function('', 'echo \'<div id="message" class="error fade"><p>'.$string.'</p></div>\';'));
+		}
+
+		/**
+		 * check_php_requirements
+		 *
+		 * Check PHP version required to run the plugin
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param boolean	display_msg		display error message or not
+		 * @return boolean					TRUE if required PHP versio, FALSE if not
+		 */
+		function check_php_requirements($display_msg=TRUE) {
+			$value = TRUE;
+			if (isset($this->php_version_min) && version_compare(phpversion(), $this->php_version_min, '<')) {
+				$value = FALSE;
+				if ($display_msg) $this->display_requirements_msg('PHP', $this->php_version_min);
+			}
+			return ($value);
+		} /* End of check_php_requirements */
+
+		/**
+		 * check_wp_requirements
+		 *
+		 * Check WordPress version required to run the plugin
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param boolean	display_msg		display error message or not
+		 * @return boolean					TRUE if required WordPress version, FALSE if not
+		 */
+		function check_wp_requirements($display_msg=TRUE) {
+			global $wp_version, $wpmu_version;
+
+			// Are we using WP MU ?
+			$is_wpmu = (isset($wpmu_version) || (strpos($wp_version, 'wordpress-mu') !== FALSE));
+
+			$value = FALSE;
+			if ($is_wpmu) {
+				if ($this->wpmu_version_min) {
+					$value = version_compare($wpmu_version, $this->wpmu_version_min, '>=');
+					if ($this->wpmu_version_max) $value = $value && version_compare($wpmu_version, $this->wpmu_version_max, '<=');
+				}
+			}
+			else {
+				$value = version_compare($wp_version, $this->wp_version_min, '>=');
+				if ($this->wp_version_max) $value = $value && version_compare($wp_version, $this->wp_version_max, '<=');
+			}
+
+			// if $value isn't empty, we have a message to display
+			if ($display_msg && !$value) {
+				if ($is_wpmu)
+					$this->display_requirements_msg('WordPress MU', $this->wpmu_version_min, $this->wpmu_version_max);
+				else
+					$this->display_requirements_msg('WordPress', $this->wp_version_min, $this->wp_version_max);
+			}
+			return ($value);
+		}
+
+		/**
 		  * Check_requirements
 		  *
 		  * Check if the wordpress version meets the plugin requirements.
 		  *
 		  * @package EG-Plugins
 		  * @param 		none
-		  * @return 		none
+		  * @return 	none
 		  */
-		function check_requirements($display_msg) {
-			global $wp_version, $wpmu_version;
-
+		function check_requirements($display_msg=TRUE) {
 			$value = TRUE;
-			if ($display_msg && is_admin() && strpos($_SERVER['REQUEST_URI'], 'plugins.php')) {
-				// Are we using WP MU ?
-				$is_wpmu = (isset($wpmu_version) || (strpos($wp_version, 'wordpress-mu') !== false));
-
-				$value = FALSE;
-				if ($is_wpmu) {
-					if ($this->wpmu_version_min) {
-						$value = version_compare($wpmu_version, $this->wpmu_version_min, '>=');
-						if ($this->wpmu_version_max) $value = $value && version_compare($wpmu_version, $this->wpmu_version_max, '<=');
-					}
-				}
-				else {
-					$value = version_compare($wp_version, $this->wp_version_min, '>=');
-					if ($this->wp_version_max) $value = $value && version_compare($wp_version, $this->wp_version_max, '<=');
-				}
-
-				// if $value isn't empty, we have a message to display
-				if (!$value) {
-					// Build the message
-					$string = '<strong>'.$this->plugin_name.'</strong>'.__(' requires ', $this->textdomain). 'WordPress '.$this->wp_version_min;
-					if ($this->wp_version_max)   $string .= __(' to ',  $this->textdomain).$this->wp_version_max;
-					if ($this->wpmu_version_min) $string .= __(', or ', $this->textdomain).'WordPress MU '.$this->wpmu_version_min;
-					if ($this->wpmu_version_max) $string .= __(' to ',  $this->textdomain).$this->wpmu_version_max;
-
-					// Display the message
-					add_action('admin_notices',
-							create_function('', 'echo \'<div id="message" class="error fade"><p>'.$string.'</p></div>\';'));
-				}
+			if (is_admin() && strpos($_SERVER['REQUEST_URI'], 'plugins.php')!==FALSE) {
+				$value = $this->check_wp_requirements($display_msg);
+				$value = $value && $this->check_php_requirements($display_msg);
 			}
 			return ($value);
 		}

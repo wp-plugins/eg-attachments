@@ -298,6 +298,9 @@ if (! class_exists('EG_Attachments')) {
 			if ($output != '' && $title != '') {
 				$output = '<'.$titletag.'>'.htmlspecialchars(stripslashes(strip_tags($title))).'</'.$titletag.'>'.$output;
 			}
+			if ($output != '') {
+				$output = '<div class="attachments">'.$output.'</div>';
+			}
 
 			remove_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
@@ -345,7 +348,7 @@ $eg_attach = new EG_Attachments('EG-Attachments', EG_ATTACH_VERSION, EG_ATTACH_C
 $eg_attach->set_textdomain('eg-attachments');
 $eg_attach->set_stylesheets('eg-attachments.css', FALSE);
 $eg_attach->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
-$eg_attach->set_wp_versions('2.5',	FALSE, FALSE, FALSE);
+$eg_attach->set_wp_versions('2.5',	FALSE, '2.6', FALSE);
 $eg_attach->set_options(EG_ATTACH_OPTIONS_ENTRY, $EG_ATTACH_DEFAULT_OPTIONS);
 $eg_attach->active_cache(3600);
 $eg_attach->load();

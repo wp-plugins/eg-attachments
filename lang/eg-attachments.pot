@@ -247,6 +247,10 @@ msgid "HTML Tag for title: "
 msgstr ""
 
 #: eg-plugin.inc.php:382
+msgid " cannot run with "
+msgstr ""
+
+#: eg-plugin.inc.php:382
 msgid " requires "
 msgstr ""
 
@@ -256,7 +260,7 @@ msgid " to "
 msgstr ""
 
 #: eg-plugin.inc.php:384
-msgid ", or "
+msgid " and later."
 msgstr ""
 
 #: window.php:

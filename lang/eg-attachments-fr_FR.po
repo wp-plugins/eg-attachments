@@ -247,6 +247,10 @@ msgid "HTML Tag for title: "
 msgstr "Balise HTML pour le titre: "
 
 #: eg-plugin.inc.php:382
+msgid " cannot run with "
+msgstr " ne fonctionne pas avec "
+
+#: eg-plugin.inc.php:382
 msgid " requires "
 msgstr " n&eacute;cessite "
 
@@ -256,8 +260,8 @@ msgid " to "
 msgstr " &agrave; "
 
 #: eg-plugin.inc.php:384
-msgid ", or "
-msgstr ", ou "
+msgid " and later."
+msgstr " et sup&eacute;rieur."
 
 #: window.php:
 msgid "First"

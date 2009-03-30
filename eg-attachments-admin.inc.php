@@ -147,7 +147,7 @@ $eg_attach_admin = new EG_Attachments_Admin('EG-Attachments', EG_ATTACH_VERSION 
 
 $eg_attach_admin->set_textdomain('eg-attachments');
 $eg_attach_admin->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
-$eg_attach_admin->set_wp_versions('2.5',	FALSE, FALSE, FALSE);
+$eg_attach_admin->set_wp_versions('2.5', FALSE, '2.6', FALSE);
 $eg_attach_admin->set_options(EG_ATTACH_OPTIONS_ENTRY, $EG_ATTACH_DEFAULT_OPTIONS);
 $eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce');
 $eg_attach_admin->active_cache(3600);
