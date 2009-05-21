@@ -11,7 +11,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_101 {
+	Class EG_Attachments_Admin extends EG_Plugin_102 {
 
 
 		function plugins_loaded() {
@@ -72,18 +72,19 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$id_group   = $form->add_group($id_section, 'Where');
 			$form->add_field($id_section, $id_group, 'select', 'Where', 'shortcode_auto_where', '', '', 'Lists of attachments can be displayed everywhere posts are displayed, or only when a single post or a single page is displayed', '', 'regular', array( 'all' => 'in all pages', 'post' => 'Only for posts and pages'));
 			$id_group   = $form->add_group($id_section, 'Auto Shortcode Options');
-			$form->add_field($id_section, $id_group, 'text', 'Title of the list: ', 'shortcode_auto_title');
+			$form->add_field($id_section, $id_group, 'text', 'Title of the list: ',  'shortcode_auto_title');
 			$form->add_field($id_section, $id_group, 'text', 'HTML Tag for title: ', 'shortcode_auto_title_tag');
-			$form->add_field($id_section, $id_group, 'select', 'List size: ', 'shortcode_auto_size', '', '', '', '', 'regular', array( 'small' => 'Small', 'medium' => 'Medium', 'large' => 'Large'));
-			$form->add_field($id_section, $id_group, 'select', 'Document type: ', 'shortcode_auto_doc_type', '', '', '', '', 'regular', array( 'all' => 'All', 'document' => 'Documents', 'image' => 'Images'));
-			$form->add_field($id_section, $id_group, 'select', 'Document label: ', 'shortcode_auto_label', '', '', 'Choose the field that will be displayed as title of documents', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
-			$form->add_field($id_section, $id_group, 'select', 'Order by: ', 'shortcode_auto_orderby', '', '', '', '', 'regular', array( 'ID' => 'ID', '0' => 'Title', 'date' => 'Date', 'mime' => 'Mime type'));
-			$form->add_field($id_section, $id_group, 'select', 'Sort Order: ', 'shortcode_auto_order', '', '', '', '', 'regular', array( 'ASC' => 'Ascending', 'DESC' => 'Descending'));
-			$form->add_field($id_section, $id_group, 'checkbox', 'Fields: ', 'shortcode_auto_fields', 'Which fields do you want to display (large and medium size only)?', '', '', '', 'regular', array( 'caption' => 'Caption', 'description' => 'Description'));
+			$form->add_field($id_section, $id_group, 'select', 'List size: ',        'shortcode_auto_size',     '', '', '', '', 'regular', array( 'small' => 'Small', 'medium' => 'Medium', 'large' => 'Large'));
+			$form->add_field($id_section, $id_group, 'select', 'Document type: ',    'shortcode_auto_doc_type', '', '', '', '', 'regular', array( 'all' => 'All', 'document' => 'Documents', 'image' => 'Images'));
+			$form->add_field($id_section, $id_group, 'select', 'Document label: ',   'shortcode_auto_label',    '', '', 'Choose the field that will be displayed as title of documents', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
+			$form->add_field($id_section, $id_group, 'select', 'Order by: ',         'shortcode_auto_orderby',  '', '', '', '', 'regular', array( 'ID' => 'ID', '0' => 'Title', 'date' => 'Date', 'mime' => 'Mime type'));
+			$form->add_field($id_section, $id_group, 'select', 'Sort Order: ',       'shortcode_auto_order',    '', '', '', '', 'regular', array( 'ASC' => 'Ascending', 'DESC' => 'Descending'));
+			$form->add_field($id_section, $id_group, 'checkbox', 'Fields: ',         'shortcode_auto_fields',   'Which fields do you want to display (large and medium size only)?', '', '', '', 'regular', array( 'caption' => 'Caption', 'description' => 'Description'));
+			$form->add_field($id_section, $id_group, 'checkbox', 'Check the box to display icons',  'shortcode_auto_icon', 'Display icons: ', '', '', '', 'regular');
 
 			$id_section = $form->add_section('Force "Save As"', "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases.");
 			$id_group   = $form->add_group($id_section, '"Save As" activation');
-			$form->add_field($id_section, $id_group, 'checkbox', 'Force "Save As" when users click on the attachments', 'force_saveas');
+			$form->add_field($id_section, $id_group, 'checkbox', 'Force "Save As" when users click on the attachments', 'shortcode_auto_force_saveas');
 
 			$form->add_button('submit', 'eg_series_options_submit', 'Save changes');
 			$form->add_button('reset',  'eg_series_options_reset',  'Cancel changes');

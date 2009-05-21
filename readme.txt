@@ -4,7 +4,7 @@ Donate link:
 Tags: post, attachment
 Requires at least: 2.5.0
 Tested up to: 2.7.0
-Stable tag: 1.2.7
+Stable tag: 1.2.8
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -69,7 +69,7 @@ The shortcode options are:
 * **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
 * **fields**, list of fields to display. Values: none, caption, description, or a set of values such as "caption,description" (comma separated). Default: caption (same behavior than previous version)
 * **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
-
+* **icon** specify if icons will be displayed or not. Default value: 1 or TRUE. If value is 0 or FALSE, list displayed will be ul/li (html simple list) rather than dl/dt/dd (definition list).
 Two specific keywords can be used with **docid** option: **first** and **last** allow to display the first and the last attachment of list. Be careful, **first** or **last** can change according the sort option ! These keywords must be used alone. You can have syntax such as: first,10,11.
 
 **Exemple 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
@@ -107,6 +107,10 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 6. Opions page in administration interface
 
 == Version history ==
+
+* Version 1.2.8 - May 16th, 2009
+	* New option: option to display icons or not
+	* Other changes: internal change of libraries
 
 * Version 1.2.7 - Mar 30th, 2009
 	* Bug fix: Requirements warning message with Wordpress Mu
