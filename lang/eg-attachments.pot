@@ -280,3 +280,14 @@ msgstr ""
 msgid "Choose the field that will be displayed as title of documents"
 msgstr ""
 
+#: eg-attachments-admin.inc.php:89
+msgid "Uninstall options"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Be careful: these actions cannot be cancelled. All plugin's options will be deleted while plugin uninstallation."
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Delete options during uninstallation."
+msgstr ""

@@ -3,7 +3,7 @@
 Plugin Name: EG-Attachments
 Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 1.2.8
+Version: 1.2.9b
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -27,7 +27,7 @@ Author URI: http://www.emmanuelgeorjon.com/
 */
 
 define('EG_ATTACH_COREFILE', 	  __FILE__);
-define('EG_ATTACH_VERSION', 	  '1.2.8');
+define('EG_ATTACH_VERSION', 	  '1.2.9');
 define('EG_ATTACH_OPTIONS_ENTRY', 'EG-Attachments-Options');
 
 $EG_ATTACH_DEFAULT_OPTIONS = array(
@@ -42,7 +42,8 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'shortcode_auto_label'		  => 'filename',
 	'shortcode_auto_fields'		  => 'caption',
 	'shortcode_auto_force_saveas' => 0,
-	'shortcode_auto_icon'		  => 1
+	'shortcode_auto_icon'		  => 1,
+	'uninstall_del_option'		  => 0
 );
 
 require_once('lib/eg-plugin.inc.php');

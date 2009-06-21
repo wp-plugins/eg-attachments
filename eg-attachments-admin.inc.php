@@ -62,7 +62,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function add_form() {
 
-			$this->options_form = new EG_Forms_100('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.$this->plugin_author_email);
+			$this->options_form = new EG_Forms_102('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.$this->plugin_author_email);
 			$form = & $this->options_form;
 
 			$id_section = $form->add_section('Auto shortcode');
@@ -85,6 +85,10 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$id_section = $form->add_section('Force "Save As"', "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases.");
 			$id_group   = $form->add_group($id_section, '"Save As" activation');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Force "Save As" when users click on the attachments', 'shortcode_auto_force_saveas');
+			
+			$id_section = $form->add_section('Uninstall options', '', 'Be careful: these actions cannot be cancelled. All plugin\'s options will be deleted while plugin uninstallation.');
+			$id_group   = $form->add_group($id_section, 'Options');
+			$form->add_field($id_section, $id_group, 'checkbox', 'Delete options during uninstallation.', 'uninstall_del_option');
 
 			$form->add_button('submit', 'eg_series_options_submit', 'Save changes');
 			$form->add_button('reset',  'eg_series_options_reset',  'Cancel changes');

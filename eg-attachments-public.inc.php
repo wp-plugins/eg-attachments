@@ -172,6 +172,11 @@ if (! class_exists('EG_Attachments')) {
 		function get_attachments($attr)  {
 			global $post, $wp_version;
 
+			if (function_exists('hidepost_filter_post'))
+				global $hidepost_hide_link;
+			else
+				$hidepost_hide_link = 0;
+
 			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
 			// Preparing parameters and query
@@ -262,20 +267,28 @@ if (! class_exists('EG_Attachments')) {
 								if ($file_size != '') $string_file_size = '<strong>'.__('Size: ', $this->textdomain).'</strong>'.$file_size;
 								if ($icon) {
 									$output .= '<dl class="attachments attachments-large"><dt class="icon">'.
-											   $link.$this->get_icon($attachment->ID, $attachment, $size).'</a></dt>'.
-										 '<dd class="caption"><strong>'.__('Title: ', $this->textdomain).'</strong>'.$link.$attachment_title.'</a><br />'.
-										(($attachment->post_excerpt==''||strpos($fields,'caption')===FALSE)?'':'<strong>'.__('Caption: ', $this->textdomain).'</strong>'.$attachment->post_excerpt.'<br />').
-										(($attachment->post_content==''||strpos($fields,'description')===FALSE)?'':'<strong>'.__('Description: ', $this->textdomain).'</strong>'.$attachment->post_content.'<br />').
+										($hidepost_hide_link==1?'':$link).$this->get_icon($attachment->ID, $attachment, $size).
+										($hidepost_hide_link==1?'':'</a>').'</dt>'.
+										'<dd class="caption"><strong>'.
+										__('Title: ', $this->textdomain).'</strong>'.$link.$attachment_title.
+										'</a><br />'.
+										(($attachment->post_excerpt==''||strpos($fields,'caption')===FALSE)?'':'<strong>'.
+										__('Caption: ', $this->textdomain).'</strong>'.$attachment->post_excerpt.'<br />').
+										(($attachment->post_content==''||strpos($fields,'description')===FALSE)?'':'<strong>'.
+										__('Description: ', $this->textdomain).'</strong>'.$attachment->post_content.'<br />').
 										'<strong>'.__('File: ', $this->textdomain).'</strong>'.basename($attachment->guid).'<br />'.
 										$string_file_size.
 										'</dd>'.
-										 '</dl>';
+										'</dl>';
 								}
 								else {
 									$output .= '<li class="attachments attachments-large">'.
-										'<strong>'.__('Title: ', $this->textdomain).'</strong>'.$link.$attachment_title.'</a><br />'.
-										(($attachment->post_excerpt==''||strpos($fields,'caption')===FALSE)?'':'<strong>'.__('Caption: ', $this->textdomain).'</strong>'.$attachment->post_excerpt.'<br />').
-										(($attachment->post_content==''||strpos($fields,'description')===FALSE)?'':'<strong>'.__('Description: ', $this->textdomain).'</strong>'.$attachment->post_content.'<br />').
+										'<strong>'.__('Title: ', $this->textdomain).'</strong>'.
+										$link.$attachment_title.'</a><br />'.
+										(($attachment->post_excerpt==''||strpos($fields,'caption')===FALSE)?'':'<strong>'.
+										__('Caption: ', $this->textdomain).'</strong>'.$attachment->post_excerpt.'<br />').
+										(($attachment->post_content==''||strpos($fields,'description')===FALSE)?'':'<strong>'.
+										__('Description: ', $this->textdomain).'</strong>'.$attachment->post_content.'<br />').
 										'<strong>'.__('File: ', $this->textdomain).'</strong>'.basename($attachment->guid).'<br />'.
 										$string_file_size.
 										'</li>';
@@ -286,10 +299,14 @@ if (! class_exists('EG_Attachments')) {
 								if ($file_size != '') $string_file_size = '('.$file_size.')';
 								if ($icon) {
 									$output .= '<dl class="attachments attachments-medium">'.
-											'<dt class="icon">'.$link.$this->get_icon($attachment->ID, $attachment, $size).'</a></dt>'.
-										 '<dd class="caption"><strong>';
+										'<dt class="icon">'.($hidepost_hide_link==1?'':$link).
+										$this->get_icon($attachment->ID, $attachment, $size).($hidepost_hide_link==1?'':'</a>').
+										'</dt>'.
+										'<dd class="caption"><strong>';
 									if  ($label == 'doctitle') {
-										$output .= __('Title: ', $this->textdomain).'</strong>'.$link.$attachment_title.'</a> '.$string_file_size.'<br />';
+										$output .= __('Title: ', $this->textdomain).'</strong>'.
+											$link.$attachment_title.'</a> '.
+											$string_file_size.'<br />';
 									}
 									else {
 										$output .= __('File: ', $this->textdomain).'</strong><a href="'.$attachment->guid.'" title="'.$attachment_title.'">'.basename($attachment->guid).'</a> '.$string_file_size.'<br />';
@@ -314,8 +331,16 @@ if (! class_exists('EG_Attachments')) {
 								if ($file_size != '') $string_file_size = '('.$file_size.')';
 								if ($icon) {
 									$output .= '<dl class="attachments attachments-small"><dt class="icon">'.
-								           $link.$this->get_icon($attachment->ID, $attachment, $size).'</a></dt>'.
-										   '<dd class="caption">'.$link.($label=="doctitle"?$attachment_title:basename($attachment->guid)).'</a> '.$string_file_size.'</dd></dl>';
+								        ($hidepost_hide_link==1?'':$link).
+										$this->get_icon($attachment->ID, $attachment, $size).
+										($hidepost_hide_link==1?'':'</a>').
+										'</dt>'.
+										'<dd class="caption">'.
+										$link.
+										($label=="doctitle"?$attachment_title:basename($attachment->guid)).
+										'</a> '.
+										$string_file_size.
+										'</dd></dl>';
 								}
 								else {
 									$output .= '<li class="attachments attachments-small">'.
@@ -339,6 +364,8 @@ if (! class_exists('EG_Attachments')) {
 			if ($output != '') {
 				$output = '<div class="attachments">'.$output.'</div>';
 			}
+			
+			if (function_exists('hidepost_filter_post')) $output = hidepost_filter_post($output);
 
 			remove_filter('icon_dirs', array(&$this, 'icon_dirs'));
 

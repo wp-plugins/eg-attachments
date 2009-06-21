@@ -3,8 +3,8 @@ Contributors: Emmanuel Georjon
 Donate link: 
 Tags: post, attachment
 Requires at least: 2.5.0
-Tested up to: 2.7.0
-Stable tag: 1.2.8
+Tested up to: 2.8.0
+Stable tag: 1.2.9
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -106,68 +106,98 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 5. Insert attachments window.
 6. Opions page in administration interface
 
-== Version history ==
+== Changelog ==
 
-* Version 1.2.8 - May 16th, 2009
-	* New option: option to display icons or not
-	* Other changes: internal change of libraries
+= Version 1.2.9 - June 20th, 2009 =
+* Bug fix: 
+	* French translation
+* New feature: 
+	* Delete options during uninstallation
+	* Support of *hidepost* plugin
+* Other change
+	* Changes on internal libraries
 
-* Version 1.2.7 - Mar 30th, 2009
-	* Bug fix: Requirements warning message with Wordpress Mu
-	* Other changes: attachments lists are enclosed in HTML div tag
+= Version 1.2.8 - May 16th, 2009
+* New feature: 
+	* Option to display icons or not
+* Other changes: 
+	* Internal change of libraries
 
-* Version 1.2.6 - Mar 26th, 2009
-	* Bug fix: attachments displayed several times when medium size is choosen.
+= Version 1.2.7 - Mar 30th, 2009
+* Bug fix: 
+	* Requirements warning message with Wordpress Mu
+* Other changes: 
+	* Attachments lists are enclosed in HTML div tag
 
-* Version 1.2.5 - Mar 19th, 2009
-	* Bug fix: error when neither "caption" nor "description" are displayed
+= Version 1.2.6 - Mar 26th, 2009 =
+* Bug fix: 
+	* Attachments displayed several times when medium size is choosen.
 
-* Version 1.2.4 - Mar 17th, 2009
-	* Bug fix: don't display title when list of attachments is empty (auto shortcode function)
-	* Bug fix: Error when displaying options page
-	* Big fix: translation to french not complete
-	* New option: field choice (caption and/or caption)
-	* Others changes: update internal library
+= Version 1.2.5 - Mar 19th, 2009 =
+* Bug fix: 
+	* Error when neither "caption" nor "description" are displayed
 
-* Version 1.2.3 - Mar 5th, 2009
-	* Bug fix: Mistake during SVN transfer from my PC to the wordpress repository
+= Version 1.2.4 - Mar 17th, 2009 =
+* Bug fix: 
+	* Don't display title when list of attachments is empty (auto shortcode function)
+	* Error when displaying options page
+	* Translation to french not complete
+* New feature: 
+	* Field choice (caption and/or caption)
+* Others changes: 
+	* Update internal library
 
-* Version 1.2.2 - Mar 5th, 2009
-	* Bug fix: bad behavior with doctype
+= Version 1.2.3 - Mar 5th, 2009 =
+* Bug fix: 
+	* Mistake during SVN transfer from my PC to the wordpress repository
 
-* Version 1.2.1 - Mar 4th, 2009
-	* Bug fix: sort key and sort order didn't work properly,
-	* New options: Sort key and sort order for the automatic shortcode
+= Version 1.2.2 - Mar 5th, 2009 =
+* Bug fix: 
+	* Bad behavior with doctype
 
-* Version 1.2.0 - Mar 2nd, 2009
-	* Bug fix: Translation of TB, MB, kB, B in french,
-	* New features: 
-		* Add automatically the list of attachments in the post content (optional),
-		* Force the "Save-as" dialog box (optional and experimental)
+= Version 1.2.1 - Mar 4th, 2009 =
+* Bug fix: 
+	* Sort key and sort order didn't work properly,
+* New feature: 
+	* Sort key and sort order for the automatic shortcode
 
-* Version 1.1.4 - Feb 21th, 2009
-	* Bug fix: plugin didn't work properly with PHP 4
+= Version 1.2.0 - Mar 2nd, 2009 =
+* Bug fix: 
+	* Translation of TB, MB, kB, B in french,
+* New features: 
+	* Add automatically the list of attachments in the post content (optional),
+	* Force the "Save-as" dialog box (optional and experimental)
 
-* Version 1.1.3 - Feb 16th, 2009
-	* Bug fix: in some cases, the icon didn't appear in the TinyMCE button bar
+= Version 1.1.4 - Feb 21th, 2009 =
+* Bug fix: 
+	* Plugin didn't work properly with PHP 4
 
-* Version 1.1.2 - Feb 13th, 2009 (not published)
+= Version 1.1.3 - Feb 16th, 2009 =
+* Bug fix: 
+	* In some cases, the icon didn't appear in the TinyMCE button bar
+
+= Version 1.1.2 - Feb 13th, 2009 (not published) =
+* Bug fix: 
 	* Enable cache management again
 
-* Version 1.1.1 - Feb 11th, 2009
+= Version 1.1.1 - Feb 11th, 2009 =
+* Bug fix
 	* Disable temporarily the management of the cache
 	
-* Version 1.1.0 - Feb 9th, 2009
-	* Add option (label) to choose file label (filename or document title)
+= Version 1.1.0 - Feb 9th, 2009 =
+* Bug fix
 	* Sanitize title
 	* Improve some translations (french)
-	* Internal changes
+* New feature:
+	* Add option (label) to choose file label (filename or document title)
+* Others changes: 
+	* Update internal library
 
-* Version 1.0.1 - Feb 2nd, 2009
-	* Just update readme.txt file (author and plugin URL)
+= Version 1.0.1 - Feb 2nd, 2009 =
+* Just update readme.txt file (author and plugin URL)
 
-* Version 1.0 - Feb 2nd, 2009
-	* First release
+= Version 1.0 - Feb 2nd, 2009 =
+* First release
 
 == Licence ==
 

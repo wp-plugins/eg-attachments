@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-03-17 21:00+0100\n"
+"PO-Revision-Date: 2009-06-21 23:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -280,3 +280,14 @@ msgstr "Tous"
 msgid "Choose the field that will be displayed as title of documents"
 msgstr "Choisissez le champ qui sera affich&eacute; comme titre des documents"
 
+#: eg-attachments-admin.inc.php:89
+msgid "Uninstall options"
+msgstr "Options de d&eacute;sinstallation"
+
+#: eg-attachments-admin.inc.php:
+msgid "Be careful: these actions cannot be cancelled. All plugin's options will be deleted while plugin uninstallation."
+msgstr "Attention: Ces actions ne peuvent pas &egrave;tre annul&eacute;es. Toutes les options du plugin seront effac&eacute;es pendant la d&eacute;sinstallation."
+
+#: eg-attachments-admin.inc.php:
+msgid "Delete options during uninstallation."
+msgstr "Effacer les options pendant la d&eacute;sinstallation."

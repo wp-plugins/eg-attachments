@@ -3,7 +3,7 @@
 Plugin Name: EG-Forms
 Plugin URI:
 Description: Class to build admin forms
-Version: 1.0.0
+Version: 1.0.2
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,9 +26,9 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Forms_100')) {
+if (!class_exists('EG_Forms_102')) {
 
-	Class EG_Forms_100 {
+	Class EG_Forms_102 {
 
 		var $sections = array();
 		var $fields   = array();
@@ -51,7 +51,7 @@ if (!class_exists('EG_Forms_100')) {
 		 * @param	string	$author_address	author email or URL (must include mailto: or http:
 		 * @return 	none
 		 */
-		function EG_Forms_100($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address) {
+		function EG_Forms_102($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address) {
 			register_shutdown_function(array(&$this, "__destruct"));
 			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address);
 		}
@@ -428,7 +428,7 @@ if (!class_exists('EG_Forms_100')) {
 					case 'radio':
 						$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend>';
 						foreach ($field->values as $key => $value) {
-							$checked = ($default_values[$option_name]==1?'checked':'');
+							$checked = ($default_values[$option_name]==$key?'checked':'');
 							$string .= ($group?'<label for="'.$option_name.'">':'').
 								'<input type="radio" name="'.$option_name.'" id="'.$option_name.'" value="'.$key.'" '.$checked.' '.$field->status.'/> '.
 								__($value, $this->textdomain).
@@ -440,6 +440,7 @@ if (!class_exists('EG_Forms_100')) {
 
 					case 'grid select':
 						$grid_default_values = $default_values[$option_name];
+						
 						$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend><table border="0"><thead><tr>';
 						foreach ($field->values['header'] as $item) {
 							$string .= '<th>'.__($item, $this->textdomain).'</th>';
@@ -451,7 +452,8 @@ if (!class_exists('EG_Forms_100')) {
 								($group?'<label for="'.$option_name.'['.$item['value'].']">':'').
 								'<select name="'.$option_name.'['.$item['value'].']" id="'.$option_name.'['.$item['value'].']" >';
 							foreach ($item['select'] as $key => $value) {
-								if ($key == $grid_default_values[$item['value']]) $selected = 'selected';
+								if (isset($grid_default_values[$item['value']]) && 
+									$key == $grid_default_values[$item['value']]) $selected = 'selected';
 								else $selected = '';
 								$string .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
 							}
