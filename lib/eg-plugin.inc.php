@@ -316,9 +316,8 @@ if (!class_exists('EG_Plugin_102')) {
 		function admin_init() {
 			// Add only in Rich Editor mode
 			if ( isset($this->tinyMCE_button) &&
-				 get_user_option('rich_editing') == 'true' &&
-				 current_user_can('edit_posts') &&
-				 current_user_can('edit_pages') )  {
+				 get_user_option('rich_editing') == 'true') {
+			// && (current_user_can('edit_posts') || current_user_can('edit_pages') ) ) 
 
 				// add the button for wp2.5 in a new way
 				add_filter('mce_external_plugins', array (&$this, 'add_tinymce_plugin' ), 5);
