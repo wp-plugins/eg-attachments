@@ -108,7 +108,7 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 
 == Changelog ==
 
-= Version 1.3.0 - June 22th, 2009
+= Version 1.3.0 - June 22th, 2009 =
 * Bug fix
 	* All users can use the EG-Attachments button in the TinyMCE editor.
 
@@ -121,13 +121,13 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 * Other change
 	* Changes on internal libraries
 
-= Version 1.2.8 - May 16th, 2009
+= Version 1.2.8 - May 16th, 2009 =
 * New feature: 
 	* Option to display icons or not
 * Other changes: 
 	* Internal change of libraries
 
-= Version 1.2.7 - Mar 30th, 2009
+= Version 1.2.7 - Mar 30th, 2009 =
 * Bug fix: 
 	* Requirements warning message with Wordpress Mu
 * Other changes: 
