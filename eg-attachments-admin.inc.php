@@ -11,11 +11,9 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_102 {
-
+	Class EG_Attachments_Admin extends EG_Plugin_103 {
 
 		function plugins_loaded() {
-			global $EG_ATTACH_DEFAULT_OPTIONS;
 
 			parent::plugins_loaded();
 
@@ -51,6 +49,39 @@ if (! class_exists('EG_Attachments_Admin')) {
 		} /* End of init */
 
 		/**
+		 * install_upgrade
+		 *
+		 * Install or upgrade options and database
+		 *
+		 * @package EG-Attachments
+		 *
+		 * @param none
+		 * @return none
+		 */
+/*		function install_upgrade() {
+		   global $wpdb;
+			
+			$current_version = parent::install_upgrade();
+			$table_name = $wpdb->prefix . "eg_attachments_stats";
+			if($wpdb->get_var("show tables like '$table_name'") != $table_name) {
+			  
+				$sql = "CREATE TABLE " . $table_name . " (
+						id mediumint(9) NOT NULL AUTO_INCREMENT,
+						time bigint(11) DEFAULT '0' NOT NULL,
+						name tinytext NOT NULL,
+						text text NOT NULL,
+						url VARCHAR(55) NOT NULL,
+						UNIQUE KEY id (id)
+				);";
+
+			  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+			  dbDelta($sql);
+			}
+			
+		} // End of install_upgrade
+*/
+		
+		/**
 		 * add_form
 		 *
 		 * create form
@@ -62,7 +93,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function add_form() {
 
-			$this->options_form = new EG_Forms_102('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.$this->plugin_author_email);
+			$this->options_form = new EG_Forms_104('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.$this->plugin_author_email);
 			$form = & $this->options_form;
 
 			$id_section = $form->add_section('Auto shortcode');
@@ -90,26 +121,10 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$id_group   = $form->add_group($id_section, 'Options');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Delete options during uninstallation.', 'uninstall_del_option');
 
-			$form->add_button('submit', 'eg_series_options_submit', 'Save changes');
-			$form->add_button('reset',  'eg_series_options_reset',  'Cancel changes');
-			$form->add_button('submit', 'eg_series_options_reset',  'Reset to defaults', 'reset_to_defaults');
-
+			$form->add_button('submit', 'eg_attach_options_submit', 'Save changes');
+			$form->add_button('reset',  'eg_attach_options_reset',  'Cancel changes');
+			$form->add_button('submit', 'eg_attach_options_reset',  'Reset to defaults', 'reset_to_defaults');
 		}
-
-		/**
-		 * reset_to_defaults
-		 *
-		 * Reset options to defaults
-		 *
-		 * @param 	none
-		 * @return 	none
-		 */
-		function reset_to_defaults() {
-			global $EG_ATTACH_DEFAULT_OPTIONS;
-
-			$this->options = $EG_ATTACH_DEFAULT_OPTIONS;
-			update_option($this->options_entry, $this->options);
-		} /* End of reset_to_defaults */
 
 		/**
 		 * options_page
@@ -120,11 +135,10 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 * @return 	none
 		 */
 		function options_page() {
-			global $EG_ATTACH_DEFAULT_OPTIONS;
 
 			$this->add_form();
 
-			$results = $this->options_form->get_form_values($this->options, $EG_ATTACH_DEFAULT_OPTIONS, $this->options_entry);
+			$results = $this->options_form->get_form_values($this->options, $this->default_options, $this->options_entry);
 			if ($results) {
 				$this->options = $results;
 				$this->options_form->display_form($this->options);
@@ -143,17 +157,19 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function clean_cache($id) {
 			wp_cache_delete( 'attachments', 'eg-attachments' );
-		}
+		} // End of clean_cache
 
 	} /* End of Class */
 } /* End of if class_exists */
 
-$eg_attach_admin = new EG_Attachments_Admin('EG-Attachments', EG_ATTACH_VERSION , EG_ATTACH_COREFILE);
-
+$eg_attach_admin = new EG_Attachments_Admin('EG-Attachments', 
+											EG_ATTACH_VERSION , 
+											EG_ATTACH_COREFILE, 
+											EG_ATTACH_OPTIONS_ENTRY, 
+											$EG_ATTACH_DEFAULT_OPTIONS);
 $eg_attach_admin->set_textdomain('eg-attachments');
 $eg_attach_admin->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
 $eg_attach_admin->set_wp_versions('2.5', FALSE, '2.6', FALSE);
-$eg_attach_admin->set_options(EG_ATTACH_OPTIONS_ENTRY, $EG_ATTACH_DEFAULT_OPTIONS);
 $eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce');
 $eg_attach_admin->active_cache(3600);
 $eg_attach_admin->load();

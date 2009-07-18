@@ -3,7 +3,7 @@
 Plugin Name: EG-Forms
 Plugin URI:
 Description: Class to build admin forms
-Version: 1.0.2
+Version: 1.0.4
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,14 +26,25 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Forms_102')) {
+if (!class_exists('EG_Forms_104')) {
 
-	Class EG_Forms_102 {
+	Class EG_Forms_104 {
 
 		var $sections = array();
 		var $fields   = array();
 		var $buttons  = array();
 
+		var $title ;
+		var $header;
+		var $footer;
+		var $textdomain ;
+		var $url;
+		var $id_icon ;
+		var $security_key ;
+		var $author_address;
+		var $access_level;
+		
+		
 		/**
 		 * EG_Forms (constructor)
 		 *
@@ -51,9 +62,9 @@ if (!class_exists('EG_Forms_102')) {
 		 * @param	string	$author_address	author email or URL (must include mailto: or http:
 		 * @return 	none
 		 */
-		function EG_Forms_102($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address) {
+		function EG_Forms_104($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
 			register_shutdown_function(array(&$this, "__destruct"));
-			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address);
+			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level);
 		}
 
 		/**
@@ -73,7 +84,7 @@ if (!class_exists('EG_Forms_102')) {
 		 * @param	string	$author_address	author email or URL (must include mailto: or http:
 		 * @return 	none
 		 */
-		function __construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address) {
+		function __construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address,$access_level=FALSE) {
 			$this->title          = $title;
 			$this->header         = $header;
 			$this->footer         = $footer;
@@ -82,6 +93,7 @@ if (!class_exists('EG_Forms_102')) {
 			$this->id_icon    	  = $id_icon;
 			$this->security_key   = $security_key;
 			$this->author_address = $author_address;
+			$this->access_level   = $access_level;
 		}
 
 		/**
@@ -320,9 +332,13 @@ if (!class_exists('EG_Forms_102')) {
 				}
 
 				if ($is_submitted != 'submit') {
-					$new_options = call_user_func(array(&$this, $is_submitted), $options, $defaults);
+					if (is_array($is_submitted))
+						$new_options = call_user_func($is_submitted, $options, $defaults);
+					else
+						$new_options = call_user_func(array(&$this, $is_submitted), $options, $defaults);
 				}
 				else {
+					$new_options = $options;
 					foreach ($this->fields as $key => $field) {
 						if (isset($options[$key])) {
 							if (isset($_POST[$key])) {
@@ -335,9 +351,6 @@ if (!class_exists('EG_Forms_102')) {
 							}
 							elseif ($field->type == 'checkbox') {
 								$new_options[$key] = 0;
-							}
-							else {
-								$new_options[$key] = $options[$key];
 							}
 						}
 					}
@@ -396,7 +409,9 @@ if (!class_exists('EG_Forms_102')) {
 						}
 						else {
 							$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend>'.
-										($field->text_before== ''?'':__($field->text_before, $this->textdomain).'<br />');
+										($field->text_before== ''?'':__($field->text_before, $this->textdomain).'<br />').
+										__($field->label, $this->textdomain).'<br />';
+
 							foreach ($field->values as $key => $value) {
 								if (!is_array($default_values[$option_name])) {
 									$checked = ($key === $default_values[$option_name]?'checked':'');
@@ -420,7 +435,7 @@ if (!class_exists('EG_Forms_102')) {
 								  '<select name="'.$option_name.'" id="'.$option_name.'" >';
 						foreach ($field->values as $key => $value) {
 							$selected = ($default_values[$option_name]==$key?'selected':'');
-							$string .= '<option value="'.$key.'" '.$selected.'>'.__($value, $this->textdomain).'</option>';
+							$string .= '<option value="'.$key.'" '.$selected.'>'.($value==''?'':__($value, $this->textdomain)).'</option>';
 						}
 						$string .= '</select>'.($field->text_after== ''?'':__($field->text_after, $this->textdomain)).($group?'</label>':'');
 					break;
@@ -439,27 +454,31 @@ if (!class_exists('EG_Forms_102')) {
 					break;
 
 					case 'grid select':
-						$grid_default_values = $default_values[$option_name];
-						
-						$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend><table border="0"><thead><tr>';
-						foreach ($field->values['header'] as $item) {
-							$string .= '<th>'.__($item, $this->textdomain).'</th>';
+						if (! isset($field->values['header']) || sizeof($field->values['header']) == 0 ||
+							! isset($field->values['list'])   || sizeof($field->values['list'])   == 0) {
+							$string .= '<p><font color="red">'.__('No data available', $this->textdomain).'</font></p>';
 						}
-						$string .= '</tr></thead><tbody>';
-						foreach ($field->values['list'] as $item) {
-							$string .= '<tr><td>'.
-								'<input type="text" value="'.$item['value'].'" disabled /></td><td>'.
-								($group?'<label for="'.$option_name.'['.$item['value'].']">':'').
-								'<select name="'.$option_name.'['.$item['value'].']" id="'.$option_name.'['.$item['value'].']" >';
-							foreach ($item['select'] as $key => $value) {
-								if (isset($grid_default_values[$item['value']]) && 
-									$key == $grid_default_values[$item['value']]) $selected = 'selected';
-								else $selected = '';
-								$string .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
+						else {
+							$grid_default_values = $default_values[$option_name];
+							$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend><table border="0"><thead><tr>';
+							foreach ($field->values['header'] as $item) {
+								$string .= '<th>'.__($item, $this->textdomain).'</th>';
 							}
-							$string .=	'</select>'.($group?'</label>':'').'</td></tr>';
+							$string .= '</tr></thead><tbody>';
+							foreach ($field->values['list'] as $item) {
+								$string .= '<tr><td>'.
+									'<input type="text" value="'.$item['value'].'" disabled /></td><td>'.
+									($group?'<label for="'.$option_name.'['.$item['value'].']">':'').
+									'<select name="'.$option_name.'['.$item['value'].']" id="'.$option_name.'['.$item['value'].']" >';
+								foreach ($item['select'] as $key => $value) {
+									if ($key == $grid_default_values[$item['value']]) $selected = 'selected';
+									else $selected = '';
+									$string .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
+								}
+								$string .=	'</select>'.($group?'</label>':'').'</td></tr>';
+							}
+							$string .= '</tbody></table></fieldset>';
 						}
-						$string .= '</tbody></table></fieldset>';
 					break;
 				}
 				// Adding description
@@ -546,56 +565,34 @@ if (!class_exists('EG_Forms_102')) {
 		 * @return 	none
 		 */
 		function display_form($default_values) {
-			echo '<div class="wrap">'.
+			$display_wrap = ($this->title!='' || $this->id_icon!='' || $this->header!='');
+			echo ($display_wrap?'<div class="wrap">':'').
 				($this->id_icon!=''?'<div id="'.$this->id_icon.'" class="icon32"></div>':'').
 				($this->title==''?'':'<h2>'.__($this->title, $this->textdomain).'</h2>').
-				($this->header==''?'':'<p>'.__($this->header, $this->textdomain).'</p>').
-				'<form method="post" action="'.$this->url.'">';
-				wp_nonce_field($this->security_key);
-
-				// '<input type="hidden" name="eg_forms_nonce" value="'.wp_create_nonce($this->security_key).'" />';
-				// '<input type="hidden" id="egs_options" name="egs_options" value="' . wp_create_nonce( 'eg-series-options' ) . '" />';
-
-			foreach ($this->sections as $section) {
-				$this->display_section($section, $default_values);
+				($this->header==''?'':'<p>'.__($this->header, $this->textdomain).'</p>');
+				
+			if ($this->access_level !== FALSE && ! current_user_can($this->access_level)) {
+				echo '<div id="message" class="error fade"><p>'.
+					sprintf(__('You cannot access to the synchronization page. You haven\'t the "%1s" capability. Please contact <a href="%2s">the blog administrator</a>.', $this->textdomain), $this->access_level, $this->author_address).
+					'</p></div>';
 			}
+			else {
+				echo '<form method="post" action="'.$this->url.'">'.
+					wp_nonce_field($this->security_key);
 
-			echo ($this->footer==''?'':'<p>'.$this->footer.'</p>').'<p>&nbsp;</p>';
-			foreach ($this->buttons as $button) {
-				echo '<input type="'.$button->type.'" class="button-primary" name="'.$button->name.'" value="'.__($button->value, $this->textdomain).'"/> ';
+				foreach ($this->sections as $section) {
+					$this->display_section($section, $default_values);
+				}
+
+				echo ($this->footer==''?'':'<p>'.$this->footer.'</p>').'<p>&nbsp;</p>';
+				foreach ($this->buttons as $button) {
+					echo '<input type="'.$button->type.'" class="button-primary" name="'.$button->name.'" value="'.__($button->value, $this->textdomain).'"/> ';
+				}
+				echo '</form>';
 			}
-			echo '</form>'.
-				 '</div>';
+			echo ($display_wrap?'</div>':'');
 		}
 
 	} /* End of class EG_Forms */
 } /* End of Class_exists */
-
-
-/* Exemple of a form
-$eg_form = new EG_Forms('Options de lecture', '', '', 'textdomain', '', "icon-options-general", 'toto', 'mailto:blog@georjon.eu' );
-$id_section = $eg_form->add_section('', '', '');
-	$id_group = $eg_form->add_group($id_section , 'La page d’accueil affiche', '', '');
-		$eg_form->add_field($id_section, $id_group, 'checkbox', 'La page d’accueil affiche', '', '', '', 'option1');
-		$eg_form->add_field($id_section, $id_group, 'select', 'Page d’accueil :', '', '', '', 'option2', array( '0' => '-Choisir-', '1' => 'A  propos', '2' => 'Contact') );
-		$eg_form->add_field($id_section, $id_group, 'select', 'Page d’articles :', '', '', '', 'option3', array( '0' => '-Choisir-', '1' => 'A  propos', '2' => 'Contact') );
-	$id_group = $eg_form->add_group($id_section , 'Les pages du blog doivent afficher au plus', '', '');
-		$eg_form->add_field($id_section, $id_group, 'text', 'Les pages du blog doivent afficher au plus', '', 'articles', '', 'option4');
-	$id_group = $eg_form->add_group($id_section , 'Les flux de syndication affichent les derniers', '', '');
-		$eg_form->add_field($id_section, $id_group, 'text', 'Les flux de syndication affichent les derniers', '', 'articles', '', 'option5');
-	$id_group = $eg_form->add_group($id_section , 'Pour chaque article, fournir ', '', '');
-		$eg_form->add_field($id_section, $id_group, 'radio', 'Pour chaque article, fournir ', '', 'articles', '', 'option6', array( '0' => 'Le texte complet', '1' => 'L\'extrait'));
-		$eg_form->add_field($id_section, $id_group, 'text', 'Encodage pour les pages et les flux RSS', '', '', 'L’encodage des caractères dans lequel vous écrivez votre blog (UTF-8 est recommandé)', 'option7');
-
-$eg_form->add_button('submit', 'Save options', 'Save Options');
-$eg_form->add_button('reset', 'cancel', 'Cancel');
-
-$eg_form->set_field_values('option1', array ( '0' => 'Vos derniers articles', '1' => 'Une page statique (choisir ci-dessous)') );
-
-$eg_form->display_form(array( 'option1' => 1,   'option2' => 1,    'option3' => 2,
-                              'option4' => 'A', 'option5' => '10', 'option6' => 1,
-							  'option7' => 'C')
-					);
-*/
-
 ?>

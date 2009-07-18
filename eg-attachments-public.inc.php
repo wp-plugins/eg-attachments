@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_102 {
+	Class EG_Attachments extends EG_Plugin_103 {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
@@ -42,8 +42,8 @@ if (! class_exists('EG_Attachments')) {
 			parent::init();
 
 			// Clear cache when adding or delete attachment
-			add_action('add_attachment',    array(&$this, 'clean_cache' ));
-			add_action('delete_attachment', array(&$this, 'clean_cache' ));
+			// add_action('add_attachment',    array(&$this, 'clean_cache' ));
+			// add_action('delete_attachment', array(&$this, 'clean_cache' ));
 
 			$this->wp_before_260 = version_compare($wp_version, '2.6', '<');
 
@@ -66,9 +66,9 @@ if (! class_exists('EG_Attachments')) {
 		 * @param int	$id	(unused) id of post
 		 * @return none
 		 */
-		function clean_cache($id) {
-			wp_cache_delete( 'attachments', 'eg-attachments' );
-		}
+		// function clean_cache($id) {
+		//	wp_cache_delete( 'attachments', 'eg-attachments' );
+		// }
 
 		/**
 		  *  icon_dirs() - Add the icon path of the plugin, to the list of paths of WordPress icons
@@ -381,8 +381,9 @@ if (! class_exists('EG_Attachments')) {
 		 * @return 	string				modified post content
 		 */
 		function shortcode_auto($content = '') {
-
-			if ($this->options['shortcode_auto'] > 0) {
+			global $post;
+		
+			if ($this->options['shortcode_auto'] > 0 && ! post_password_required($post) ) {
 				$display = ($this->options['shortcode_auto_where'] != 'post' || is_single() || is_page()) ;
 				if ($display) {
 					if (!is_array($this->options['shortcode_auto_fields']) ||
@@ -410,13 +411,12 @@ if (! class_exists('EG_Attachments')) {
 	} /* End of Class */
 } /* End of if class_exists */
 
-$eg_attach = new EG_Attachments('EG-Attachments', EG_ATTACH_VERSION, EG_ATTACH_COREFILE);
+$eg_attach = new EG_Attachments('EG-Attachments', EG_ATTACH_VERSION, EG_ATTACH_COREFILE, EG_ATTACH_OPTIONS_ENTRY, $EG_ATTACH_DEFAULT_OPTIONS);
 
 $eg_attach->set_textdomain('eg-attachments');
 $eg_attach->set_stylesheets('eg-attachments.css', FALSE);
 $eg_attach->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
 $eg_attach->set_wp_versions('2.5',	FALSE, '2.6', FALSE);
-$eg_attach->set_options(EG_ATTACH_OPTIONS_ENTRY, $EG_ATTACH_DEFAULT_OPTIONS);
 $eg_attach->active_cache(3600);
 $eg_attach->load();
 

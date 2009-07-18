@@ -3,7 +3,7 @@
 Plugin Name: EG-Plugin
 Plugin URI:
 Description: Framework for plugin development
-Version: 1.0.2
+Version: 1.0.3
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,7 +26,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Plugin_102')) {
+if (!class_exists('EG_Plugin_103')) {
 
 	/**
 	  * Class EG_Plugin
@@ -34,7 +34,7 @@ if (!class_exists('EG_Plugin_102')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_102 {
+	Class EG_Plugin_103 {
 
 		var $plugin_name;
 		var $plugin_version;
@@ -76,10 +76,10 @@ if (!class_exists('EG_Plugin_102')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_102($name, $version, $core_file) {
+		function EG_Plugin_103($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, "__destruct"));
-			$this->__construct($name, $version, $core_file);
+			$this->__construct($name, $version, $core_file, $options_entry, $default_options);
 		}
 
 		/**
@@ -89,10 +89,12 @@ if (!class_exists('EG_Plugin_102')) {
 		  * @package EG-Plugins
 		  * @return object
 		  */
-		function __construct($name, $version, $core_file) {
+		function __construct($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
-			$this->plugin_name    = $name;
-			$this->plugin_version = $version;
+			$this->plugin_name     = $name;
+			$this->plugin_version  = $version;
+			$this->options_entry   = $options_entry;
+			$this->default_options = $default_options;
 
 			// Define WP_CONTENT_URL and WP_CONTENT_DIR for WordPress < 2.6
 			if ( !defined('WP_CONTENT_URL') ) {
@@ -131,10 +133,15 @@ if (!class_exists('EG_Plugin_102')) {
 
 		function load() {
 			add_action('plugins_loaded', array(&$this, 'plugins_loaded'), 0);
-			add_action('wp_print_styles', array( &$this, 'include_stylesheets'));
 			add_action('init', array( &$this, 'init'));
+			add_action('wp_logout', array(&$this, 'wp_logout'));
+
 		}
 
+		function wp_logout() {
+			// Nothing here.
+		}
+		
 		/**
 		 * set_owner
 		 *
@@ -168,22 +175,6 @@ if (!class_exists('EG_Plugin_102')) {
 		function set_stylesheets($stylesheet, $admin_stylesheet=FALSE) {
 			$this->stylesheet       = $stylesheet;
 			$this->admin_stylesheet = $admin_stylesheet;
-		}
-
-		/**
-		 * set_options
-		 *
-		 * Set options parameters
-		 *
-		 * @package EG-Plugins
-		 *
-		 * @param	string	$options_entry		entry to use to store options
-		 * @param	string	$default_options		values for default options
-		 * @return none
-		 */
-		function set_options($options_entry='', $default_options='') {
-			$this->options_entry   = $options_entry;
-			$this->default_options = $default_options;
 		}
 
 		/**
@@ -316,8 +307,8 @@ if (!class_exists('EG_Plugin_102')) {
 		function admin_init() {
 			// Add only in Rich Editor mode
 			if ( isset($this->tinyMCE_button) &&
-				 get_user_option('rich_editing') == 'true') {
-			// && (current_user_can('edit_posts') || current_user_can('edit_pages') ) ) 
+				 get_user_option('rich_editing') == 'true' ) {
+			// && current_user_can('edit_posts') && current_user_can('edit_pages') )  {
 
 				// add the button for wp2.5 in a new way
 				add_filter('mce_external_plugins', array (&$this, 'add_tinymce_plugin' ), 5);
@@ -366,17 +357,9 @@ if (!class_exists('EG_Plugin_102')) {
 			$this->widgets_init();
 
 			if (sizeof($this->pages) > 0) {
-				add_action( 'admin_menu', array(&$this, 'add_plugin_pages') );
-				if ($this->option_page_url) {
-					if (version_compare($wp_version, '2.7', '<')) {
-						add_filter('plugin_action_links', array(&$this, 'filter_plugin_actions_before_27'), 10, 2);
-					}
-					else {
-						add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_core_file),
-									array( &$this, 'filter_plugin_actions_27_and_after') );
-					}
-				}
+				add_action( 'admin_menu', array(&$this, 'admin_menu') );
 			}
+			$this->include_stylesheets();
 		}
 
 		/**
@@ -394,24 +377,23 @@ if (!class_exists('EG_Plugin_102')) {
 			$this->check_requirements(FALSE);
 
 			/* --- Get Plugin options --- */
-			$this->options = $this->get_plugin_option();
+			$this->get_plugin_option();
 
 			if (is_admin()) {
-
-				// Register install and uninstall methods
-				// register_activation_hook( plugin_basename($this->plugin_core_file), array(&$this, 'install') );
+				
 				if ( function_exists('register_uninstall_hook') ) {
 					register_uninstall_hook ($this->plugin_core_file, array(&$this, 'uninstall') );
 				}
 
 				add_action('admin_init',   array( &$this, 'admin_init')   );
-				// add_action('admin_header', array( &$this, 'admin_head')   );
+				add_action('admin_header', array( &$this, 'admin_head')   );
 				add_action('admin_footer', array( &$this, 'admin_footer') );
 			}
 			else {
-				// add_action('wp_head',   array( &$this, 'head')  );
+				add_action('wp_head',   array( &$this, 'head')  );
 				add_action('wp_footer', array( &$this, 'footer'));
 			}
+
 		}
 
 		/**
@@ -438,12 +420,13 @@ if (!class_exists('EG_Plugin_102')) {
 
 				$string = '';
 
-				if ($this->stylesheet !== FALSE && $this->stylesheet != '' && $load_css) {
+				if ($this->stylesheet && $load_css) {
 
 					if (@file_exists(TEMPLATEPATH.'/'.$this->stylesheet)) {
 						wp_enqueue_style( $this->plugin_name.'_stylesheet', get_stylesheet_directory_uri().'/'.$this->stylesheet);
 					}
 					else {
+					
 						wp_enqueue_style( $this->plugin_name.'_stylesheet', $this->plugin_url.$this->stylesheet);
 					}
 				}
@@ -460,24 +443,11 @@ if (!class_exists('EG_Plugin_102')) {
 		 * @return none
 		 */
 		function head() {
-/*
-			if (isset($this->options['load_css'])) $load_css = $this->options['load_css'];
-			else $load_css = 1;
-
-			$string = '';
-
-			if ($this->stylesheet != '' && $load_css) {
-				$string = "\n".'<!-- Generated by '.$this->plugin_name.' '.$this->plugin_version.' by '.$this->plugin_author_name.' ('.$this->plugin_author_url.') -->';
-				if(@file_exists(TEMPLATEPATH.'/'.$this->stylesheet)) {
-					// Use stylesheet file stored in the current theme directory
-					$string .= "\n".'<link rel="stylesheet" href="'.get_stylesheet_directory_uri().'/'.$this->stylesheet.'" type="text/css" media="screen" />';
-				} else {
-					// Use stylesheet stored in the plugin path
-					$string .= "\n".'<link rel="stylesheet" href="'.$this->plugin_url.$this->stylesheet.'" type="text/css" media="screen" />';
-				}
+			global $wp_version;
+			
+			if (version_compare($wp_version, '2.6.5', '<') && function_exists('wp_print_styles')) {
+				wp_print_styles($this->plugin_name.'_stylesheet');
 			}
-			echo $string;
-*/
 		}
 
 		/**
@@ -490,14 +460,9 @@ if (!class_exists('EG_Plugin_102')) {
 		 * @return none
 		 */
 		function admin_head() {
-/*
-			$string = '';
-			if ($this->admin_stylesheet != '') {
-				$string = "\n".'<!-- Generated by '.$this->plugin_name.' '.$this->plugin_version.' by '.$this->plugin_author_name.' ('.$this->plugin_author_url.') -->';
-				$string .= "\n".'<link rel="stylesheet" href="'.$this->plugin_url.$this->admin_stylesheet.'" type="text/css" media="screen" />';
+			if (version_compare($wp_version, '2.6.5', '<') && function_exists('wp_print_styles')) {
+				wp_print_styles($this->plugin_name.'_admin_stylesheet');
 			}
-			echo $string;
-*/
 		}
 
 		/**
@@ -607,43 +572,91 @@ if (!class_exists('EG_Plugin_102')) {
 		 * @param 		none
 		 * @return array	$options	list of the options and values
 		 */
-		function get_plugin_option($options_entry=FALSE, $default_options=FALSE) {
 
-			if ($options_entry===FALSE)
+		function get_plugin_option($options_entry=FALSE, $default_options=FALSE) {
+/*
+			if ($options_entry === FALSE)
 				$options_entry = $this->options_entry;
 
-			if ($default_options===FALSE)
-				$default_options = $this->default_options;
-
-			// if option_entry === FALSE, plugin hasn't any options
 			if (! $options_entry) {
 				$options = FALSE;
 			} else {
 				$options = get_option( $options_entry );
-				// if $opions === FALSE, options are not initiated yet
-				if ( $options === FALSE) {
-					// Create option from the defaults
-					$default_options['version'] = $this->plugin_version;
-					// $this->options = $default_options;
-					add_option($options_entry, $default_options);
+			}
+*/
+			$this->options = get_option($this->options_entry);
+			$this->install_upgrade();
+			
+			return ($this->options);
+		} 
+
+		/**
+		 * options_reset
+		 *
+		 * Reset options to defaults
+		 *
+		 * @param 	none
+		 * @return 	none
+		 */
+		function options_reset() {
+
+			if (isset($this->default_options)) {
+				$this->options            = $this->default_options;
+				$this->options['version'] = $this->plugin_version;
+				update_option($this->options_entry, $this->options);
+			}
+		} /* End of options_reset */
+
+		/**
+		 * upgrade
+		 *
+		 * Create or update plugin environment (options, database, files ...)
+		 *
+		 * @package EG-Plugins
+		 * @param 	none
+		 * @return  none
+		 */
+		 /*
+			To use this function:
+				function insta_upgrade() {
+					$current_version = parent::install_upgrade();
+					
+					put here your upgrade or install features
 				}
-				else {
-					// Plugin previously installed. Check the version and update options
-					if (version_compare($options['version'], $this->plugin_version, '<')) {
+		 */
+		function install_upgrade() {
+
+			if ($this->options === FALSE) {
+				// Create option from the defaults
+				if (isset($this->default_options) && $this->default_options != FALSE) {
+					$this->options = $this->default_options;
+				}
+				$this->options['version'] = $this->plugin_version;
+				add_option($this->options_entry, $this->options);
+			}
+			else {	
+				if (  isset($this->options['version'])) $current_version = $this->options['version'];
+				else $current_version = '0.0.0';
+
+				// Plugin previously installed. Check the version and update options
+				if (version_compare($current_version, $this->plugin_version, '<')) {
+					if (! isset($this->default_options) || $this->default_options === FALSE) {
+						$new_options = $this->options;
+					}
+					else {
 						$new_options = array();
-						foreach ($default_options as $key => $value) {
-							if (isset($options[$key])) $new_options[$key] = $options[$key];
+						foreach ($this->default_options as $key => $value) {
+							if (isset($this->options[$key])) $new_options[$key] = $this->options[$key];
 							else $new_options[$key] = $value;
 						}
-						$new_options['version'] = $this->plugin_version;
-						update_option($options_entry, $new_options);
-						// $this->options = $new_options;
-						$options = $new_options;
 					}
+					$new_options['version'] = $this->plugin_version;
+					update_option($this->options_entry, $new_options);
+					$this->options = $new_options;
 				}
 			}
-			return $options;
-		}
+			return ($current_version);
+		} // End of upgrade
 
 		/**
 		  * display_requirements_msg
@@ -804,14 +817,14 @@ if (!class_exists('EG_Plugin_102')) {
 		  * @return 	none
 		  */
 		function check_requirements($display_msg=TRUE) {
-		
+
 			$value = TRUE;
 			if (is_admin() && ($display_msg || strpos($_SERVER['REQUEST_URI'], 'plugins.php')!==FALSE)) {
 
 				$value = $this->check_wp_requirements();
 				$value = $value & $this->check_php_requirements();
 				$value = $value & $this->check_php_options();
-				$value = $value & $this->check_php_exts();		
+				$value = $value & $this->check_php_exts();
 
 				if (!$value) {
 					echo '<div id="message" class="error fade"><p><strong>'.$this->requirements_error_msg.'</strong></p></div>';
@@ -842,7 +855,7 @@ if (!class_exists('EG_Plugin_102')) {
 		  * @param 		none
 		  * @return 		none
 		 */
-		function add_plugin_pages() {
+		function admin_menu() {
 			global $wp_version;
 
 			if (version_compare($wp_version, '2.7', '<')) {
@@ -854,7 +867,8 @@ if (!class_exists('EG_Plugin_102')) {
 								 'users'	=> 'add_users_page',
 								 'media'	=> 'add_management_page',
 								 'links'	=> 'add_management_page',
-								 'pages'	=> 'add_management_page');
+								 'pages'	=> 'add_management_page',
+								 'posts'	=> 'add_management_page');
 			}
 			else {
 				$page_list = array ( 'posts'	=> 'add_posts_page',
@@ -865,7 +879,8 @@ if (!class_exists('EG_Plugin_102')) {
 								 'users'	=> 'add_users_page',
 								 'media'	=> 'add_media_page',
 								 'links'	=> 'add_links_page',
-								 'pages'	=> 'add_pages_page');
+								 'pages'	=> 'add_pages_page',
+								 'psots'	=> 'add_posts_page');
 			}
 
 			// Add a new submenu under Options:
@@ -881,6 +896,16 @@ if (!class_exists('EG_Plugin_102')) {
 								$page->page_url,
 								array(&$this, $page->callback));
 			}
+			if ($option_page_url != '') {
+				if (version_compare($wp_version, '2.7', '<')) {
+					add_filter('plugin_action_links', array(&$this, 'filter_plugin_actions_before_27'), 10, 2);
+				}
+				else {
+					add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_core_file),
+								array( &$this, 'filter_plugin_actions_27_and_after') );
+				}
+			}
+
 			return ($option_page_url);
 		}
 
@@ -905,5 +930,7 @@ if (!class_exists('EG_Plugin_102')) {
 		} /* --- end of display_message --- */
 	} /* End of class */
 } /* End of class_exists */
+
+
 
 ?>
