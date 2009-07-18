@@ -47,39 +47,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 			add_action('delete_attachment', array(&$this, 'clean_cache' ));
 
 		} /* End of init */
-
-		/**
-		 * install_upgrade
-		 *
-		 * Install or upgrade options and database
-		 *
-		 * @package EG-Attachments
-		 *
-		 * @param none
-		 * @return none
-		 */
-/*		function install_upgrade() {
-		   global $wpdb;
-			
-			$current_version = parent::install_upgrade();
-			$table_name = $wpdb->prefix . "eg_attachments_stats";
-			if($wpdb->get_var("show tables like '$table_name'") != $table_name) {
-			  
-				$sql = "CREATE TABLE " . $table_name . " (
-						id mediumint(9) NOT NULL AUTO_INCREMENT,
-						time bigint(11) DEFAULT '0' NOT NULL,
-						name tinytext NOT NULL,
-						text text NOT NULL,
-						url VARCHAR(55) NOT NULL,
-						UNIQUE KEY id (id)
-				);";
-
-			  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-			  dbDelta($sql);
-			}
-			
-		} // End of install_upgrade
-*/
 		
 		/**
 		 * add_form
