@@ -104,10 +104,6 @@ msgstr ""
 msgid "Title of the list: "
 msgstr ""
 
-#: eg-attachments-admin.inc.php:78
-msgid "Force \"Save As\""
-msgstr ""
-
 #: eg-attachments-admin.inc.php:84
 msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
 msgstr ""
@@ -290,4 +286,24 @@ msgstr ""
 
 #: eg-attachments-admin.inc.php:
 msgid "Delete options during uninstallation."
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments restricted to register users only"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "General behavior of shortcodes"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments access"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Restrict access to the attachments to logged users only!"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Url to login or register page:"
 msgstr ""

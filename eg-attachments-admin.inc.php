@@ -1,6 +1,8 @@
 <?php
 
-require_once('lib/eg-forms.inc.php');
+if (! class_exists('EG_Forms_104')) {
+	require('lib/eg-forms.inc.php');
+}
 
 if (! class_exists('EG_Attachments_Admin')) {
 
@@ -11,23 +13,25 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_103 {
+	Class EG_Attachments_Admin extends EG_Plugin_106 {
+
+		var $use_cache;
+		var $cache_group      = 'eg-attachment';
+		var $cache_expiration = 3600;
 
 		function plugins_loaded() {
 
 			parent::plugins_loaded();
 
-			// Add plugin options page
+			// Add options page
 			$this->add_page('options', 					/* page type: post, page, option, tool 	*/
 							'EG-Attachments Options',	/* Page title 							*/
 							'EG-Attachments',			/* Menu title 							*/
-							'edit_page', 				/* Access level / capability			*/
+							'manage_options', 			/* Access level / capability			*/
 							'ega_options',				/* file 								*/
 							'options_page');			/* function								*/
 
-			// echo 'End of plugin<br />';
-		}
-
+		} // End of plugins_loaded
 
 		/**
 		 * Implement init action
@@ -47,7 +51,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 			add_action('delete_attachment', array(&$this, 'clean_cache' ));
 
 		} /* End of init */
-		
+
 		/**
 		 * add_form
 		 *
@@ -60,8 +64,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function add_form() {
 
-			$this->options_form = new EG_Forms_104('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.$this->plugin_author_email);
-			$form = & $this->options_form;
+			$form = new EG_Forms_104('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.$this->plugin_author_email);
 
 			$id_section = $form->add_section('Auto shortcode');
 			$id_group   = $form->add_group($id_section, 'Activation');
@@ -80,10 +83,13 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'checkbox', 'Fields: ',         'shortcode_auto_fields',   'Which fields do you want to display (large and medium size only)?', '', '', '', 'regular', array( 'caption' => 'Caption', 'description' => 'Description'));
 			$form->add_field($id_section, $id_group, 'checkbox', 'Check the box to display icons',  'shortcode_auto_icon', 'Display icons: ', '', '', '', 'regular');
 
-			$id_section = $form->add_section('Force "Save As"', "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases.");
-			$id_group   = $form->add_group($id_section, '"Save As" activation');
-			$form->add_field($id_section, $id_group, 'checkbox', 'Force "Save As" when users click on the attachments', 'shortcode_auto_force_saveas');
-			
+			$id_section = $form->add_section('General behavior of shortcodes');
+			$id_group   = $form->add_group($id_section, '"Save As" activation', "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases.");
+			$form->add_field($id_section, $id_group, 'checkbox', 'Force "Save As" when users click on the attachments', 'force_saveas');
+			$id_group   = $form->add_group($id_section, 'Attachments access');
+			$form->add_field($id_section, $id_group, 'checkbox', 'Restrict access to the attachments to logged users only!', 'logged_users_only');
+			$form->add_field($id_section, $id_group, 'text', 'Url to login or register page:', 'login_url');
+
 			$id_section = $form->add_section('Uninstall options', '', 'Be careful: these actions cannot be cancelled. All plugin\'s options will be deleted while plugin uninstallation.');
 			$id_group   = $form->add_group($id_section, 'Options');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Delete options during uninstallation.', 'uninstall_del_option');
@@ -91,6 +97,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_button('submit', 'eg_attach_options_submit', 'Save changes');
 			$form->add_button('reset',  'eg_attach_options_reset',  'Cancel changes');
 			$form->add_button('submit', 'eg_attach_options_reset',  'Reset to defaults', 'reset_to_defaults');
+
+			return ($form);
 		}
 
 		/**
@@ -103,13 +111,13 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function options_page() {
 
-			$this->add_form();
+			$form = $this->add_form();
 
-			$results = $this->options_form->get_form_values($this->options, $this->default_options, $this->options_entry);
+			$results = $form->get_form_values($this->options, $this->default_options, $this->options_entry);
 			if ($results) {
 				$this->options = $results;
-				$this->options_form->display_form($this->options);
-			}
+				$form->display_form($this->options);
+			}			
 		} /* options_page */
 
 
@@ -129,16 +137,17 @@ if (! class_exists('EG_Attachments_Admin')) {
 	} /* End of Class */
 } /* End of if class_exists */
 
-$eg_attach_admin = new EG_Attachments_Admin('EG-Attachments', 
-											EG_ATTACH_VERSION , 
-											EG_ATTACH_COREFILE, 
-											EG_ATTACH_OPTIONS_ENTRY, 
+$eg_attach_admin = new EG_Attachments_Admin('EG-Attachments',
+											EG_ATTACH_VERSION ,
+											EG_ATTACH_COREFILE,
+											EG_ATTACH_OPTIONS_ENTRY,
 											$EG_ATTACH_DEFAULT_OPTIONS);
+
 $eg_attach_admin->set_textdomain('eg-attachments');
 $eg_attach_admin->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
 $eg_attach_admin->set_wp_versions('2.5', FALSE, '2.6', FALSE);
 $eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce');
-$eg_attach_admin->active_cache(3600);
+$eg_attach_admin->activate_cache();
 $eg_attach_admin->load();
 
 ?>

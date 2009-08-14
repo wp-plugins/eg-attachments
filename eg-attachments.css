@@ -39,3 +39,8 @@ dl.attachments dd.caption {
 	margin: 0;
 	padding: 0 0 0 0.5em;
 }
+
+dl.attachments dd img.lock {
+	margin: 0;
+	float: right;
+}

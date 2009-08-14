@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-06-21 23:49+0100\n"
+"PO-Revision-Date: 2009-08-14 14:07+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -103,10 +103,6 @@ msgstr "Options du shortcode automatique"
 #: eg-attachments-admin.inc.php:76
 msgid "Title of the list: "
 msgstr "Titre de la liste: "
-
-#: eg-attachments-admin.inc.php:78
-msgid "Force \"Save As\""
-msgstr "Forcer le \"T&eacute;l&eacute;chargement\""
 
 #: eg-attachments-admin.inc.php:84
 msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
@@ -291,3 +287,24 @@ msgstr "Attention: Ces actions ne peuvent pas &egrave;tre annul&eacute;es. Toute
 #: eg-attachments-admin.inc.php:
 msgid "Delete options during uninstallation."
 msgstr "Effacer les options pendant la d&eacute;sinstallation."
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments restricted to register users only"
+msgstr "L'acc&egrave;s aux pi&egrave;ces jointes est r&eacute;serv&eacute; aux utilisateurs enregistr&eacute;s."
+
+#: eg-attachments-admin.inc.php:
+msgid "General behavior of shortcodes"
+msgstr "Comportement du shortcode"
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments access"
+msgstr "Acc&egrave; aux pi&egrave;ces jointes"
+
+#: eg-attachments-admin.inc.php:
+msgid "Restrict access to the attachments to logged users only!"
+msgstr "Limiter acc&egrave; des pi&egrave;ces jointes aux utilisateurs enregistr&eacute;s."
+
+#: eg-attachments-admin.inc.php:
+msgid "Url to login or register page:"
+msgstr "Url du formulaire de connexion ou d'enregistrement:"
+

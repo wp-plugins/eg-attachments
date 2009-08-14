@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: Emmanuel Georjon
-Donate link: 
+Donate link: http://www.emmanuelgeorjon.com/
 Tags: post, attachment
-Requires at least: 2.5.0
-Tested up to: 2.8.1
-Stable tag: 1.3.1
+Requires at least: 2.6.0
+Tested up to: 2.8.4
+Stable tag: 1.4.0
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -31,14 +31,15 @@ Options are
 * Sort order, 
 * Document type,
 * Document list,
-* Title of the list
-* Label of each document
-* Description field to display (caption and/or description)
-* Force "Save as" (rather than display document)
+* Title of the list,
+* Label of each document,
+* Description field to display (caption and/or description),
+* Force "Save as" (rather than display document),
+* Restrict access of the attachments to the logged users.
 
 == Installation ==
 
-# Installation #
+= Installation =
 * The plugin is available for download on the WordPress repository,
 * Once downloaded, uncompress the file eg-attachments.zip,
 * Copy or upload the uncompressed files in the directory wp-content/plugins in your WordPress platform
@@ -49,10 +50,10 @@ You can also use the WordPress 2.7 features, and install the plugin directly fro
 
 Then you can go to menu **Settings / EG-Attachments** to set plugin parameters
 
-This plugin was tested on WordPress 2.5, 2.6.x and 2.7.x. 
-About WordPress MU: the plugin is running properly on version 2.7. Assume that it run also with WordPress MU 2.6.
+This plugin was tested on WordPress 2.6.x, 2.7.x and up to 2.8.4.
+About WordPress MU: the plugin is running properly on version 2.8.x Assume that it run also with WordPress MU 2.6 and 2.7.
 
-# Usage #
+= Usage =
 
 * When editing a post, you can see a *paper clip* button in TinyMCE bar. 
 * Click on this button, choose the options, and click insert.
@@ -71,9 +72,22 @@ The shortcode options are:
 * **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
 * **icon** specify if icons will be displayed or not. Default value: 1 or TRUE. If value is 0 or FALSE, list displayed will be ul/li (html simple list) rather than dl/dt/dd (definition list).
 Two specific keywords can be used with **docid** option: **first** and **last** allow to display the first and the last attachment of list. Be careful, **first** or **last** can change according the sort option ! These keywords must be used alone. You can have syntax such as: first,10,11.
+* **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: 0.
 
-**Exemple 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
-**Exemple 2:** `[attachments size=large title="Documents" titletag=h3 orderby="mime DESC"]`
+**Example 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
+
+**Example 2:** `[attachments size=large title="Documents" titletag=h3 orderby="mime DESC"]`
+
+= Some explanations about *General behavior of shortcodes =
+
+In the menu **Settings / EG-Attachments**, you will find a section named *General behavior of shortcodes*.
+The options in the section are 
+
+* applied to all shortcodes (automatic or manually inserted into posts),
+* used as options for the automatic shortcode,
+* used as default value for the shortcode manually inserted into posts.
+
+**Example:** if you check the option *Force "Save As" when users click on the attachments*, you force download for all attachments displayed by auto-shortcodes, and manual shortcode, except if you specify `force_saveas` in a shortcode option.
 
 == Frequently Asked Questions ==
 
@@ -103,111 +117,109 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 2. List of attachments, with medium icons,
 3. List of attachments, with large icons,
 4. EG-Attachments button in the TinyMCE toolbar,
-5. Insert attachments window.
-6. Opions page in administration interface
+5. Insert attachments window,
+6. Options page in administration interface.
 
 == Changelog ==
 
+= Version 1.4.0 - Aug 14th, 2009 =
+
+* Bugfix: Force Saveas option doesn't work,
+* New: ability to restrict attachments to logged users,
+* Change: Improve SaveAs feature,
+* Change: Internal library update.
+
 = Version 1.3.1 - July 18th, 2009 =
-* Bug fix:
-	* Auto-shortcode displays attachments evenif post is password protected
-* Other change
-	* Changes on internal libraries
+
+* Bugfix: Auto-shortcode displays attachments evenif post is password protected
+* Change: Changes on internal libraries
 
 = Version 1.3.0 - June 22th, 2009 =
-* Bug fix
-	* All users can use the EG-Attachments button in the TinyMCE editor.	
+
+* Bugfix: All users can use the EG-Attachments button in the TinyMCE editor.	
 
 = Version 1.2.9 - June 20th, 2009 =
-* Bug fix: 
-	* French translation
-* New feature: 
-	* Delete options during uninstallation
-	* Support of *hidepost* plugin
-* Other change
-	* Changes on internal libraries
+
+* Bugfix: French translation
+* New: Delete options during uninstallation
+* New: Support of *hidepost* plugin
+* Change: Changes on internal libraries
 
 = Version 1.2.8 - May 16th, 2009 =
-* New feature: 
-	* Option to display icons or not
-* Other changes: 
-	* Internal change of libraries
+
+* New: Option to display icons or not
+* Change: Internal change of libraries
 
 = Version 1.2.7 - Mar 30th, 2009 =
-* Bug fix: 
-	* Requirements warning message with Wordpress Mu
-* Other changes: 
-	* Attachments lists are enclosed in HTML div tag
+
+* Bugfix: Requirements warning message with Wordpress Mu
+* Change: Attachments lists are enclosed in HTML div tag
 
 = Version 1.2.6 - Mar 26th, 2009 =
-* Bug fix: 
-	* Attachments displayed several times when medium size is choosen.
+
+* Bugfix: Attachments displayed several times when medium size is choosen.
 
 = Version 1.2.5 - Mar 19th, 2009 =
-* Bug fix: 
-	* Error when neither "caption" nor "description" are displayed
+
+* Bugfix: Error when neither "caption" nor "description" are displayed
 
 = Version 1.2.4 - Mar 17th, 2009 =
-* Bug fix: 
-	* Don't display title when list of attachments is empty (auto shortcode function)
-	* Error when displaying options page
-	* Translation to french not complete
-* New feature: 
-	* Field choice (caption and/or caption)
-* Others changes: 
-	* Update internal library
+
+* Bugfix: Don't display title when list of attachments is empty (auto shortcode function)
+* Bugfix: Error when displaying options page
+* Bugfix: Translation to french not complete
+* New: Field choice (caption and/or caption)
+* Change: Update internal library
 
 = Version 1.2.3 - Mar 5th, 2009 =
-* Bug fix: 
-	* Mistake during SVN transfer from my PC to the wordpress repository
+
+* Bugfix: Mistake during SVN transfer from my PC to the wordpress repository
 
 = Version 1.2.2 - Mar 5th, 2009 =
-* Bug fix: 
-	* Bad behavior with doctype
+
+* Bugfix: Bad behavior with doctype
 
 = Version 1.2.1 - Mar 4th, 2009 =
-* Bug fix: 
-	* Sort key and sort order didn't work properly,
-* New feature: 
-	* Sort key and sort order for the automatic shortcode
+
+* Bugfix: Sort key and sort order didn't work properly,
+* New: Sort key and sort order for the automatic shortcode
 
 = Version 1.2.0 - Mar 2nd, 2009 =
-* Bug fix: 
-	* Translation of TB, MB, kB, B in french,
-* New features: 
-	* Add automatically the list of attachments in the post content (optional),
-	* Force the "Save-as" dialog box (optional and experimental)
+
+* Bugfix: Translation of TB, MB, kB, B in french,
+* New: Add automatically the list of attachments in the post content (optional),
+* New: Force the "Save-as" dialog box (optional and experimental)
 
 = Version 1.1.4 - Feb 21th, 2009 =
-* Bug fix: 
-	* Plugin didn't work properly with PHP 4
+
+* Bugfix: Plugin didn't work properly with PHP 4
 
 = Version 1.1.3 - Feb 16th, 2009 =
-* Bug fix: 
-	* In some cases, the icon didn't appear in the TinyMCE button bar
+
+* Bugfix: In some cases, the icon didn't appear in the TinyMCE button bar
 
 = Version 1.1.2 - Feb 13th, 2009 (not published) =
-* Bug fix: 
-	* Enable cache management again
+
+* Bugfix: Enable cache management again
 
 = Version 1.1.1 - Feb 11th, 2009 =
-* Bug fix
-	* Disable temporarily the management of the cache
+
+* Bugfix: Disable temporarily the management of the cache
 	
 = Version 1.1.0 - Feb 9th, 2009 =
-* Bug fix
-	* Sanitize title
-	* Improve some translations (french)
-* New feature:
-	* Add option (label) to choose file label (filename or document title)
-* Others changes: 
-	* Update internal library
+
+* Bugfix: Sanitize title
+* Bugfix: Improve some translations (french)
+* New: Add option (label) to choose file label (filename or document title)
+* Change: Update internal library
 
 = Version 1.0.1 - Feb 2nd, 2009 =
-* Just update readme.txt file (author and plugin URL)
+
+* Change: Just update readme.txt file (author and plugin URL)
 
 = Version 1.0 - Feb 2nd, 2009 =
-* First release
+
+* New: First release
 
 == Licence ==
 
