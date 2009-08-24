@@ -307,3 +307,35 @@ msgstr ""
 #: eg-attachments-admin.inc.php:
 msgid "Url to login or register page:"
 msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "This option sets the default behavior of all shortcodes and auto-shortcode. You can change the behavior of specific shortcodes by adding \"logged_users\" parameter."
+msgstr ""
+
+#: window.php
+msgid "Force \"saveas\": "
+msgstr ""
+
+#: window.php
+msgid "Attachments access: "
+msgstr ""
+
+#: window.php
+msgid "No"
+msgstr ""
+
+#: window.php
+msgid "Yes"
+msgstr ""
+
+#: window.php
+msgid "Use default parameter"
+msgstr ""
+
+#: window.php
+msgid "All users"
+msgstr ""
+
+#: window.php
+msgid "Only logged  users"
+msgstr ""

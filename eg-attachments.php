@@ -3,7 +3,7 @@
 Plugin Name: EG-Attachments
 Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 1.4.0
+Version: 1.4.1
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,31 +26,12 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('EG_ATTACH_COREFILE', 	  __FILE__);
-define('EG_ATTACH_VERSION', 	  '1.4.0');
-define('EG_ATTACH_OPTIONS_ENTRY', 'EG-Attachments-Options');
-define('EG_ATTACH_TEXTDOMAIN',    'eg-attachments');
+define('EG_ATTACH_COREFILE', __FILE__);
+define('EG_ATTACH_VERSION',  '1.4.1');
 
-$EG_ATTACH_DEFAULT_OPTIONS = array(
-	'shortcode_auto'			  => 0,
-	'shortcode_auto_where'		  => 'post',
-	'shortcode_auto_title'  	  => '',
-	'shortcode_auto_title_tag'	  => 'h2',
-	'shortcode_auto_size'		  => 'large',
-	'shortcode_auto_doc_type'	  => 'document',
-	'shortcode_auto_orderby'	  => 'title',
-	'shortcode_auto_order'		  => 'ASC',
-	'shortcode_auto_label'		  => 'filename',
-	'shortcode_auto_fields'		  => 'caption',
-	'shortcode_auto_icon'		  => 1,
-	'force_saveas' 				  => 0,
-	'logged_users_only'			  => 0,
-	'login_url'					  => '',
-	'uninstall_del_option'		  => 0,
+require_once('eg-attachments-config.inc.php');
 
-);
-
-if (! class_exists('EG_Plugin_106')) {
+if (! class_exists('EG_Plugin_107')) {
 	require('lib/eg-plugin.inc.php');
 }
 

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-08-14 14:07+0100\n"
+"PO-Revision-Date: 2009-08-24 08:40+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -298,7 +298,7 @@ msgstr "Comportement du shortcode"
 
 #: eg-attachments-admin.inc.php:
 msgid "Attachments access"
-msgstr "Acc&egrave; aux pi&egrave;ces jointes"
+msgstr "Acc&egrave;s aux pi&egrave;ces jointes"
 
 #: eg-attachments-admin.inc.php:
 msgid "Restrict access to the attachments to logged users only!"
@@ -307,4 +307,36 @@ msgstr "Limiter acc&egrave; des pi&egrave;ces jointes aux utilisateurs enregistr
 #: eg-attachments-admin.inc.php:
 msgid "Url to login or register page:"
 msgstr "Url du formulaire de connexion ou d'enregistrement:"
+
+#: eg-attachments-admin.inc.php:
+msgid "This option sets the default behavior of all shortcodes and auto-shortcode. You can change the behavior of specific shortcodes by adding <code>logged_users</code> parameter."
+msgstr "Cette option d&eacute;finit le comportement par d&eacute;faut de tous les shortcodes et de l'auto-shortcode. Vous pouvez ensuite changer ce comportement shortcode par shortcode, en leur ajoutant le param&egrave;tre <code>logged_users</code>."
+
+#: window.php
+msgid "Force \"saveas\": "
+msgstr "Forcer le \"t&eacute;l&eacute;chargement\": "
+
+#: window.php
+msgid "Attachments access: "
+msgstr "Acc&egrave;s aux pi&egrave;ces jointes: "
+
+#: window.php
+msgid "No"
+msgstr "Non"
+
+#: window.php
+msgid "Yes"
+msgstr "Oui"
+
+#: window.php
+msgid "Use default parameter"
+msgstr "Utiliser le param&egrave;tre par d&eacute;faut"
+
+#: window.php
+msgid "All users"
+msgstr "Tous les utilisateurs"
+
+#: window.php
+msgid "Only logged  users"
+msgstr "Utilisateurs connect&eacute;s seulement"
 

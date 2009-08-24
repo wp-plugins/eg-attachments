@@ -11,11 +11,11 @@ function insertEGAttachmentsShortCode() {
 	if (sortorder != 0 && orderby != 0 )
 		tagtext = tagtext + " orderby=\"" + orderby + " " + sortorder + "\"";
 
-	var listsize = document.getElementById('listsize').value;
+	var listsize = document.getElementById('size').value;
 	if (listsize != 0 )
 		tagtext = tagtext + " size=" + listsize;
 
-	var doclabel = document.getElementById('doclabel').value;
+	var doclabel = document.getElementById('label').value;
 	if (doclabel != 0 )
 		tagtext = tagtext + " label=" + doclabel;
 
@@ -55,6 +55,14 @@ function insertEGAttachmentsShortCode() {
 	var titletag = document.getElementById('titletag').value;
 	if (titletag != "h2" )
 		tagtext = tagtext + " titletag=\"" + titletag + "\"";
+
+	var force_saveas = document.getElementById('force_saveas').value;
+	if (force_saveas != "-1" )
+		tagtext = tagtext + " force_saveas=\"" + force_saveas + "\"";
+
+	var logged_users = document.getElementById('logged_users').value;
+	if (logged_users != "-1" )
+		tagtext = tagtext + " logged_users=\"" + logged_users + "\"";
 
 	tagtext = tagtext + "]";
 		

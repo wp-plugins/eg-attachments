@@ -4,7 +4,7 @@ Donate link: http://www.emmanuelgeorjon.com/
 Tags: post, attachment
 Requires at least: 2.6.0
 Tested up to: 2.8.4
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -72,7 +72,7 @@ The shortcode options are:
 * **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
 * **icon** specify if icons will be displayed or not. Default value: 1 or TRUE. If value is 0 or FALSE, list displayed will be ul/li (html simple list) rather than dl/dt/dd (definition list).
 Two specific keywords can be used with **docid** option: **first** and **last** allow to display the first and the last attachment of list. Be careful, **first** or **last** can change according the sort option ! These keywords must be used alone. You can have syntax such as: first,10,11.
-* **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: 0.
+* **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: the default value is defined in the **Settings page** in administration interface.
 
 **Example 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
 
@@ -94,7 +94,7 @@ The options in the section are
 = Could I have some examples of the usage of `orderby` shortcode option? =
 
 * **orderby="mime DESC"** to sort by mime type descending,
-* **orderby=date** to sort by date ascending,
+* **orderby=date** or **orderby="date ASC"** to sort by date ascending,
 
 = How can I display attachments by modifying my templates? =
 In your `single.php` file, add the following code: `<?php echo do_shortcode('[attachments *shortcode options*]'); ?>`
@@ -122,6 +122,12 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 
 == Changelog ==
 
+= Version 1.4.1 - Aug 24th, 2009 =
+
+* New: Add parameters to the shortcode window in TinyMCE editor
+* Bugfix: auto-shortcode behavior with *logged_users* parameter
+* Change: Internal library update.
+
 = Version 1.4.0 - Aug 14th, 2009 =
 
 * Bugfix: Force Saveas option doesn't work,
@@ -132,6 +138,7 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 = Version 1.3.1 - July 18th, 2009 =
 
 * Bugfix: Auto-shortcode displays attachments evenif post is password protected
+* Bugfix: in readme.txt, default value of *logged_users* option.
 * Change: Changes on internal libraries
 
 = Version 1.3.0 - June 22th, 2009 =

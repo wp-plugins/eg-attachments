@@ -9,24 +9,10 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_106 {
+	Class EG_Attachments extends EG_Plugin_107 {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
-
-		var $eg_attachment_shortcode_defaults = array(
-			'orderby'  		=> 'title ASC',
-			'size'     		=> 'large',
-			'doctype'  		=> 'document',
-			'docid'    		=> 0,
-			'title'    		=> '',
-			'titletag' 		=> 'h2',
-			'label'    		=> 'filename',
-			'force_saveas'	=> -1,
-			'fields'		=> 'caption',
-			'icon'			=> 1,
-			'logged_users'  => -1
-		);
 
 		/**
 		 * Implement init action
@@ -194,6 +180,7 @@ if (! class_exists('EG_Attachments')) {
 		  */
 		function get_attachments($attr)  {
 			global $post, $wp_version;
+			global $EG_ATTACHMENT_SHORTCODE_DEFAULTS;
 
 			if (function_exists('hidepost_filter_post'))
 				global $hidepost_hide_link;
@@ -203,8 +190,8 @@ if (! class_exists('EG_Attachments')) {
 			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
 			// Preparing parameters and query
-			$this->eg_attachment_shortcode_defaults['id'] = $post->ID;
-			extract( shortcode_atts( $this->eg_attachment_shortcode_defaults, $attr ));
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['id'] = $post->ID;
+			extract( shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr ));
 
 			$id      = intval($id);
 			$orderby = addslashes($orderby);
@@ -429,7 +416,8 @@ if (! class_exists('EG_Attachments')) {
 								'orderby'      => $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order'],
 								'fields'	   => $fields,
 								'force_saveas' => $this->options['force_saveas'],
-								'icon'         => $this->options['shortcode_auto_icon']
+								'icon'         => $this->options['shortcode_auto_icon'],
+								'logged_users' => $this->options['logged_users']
 					);
 
 				$content .= $this->get_attachments($attrs);
@@ -444,9 +432,7 @@ $eg_attach = new EG_Attachments('EG-Attachments', EG_ATTACH_VERSION, EG_ATTACH_C
 
 $eg_attach->set_textdomain(EG_ATTACH_TEXTDOMAIN);
 $eg_attach->set_stylesheets('eg-attachments.css', FALSE);
-$eg_attach->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
 $eg_attach->set_wp_versions('2.5',	FALSE, '2.6', FALSE);
-$eg_attach->activate_cache(3600);
 $eg_attach->load();
 
 ?>
