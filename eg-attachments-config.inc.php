@@ -15,11 +15,11 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'shortcode_auto_label'		  => 'filename',
 	'shortcode_auto_fields'		  => 'caption',
 	'shortcode_auto_icon'		  => 1,
+	'shortcode_auto_default_opts' => 0,
 	'force_saveas' 				  => 0,
 	'logged_users_only'			  => 0,
 	'login_url'					  => '',
-	'uninstall_del_option'		  => 0,
-
+	'uninstall_del_option'		  => 0
 );
 
 $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(

@@ -78,6 +78,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'select', 'Sort Order: ',       'shortcode_auto_order',    '', '', '', '', 'regular', array( 'ASC' => 'Ascending', 'DESC' => 'Descending'));
 			$form->add_field($id_section, $id_group, 'checkbox', 'Fields: ',         'shortcode_auto_fields',   'Which fields do you want to display (large and medium size only)?', '', '', '', 'regular', array( 'caption' => 'Caption', 'description' => 'Description'));
 			$form->add_field($id_section, $id_group, 'checkbox', 'Check the box to display icons',  'shortcode_auto_icon', 'Display icons: ', '', '', '', 'regular');
+			$form->add_field($id_section, $id_group, 'checkbox', 'Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?', 'shortcode_auto_default_opts', 'Default options? ', '', '', '', 'regular' );
 
 			$id_section = $form->add_section('General behavior of shortcodes');
 			$id_group   = $form->add_group($id_section, '"Save As" activation', "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases.");

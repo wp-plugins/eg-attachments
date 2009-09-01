@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-08-24 08:40+0100\n"
+"PO-Revision-Date: 2009-08-26 22:24+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -339,4 +339,20 @@ msgstr "Tous les utilisateurs"
 #: window.php
 msgid "Only logged  users"
 msgstr "Utilisateurs connect&eacute;s seulement"
+
+#: eg-attachments-admin.inc.php:
+msgid "Display icons: "
+msgstr "Afficher les ic&ocirc;ones:"
+
+#: eg-attachments-admin.inc.php:
+msgid "Check the box to display icons"
+msgstr "Cocher l'option pour afficher les ic&ocirc;nes."
+
+#: eg-attachments-admin.inc.php:
+msgid "Default options? "
+msgstr "Options par d&eacute;faut "
+
+#: eg-attachments-admin.inc.php:
+msgid "Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?"
+msgstr "Souhaitez-vous utiliser les options de l'auto-shortcode comme valeurs par d&eacute;faut pour le bouton EG-Attachments dans l'&eacute;diteur TinyMCE?"
 

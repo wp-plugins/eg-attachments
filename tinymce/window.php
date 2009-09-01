@@ -30,6 +30,31 @@ if (isset($_GET['post_id'])) {
 	}
 }
 
+$eg_attach_options = get_option(EG_ATTACH_OPTIONS_ENTRY);
+
+if (!$eg_attach_options['shortcode_auto_default_opts']) {
+	$default_values = $EG_ATTACHMENT_SHORTCODE_DEFAULTS;
+	list($default_values['orderby'], $default_values['sortorder']) = split(' ', $EG_ATTACHMENT_SHORTCODE_DEFAULTS['orderby'] );
+	$default_values['force_saveas'] = $eg_attach_options['force_saveas'];
+	$default_values['logged_users'] = $eg_attach_options['logged_users_only'];
+}
+else {
+	$default_values = array(
+		'orderby'  		=> $eg_attach_options['shortcode_auto_orderby'],
+		'order'			=> $eg_attach_options['shortcode_auto_order'],
+		'size'     		=> $eg_attach_options['shortcode_auto_size'],
+		'doctype'  		=> $eg_attach_options['shortcode_auto_doc_type'],
+		'docid'    		=> 0,
+		'title'    		=> $eg_attach_options['shortcode_auto_title'],
+		'titletag' 		=> $eg_attach_options['shortcode_auto_title_tag'],
+		'label'    		=> $eg_attach_options['shortcode_auto_label'],
+		'force_saveas'	=> $eg_attach_options['force_saveas'],
+		'fields'		=> $eg_attach_options['shortcode_auto_fields'],
+		'icon'			=> $eg_attach_options['shortcode_auto_icon'],
+		'logged_users'  => $eg_attach_options['logged_users_only']
+	);
+}
+
 $select_fields = array(
 	'orderby'      => array(
 		'ID'       => __('ID',        EG_ATTACH_TEXTDOMAIN),
@@ -67,16 +92,12 @@ $select_fields = array(
 	)	
 );
 
-list($EG_ATTACHMENT_SHORTCODE_DEFAULTS['orderby'], 
-     $EG_ATTACHMENT_SHORTCODE_DEFAULTS['sortorder']) = split(' ', $EG_ATTACHMENT_SHORTCODE_DEFAULTS['orderby'] );
-
-function get_select($key) {
+function get_select($key, $default_values) {
 	global $select_fields;
-	global $EG_ATTACHMENT_SHORTCODE_DEFAULTS;
 	
 	$string = '<select id="'.$key.'" name="'.$key.'">';
 	foreach ($select_fields[$key] as $id => $value) {
-		if ($EG_ATTACHMENT_SHORTCODE_DEFAULTS[$key] == $id) $selected = 'selected'; else $selected = '';
+		if ($default_values[$key] == $id) $selected = 'selected'; else $selected = '';
 		$string .= '<option value="'.$id.'" '.$selected.'>'.$value.'</option>';
 	}
 	$string .= '</select>';
@@ -97,25 +118,25 @@ function get_select($key) {
 		<table border="0">
 			<tr>
 				<td valign="top"><label for="orderby"><?php _e('Order by: ',EG_ATTACH_TEXTDOMAIN); ?></label></td>
-				<td><?php echo get_select('orderby'); ?> <?php echo get_select('sortorder'); ?></td>
+				<td><?php echo get_select('orderby', $default_values); ?> <?php echo get_select('sortorder', $default_values); ?></td>
 			</tr>
 			<tr>
 				<td valign="top"><label for="listsize"><?php _e('List size: ',EG_ATTACH_TEXTDOMAIN); ?></label></td>
-				<td><?php echo get_select('size'); ?></td>
+				<td><?php echo get_select('size', $default_values); ?></td>
 			</tr>
 			<tr>
 				<td valign="top"><label for="doclabel"><?php _e('Document label',EG_ATTACH_TEXTDOMAIN); ?></label></td>
-				<td><?php echo get_select('label'); ?></td>
+				<td><?php echo get_select('label', $default_values); ?></td>
 			</tr>
 			<tr>
 				<td valign="top"><label for="doctype"><?php _e('Document type',EG_ATTACH_TEXTDOMAIN); ?></label></td>
-				<td><?php echo get_select('doctype'); ?></td>
+				<td><?php echo get_select('doctype', $default_values); ?></td>
 			</tr>
 			<tr>
 				<td valign="top"><?php _e('Fields: ',EG_ATTACH_TEXTDOMAIN); ?></td>
 				<td>
-					<input type="checkbox" id="field_caption" <?php echo (strpos($EG_ATTACHMENT_SHORTCODE_DEFAULTS['fields'], 'caption')!==FALSE?'checked':''); ?> /><?php _e('Caption',EG_ATTACH_TEXTDOMAIN); ?><br />
-					<input type="checkbox" id="field_description" <?php echo (strpos($EG_ATTACHMENT_SHORTCODE_DEFAULTS['fields'], 'description')!==FALSE?'checked':''); ?>/><?php _e('Description',EG_ATTACH_TEXTDOMAIN); ?>
+					<input type="checkbox" id="field_caption" <?php echo (strpos($default_values['fields'], 'caption')!==FALSE?'checked':''); ?> /><?php _e('Caption',EG_ATTACH_TEXTDOMAIN); ?><br />
+					<input type="checkbox" id="field_description" <?php echo (strpos($default_values['fields'], 'description')!==FALSE?'checked':''); ?>/><?php _e('Description',EG_ATTACH_TEXTDOMAIN); ?>
 				</td>
 			</tr>
 			<tr>
@@ -130,15 +151,15 @@ function get_select($key) {
 			</tr>
 			<tr>
 				<td valign="top"><label for="titletag"><?php _e('HTML Tag for title: ',EG_ATTACH_TEXTDOMAIN); ?></label></td>
-				<td><input id="titletag" name="titletag" type="text" value="<?php echo $EG_ATTACHMENT_SHORTCODE_DEFAULTS['titletag']; ?>" /></td>
+				<td><input id="titletag" name="titletag" type="text" value="<?php echo $default_values['titletag']; ?>" /></td>
 			</tr>
 			<tr>
 				<td valign="top"><label for="force_saveas"><?php _e('Force "saveas": ',EG_ATTACH_TEXTDOMAIN); ?></label></td>
-				<td><?php echo get_select('force_saveas'); ?></td>
+				<td><?php echo get_select('force_saveas', $default_values); ?></td>
 			</tr>
 			<tr>
 				<td valign="top"><label for="logged_users"><?php _e('Attachments access: ',EG_ATTACH_TEXTDOMAIN); ?></label></td>
-				<td><?php echo get_select('logged_users'); ?></td>
+				<td><?php echo get_select('logged_users', $default_values); ?></td>
 			</tr>
 		</table>
 	<div class="mceActionPanel">

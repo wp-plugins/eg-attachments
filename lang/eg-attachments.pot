@@ -339,3 +339,19 @@ msgstr ""
 #: window.php
 msgid "Only logged  users"
 msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Display icons: "
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Check the box to display icons"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Default options? "
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Do you want that auto shortcode options become the default options for the TinyMCE EG-Series Editor?"
+msgstr ""
