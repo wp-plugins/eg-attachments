@@ -19,7 +19,7 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'force_saveas' 				  => 0,
 	'logged_users_only'			  => 0,
 	'login_url'					  => '',
-	'uninstall_del_option'		  => 0
+	'uninstall_del_options'		  => 0
 );
 
 $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(

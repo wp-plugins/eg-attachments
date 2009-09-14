@@ -13,7 +13,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_107 {
+	Class EG_Attachments_Admin extends EG_Plugin_109 {
 
 		function plugins_loaded() {
 
@@ -90,7 +90,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			$id_section = $form->add_section('Uninstall options', '', 'Be careful: these actions cannot be cancelled. All plugin\'s options will be deleted while plugin uninstallation.');
 			$id_group   = $form->add_group($id_section, 'Options');
-			$form->add_field($id_section, $id_group, 'checkbox', 'Delete options during uninstallation.', 'uninstall_del_option');
+			$form->add_field($id_section, $id_group, 'checkbox', 'Delete options during uninstallation.', 'uninstall_del_options');
 
 			$form->add_button('submit', 'eg_attach_options_submit', 'Save changes');
 			$form->add_button('reset',  'eg_attach_options_reset',  'Cancel changes');
@@ -99,6 +99,31 @@ if (! class_exists('EG_Attachments_Admin')) {
 			return ($form);
 		}
 
+		/**
+		 * install_upgrade
+		 *
+		 * 
+		 *
+		 * @package EG-Attachments
+		 *
+		 * @param none
+		 * @return none
+		 */
+		function install_upgrade() {
+		
+			$previous_options = parent::install_upgrade();
+/*
+			if ($previous_options !== FALSE && version_compare($previous_options['version'], '1.4.3', '<')) {
+				if (isset($previous_options['uninstall_del_option'])) {
+					$this->options['uninstall_del_options'] = $previous_options['uninstall_del_option'];
+					if (isset($this->options['uninstall_del_option'])) 
+						unset($this->options['uninstall_del_option']);
+					update_option($this->options_entry, $this->options);
+				}
+			}
+*/
+		} // End of install_upgrade
+		
 		/**
 		 * options_page
 		 *

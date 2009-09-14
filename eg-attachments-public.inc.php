@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_107 {
+	Class EG_Attachments extends EG_Plugin_109 {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
@@ -191,8 +191,13 @@ if (! class_exists('EG_Attachments')) {
 
 			// Preparing parameters and query
 			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['id'] = $post->ID;
-			extract( shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr ));
-
+			$param_list = shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr );
+			foreach ($param_list as $key => $value) {
+				if (trim(strtolower($value)) == 'false') $param_list[$key] = 0;
+				elseif (trim(strtolower($value)) == 'true') $param_list[$key] = 1; 
+			}
+			extract($param_list);
+	
 			$id      = intval($id);
 			$orderby = addslashes($orderby);
 
