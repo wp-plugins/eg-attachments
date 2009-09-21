@@ -88,7 +88,7 @@ $select_fields = array(
 	'logged_users' => array(
 		'-1'       => __('Use default parameter', EG_ATTACH_TEXTDOMAIN),
 		'0'        => __('All users', EG_ATTACH_TEXTDOMAIN),
-		'1'        => __('Only logged  users', EG_ATTACH_TEXTDOMAIN)
+		'1'        => __('Only logged users', EG_ATTACH_TEXTDOMAIN)
 	)	
 );
 

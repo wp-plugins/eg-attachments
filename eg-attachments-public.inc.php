@@ -38,7 +38,16 @@ if (! class_exists('EG_Attachments')) {
 			}
 		} /* End of init */
 
-
+		function prepare_url($url) {
+			global $wp_version;
+		
+			if (version_compare($wp_version, '2.8', '<')) 
+				return sanitize_url($url);
+			else
+				return esc_url_raw($url, array('http', 'https'));
+		}
+		
+		
 		/**
 		 * manage_link
 		 *
@@ -58,8 +67,41 @@ if (! class_exists('EG_Attachments')) {
 				if (! $attach || $attach->post_type != 'attachment')
 					return;
 
+				$stats_enable = ($this->options['stats_enable'] && $this->options['clicks_table']);
+				if ($stats_enable) {
+					$stat_ip = (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : FALSE);
+					if ($stat_ip !== FALSE && $this->options['stats_ip_exclude'] != '')
+						$stats_enable = ( in_array($stat_ip, explode(',', $this->options['stats_ip_exclude'])) );
+				}
+				
+				if ($stats_enable) {
+					$post = get_post($_GET['pid']);
+					if (! $post || ! in_array($post->post_type, array('post', 'page')))
+						return;
+
+					// Count click
+					$sql = 'SELECT click_id FROM '.$wpdb->prefix.'eg_attachments_clicks '.
+							'WHERE attach_id='.$attach->ID.' AND post_id='.$post->ID.' AND CURRENT_DATE() = click_date';
+					
+					$click_id = $wpdb->get_results($sql);
+					
+					if (! $click_id){
+						$sql = 'INSERT INTO '.$wpdb->prefix.'eg_attachments_clicks'.
+							' SET attach_id='.$attach->ID.', attach_title="'.$attach->post_title.'"'.
+							', post_id='.$post->ID.', post_title="'.$post->post_title.'"'.
+							', click_date= CURRENT_DATE()'.
+							', clicks_number=1';
+					}
+					else {
+						$sql = 'UPDATE '.$wpdb->prefix.'eg_attachments_clicks'.
+							' SET clicks_number = clicks_number + 1'.
+							' WHERE click_id='.$click_id[0]->click_id;	
+					}
+					$wpdb->query($sql);
+				} // End of stat enable
+
 				if ($_GET['sa'] < 1) {
-					wp_redirect($attach->guid);
+					wp_redirect($this->prepare_url($attach->guid));
 					exit;
 				} // End of redirect mode
 				else {
@@ -73,7 +115,7 @@ if (! class_exists('EG_Attachments')) {
 					header("Content-Disposition: attachment; filename=".$url['basename'].";");
 					header("Content-Transfer-Encoding: binary");
 					// header("Content-Length: ".filesize($file_path));
-					@readfile($attach->guid);
+					@readfile($this->prepare_url($attach->guid));
 					exit;
 				} // End of Download mode
 			} // End of parameters OK
@@ -191,13 +233,8 @@ if (! class_exists('EG_Attachments')) {
 
 			// Preparing parameters and query
 			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['id'] = $post->ID;
-			$param_list = shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr );
-			foreach ($param_list as $key => $value) {
-				if (trim(strtolower($value)) == 'false') $param_list[$key] = 0;
-				elseif (trim(strtolower($value)) == 'true') $param_list[$key] = 1; 
-			}
-			extract($param_list);
-	
+			extract( shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr ));
+
 			$id      = intval($id);
 			$orderby = addslashes($orderby);
 

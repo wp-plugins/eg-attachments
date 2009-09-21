@@ -18,7 +18,7 @@ You can insert the **shortcode** by hand if you want, or use it in a template us
 
 An another way is to activate option **auto shortcode** that adds automaticaly lists of attachments at the end of posts or pages.
 
-The list includes for each attachments:
+The list includes, for each attachments:
 
 * Icon, 
 * Title, 
@@ -36,6 +36,19 @@ Options are
 * Description field to display (caption and/or description),
 * Force "Save as" (rather than display document),
 * Restrict access of the attachments to the logged users.
+
+Since the version 1.5.0, **EG-Attachments** plugin counts the number of clicks occuring on each attached document.
+
+= Translations =
+
+The plugin comes with English, French and Russian. Thanks to the following people for their contributions:
+
+* Russian (ru) - [Fatcow](http://www.fatcow.com)
+
+If you want to help to translate the plugin to your language, please have a look at the eg_archives.pot file which contains all definitions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
+
+If you have created your own language pack, or have an update of an existing one, you can send [gettext .po and .mo files](http://codex.wordpress.org/Translating_WordPress) to me so that I can bundle it into the plugin.
+
 
 == Installation ==
 
@@ -89,6 +102,10 @@ The options in the section are
 
 **Example:** if you check the option *Force "Save As" when users click on the attachments*, you force download for all attachments displayed by auto-shortcodes, and manual shortcode, except if you specify `force_saveas` in a shortcode option.
 
+= Statistics =
+
+Just activate the **clicks counter** in the menu *Settings/EG-Attachments*, and then go to the menu **Tools / EG-Attachments statistics** to see how many clicks you have, for each document.
+
 == Frequently Asked Questions ==
 
 = Could I have some examples of the usage of `orderby` shortcode option? =
@@ -111,6 +128,9 @@ Use FTP client and text editor to modify it.
 Just copy/upload your own icons in the `images` subdirectory of the plugin.
 Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file extension.
 
+= I click on a document to test statistics, but counters stay flat =
+EG-Attachments uses a *cache system* to build statistics, avoiding to launch heavy queries, each time you want to see statistics. The cache duration is 15 minutes. If you want to test statistics, click on several attached files, and then wait 15 minutes, your clicks will appear.
+
 == Screenshots ==
 
 1. List of attachments sorted by name, with small icons,
@@ -118,9 +138,18 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 3. List of attachments, with large icons,
 4. EG-Attachments button in the TinyMCE toolbar,
 5. Insert attachments window,
-6. Options page in administration interface.
+6. Options page in administration interface,
+7. Global statistics page,
+8. Detailed statistics page.
 
 == Changelog ==
+
+= Version 1.5.0 - Sept 21st, 2009 =
+
+* New: click-tracker,
+* New: translation in Belarusian (thanks to Fatcow),
+* Bugfix: try to fix bug that occurs when file names contain non alphabetical characters,
+* Change: Internal library update.
 
 = Version 1.4.3 - Sept 14, 2009 =
 
@@ -240,7 +269,3 @@ Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file
 == Licence ==
 
 This plugin is released under the GPL, you can use it free of charge on your personal or commercial blog.
-
-== Translations ==
-
-The plugin comes with French and English translations, please refer to the [WordPress Codex](http://codex.wordpress.org/Installing_WordPress_in_Your_Language "Installing WordPress in Your Language") for more information about activating the translation. If you want to help to translate the plugin to your language, please have a look at the eg_attachments.pot file which contains all defintions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).

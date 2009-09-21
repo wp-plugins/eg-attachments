@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-08-26 22:24+0100\n"
+"PO-Revision-Date: 2009-09-21 16:05+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -355,4 +355,136 @@ msgstr "Options par d&eacute;faut "
 #: eg-attachments-admin.inc.php:
 msgid "Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?"
 msgstr "Souhaitez-vous utiliser les options de l'auto-shortcode comme valeurs par d&eacute;faut pour le bouton EG-Attachments dans l'&eacute;diteur TinyMCE?"
+
+#: eg-attachments-admin.inc.php:
+msgid "Click counter"
+msgstr "Compteur de clics / t&eacute;l&eacute;chargements"
+
+#: eg-attachments-admin.inc.php:
+msgid "Activate"
+msgstr "Activer"
+
+#: eg-attachments-admin.inc.php:
+msgid "Record all clicks occuring in the listed attachements."
+msgstr "Enregistrer les statistiques des clics sur les pi&egrave;ces jointes."
+
+#: eg-attachments-admin.inc.php:
+msgid "Exclude IP"
+msgstr "Adresses IP &agrave; exclure"
+
+#: eg-attachments-admin.inc.php:
+msgid "EG-Attachments Statistics"
+msgstr "Statistiques EG-Attachments"
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments"
+msgstr "Pi&egrave;ces jointes"
+
+#: eg-attachments-admin.inc.php:
+msgid "All<br />time"
+msgstr "Toute la p&eacute;riode"
+
+#: eg-attachments-admin.inc.php:
+msgid "Last<br />month"
+msgstr "Mois<br />dernier"
+
+#: eg-attachments-admin.inc.php:
+msgid "Current<br />month"
+msgstr "Mois<br />courant"
+
+#: eg-attachments-admin.inc.php:
+msgid "Last<br />week"
+msgstr "Semaine<br />derni&egrave;re"
+
+#: eg-attachments-admin.inc.php:
+msgid "Current<br />week"
+msgstr "Semaine<br />actuelle"
+
+#: eg-attachments-admin.inc.php:
+msgid "Yesterday"
+msgstr "Hier"
+
+#: eg-attachments-admin.inc.php:
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: eg-attachments-admin.inc.php:
+msgid "Top 10"
+msgstr "Top 10"
+
+#: eg-attachments-admin.inc.php:
+msgid "Top 25"
+msgstr "Top 25"
+
+#: eg-attachments-admin.inc.php:
+msgid "Global"
+msgstr "Global"
+
+#: eg-attachments-admin.inc.php:
+msgid "Details of %s"
+msgstr "D&eacute;tails du document %s"
+
+#: eg-attachments-admin.inc.php:
+msgid "History of \"%s\" "
+msgstr "Historique du document \"%s\" "
+
+#: eg-attachments-admin.inc.php:
+msgid "Clicks"
+msgstr "Clics"
+
+#: eg-attachments-admin.inc.php:
+msgid "Posts"
+msgstr "Articles"
+
+#: eg-attachments-admin.inc.php:
+msgid "Total"
+msgstr "Total"
+
+#: eg-attachments-admin.inc.php:
+msgid "Jan"
+msgstr "Jan"
+
+#: eg-attachments-admin.inc.php:
+msgid "Feb"
+msgstr "F&eacute;v"
+
+#: eg-attachments-admin.inc.php:
+msgid "Mar"
+msgstr "Mar"
+
+#: eg-attachments-admin.inc.php:
+msgid "Apr"
+msgstr "Avr"
+
+#: eg-attachments-admin.inc.php:
+msgid "May"
+msgstr "Mai"
+
+#: eg-attachments-admin.inc.php:
+msgid "Jun"
+msgstr "Juin"
+
+#: eg-attachments-admin.inc.php:
+msgid "Jul"
+msgstr "Juil"
+
+#: eg-attachments-admin.inc.php:
+msgid "Aug"
+msgstr "Ao&ucirc;"
+
+#: eg-attachments-admin.inc.php:
+msgid "Sep"
+msgstr "Sep"
+
+#: eg-attachments-admin.inc.php:
+msgid "Oct"
+msgstr "Oct"
+
+#: eg-attachments-admin.inc.php:
+msgid "Nov"
+msgstr "Nov"
+
+#: eg-attachments-admin.inc.php:
+msgid "Dec"
+msgstr "D&eacute;c"
 

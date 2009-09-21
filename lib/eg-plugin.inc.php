@@ -72,6 +72,7 @@ if (!class_exists('EG_Plugin_109')) {
 		var $requirements_error_msg = '';
 
 		var $pages;
+		var $hook;
 
 		var $debug_msg     = FALSE;
 		var $debug_file    = '';
@@ -611,11 +612,11 @@ if (!class_exists('EG_Plugin_109')) {
 		 */
 		function install_upgrade() {
 
-			if (! isset($this->options)) 
+			if (! $this->options) 
 				$this->options = get_option($this->options_entry);
 
 			if ($this->options === FALSE) {
-
+			
 				$previous_options = FALSE;
 				// Create option from the defaults
 				if ($this->default_options !== FALSE) {
@@ -625,6 +626,7 @@ if (!class_exists('EG_Plugin_109')) {
 				add_option($this->options_entry, $this->options);
 			} // End of options empty (first install)
 			else {
+		
 				$previous_options = $this->options;
 				$current_version = (isset($this->options['version'])? $this->options['version']: '0.0.0');
 
@@ -889,18 +891,23 @@ if (!class_exists('EG_Plugin_109')) {
 						$option_page_url = $page->page_url;
 					}
 
-					$this->pages[$id]->hook = call_user_func($page_list[$page->type],
+					$hook = call_user_func($page_list[$page->type],
 									__($page->page_title, $this->textdomain),
 									__($page->menu_title, $this->textdomain),
 									$page->access_level,
 									$page->page_url,
 									array(&$this, $page->display_callback));
 
-					if ($page->load_callback !== FALSE)
-						add_action('load-'.$this->pages[$id]->hook, array(&$this, $page->load_callback));
-
-					if ($page->load_scripts !== FALSE)
-						add_action('admin_print_scripts-'.$this->pages[$id]->hook, array(&$this, $page->load_scripts));
+					$this->hooks['display'][$page->display_callback][] = $hook;
+									
+					if ($page->load_callback !== FALSE) {
+						add_action('load-'.$hook, array(&$this, $page->load_callback));
+						$this->hooks['load'][$page->load_callback][] = $hook;
+					}
+					if ($page->load_scripts !== FALSE) {
+						add_action('admin_print_scripts-'.$hook, array(&$this, $page->load_scripts));
+						$this->hooks['scipts'][$page->load_scripts][] = $hook;
+					}
 				}
 				if ($option_page_url != '') {
 					if (version_compare($wp_version, '2.7', '<')) {
@@ -911,9 +918,10 @@ if (!class_exists('EG_Plugin_109')) {
 									array( &$this, 'filter_plugin_actions_27_and_after') );
 					}
 				}
-			}
+				unset($this->pages);
+			} // End of unset this->pages
 			return ($option_page_url);
-		}
+		} // End of admin_menu
 
 		/**
 		  * display_message
@@ -933,7 +941,7 @@ if (!class_exists('EG_Plugin_109')) {
 				</div>
 			<?php
 			}
-		} /* --- end of display_message --- */
+		} // End of display_message
 
 		/**
 		 * cache_init
@@ -1222,10 +1230,10 @@ if (!class_exists('EG_Plugin_109')) {
 
 			if ($this->debug_msg) {
 				$debug_info = debug_backtrace();
-				$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - '.$debug_info[2]['function'].' - ';
+				$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - '.$debug_info[2]['function'].' - '.$msg;
 
 				if ($this->debug_file != '')
-					file_put_contents($this->debug_file, $output.$msg."\n", FILE_APPEND);
+					file_put_contents($this->debug_file, $output."\n", FILE_APPEND);
 				else
 					echo $output.$msg.'<br />';
 			}
