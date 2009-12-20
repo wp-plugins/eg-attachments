@@ -3,8 +3,8 @@ Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
 Requires at least: 2.6.0
-Tested up to: 2.8.4
-Stable tag: 1.5.0
+Tested up to: 2.9.0
+Stable tag: 1.5.1
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -38,6 +38,12 @@ Options are
 * Restrict access of the attachments to the logged users.
 
 Since the version 1.5.0, **EG-Attachments** plugin counts the number of clicks occuring on each attached document.
+
+= Contributions =
+
+Thanks to 
+
+* [Rebekah](http://www.learntowebdesign.com/) for her [video tutorial](http://www.learntowebdesign.com/2009/12/placing-attachments-wordpress-post-page/)
 
 = Translations =
 
@@ -143,6 +149,10 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 8. Detailed statistics page.
 
 == Changelog ==
+
+= Version 1.5.1 - Dec 20th, 2009 =
+
+* Bugfix: in the "edit posts" page, all fields was empty when using EG-Attachments.
 
 = Version 1.5.0 - Sept 21st, 2009 =
 
