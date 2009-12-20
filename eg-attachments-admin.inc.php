@@ -4,6 +4,10 @@ if (! class_exists('EG_Forms_105')) {
 	require('lib/eg-forms.inc.php');
 }
 
+if (! class_exists('EG_Cache_100')) {
+	require_once('lib/eg-tools.inc.php');
+}
+
 if (! class_exists('EG_Attachments_Admin')) {
 
 	/**
@@ -14,6 +18,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 * @package EG-Attachments
 	 */
 	Class EG_Attachments_Admin extends EG_Plugin_112 {
+
+		var $cache;
 
 		function plugins_loaded() {
 
@@ -51,6 +57,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 		function init() {
 
 			parent::init();
+
+			$this->cache = new EG_Cache_100('eg-attachments', 900, dirname(__FILE__).'/tmp');
 
 			// Clear cache when adding or delete attachment
 			add_action('add_attachment',    array(&$this, 'clean_cache' ));
@@ -432,8 +440,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$sql = 'DELETE FROM '.$wpdb->prefix.'eg_attachments_clicks '.
 					'WHERE click_date<'.date('Y-m-d H:i:s', mktime(0, 0, 0, 12, 1, date('Y')-2));
 			$status = $wpdb->query($sql);
-			
-			$global_stats = $this->cache_get('eg_attachment_clicks_total');
+
+			$global_stats = $this->cache->get('eg_attachment_clicks_total');
 			if (! $global_stats) {
 
 				$sql = 'SELECT attach_id,attach_title, SUM(clicks_number) as clicks_total'.
@@ -511,7 +519,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 						}
 					} // if $results (date query) 
 					unset($results);
-					$this->cache_set('eg_attachment_clicks_total', $global_stats);
+					$this->cache->set('eg_attachment_clicks_total', $global_stats);
 				} // if $results (general query)
 			}
 
@@ -564,11 +572,10 @@ $eg_attach_admin = new EG_Attachments_Admin('EG-Attachments',
 											EG_ATTACH_OPTIONS_ENTRY,
 											$EG_ATTACH_DEFAULT_OPTIONS);
 
-// $eg_attach_admin->set_textdomain('eg-attachments');
-// $eg_attach_admin->set_wp_versions('2.5', FALSE, '2.6', FALSE);
-// $eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce');
-// $eg_attach_admin->set_stylesheets(FALSE, 'eg-attachments-admin.css');
-// $eg_attach_admin->cache_init('tmp', 900, 'eg-attachments');
+$eg_attach_admin->set_textdomain('eg-attachments');
+$eg_attach_admin->set_wp_versions('2.5', FALSE, '2.6', FALSE);
+$eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce');
+$eg_attach_admin->set_stylesheets(FALSE, 'eg-attachments-admin.css');
 // $eg_attach_admin->set_update_notice('Activation/desactivation mandatory for this update!');
 $eg_attach_admin->load();
 

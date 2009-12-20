@@ -47,7 +47,6 @@ if (! class_exists('EG_Attachments')) {
 				return esc_url_raw($url, array('http', 'https'));
 		}
 		
-		
 		/**
 		 * manage_link
 		 *
@@ -264,7 +263,7 @@ if (! class_exists('EG_Attachments')) {
 													'order'			=> $order
 												)
 											);
-				if ($attachment_list) {
+				if ($attachment_list !== FALSE && sizeof($attachment_list)>0) {
 					$attachments[$id] = $attachment_list;
 					wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
 				}

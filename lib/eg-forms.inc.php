@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: EG-Forms
-Plugin URI:
+Package Name: EG-Forms
+Package URI:
 Description: Class to build admin forms
 Version: 1.0.5
 Author: Emmanuel GEORJON
@@ -43,8 +43,8 @@ if (!class_exists('EG_Forms_105')) {
 		var $security_key ;
 		var $author_address;
 		var $access_level;
-		
-		
+
+
 		/**
 		 * EG_Forms (constructor)
 		 *
@@ -513,7 +513,8 @@ if (!class_exists('EG_Forms_105')) {
 					'</th><td>'.
 					($group->header==''?'':'<p>'.__($group->header, $this->textdomain).'</p>').
 					$this->display_field($option_name, FALSE, $default_values).
-					($group->footer==''?'':'<p>'.__($group->footer, $this->textdomain).'</p>');
+					($group->footer==''?'':'<p>'.__($group->footer, $this->textdomain).'</p>').
+					'</td></tr>';
 			} else {
 				// Several field for this group
 				echo '<tr valign="top"><th scope="row">'.__($group->title, $this->textdomain).'</th><td>'.
@@ -570,7 +571,7 @@ if (!class_exists('EG_Forms_105')) {
 				($this->id_icon!=''?'<div id="'.$this->id_icon.'" class="icon32"></div>':'').
 				($this->title==''?'':'<h2>'.__($this->title, $this->textdomain).'</h2>').
 				($this->header==''?'':'<p>'.__($this->header, $this->textdomain).'</p>');
-				
+
 			if ($this->access_level !== FALSE && ! current_user_can($this->access_level)) {
 				echo '<div id="message" class="error fade"><p>'.
 					sprintf(__('You cannot access to the synchronization page. You haven\'t the "%1s" capability. Please contact <a href="%2s">the blog administrator</a>.', $this->textdomain), $this->access_level, $this->author_address).

@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: EG-Plugin
-Plugin URI:
+Package Name: EG-Plugin
+Package URI:
 Description: Class for WordPress plugins
 Version: 1.1.2
 Author: Emmanuel GEORJON
