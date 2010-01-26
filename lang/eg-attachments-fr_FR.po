@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2009-09-21 16:05+0100\n"
+"PO-Revision-Date: 2010-01-20 20:56+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -487,4 +487,40 @@ msgstr "Nov"
 #: eg-attachments-admin.inc.php:
 msgid "Dec"
 msgstr "D&eacute;c"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom"
+msgstr "Personnalis&eacute;e"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format"
+msgstr "Format personnalis&eacute;"
+
+#: eg-attachments-admin.inc.php:
+msgid "Use this section only if you choose <strong>Custom</strong> in the <em>List format</em> field. <br />In this case, you can define how will be displayed the list of attachments. Keywords you can use are listed below."
+msgstr "Utiliser cette section uniquement si vous avez s&eacute;lectionnez <strong>Personalis&eacute;e</strong> dans la ligne <em>Liste des formats</em>.<br />Dans ce cas, vous pouvez d&eacute;finir vous-m&ecirc;me comment sera affich&eacute;e la liste des pi&egrave;ces jointes. Les mots-cl&eacute;s sont list&eacute;s ci-dessous."
+
+#: eg-attachments-admin.inc.php:
+msgid "Available keywords:<br /><table"
+msgstr "Mots-cl&eacute;s disponibles:<br /><table"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format, before list: "
+msgstr "Format personnalis&eacute;, pr&eacute;fixe de la liste:"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom list format: "
+msgstr "Format personnalis&eacute;, format de la liste:"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format, after list: "
+msgstr "Format personnalis&eacute;, suffixe de la liste:"
+
+#: eg-attachments-admin.inc.php:
+msgid "Before the excerpt"
+msgstr "Avant l'extrait"
+
+#: eg-attachments-admin.inc.php:
+msgid "Between excerpt and content"
+msgstr "Entre l'extrait et le contenu"
 

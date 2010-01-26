@@ -487,3 +487,50 @@ msgstr ""
 #: eg-attachments-admin.inc.php:
 msgid "Dec"
 msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Use this section only if you choose <strong>Custom</strong> in the <em>List format</em> field. <br />In this case, you can define how will be displayed the list of attachments. Keywords you can use are listed below.'
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Available keywords:<br /><table>
+<tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr>
+<tr><td><strong>%URL%</strong></td><td>url of document,</td></tr>
+<tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr>
+<tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr>
+<tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr>
+<tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr>
+<tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr>
+<tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr>
+<tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr>
+<tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr>
+</table>"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format, before list: "
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom list format: "
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format, after list: "
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Before the excerpt"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "Between excerpt and content"
+msgstr ""

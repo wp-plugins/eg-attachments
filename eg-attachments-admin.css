@@ -27,3 +27,7 @@ table.eg-attach-stats-details tr.histogram  td div{
 	background-color: red;
 	margin: 0 auto;
 }
+
+textarea.regular-text {
+	width: 100%;
+}

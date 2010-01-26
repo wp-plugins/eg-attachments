@@ -69,7 +69,8 @@ $select_fields = array(
 	'size'         => array(
 		'0'        => __('Large',  EG_ATTACH_TEXTDOMAIN),
 		'medium'   => __('Medium', EG_ATTACH_TEXTDOMAIN),
-		'small'    => __('Small',  EG_ATTACH_TEXTDOMAIN)
+		'small'    => __('Small',  EG_ATTACH_TEXTDOMAIN),
+		'custom'   => __('Custom', EG_ATTACH_TEXTDOMAIN)
 	),
 	'label'        => array(
 		'0'        => __('File name',      EG_ATTACH_TEXTDOMAIN),

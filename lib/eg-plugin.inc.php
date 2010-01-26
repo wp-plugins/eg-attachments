@@ -3,7 +3,7 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.1.2
+Version: 1.1.3
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,7 +26,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Plugin_112')) {
+if (!class_exists('EG_Plugin_113')) {
 
 	/**
 	  * Class EG_Plugin
@@ -34,7 +34,7 @@ if (!class_exists('EG_Plugin_112')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_112{
+	Class EG_Plugin_113 {
 
 		var $plugin_name;
 		var $plugin_version;
@@ -75,7 +75,7 @@ if (!class_exists('EG_Plugin_112')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_112($name, $version, $core_file, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_113($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($name, $version, $core_file, $options_entry, $default_options);
@@ -134,9 +134,9 @@ if (!class_exists('EG_Plugin_112')) {
 		 */
 		function load() {
 
-			add_action('plugins_loaded', array(&$this,  'plugins_loaded') );
-			add_action('init',           array( &$this, 'init')           );
-			add_action('wp_logout',      array(&$this,  'wp_logout')      );
+			add_action('plugins_loaded', array(&$this, 'plugins_loaded') );
+			add_action('init',           array(&$this, 'init')           );
+			add_action('wp_logout',      array(&$this, 'wp_logout')      );
 
 			if (is_admin()) {
 
@@ -324,6 +324,9 @@ if (!class_exists('EG_Plugin_112')) {
 		 */
 		function admin_init() {
 
+			/* --- Get Plugin options --- */
+			if (! $this->options) $this->options = get_option($this->options_entry);
+
 			// Add only in Rich Editor mode
 			if ( isset($this->tinyMCE_button) &&
 				 get_user_option('rich_editing') == 'true' ) {
@@ -348,6 +351,9 @@ if (!class_exists('EG_Plugin_112')) {
 		function init() {
 			global $wp_version;
 
+			/* --- Get Plugin options --- */
+			if (! $this->options) $this->options = get_option($this->options_entry);
+			
 			/* --- Load translations file --- */
 			if (function_exists('load_plugin_textdomain') && $this->textdomain != '') {
 				if (version_compare($wp_version, '2.6', '<')) {
@@ -378,8 +384,7 @@ if (!class_exists('EG_Plugin_112')) {
 			$this->check_requirements(FALSE);
 
 			/* --- Get Plugin options --- */
-			if (! $this->options) $this->options = get_option($this->options_entry);
-
+			//if (! $this->options) $this->options = get_option($this->options_entry);
 		} // End of plugins_loaded
 
 		/**

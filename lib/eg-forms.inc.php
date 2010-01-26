@@ -3,7 +3,7 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class to build admin forms
-Version: 1.0.5
+Version: 1.0.7
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,9 +26,9 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Forms_105')) {
+if (!class_exists('EG_Forms_107')) {
 
-	Class EG_Forms_105 {
+	Class EG_Forms_107 {
 
 		var $sections = array();
 		var $fields   = array();
@@ -43,8 +43,8 @@ if (!class_exists('EG_Forms_105')) {
 		var $security_key ;
 		var $author_address;
 		var $access_level;
-
-
+		
+		
 		/**
 		 * EG_Forms (constructor)
 		 *
@@ -62,7 +62,7 @@ if (!class_exists('EG_Forms_105')) {
 		 * @param	string	$author_address	author email or URL (must include mailto: or http:
 		 * @return 	none
 		 */
-		function EG_Forms_105($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
+		function EG_Forms_107($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
 			register_shutdown_function(array(&$this, "__destruct"));
 			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level);
 		}
@@ -343,7 +343,7 @@ if (!class_exists('EG_Forms_105')) {
 								if (!is_array($_POST[$key])) {
 									if (is_float($_POST[$key])) $new_options[$key] = floatval($_POST[$key]);
 									elseif (is_int($_POST[$key])) $new_options[$key] = intval($_POST[$key]);
-									else $new_options[$key] = attribute_escape($_POST[$key]);
+									else $new_options[$key] = trim(stripslashes($_POST[$key]));
 								}
 								else {
 									$new_options[$key] = (array)$_POST[$key];
@@ -352,13 +352,16 @@ if (!class_exists('EG_Forms_105')) {
 							elseif ($field->type == 'checkbox') {
 								$new_options[$key] = 0;
 							}
-						}
-					}
+						} // End of isset($option[$key]
+					} // End of foreach
+				} // End of is_submitted = submit
+				if ($update_options!==FALSE && $update_options!='' && $new_options!=$options) {
+					update_option($update_options, $new_options);
 				}
-				if ($update_options !== FALSE && $update_options!='' && $new_options!=$options) update_option($update_options, $new_options);
-			}
+			} // End of if is_submitted
+			
 			return ($new_options);
-		}
+		} // End of get_form_values
 
 		/**
 		 * display_field
@@ -386,15 +389,33 @@ if (!class_exists('EG_Forms_105')) {
 				switch ($field->type) {
 					case 'text':
 					case 'password':
+						// $value = strtr($default_values[$option_name], '"', '&quot;');
+						// $value = htmlspecialchars(addslashes($default_values[$option_name]));
+						$value = htmlspecialchars($default_values[$option_name]);
+
 						if ($field->text_before!= '' || $field->text_after != '') {
 							$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain):'').
 								($field->text_before== ''?'':__($field->text_before, $this->textdomain)).
-								'<input type="'.$field->type.'" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'" value="'.$default_values[$option_name].'" '.$field->status.'/> '.
+								'<input type="'.$field->type.'" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'" value="'.$value.'" '.$field->status.'/> '.
 								($field->text_after== ''?'':__($field->text_after, $this->textdomain)).
 								($group?'</label>':'');
 						} else {
 							$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain).'</label>':'').
-								'<input type="'.$field->type.'" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'" value="'.$default_values[$option_name].'" '.$field->status.'/> ';
+								'<input type="'.$field->type.'" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'" value="'.$value.'" '.$field->status.'/> ';
+						}
+					break;
+
+					case 'textarea':
+						// $value = strtr($default_values[$option_name], '"', '&quot;');
+						// $value = htmlspecialchars(addslashes($default_values[$option_name]));
+						$value = htmlspecialchars($default_values[$option_name]);
+
+						if ($field->text_before!= '' || $field->text_after != '') {
+							$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain):'').
+								($field->text_before== ''?'':'<br />'.__($field->text_before, $this->textdomain)).
+								'<textarea class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'" '.$field->status.'>'.$value.'</textarea>'.($field->text_after== ''?'':'<br />'.__($field->text_after, $this->textdomain)).($group?'</label>':'');
+						} else {
+							$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain).'</label><br />':'').'<textarea class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'" '.$field->status.'>'.$value.'</textarea>';
 						}
 					break;
 
@@ -571,7 +592,7 @@ if (!class_exists('EG_Forms_105')) {
 				($this->id_icon!=''?'<div id="'.$this->id_icon.'" class="icon32"></div>':'').
 				($this->title==''?'':'<h2>'.__($this->title, $this->textdomain).'</h2>').
 				($this->header==''?'':'<p>'.__($this->header, $this->textdomain).'</p>');
-
+				
 			if ($this->access_level !== FALSE && ! current_user_can($this->access_level)) {
 				echo '<div id="message" class="error fade"><p>'.
 					sprintf(__('You cannot access to the synchronization page. You haven\'t the "%1s" capability. Please contact <a href="%2s">the blog administrator</a>.', $this->textdomain), $this->access_level, $this->author_address).

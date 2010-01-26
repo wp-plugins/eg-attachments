@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_112 {
+	Class EG_Attachments extends EG_Plugin_113 {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
@@ -33,7 +33,8 @@ if (! class_exists('EG_Attachments')) {
 
 				add_shortcode('attachments', array(&$this, 'get_attachments'));
 				if ($this->options['shortcode_auto']>0) {
-					add_filter('the_content', array(&$this, 'shortcode_auto'));
+					add_filter('get_the_excerpt', array(&$this, 'shortcode_auto_excerpt'));
+					add_filter('the_content',     array(&$this, 'shortcode_auto_content'));				
 				}
 			}
 		} /* End of init */
@@ -301,6 +302,9 @@ if (! class_exists('EG_Attachments')) {
 			// Display title
 			$output = '';
 
+			if ($size == 'custom' && $format_pre!='') 
+				$output = html_entity_decode (stripslashes($format_pre));
+			
 			// Display attachment list
 			foreach ( $attachments[$id] as $attachment ) {
 				if (sizeof($doc_list) == 0 || array_search($attachment->ID, $doc_list) !== FALSE) {
@@ -312,14 +316,34 @@ if (! class_exists('EG_Attachments')) {
 						$attachment_title = htmlspecialchars(strip_tags($attachment->post_title));
 
 						if ($logged_users && ! is_user_logged_in()) {
-							$link = '<a title="'.$attachment_title.'" href="'.($this->options['login_url']==''?'#':$this->options['login_url']).'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');">';
+							$url = ($this->options['login_url']==''?'#':$this->options['login_url']).
+								'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');';
+							// $link = '<a title="'.$attachment_title.'" href="'.($this->options['login_url']==''?'#':$this->options['login_url']).'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');">';
+							$link = '<a title="'.$attachment_title.'" href="'.$url.'">';
 							$lock_icon = '<img class="lock" src="'.$this->plugin_url.'img/lock.png" height="16" width="16" />';
 						}
 						else {
-							$link = '<a title="'.$attachment_title.'" href="?aid='.$attachment->ID.'&pid='.$id.'&sa='.$force_saveas.'">';
+							$url  = '?aid='.$attachment->ID.'&pid='.$id.'&sa='.$force_saveas;
+							$link = '<a title="'.$attachment_title.'" href="'.$url.'">';
 							$lock_icon = '';
 						}
 						switch ($size) {
+
+							case 'custom':  //Functionality added by Jxs / www.jxs.nl
+								$tmp = html_entity_decode (stripslashes($format));
+								$tmp = preg_replace("/%URL%/",        ($hidepost_hide_link==1?'#':$url),$tmp);
+								//A direct link to some files may be necessary - some programs don't work when the mimetype is not set correctly
+								$tmp = preg_replace("/%GUID%/",        $attachment->guid,$tmp); 
+								$tmp = preg_replace("/%ICONURL%/",     $this->get_icon($attachment->ID, $attachment, $size),$tmp);
+								$tmp = preg_replace("/%TITLE%/",       $attachment_title,$tmp);
+								$tmp = preg_replace("/%CAPTION%/",     $attachment->post_excerpt,$tmp);
+								$tmp = preg_replace("/%DESCRIPTION%/", $attachment->post_content,$tmp);
+								$tmp = preg_replace("/%FILENAME%/",    basename($attachment->guid),$tmp);
+								$tmp = preg_replace("/%FILESIZE%/",    $string_file_size,$tmp);
+								$tmp = preg_replace("/%ATTID%/",       $attachment->ID,$tmp); //For use with stylesheets
+								$output .= $tmp;
+								if(strlen($format)) break; //If !strlen continue in 'large'
+
 							case 'large':
 								if ($file_size != '') $string_file_size = '<strong>'.__('Size: ', $this->textdomain).'</strong>'.$file_size;
 								if ($icon) {
@@ -410,8 +434,13 @@ if (! class_exists('EG_Attachments')) {
 				}
 			}
 
-			if ($output != '' && ! $icon) {
-				$output = '<ul>'.$output.'</ul>';
+			if ($output != '') {
+				if ($size == 'custom' && $format_post!='') 
+					$output .= html_entity_decode (stripslashes($format_post));
+				else {
+					if (! $icon)
+						$output = '<ul>'.$output.'</ul>';
+				}
 			}
 
 			if ($output != '' && $title != '') {
@@ -429,19 +458,63 @@ if (! class_exists('EG_Attachments')) {
 			return $output;
 		} /* --- End of get_attachments -- */
 
+		
 		/**
-		 * shortcode_auto
+		 * shortcode_is_visible
+		 *
+		 * Define if the auto shortcode is visible or not
+		 *
+		 * @return 	boolean		TRUE if shortcode is visible, FALSE if not
+		 */
+		function shortcode_is_visible() {
+			global $post;
+			return (!post_password_required($post) && 
+			        ( $this->options['shortcode_auto_where'] != 'post' || is_single() || is_page() )
+				);
+		} // End of shortcode_is_visible
+		
+		/**
+		 * shortcode_auto_excerpt
+		 *
+		 * Display list of attachment in the post excerpt
+		 *
+		 * @return 	string				modified post content
+		 */
+		function shortcode_auto_excerpt($output) {
+
+			if ($output && $this->options['shortcode_auto'] == 3 && $this->shortcode_is_visible() ) {
+				$attrs = array( 'size'	   => $this->options['shortcode_auto_size'],
+							'doctype'  	   => $this->options['shortcode_auto_doc_type'],
+							'title'    	   => $this->options['shortcode_auto_title'],
+							'titletag'     => $this->options['shortcode_auto_title_tag'],
+							'label'    	   => $this->options['shortcode_auto_label'],
+							'orderby'      => $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order'],
+							'fields'	   => $fields,
+							'force_saveas' => $this->options['force_saveas'],
+							'icon'         => $this->options['shortcode_auto_icon'],
+							'logged_users' => $this->options['logged_users'],
+							'format'       => $this->options['shortcode_auto_format'     ],
+							'format_pre'   => $this->options['shortcode_auto_format_pre' ],
+							'format_post'  => $this->options['shortcode_auto_format_post']
+				);
+				$output = $this->get_attachments($attrs).$output;
+			} // End of shortcode activated and visible
+			return ($output);
+		} // End of shortcode_auto_excerpt
+
+
+		/**
+		 * shortcode_auto_content
 		 *
 		 * Display list of attachment in the post content
 		 *
 		 * @param 	strong	$content	post_content
 		 * @return 	string				modified post content
 		 */
-		function shortcode_auto($content = '') {
+		function shortcode_auto_content($content = '') {
 			global $post;
 
-			if ($this->options['shortcode_auto'] > 0 && ! post_password_required($post) &&
-				($this->options['shortcode_auto_where'] != 'post' || is_single() || is_page()) ) {
+			if ($this->options['shortcode_auto'] > 0 && $this->shortcode_is_visible() ) {
 
 				if (!is_array($this->options['shortcode_auto_fields']) ||
 					sizeof($this->options['shortcode_auto_fields'])==0) $fields='';
@@ -458,13 +531,40 @@ if (! class_exists('EG_Attachments')) {
 								'fields'	   => $fields,
 								'force_saveas' => $this->options['force_saveas'],
 								'icon'         => $this->options['shortcode_auto_icon'],
-								'logged_users' => $this->options['logged_users']
+								'logged_users' => $this->options['logged_users'],
+								'format'       => $this->options['shortcode_auto_format'     ],
+								'format_pre'   => $this->options['shortcode_auto_format_pre' ],
+								'format_post'  => $this->options['shortcode_auto_format_post']
 					);
+				$shortcode_output = $this->get_attachments($attrs);
+					
+				switch ($this->options['shortcode_auto']) {
+					case 2: // At the end of post
+						$content .= $shortcode_output;
+					break;
 
-				$content .= $this->get_attachments($attrs);
-			}
+					case 3: // Before the excerpt
+						if (! $post_excerpt) 
+							$content = $shortcode_output . $content;
+					break;
+
+					case 4:
+						if ($post_excerpt) {
+							// Case of manual excerpt
+							$content = $shortcode_output . $content;
+						}
+						else {
+							// Case of teaser
+							if(strpos($content, 'span id="more-')) {
+								$parts = preg_split('/(<span id="more-[0-9]*"><\/span>)/', $content, -1,  PREG_SPLIT_DELIM_CAPTURE);
+								$content = $parts[0].$parts[1].$shortcode_output.$parts[2];
+							} // End of detect tag "more"
+						} // End of teaser case
+					break;
+				} // End of switch					
+			} // End of shortcode is activated and visible
 			return ($content);
-		} /* End of shortcode_auto */
+		} /* End of shortcode_auto_content */
 
 	} /* End of Class */
 } /* End of if class_exists */

@@ -1,6 +1,6 @@
 <?php
 
-if (! class_exists('EG_Forms_105')) {
+if (! class_exists('EG_Forms_107')) {
 	require('lib/eg-forms.inc.php');
 }
 
@@ -17,7 +17,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_112 {
+	Class EG_Attachments_Admin extends EG_Plugin_113 {
 
 		var $cache;
 
@@ -80,16 +80,15 @@ if (! class_exists('EG_Attachments_Admin')) {
 			global $wpdb;
 
 			$previous_options = parent::install_upgrade();
-			
+
 			$previous_version = $previous_options['version'];
-			if (version_compare($previous_version, '1.4.3', '<')) {
-				$this->options['uninstall_del_options'] = $previous_options['uninstall_del_option'];
-				if (isset($this->options['uninstall_del_option'])) 
-					unset($this->options['uninstall_del_option']);
+			if (version_compare($previous_version, '1.4.3', '<') && isset($this->options['uninstall_del_option'])) {
+				$this->options['uninstall_del_options'] = $previous_options['uninstall_del_option'];				
+				unset($this->options['uninstall_del_option']);
 
 				upgrade_option($this->options_entry, $this->options);
 			} // End of version older than 1.4.3
-			
+
 			$table_name = $wpdb->prefix . "eg_attachments_clicks";
 			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 
@@ -130,18 +129,18 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function add_form() {
 
-			$form = new EG_Forms_105('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.get_option('admin_email'));
+			$form = new EG_Forms_107('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.get_option('admin_email'));
 
 			$id_section = $form->add_section('Auto shortcode');
 			$id_group   = $form->add_group($id_section, 'Activation');
-			$form->add_field($id_section, $id_group, 'select', 'Activation', 'shortcode_auto', '', '', 'With this option, you can automaticaly add the list of attachments in your blog, without using shortcode', '', 'regular', array( 0 => 'Not activated', 2 => 'At the end'));
+			$form->add_field($id_section, $id_group, 'select', 'Activation', 'shortcode_auto', '', '', 'With this option, you can automaticaly add the list of attachments in your blog, without using shortcode', '', 'regular', array( 0 => 'Not activated', 2 => 'At the end', 3 => 'Before the excerpt', 4 => 'Between excerpt and content'));
 
 			$id_group   = $form->add_group($id_section, 'Where');
 			$form->add_field($id_section, $id_group, 'select', 'Where', 'shortcode_auto_where', '', '', 'Lists of attachments can be displayed everywhere posts are displayed, or only when a single post or a single page is displayed', '', 'regular', array( 'all' => 'in all pages', 'post' => 'Only for posts and pages'));
 			$id_group   = $form->add_group($id_section, 'Auto Shortcode Options');
 			$form->add_field($id_section, $id_group, 'text', 'Title of the list: ',  'shortcode_auto_title');
 			$form->add_field($id_section, $id_group, 'text', 'HTML Tag for title: ', 'shortcode_auto_title_tag');
-			$form->add_field($id_section, $id_group, 'select', 'List size: ',        'shortcode_auto_size',     '', '', '', '', 'regular', array( 'small' => 'Small', 'medium' => 'Medium', 'large' => 'Large'));
+			$form->add_field($id_section, $id_group, 'select', 'List format: ',      'shortcode_auto_size',     '', '', '', '', 'regular', array( 'small' => 'Small', 'medium' => 'Medium', 'large' => 'Large', 'custom' => 'Custom'));
 			$form->add_field($id_section, $id_group, 'select', 'Document type: ',    'shortcode_auto_doc_type', '', '', '', '', 'regular', array( 'all' => 'All', 'document' => 'Documents', 'image' => 'Images'));
 			$form->add_field($id_section, $id_group, 'select', 'Document label: ',   'shortcode_auto_label',    '', '', 'Choose the field that will be displayed as title of documents', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
 			$form->add_field($id_section, $id_group, 'select', 'Order by: ',         'shortcode_auto_orderby',  '', '', '', '', 'regular', array( 'ID' => 'ID', '0' => 'Title', 'date' => 'Date', 'mime' => 'Mime type'));
@@ -149,6 +148,22 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'checkbox', 'Fields: ',         'shortcode_auto_fields',   'Which fields do you want to display (large and medium size only)?', '', '', '', 'regular', array( 'caption' => 'Caption', 'description' => 'Description'));
 			$form->add_field($id_section, $id_group, 'checkbox', 'Check the box to display icons',  'shortcode_auto_icon', 'Display icons: ', '', '', '', 'regular');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?', 'shortcode_auto_default_opts', 'Default options? ', '', '', '', 'regular' );
+
+			$id_group   = $form->add_group($id_section, 'Custom format', 'Use this section only if you choose <strong>Custom</strong> in the <em>List format</em> field. <br />In this case, you can define how will be displayed the list of attachments. Keywords you can use are listed below.','Available keywords:<br /><table>
+<tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href="..."&gt;...), </td></tr>
+<tr><td><strong>%URL%</strong></td><td>url of document,</td></tr>
+<tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr>
+<tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr>
+<tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr>
+<tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr>
+<tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr>
+<tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr>
+<tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr>
+<tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr>
+</table>');
+			$form->add_field($id_section, $id_group, 'textarea', 'Custom format, before list: ', 'shortcode_auto_format_pre' );
+			$form->add_field($id_section, $id_group, 'textarea', 'Custom list format: ',         'shortcode_auto_format'     );
+			$form->add_field($id_section, $id_group, 'textarea', 'Custom format, after list: ',  'shortcode_auto_format_post');
 
 			$id_section = $form->add_section('General behavior of shortcodes');
 			$id_group   = $form->add_group($id_section, '"Save As" activation', "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases.");
@@ -576,7 +591,7 @@ $eg_attach_admin->set_textdomain('eg-attachments');
 $eg_attach_admin->set_wp_versions('2.5', FALSE, '2.6', FALSE);
 $eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce');
 $eg_attach_admin->set_stylesheets(FALSE, 'eg-attachments-admin.css');
-// $eg_attach_admin->set_update_notice('Activation/desactivation mandatory for this update!');
+$eg_attach_admin->set_update_notice('The next version will work ONLY with WordPress <strong>2.8</strong> and higher!');
 $eg_attach_admin->load();
 
 ?>
