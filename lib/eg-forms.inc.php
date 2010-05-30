@@ -3,7 +3,7 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class to build admin forms
-Version: 1.0.7
+Version: 1.1.0
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,9 +26,9 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Forms_107')) {
+if (!class_exists('EG_Forms_110')) {
 
-	Class EG_Forms_107 {
+	Class EG_Forms_110 {
 
 		var $sections = array();
 		var $fields   = array();
@@ -43,8 +43,8 @@ if (!class_exists('EG_Forms_107')) {
 		var $security_key ;
 		var $author_address;
 		var $access_level;
-		
-		
+
+
 		/**
 		 * EG_Forms (constructor)
 		 *
@@ -62,7 +62,7 @@ if (!class_exists('EG_Forms_107')) {
 		 * @param	string	$author_address	author email or URL (must include mailto: or http:
 		 * @return 	none
 		 */
-		function EG_Forms_107($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
+		function EG_Forms_110($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
 			register_shutdown_function(array(&$this, "__destruct"));
 			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level);
 		}
@@ -359,7 +359,7 @@ if (!class_exists('EG_Forms_107')) {
 					update_option($update_options, $new_options);
 				}
 			} // End of if is_submitted
-			
+
 			return ($new_options);
 		} // End of get_form_values
 
@@ -387,6 +387,10 @@ if (!class_exists('EG_Forms_107')) {
 				// in all the procedure: if group = TRUE, we are in a set of field. if group = FALSE, the current group contains ony one field
 				$string = ($group?'<li>':'');
 				switch ($field->type) {
+					case 'comment':
+						echo '<p>'.__($field->values, $this->textdomain).'</p>';
+					break;
+
 					case 'text':
 					case 'password':
 						// $value = strtr($default_values[$option_name], '"', '&quot;');
@@ -592,7 +596,7 @@ if (!class_exists('EG_Forms_107')) {
 				($this->id_icon!=''?'<div id="'.$this->id_icon.'" class="icon32"></div>':'').
 				($this->title==''?'':'<h2>'.__($this->title, $this->textdomain).'</h2>').
 				($this->header==''?'':'<p>'.__($this->header, $this->textdomain).'</p>');
-				
+
 			if ($this->access_level !== FALSE && ! current_user_can($this->access_level)) {
 				echo '<div id="message" class="error fade"><p>'.
 					sprintf(__('You cannot access to the synchronization page. You haven\'t the "%1s" capability. Please contact <a href="%2s">the blog administrator</a>.', $this->textdomain), $this->access_level, $this->author_address).

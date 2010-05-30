@@ -2,9 +2,9 @@
 Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
-Requires at least: 2.6.0
-Tested up to: 2.9.1
-Stable tag: 1.6.0
+Requires at least: 2.8.0
+Tested up to: 3.0.0 RC 1
+Stable tag: 1.7.0
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -45,12 +45,15 @@ Thanks to
 
 * [Dave](http://www.jxs.nl/) for the "custom style" feature,
 * [Rebekah](http://www.learntowebdesign.com/) for her [video tutorial](http://www.learntowebdesign.com/2009/12/placing-attachments-wordpress-post-page/)
+* [Jonas Flodén] (http://www.koalasoft.se/)
+* [Luca Maida] (http://www.qsin.it/)
 
 = Translations =
 
 The plugin comes with English, French and Russian. Thanks to the following people for their contributions:
 
 * Russian (ru) - [Fatcow](http://www.fatcow.com)
+* Italian (it) - [Luca Maida](www.qsin.it) and [Roberto Scano](http://robertoscano.info/)
 
 If you want to help to translate the plugin to your language, please have a look at the eg_archives.pot file which contains all definitions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
 
@@ -81,12 +84,13 @@ About WordPress MU: the plugin is running properly on version 2.8.x Assume that 
 
 The shortcode options are:
 
-* **size:** size of the icon. Values: large, medium or small. Default: large,
-* **doctype:** type of documents to display. Values: image or document. Defaults: document,
+* **size**: size of the icon. Values: large, medium or small. Default: large,
+* **doctype**: type of documents to display. Values: image or document. Defaults: document,
 * **docid** list of attachments' id (comma separated) you want to display. Default: nothing to display all attachments,
-* **orderby:** sort option. Values: ID, title, date, mime and ASC or DESC. `ASC`is the default sort order. Default: `title ASC`.
-* **title:** title to display before the list. Default: '',
-* **titletag:** tag to add before and after the title. Default: h2
+* **id**: id of the post we want to display attachments
+* **orderby**: sort option. Values: ID, title, date, mime and ASC or DESC. `ASC`is the default sort order. Default: `title ASC`.
+* **title**: title to display before the list. Default: '',
+* **titletag**: tag to add before and after the title. Default: h2
 * **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
 * **fields**, list of fields to display. Values: none, caption, description, or a set of values such as "caption,description" (comma separated). Default: caption (same behavior than previous version)
 * **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
@@ -150,6 +154,16 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 8. Detailed statistics page.
 
 == Changelog ==
+
+= Version 1.7.0 - May 30th, 2010 =
+
+* Bug fix: some errors in french translation
+* Bug fix: statistics menu doesn't appear
+* Change: Some generated HTML code was not valid (thanks to [Roberto Scano](http://robertoscano.info/) )
+* New: the parameter *id* allows to specify the id of the post we want to display attachments.
+* New: widgets displaying attachments of the current post
+* New: Italian translation (thanks to Luca Maida)
+* New: Swedish translation (thanks to Jonas Floden)
 
 = Version 1.6.0 - Jan 26th, 2010 =
 

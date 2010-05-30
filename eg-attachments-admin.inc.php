@@ -1,6 +1,6 @@
 <?php
 
-if (! class_exists('EG_Forms_107')) {
+if (! class_exists('EG_Forms_110')) {
 	require('lib/eg-forms.inc.php');
 }
 
@@ -21,26 +21,27 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 		var $cache;
 
-		function plugins_loaded() {
+		function plugins_loaded_toto() {
 
 			parent::plugins_loaded();
 
 			// Add options page
-			$this->add_page('options', 					/* page type: post, page, option, tool 	*/
-			 				'EG-Attachments Options',	/* Page title 							*/
-							'EG-Attachments',			/* Menu title 							*/
-							'manage_options', 			/* Access level / capability			*/
-							'ega_options',				/* file 								*/
-							'options_page');			/* function								*/
+			$this->add_page('options', 						/* page type: post, page, option, tool 	*/
+			 				'EG-Attachments Options',		/* Page title 							*/
+							'EG-Attachments',				/* Menu title 							*/
+							'manage_options', 				/* Access level / capability			*/
+							'ega_options',					/* file 								*/
+							'options_page');				/* function								*/
 
 			if ($this->options['stats_enable']) {
+
 				// Add click stats page
-				$this->add_page('tools', 				/* page type: post, page, option, tool 	*/
-							'EG-Attachments Statistic',	/* Page title 							*/
-							'EG-Attachments Stats',		/* Menu title 							*/
-							'edit_posts', 				/* Access level / capability			*/
-							'ega_stats',				/* file 								*/
-							'stats_page');				/* function								*/
+				$this->add_page('tools', 					/* page type: post, page, option, tool 	*/
+							'EG-Attachments Statistics',	/* Page title 							*/
+							'EG-Attachments Stats',			/* Menu title 							*/
+							'edit_posts', 					/* Access level / capability			*/
+							'ega_stats',					/* file 								*/
+							'stats_page');					/* function								*/
 			}
 
 		} // End of plugins_loaded
@@ -64,6 +65,25 @@ if (! class_exists('EG_Attachments_Admin')) {
 			add_action('add_attachment',    array(&$this, 'clean_cache' ));
 			add_action('delete_attachment', array(&$this, 'clean_cache' ));
 
+			// Add options page
+			$this->add_page('options', 						/* page type: post, page, option, tool 	*/
+			 				'EG-Attachments Options',		/* Page title 							*/
+							'EG-Attachments',				/* Menu title 							*/
+							'manage_options', 				/* Access level / capability			*/
+							'ega_options',					/* file 								*/
+							'options_page');				/* function								*/
+
+			if ($this->options['stats_enable']) {
+
+				// Add click stats page
+				$this->add_page('tools', 					/* page type: post, page, option, tool 	*/
+							'EG-Attachments Statistics',	/* Page title 							*/
+							'EG-Attachments Stats',			/* Menu title 							*/
+							'edit_posts', 					/* Access level / capability			*/
+							'ega_stats',					/* file 								*/
+							'stats_page');					/* function								*/
+			}
+			
 		} /* End of init */
 
 		/**
@@ -129,7 +149,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function add_form() {
 
-			$form = new EG_Forms_107('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.get_option('admin_email'));
+			$form = new EG_Forms_110('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.get_option('admin_email'));
 
 			$id_section = $form->add_section('Auto shortcode');
 			$id_group   = $form->add_group($id_section, 'Activation');
@@ -588,10 +608,10 @@ $eg_attach_admin = new EG_Attachments_Admin('EG-Attachments',
 											$EG_ATTACH_DEFAULT_OPTIONS);
 
 $eg_attach_admin->set_textdomain('eg-attachments');
-$eg_attach_admin->set_wp_versions('2.5', FALSE, '2.6', FALSE);
+$eg_attach_admin->set_wp_versions('2.8', FALSE, '2.8', FALSE);
 $eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce');
 $eg_attach_admin->set_stylesheets(FALSE, 'eg-attachments-admin.css');
-$eg_attach_admin->set_update_notice('The next version will work ONLY with WordPress <strong>2.8</strong> and higher!');
+// $eg_attach_admin->set_update_notice('The next version will work ONLY with WordPress <strong>2.8</strong> and higher!');
 $eg_attach_admin->load();
 
 ?>

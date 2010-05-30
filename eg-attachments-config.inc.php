@@ -42,7 +42,8 @@ $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
 	'format_pre'	=> '<ul>',
 	'format'		=> '<li><a href="%URL%" title="%TITLE%">%TITLE%</a></li>',
 	'format_post'	=> '</ul>',
-	'logged_users'  => -1
+	'logged_users'  => -1,
+	'id'            => 0
 );
 
 ?>

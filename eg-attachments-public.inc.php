@@ -232,10 +232,12 @@ if (! class_exists('EG_Attachments')) {
 			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
 			// Preparing parameters and query
-			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['id'] = $post->ID;
+			//$EG_ATTACHMENT_SHORTCODE_DEFAULTS['id'] = $post->ID;
 			extract( shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr ));
 
-			$id      = intval($id);
+			if ($id == 0) $id = $post->ID;
+			else $id = intval($id);
+
 			$orderby = addslashes($orderby);
 
 			if ($force_saveas < 0) {
@@ -320,7 +322,7 @@ if (! class_exists('EG_Attachments')) {
 								'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');';
 							// $link = '<a title="'.$attachment_title.'" href="'.($this->options['login_url']==''?'#':$this->options['login_url']).'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');">';
 							$link = '<a title="'.$attachment_title.'" href="'.$url.'">';
-							$lock_icon = '<img class="lock" src="'.$this->plugin_url.'img/lock.png" height="16" width="16" />';
+							$lock_icon = '<img class="lock" src="'.$this->plugin_url.'img/lock.png" height="16" width="16" alt="'.__('Document locked', $this->textdomain).'" />';
 						}
 						else {
 							$url  = '?aid='.$attachment->ID.'&pid='.$id.'&sa='.$force_saveas;

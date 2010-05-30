@@ -44,3 +44,12 @@ dl.attachments dd img.lock {
 	margin: 0;
 	float: right;
 }
+
+div.widget dl.attachments {
+	width: 100%;
+	
+}
+
+div.widget dl.attachments-large {
+	border: 0;
+}
