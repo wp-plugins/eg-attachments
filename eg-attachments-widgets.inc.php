@@ -48,8 +48,11 @@ if (!class_exists('EG_Attach_Widget')) {
 			$values['orderby'] .= ' '.$values['order'];
 			
 			$output = '';
-			if (is_single() && isset($eg_attach)) {
-				$output = $eg_attach->get_attachments($values);
+			if ((is_single() || is_page()) && isset($eg_attach)) {
+				if ($eg_attach->shortcode_is_visible()) 
+					$output = $eg_attach->get_attachments($values);
+				else
+					$output = 'Cannot display attachments. Current post or page is protected.';
 			} // End of is_single
 
 			if ($output != '') {
