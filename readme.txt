@@ -3,8 +3,8 @@ Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
 Requires at least: 2.8.0
-Tested up to: 3.0.0 RC 1
-Stable tag: 1.7.1
+Tested up to: 3.0.0
+Stable tag: 1.7.2
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -53,7 +53,9 @@ The plugin comes with English, French and Russian. Thanks to the following peopl
 
 * Russian (ru) - [Fatcow](http://www.fatcow.com)
 * Italian (it) - [Luca Maida](www.qsin.it) and [Roberto Scano](http://robertoscano.info/)
-* [Jonas Floden](http://www.koalasoft.se/)
+* Swedish (SE) - [Jonas Floden](http://www.koalasoft.se/)
+* Dutch (NL) - [Rene at WP webshop](http://wpwebshop.com/premium-wordpress-themes/)
+* Spanish (ES) - [David Arinez](http://www.codeeta.com/)
 
 If you want to help to translate the plugin to your language, please have a look at the eg_archives.pot file which contains all definitions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
 
@@ -154,6 +156,10 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 8. Detailed statistics page.
 
 == Changelog ==
+
+= Version 1.7.2 - July 28th, 2010 =
+
+* New: Two new translations Spanish and Dutch.
 
 = Version 1.7.1 - June 07th, 2010 =
 
