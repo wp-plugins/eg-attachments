@@ -1,0 +1,524 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: EG-Attachments 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-14 11:00-0000\n"
+"PO-Revision-Date: 2010-05-05 10:48+0100\n"
+"Last-Translator: Jonas Flodén <jonas@floden.nu>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+
+#: eg-attachments-public.inc.php:118
+msgid "TB"
+msgstr "TB"
+
+#: eg-attachments-public.inc.php:118
+msgid "MB"
+msgstr "MB"
+
+#: eg-attachments-public.inc.php:118
+msgid "kB"
+msgstr "kB"
+
+#: eg-attachments-public.inc.php:118
+msgid "B"
+msgstr "B"
+
+#: eg-attachments-public.inc.php:210
+#: eg-attachments-public.inc.php:222
+#: eg-attachments-public.inc.php:237
+msgid "Size: "
+msgstr "Storlek: "
+
+#: eg-attachments-public.inc.php:213
+#: window.php:227
+msgid "Title: "
+msgstr "Titel: "
+
+#: eg-attachments-public.inc.php:214
+#: eg-attachments-public.inc.php:232
+msgid "Caption: "
+msgstr "Rubrik: "
+
+#: eg-attachments-public.inc.php:266
+msgid "Description: "
+msgstr "Beskrivning: "
+
+#: eg-attachments-public.inc.php:215
+#: eg-attachments-public.inc.php:230
+msgid "File: "
+msgstr "Fil: "
+
+#: eg-attachments-admin.inc.php:26
+#: eg-attachments-admin.inc.php:60
+msgid "EG-Attachments Options"
+msgstr "Inställningar för EG-Attachments"
+
+#: eg-attachments-admin.inc.php:27
+msgid "EG-Attachments"
+msgstr "EG-Attachments"
+
+#: eg-attachments-admin.inc.php:69
+msgid "Auto shortcode"
+msgstr "Automatisk shortcode"
+
+#: eg-attachments-admin.inc.php:70
+msgid "Activation"
+msgstr "Aktivering"
+
+#: eg-attachments-admin.inc.php:71
+msgid "With this option, you can automaticaly add the list of attachments in your blog, without using shortcode"
+msgstr "Med denna inställing så kan du automatiskt lägga till listan med bilagor i din blog, utan att använda shortcode"
+
+#: eg-attachments-admin.inc.php:71
+msgid "Not activated"
+msgstr "Inte aktiverad"
+
+#: eg-attachments-admin.inc.php:71
+msgid "At the end"
+msgstr "På slutet"
+
+#: eg-attachments-admin.inc.php:73
+msgid "Where"
+msgstr "Var"
+
+#: eg-attachments-admin.inc.php:73
+msgid "Lists of attachments can be displayed everywhere posts are displayed, or only when a single post or a single page is displayed"
+msgstr "Listan med bilagor kan visas överallt där inlägg visas, eller endast när ett ensamt inlägg eller sida visas"
+
+#: eg-attachments-admin.inc.php:73
+msgid "in all pages"
+msgstr "på alla sidor"
+
+#: eg-attachments-admin.inc.php:73
+msgid "Only for posts and pages"
+msgstr "Endast för inlägg och sidor"
+
+#: eg-attachments-admin.inc.php:75
+msgid "Auto Shortcode Options"
+msgstr "Inställningar för Automatisk shortcode"
+
+#: eg-attachments-admin.inc.php:76
+msgid "Title of the list: "
+msgstr "Titel för listan: "
+
+#: eg-attachments-admin.inc.php:84
+msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
+msgstr "Normalt, när du klickar på en bilagelänk, så kommer, beroende på mime typen, dokumentet att visas eller så visas en dialogruta där man kan välja 'kör med' eller 'Spara som'. Genom att aktivera följande inställning så kommer alltid dialogrutan att visas."
+
+#: eg-attachments-admin.inc.php:82
+msgid "Which fields do you want to display (large and medium size only)?"
+msgstr "Vilka fält vill du visa (endast för stor eller mellan storlek)?"
+
+#: eg-attachments-admin.inc.php:82
+msgid "Caption"
+msgstr "Rubrik"
+
+#: eg-attachments-admin.inc.php:82
+msgid "Description"
+msgstr "Beskrivning"
+
+#: eg-attachments-admin.inc.php:83
+msgid "\"Save As\" activation"
+msgstr "Aktivera \"Spara som\""
+
+#: eg-attachments-admin.inc.php:84
+msgid "Force \"Save As\" when users click on the attachments"
+msgstr "Framtvinga \"Spara som\" när användaren klickar på bilagor"
+
+#: eg-attachments-admin.inc.php:86
+msgid "Save changes"
+msgstr "Spara ändringar"
+
+#: eg-attachments-admin.inc.php:87
+msgid "Cancel changes"
+msgstr "Avbryt ändringar"
+
+#: eg-attachments-admin.inc.php:88
+msgid "Reset to defaults"
+msgstr "Återställ till ursprungsvärden"
+
+#: window.php:31
+msgid "No attachment available for this post"
+msgstr "Inga bilagor tillgängliga för detta inlägg"
+
+#: window.php:53
+msgid "Order by: "
+msgstr "Sortera efter: "
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:56
+msgid "Title"
+msgstr "Titel"
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:57
+msgid "ID"
+msgstr "ID"
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:58
+msgid "Date"
+msgstr "Datum"
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:59
+msgid "Mime type"
+msgstr "Mime typ"
+
+#: window.php:62
+msgid "Sort Order: "
+msgstr "Sorterings ordning: "
+
+#: eg-attachments-admin.inc.php:83
+#: window.php:65
+msgid "Ascending"
+msgstr "Stigande"
+
+#: window.php:66
+msgid "Descending"
+msgstr "Fallande"
+
+#: window.php:71
+#: eg-attachments-admin.inc.php:78
+msgid "List size: "
+msgstr "List storlek: "
+
+#: eg-attachments-admin.inc.php:78
+#: window.php:74
+msgid "Large"
+msgstr "Stor"
+
+#: eg-attachments-admin.inc.php:78
+#: window.php:75
+msgid "Medium"
+msgstr "Mellan"
+
+#: eg-attachments-admin.inc.php:78
+#: window.php:76
+msgid "Small"
+msgstr "Liten"
+
+#: window.php:81
+#: eg-attachments-admin.inc.php:80
+msgid "Document label: "
+msgstr "Dokument beteckning: "
+
+#: window.php:84
+#: eg-attachments-admin.inc.php:80
+msgid "File name"
+msgstr "Fil namn"
+
+#: window.php:85
+#: eg-attachments-admin.inc.php:80
+msgid "Document title"
+msgstr "Dokument titel"
+
+#: window.php:90
+#: eg-attachments-admin.inc.php:79
+msgid "Document type: "
+msgstr "Dokument typ"
+
+#: window.php:99
+msgid "Document list: "
+msgstr "Dokument lista: "
+
+#: window.php:
+msgid "Fields: "
+msgstr "Fält: "
+
+#: window.php:119
+msgid "Insert"
+msgstr "Infoga"
+
+#: window.php:115
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: eg-attachments-admin.inc.php:77
+#: window.php:109
+msgid "HTML Tag for title: "
+msgstr "HTML kod för titel: "
+
+#: eg-plugin.inc.php:382
+msgid " cannot run with "
+msgstr " kan inte köras med "
+
+#: eg-plugin.inc.php:382
+msgid " requires "
+msgstr " kräver "
+
+#: eg-plugin.inc.php:383
+#: eg-plugin.inc.php:385
+msgid " to "
+msgstr " till "
+
+#: eg-plugin.inc.php:384
+msgid " and later."
+msgstr " eller senare."
+
+#: window.php:
+msgid "First"
+msgstr "Först"
+
+#: window.php:
+msgid "Last"
+msgstr "Sist"
+
+#: window.php:
+#: eg-attachments-admin.inc.php:
+msgid "All"
+msgstr "Alla"
+
+#: eg-attachments-admin.inc.php:
+msgid "Choose the field that will be displayed as title of documents"
+msgstr "Välj fältet som kommer visas som titel för dokumentet"
+
+#: eg-attachments-admin.inc.php:89
+msgid "Uninstall options"
+msgstr "Ta bort inställningar"
+
+#: eg-attachments-admin.inc.php:
+msgid "Be careful: these actions cannot be cancelled. All plugin's options will be deleted while plugin uninstallation."
+msgstr "Varning: dessa val can inte ångras. Alla pluginens inställningar kommer att raderas och pluginen avinstalleras."
+
+#: eg-attachments-admin.inc.php:
+msgid "Delete options during uninstallation."
+msgstr "Radera inställingar under avinstallation."
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments restricted to register users only"
+msgstr "Begränsa bilagor till endast registrerade användare"
+
+#: eg-attachments-admin.inc.php:
+msgid "General behavior of shortcodes"
+msgstr "Allmänt beteende för shortcode"
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments access"
+msgstr "Tillgång till bilagor"
+
+#: eg-attachments-admin.inc.php:
+msgid "Restrict access to the attachments to logged users only!"
+msgstr "Begränsa tillgång till bilagorna till endast inloggade användare!"
+
+#: eg-attachments-admin.inc.php:
+msgid "Url to login or register page:"
+msgstr "Url till inloggning eller registrerings sida:"
+
+#: eg-attachments-admin.inc.php:
+msgid "This option sets the default behavior of all shortcodes and auto-shortcode. You can change the behavior of specific shortcodes by adding \"logged_users\" parameter."
+msgstr "Denna inställning påverkar alla shortcode och automatiska shortcode. Du kan ändra inställingen för specifika shortcode genom att lägga till parametern \"logged_users\"."
+
+#: window.php
+msgid "Force \"saveas\": "
+msgstr "Tvinga \"sparasom\": "
+
+#: window.php
+msgid "Attachments access: "
+msgstr "Tillgång till bilagor: "
+
+#: window.php
+msgid "No"
+msgstr "Nej"
+
+#: window.php
+msgid "Yes"
+msgstr "Ja"
+
+#: window.php
+msgid "Use default parameter"
+msgstr "Använd ursprungligt värde"
+
+#: window.php
+msgid "All users"
+msgstr "Alla användare"
+
+#: window.php
+msgid "Only logged users"
+msgstr "Endast inloggade användare"
+
+#: eg-attachments-admin.inc.php:
+msgid "Display icons: "
+msgstr "Visa ikoner: "
+
+#: eg-attachments-admin.inc.php:
+msgid "Check the box to display icons"
+msgstr "Klicka i rutan för att visa ikoner"
+
+#: eg-attachments-admin.inc.php:
+msgid "Default options? "
+msgstr "Ursprunliga inställningar?"
+
+#: eg-attachments-admin.inc.php:
+msgid "Do you want that auto shortcode options become the default options for the TinyMCE EG-Series Editor?"
+msgstr "Vill du att dessa auto shortcode inställingar blir förvalda inställingar för TinyMCE EG-Series redigeraren?"
+
+#: eg-attachments-admin.inc.php:
+msgid "Click counter"
+msgstr "Klickräknare"
+
+#: eg-attachments-admin.inc.php:
+msgid "Activate"
+msgstr "Aktivera"
+
+#: eg-attachments-admin.inc.php:
+msgid "Record all clicks occuring in the listed attachements."
+msgstr "Spara all klick i de listade bilagorna."
+
+#: eg-attachments-admin.inc.php:
+msgid "Exclude IP"
+msgstr "Exkludera IP"
+
+#: eg-attachments-admin.inc.php:
+msgid "EG-Attachments Statistics"
+msgstr "EG-Attachments statistik"
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments"
+msgstr "Bilagor"
+
+#: eg-attachments-admin.inc.php:
+msgid "All<br />time"
+msgstr "All<br />tid"
+
+#: eg-attachments-admin.inc.php:
+msgid "Last<br />month"
+msgstr "Senaste<br />månad"
+
+#: eg-attachments-admin.inc.php:
+msgid "Current<br />month"
+msgstr "Nuvarande<br />månad"
+
+#: eg-attachments-admin.inc.php:
+msgid "Last<br />week"
+msgstr "Förra<br />veckan"
+
+#: eg-attachments-admin.inc.php:
+msgid "Current<br />week"
+msgstr "Nuvarande<br />vecka"
+
+#: eg-attachments-admin.inc.php:
+msgid "Yesterday"
+msgstr "Igår"
+
+#: eg-attachments-admin.inc.php:
+msgid "Top 10"
+msgstr "Topp 10"
+
+#: eg-attachments-admin.inc.php:
+msgid "Top 25"
+msgstr "Topp 25"
+
+#: eg-attachments-admin.inc.php:
+msgid "Global"
+msgstr "Global"
+
+#: eg-attachments-admin.inc.php:
+msgid "Details of %s"
+msgstr "Detaljer för %s"
+
+#: eg-attachments-admin.inc.php:
+msgid "History of \"%s\" "
+msgstr "Historia för \"%s\" "
+
+#: eg-attachments-admin.inc.php:
+msgid "Clicks"
+msgstr "Klick"
+
+#: eg-attachments-admin.inc.php:
+msgid "Posts"
+msgstr "Inlägg"
+
+#: eg-attachments-admin.inc.php:
+msgid "Total"
+msgstr "Totalt"
+
+#: eg-attachments-admin.inc.php:
+msgid "Jan"
+msgstr "Jan"
+
+#: eg-attachments-admin.inc.php:
+msgid "Feb"
+msgstr "Feb"
+
+#: eg-attachments-admin.inc.php:
+msgid "Mar"
+msgstr "Mar"
+
+#: eg-attachments-admin.inc.php:
+msgid "Apr"
+msgstr "Apr"
+
+#: eg-attachments-admin.inc.php:
+msgid "May"
+msgstr "Maj"
+
+#: eg-attachments-admin.inc.php:
+msgid "Jun"
+msgstr "Jun"
+
+#: eg-attachments-admin.inc.php:
+msgid "Jul"
+msgstr "Jul"
+
+#: eg-attachments-admin.inc.php:
+msgid "Aug"
+msgstr "Aug"
+
+#: eg-attachments-admin.inc.php:
+msgid "Sep"
+msgstr "Sep"
+
+#: eg-attachments-admin.inc.php:
+msgid "Oct"
+msgstr "Okt"
+
+#: eg-attachments-admin.inc.php:
+msgid "Nov"
+msgstr "Nov"
+
+#: eg-attachments-admin.inc.php:
+msgid "Dec"
+msgstr "Dec"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom"
+msgstr "Eget"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format"
+msgstr "Eget format"
+
+#: eg-attachments-admin.inc.php:
+msgid "Use this section only if you choose <strong>Custom</strong> in the <em>List format</em> field. <br />In this case, you can define how will be displayed the list of attachments. Keywords you can use are listed below."
+msgstr "Använd endast denna del om du valt <strong>Eget</strong> i <em>list format</em> fältet. <br />I så fall kan du specificera hur du vill visa listan av bilagor. Nyckelord som du kan använda visas nedan."
+
+#: eg-attachments-admin.inc.php:
+msgid "Available keywords:<br /><table"
+msgstr "Tillgängliga nyckelord:<br /><table"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format, before list: "
+msgstr "Eget format, innan listan: "
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom list format: "
+msgstr "Eget list format: "
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format, after list: "
+msgstr "Eget format, efter listan: "
+
+#: eg-attachments-admin.inc.php:
+msgid "Before the excerpt"
+msgstr "Innan utdraget"
+
+#: eg-attachments-admin.inc.php:
+msgid "Between excerpt and content"
+msgstr "Mellan utdraget och innehållet"
+
