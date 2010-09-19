@@ -3,8 +3,8 @@ Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
 Requires at least: 2.8.0
-Tested up to: 3.0.0
-Stable tag: 1.7.2
+Tested up to: 3.0.1
+Stable tag: 1.7.3.1
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -12,7 +12,6 @@ This plugin add a shortcode to display the list of attachments of a post, with i
 
 EG-Attachments add a new shortcode attachements. This shortcode can be used with many options.
 But you don't need to know all of these options, because the plugin is "TinyMCE integrated" : from the post editor, just click on the EG-Attachments button, and a window allows you to choose documents to display, title of the list, size of icons ... Nothing to learn.
-This feature is only available since WordPress 2.7 and above.
 
 You can insert the **shortcode** by hand if you want, or use it in a template using the **do_shortcode** function.
 
@@ -49,18 +48,17 @@ Thanks to
 
 = Translations =
 
-The plugin comes with English, French and Russian. Thanks to the following people for their contributions:
+The plugin comes up to 5 translations. Thanks to the following people for their contributions:
 
-* Russian (ru) - [Fatcow](http://www.fatcow.com)
-* Italian (it) - [Luca Maida](www.qsin.it) and [Roberto Scano](http://robertoscano.info/)
-* Swedish (SE) - [Jonas Floden](http://www.koalasoft.se/)
+* Belarusian (BY) - [Fatcow](http://www.fatcow.com)
+* Italian (IT) - [Luca Maida](www.qsin.it) and [Roberto Scano](http://robertoscano.info/)
 * Dutch (NL) - [Rene at WP webshop](http://wpwebshop.com/premium-wordpress-themes/)
 * Spanish (ES) - [David Arinez](http://www.codeeta.com/)
+* Swedish (SE) - [Jonas Floden](http://www.koalasoft.se/)
 
-If you want to help to translate the plugin to your language, please have a look at the eg_archives.pot file which contains all definitions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
+If you want to help to translate the plugin to your language, please have a look at the eg_attachments.pot file which contains all definitions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
 
 If you have created your own language pack, or have an update of an existing one, you can send [gettext .po and .mo files](http://codex.wordpress.org/Translating_WordPress) to me so that I can bundle it into the plugin.
-
 
 == Installation ==
 
@@ -75,8 +73,8 @@ You can also use the WordPress 2.7 features, and install the plugin directly fro
 
 Then you can go to menu **Settings / EG-Attachments** to set plugin parameters
 
-This plugin was tested on WordPress 2.6.x, 2.7.x and up to 2.8.4.
-About WordPress MU: the plugin is running properly on version 2.8.x Assume that it run also with WordPress MU 2.6 and 2.7.
+This plugin was tested on WordPress 2.8.4, 2.9.2, and up to 3.0.1.
+About WordPress MU: the plugin is running properly on version 2.8.x and above.
 
 = Usage =
 
@@ -86,7 +84,7 @@ About WordPress MU: the plugin is running properly on version 2.8.x Assume that 
 
 The shortcode options are:
 
-* **size**: size of the icon. Values: large, medium or small. Default: large,
+* **size**: size of the icon. Values: large, medium, small or custom. Default: large,
 * **doctype**: type of documents to display. Values: image or document. Defaults: document,
 * **docid** list of attachments' id (comma separated) you want to display. Default: nothing to display all attachments,
 * **id**: id of the post we want to display attachments
@@ -156,6 +154,21 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 8. Detailed statistics page.
 
 == Changelog ==
+
+= Version 1.7.3.1 - Sept 19th, 2010 =
+
+* New: Optional load of the stylesheet,
+* New: the option *size=custom*, is working properly now, for both automatic and manual shortcode. Default values are common.
+* Bug fix: shortcode option *order_by* didn't work properly,
+* Bug fix: unexpected comma in the list of field when shortcode is build with the TinyMCE EG-attachment button,
+* Bug fix: stats didn't work,
+* Bug fix: some errors in french translation,
+* Bug fix: fields choice, suppress description from medium size,
+* Bug fix: error in the widget, when fields *caption* and *description* was checked together,
+* Bug fix: in some cases, file size was not displayed,
+* Bug fix: links of attachments are encoded (XHTML compliant),
+* Bug fix: %FILE_SIZE% parameter didn't work in custom format
+* Change: internal libraries.
 
 = Version 1.7.2 - July 28th, 2010 =
 

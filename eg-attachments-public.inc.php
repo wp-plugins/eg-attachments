@@ -9,10 +9,11 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_113 {
+	Class EG_Attachments extends EG_Plugin_114 {
 
-		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16);
-		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
+		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
+		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
+		var $cacheexpiration = 300;
 
 		/**
 		 * Implement init action
@@ -34,20 +35,16 @@ if (! class_exists('EG_Attachments')) {
 				add_shortcode('attachments', array(&$this, 'get_attachments'));
 				if ($this->options['shortcode_auto']>0) {
 					add_filter('get_the_excerpt', array(&$this, 'shortcode_auto_excerpt'));
-					add_filter('the_content',     array(&$this, 'shortcode_auto_content'));				
+					add_filter('the_content',     array(&$this, 'shortcode_auto_content'));
 				}
 			}
 		} /* End of init */
 
 		function prepare_url($url) {
-			global $wp_version;
-		
-			if (version_compare($wp_version, '2.8', '<')) 
-				return sanitize_url($url);
-			else
-				return esc_url_raw($url, array('http', 'https'));
+
+			return esc_url_raw($url, array('http', 'https'));
 		}
-		
+
 		/**
 		 * manage_link
 		 *
@@ -59,7 +56,7 @@ if (! class_exists('EG_Attachments')) {
 		 */
 		function manage_link() {
 			global $wpdb;
-			
+
 			if (isset($_GET['aid']) && isset($_GET['pid']) && isset($_GET['sa']) &&
 				is_numeric($_GET['aid']) && is_numeric($_GET['pid']) && is_numeric($_GET['sa']) ) {
 
@@ -73,7 +70,7 @@ if (! class_exists('EG_Attachments')) {
 					if ($stat_ip !== FALSE && $this->options['stats_ip_exclude'] != '')
 						$stats_enable = ( in_array($stat_ip, explode(',', $this->options['stats_ip_exclude'])) );
 				}
-				
+
 				if ($stats_enable) {
 					$post = get_post($_GET['pid']);
 					if (! $post || ! in_array($post->post_type, array('post', 'page')))
@@ -82,9 +79,9 @@ if (! class_exists('EG_Attachments')) {
 					// Count click
 					$sql = 'SELECT click_id FROM '.$wpdb->prefix.'eg_attachments_clicks '.
 							'WHERE attach_id='.$attach->ID.' AND post_id='.$post->ID.' AND CURRENT_DATE() = click_date';
-					
+
 					$click_id = $wpdb->get_results($sql);
-					
+
 					if (! $click_id){
 						$sql = 'INSERT INTO '.$wpdb->prefix.'eg_attachments_clicks'.
 							' SET attach_id='.$attach->ID.', attach_title="'.$attach->post_title.'"'.
@@ -95,7 +92,7 @@ if (! class_exists('EG_Attachments')) {
 					else {
 						$sql = 'UPDATE '.$wpdb->prefix.'eg_attachments_clicks'.
 							' SET clicks_number = clicks_number + 1'.
-							' WHERE click_id='.$click_id[0]->click_id;	
+							' WHERE click_id='.$click_id[0]->click_id;
 					}
 					$wpdb->query($sql);
 				} // End of stat enable
@@ -147,25 +144,13 @@ if (! class_exists('EG_Attachments')) {
 		  * @package EG-Attachments
 		  *
 		  * @package EG-Attachments
-		  * @param 	string	$file_url	url of attachment
+		  * @param  int     $file_id    id of attachment to get size
 		  * @return	float 				size of the attachment
 		  */
-		function get_file_size($file_url) {
-
-			/* Objective: get the size of the file specified
-			     the php function filesize requires the path, not the url
-		                try to find the path of the path.
-		    */
-			$site_url  = get_bloginfo('siteurl');
-
-			// Parse the site url, to detect if we have only hostname, or hostname/path
-			// $url_array = parse_url($site_url);
-
-			// Replace backslashes with slashes in case of windows hosting
-			$abspath   = str_replace('\\','/', ABSPATH);
+		function get_file_size($file_id) {
 
 			// Get the path of the file
-			$file_path = $abspath.str_replace($site_url, '', $file_url);
+			$file_path = get_attached_file($file_id);
 
 			// size calculation
 			$docsize = @filesize($file_path);
@@ -195,6 +180,7 @@ if (! class_exists('EG_Attachments')) {
 			if (! $icon_url = wp_mime_type_icon($id) ) {
 				$icon_url = trailingslashit(get_bloginfo('wpurl')).WPINC.'/images/crystal/default.png';
 			}
+			$description = ($attachment->post_content!=''?$attachment->post_content:($attachment->post_title!=''?$attachment->post_title:$attachment->post_name));
 			$output .= '<img src="'.$icon_url.'" width="'.$width.'" height="'.$height.'" alt="'.$description.'" />';
 
 			return ($output);
@@ -221,7 +207,7 @@ if (! class_exists('EG_Attachments')) {
 		  * @return string 			List of attachments (dl / dt /dd liste)
 		  */
 		function get_attachments($attr)  {
-			global $post, $wp_version;
+			global $post; 
 			global $EG_ATTACHMENT_SHORTCODE_DEFAULTS;
 
 			if (function_exists('hidepost_filter_post'))
@@ -250,16 +236,13 @@ if (! class_exists('EG_Attachments')) {
 			}
 
 			list($order_by, $order) = split(' ', $orderby);
-			if (version_compare($wp_version, '2.6', '<'))
-				$order_by = 'post_'.$order_by;
-
 			if ($order == '') $order = 'ASC';
 
 			// get attachments
 			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
 			if ($attachments === FALSE || !isset($attachments[$id])) {
 
-				$attachment_list  = get_children( array('post_parent' => $id,
+				$attachment_list  = get_posts( array('post_parent' => $id,
 													'numberposts'	=> -1,
 													'post_type'		=> 'attachment',
 													'orderby'		=> $order_by,
@@ -300,13 +283,16 @@ if (! class_exists('EG_Attachments')) {
 					$doc_list = split(',', $docid);
 				}
 			}
-
+			
 			// Display title
 			$output = '';
 
-			if ($size == 'custom' && $format_pre!='') 
+			if ($size == 'custom') {
+			    $format      = ($format==''?$this->options['custom_format']:$format);
+			    $format_pre  = ($format_pre==''?$this->options['custom_format_pre']:$format_pre);
+				$format_post = ($format_post==''?$this->options['custom_format_post']:$format_post);
 				$output = html_entity_decode (stripslashes($format_pre));
-			
+			}
 			// Display attachment list
 			foreach ( $attachments[$id] as $attachment ) {
 				if (sizeof($doc_list) == 0 || array_search($attachment->ID, $doc_list) !== FALSE) {
@@ -314,18 +300,23 @@ if (! class_exists('EG_Attachments')) {
 					if ( $doctype == 'all' ||
 					    ($doctype == 'image' && $mime_type == 'image') ||
 					    ($doctype == 'document' && $mime_type != 'image') ) {
-						$file_size = $this->get_file_size($attachment->guid);
+						$file_size = $this->get_file_size(/* $attachment->guid */ $attachment->ID);
 						$attachment_title = htmlspecialchars(strip_tags($attachment->post_title));
 
 						if ($logged_users && ! is_user_logged_in()) {
 							$url = ($this->options['login_url']==''?'#':$this->options['login_url']).
 								'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');';
-							// $link = '<a title="'.$attachment_title.'" href="'.($this->options['login_url']==''?'#':$this->options['login_url']).'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');">';
 							$link = '<a title="'.$attachment_title.'" href="'.$url.'">';
 							$lock_icon = '<img class="lock" src="'.$this->plugin_url.'img/lock.png" height="16" width="16" alt="'.__('Document locked', $this->textdomain).'" />';
 						}
 						else {
-							$url  = '?aid='.$attachment->ID.'&pid='.$id.'&sa='.$force_saveas;
+							$query = parse_url(get_permalink(), PHP_URL_QUERY);
+							$url = get_permalink() . 
+							       ($query == '' ? '?' : '&') . 
+								   http_build_query(
+										array( 'aid' => $attachment->ID, 'pid' => $id, 'sa' => $force_saveas)
+									);
+
 							$link = '<a title="'.$attachment_title.'" href="'.$url.'">';
 							$lock_icon = '';
 						}
@@ -335,13 +326,13 @@ if (! class_exists('EG_Attachments')) {
 								$tmp = html_entity_decode (stripslashes($format));
 								$tmp = preg_replace("/%URL%/",        ($hidepost_hide_link==1?'#':$url),$tmp);
 								//A direct link to some files may be necessary - some programs don't work when the mimetype is not set correctly
-								$tmp = preg_replace("/%GUID%/",        $attachment->guid,$tmp); 
+								$tmp = preg_replace("/%GUID%/",        $attachment->guid,$tmp);
 								$tmp = preg_replace("/%ICONURL%/",     $this->get_icon($attachment->ID, $attachment, $size),$tmp);
 								$tmp = preg_replace("/%TITLE%/",       $attachment_title,$tmp);
 								$tmp = preg_replace("/%CAPTION%/",     $attachment->post_excerpt,$tmp);
 								$tmp = preg_replace("/%DESCRIPTION%/", $attachment->post_content,$tmp);
 								$tmp = preg_replace("/%FILENAME%/",    basename($attachment->guid),$tmp);
-								$tmp = preg_replace("/%FILESIZE%/",    $string_file_size,$tmp);
+								$tmp = preg_replace("/%FILESIZE%/",    $file_size,$tmp);
 								$tmp = preg_replace("/%ATTID%/",       $attachment->ID,$tmp); //For use with stylesheets
 								$output .= $tmp;
 								if(strlen($format)) break; //If !strlen continue in 'large'
@@ -437,7 +428,7 @@ if (! class_exists('EG_Attachments')) {
 			}
 
 			if ($output != '') {
-				if ($size == 'custom' && $format_post!='') 
+				if ($size == 'custom' && $format_post!='')
 					$output .= html_entity_decode (stripslashes($format_post));
 				else {
 					if (! $icon)
@@ -458,9 +449,9 @@ if (! class_exists('EG_Attachments')) {
 			remove_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
 			return $output;
-		} /* --- End of get_attachments -- */
+		} // End of get_attachments 
 
-		
+
 		/**
 		 * shortcode_is_visible
 		 *
@@ -470,11 +461,11 @@ if (! class_exists('EG_Attachments')) {
 		 */
 		function shortcode_is_visible() {
 			global $post;
-			return (!post_password_required($post) && 
+			return (!post_password_required($post) &&
 			        ( $this->options['shortcode_auto_where'] != 'post' || is_single() || is_page() )
 				);
 		} // End of shortcode_is_visible
-		
+
 		/**
 		 * shortcode_auto_excerpt
 		 *
@@ -539,14 +530,14 @@ if (! class_exists('EG_Attachments')) {
 								'format_post'  => $this->options['shortcode_auto_format_post']
 					);
 				$shortcode_output = $this->get_attachments($attrs);
-					
+
 				switch ($this->options['shortcode_auto']) {
 					case 2: // At the end of post
 						$content .= $shortcode_output;
 					break;
 
 					case 3: // Before the excerpt
-						if (! $post_excerpt) 
+						if (! $post_excerpt)
 							$content = $shortcode_output . $content;
 					break;
 
@@ -563,7 +554,7 @@ if (! class_exists('EG_Attachments')) {
 							} // End of detect tag "more"
 						} // End of teaser case
 					break;
-				} // End of switch					
+				} // End of switch
 			} // End of shortcode is activated and visible
 			return ($content);
 		} /* End of shortcode_auto_content */
@@ -575,7 +566,7 @@ $eg_attach = new EG_Attachments('EG-Attachments', EG_ATTACH_VERSION, EG_ATTACH_C
 
 $eg_attach->set_textdomain(EG_ATTACH_TEXTDOMAIN);
 $eg_attach->set_stylesheets('eg-attachments.css', FALSE);
-$eg_attach->set_wp_versions('2.5',	FALSE, '2.6', FALSE);
+$eg_attach->set_wp_versions('2.8',	FALSE, '2.8', FALSE);
 $eg_attach->load();
 
 ?>

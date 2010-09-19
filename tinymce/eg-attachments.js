@@ -40,7 +40,10 @@ function insertEGAttachmentsShortCode() {
 	if (field_caption.checked) field_list = 'caption';
 	
 	var field_description = document.getElementById('field_description');
-	if (field_description.checked) field_list = field_list  + ',description';
+	if (field_description.checked) {
+		if (field_list == '') field_list = 'description';
+		else field_list = field_list  + ',description';
+	}
 
 	if (field_list == '') field_list = 'none';
 	if (field_list == 'caption') field_list = '';

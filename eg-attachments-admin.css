@@ -31,3 +31,5 @@ table.eg-attach-stats-details tr.histogram  td div{
 textarea.regular-text {
 	width: 100%;
 }
+
+table.eg-attach-custom-format td { padding:0 2em 0 0; margin: 0;}

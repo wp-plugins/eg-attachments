@@ -3,7 +3,7 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.1.3
+Version: 1.1.4
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,7 +26,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Plugin_113')) {
+if (!class_exists('EG_Plugin_114')) {
 
 	/**
 	  * Class EG_Plugin
@@ -34,7 +34,7 @@ if (!class_exists('EG_Plugin_113')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_113 {
+	Class EG_Plugin_114 {
 
 		var $plugin_name;
 		var $plugin_version;
@@ -52,10 +52,11 @@ if (!class_exists('EG_Plugin_113')) {
 		var $tinyMCE_button;
 		var $textdomain = '';
 
-		var $wp_version_min = '2.6.5';
+		var $wp_version_min = '2.8';
 		var $wp_version_max;
 		var $wpmu_version_min;
-		var $wpmu_version_max = '2.7';
+		var $wpmu_version_max = '3.0.';
+
 		var $php_version_min;
 		var $php_extensions;
 		var $php_options;
@@ -75,11 +76,11 @@ if (!class_exists('EG_Plugin_113')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_113($name, $version, $core_file, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_114($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($name, $version, $core_file, $options_entry, $default_options);
-		}
+		} // End of EG_Plugin_114
 
 		/**
 		  * Class contructor
@@ -94,19 +95,6 @@ if (!class_exists('EG_Plugin_113')) {
 			$this->plugin_version  = $version;
 			$this->options_entry   = $options_entry;
 			$this->default_options = $default_options;
-
-			// Define WP_CONTENT_URL and WP_CONTENT_DIR for WordPress < 2.6
-			if ( !defined('WP_CONTENT_URL') ) {
-			    define( 'WP_CONTENT_URL', get_option('siteurl') . '/wp-content');
-			}
-			if ( !defined('WP_CONTENT_DIR') )
-			    define( 'WP_CONTENT_DIR', trailingslashit(ABSPATH).'wp-content' );
-
-			if ( !defined( 'WP_PLUGIN_URL' ) )
-				define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
-
-			if ( !defined('WP_PLUGIN_DIR') )
-			    define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 
 			/* Define the plugin path */
 			$plugin_base_path	   = basename( dirname($core_file) );
@@ -349,23 +337,13 @@ if (!class_exists('EG_Plugin_113')) {
 		 * @return	none
 		 */
 		function init() {
-			global $wp_version;
 
 			/* --- Get Plugin options --- */
 			if (! $this->options) $this->options = get_option($this->options_entry);
-			
+
 			/* --- Load translations file --- */
-			if (function_exists('load_plugin_textdomain') && $this->textdomain != '') {
-				if (version_compare($wp_version, '2.6', '<')) {
-					// for WP < 2.6
-					$abspath = str_replace('\\', '/', ABSPATH);
-					$plugin_lang_path = trailingslashit(str_replace($abspath, '', $this->plugin_path)).'lang';
-					load_plugin_textdomain( $this->textdomain, $plugin_lang_path);
-				} else {
-					// for WP >= 2.6
-					load_plugin_textdomain( $this->textdomain, FALSE , basename(dirname($this->plugin_corefile)).'/lang');
-				}
-			}
+			load_plugin_textdomain( $this->textdomain, FALSE, dirname(plugin_basename($this->plugin_corefile)).'/lang');
+
 			$this->include_stylesheets();
 		} // End of init
 
@@ -384,7 +362,7 @@ if (!class_exists('EG_Plugin_113')) {
 			$this->check_requirements(FALSE);
 
 			/* --- Get Plugin options --- */
-			//if (! $this->options) $this->options = get_option($this->options_entry);
+			if (! $this->options) $this->options = get_option($this->options_entry);
 		} // End of plugins_loaded
 
 		/**
@@ -417,7 +395,6 @@ if (!class_exists('EG_Plugin_113')) {
 						wp_enqueue_style( $this->plugin_name.'_stylesheet', get_stylesheet_directory_uri().'/'.$this->stylesheet);
 					}
 					else {
-
 						wp_enqueue_style( $this->plugin_name.'_stylesheet', $this->plugin_url.$this->stylesheet);
 					}
 				}
@@ -434,11 +411,7 @@ if (!class_exists('EG_Plugin_113')) {
 		 * @return none
 		 */
 		function head() {
-			global $wp_version;
 
-			if (version_compare($wp_version, '2.6.5', '<') && function_exists('wp_print_styles')) {
-				wp_print_styles($this->plugin_name.'_stylesheet');
-			}
 		} // End of head
 
 		/**
@@ -451,11 +424,7 @@ if (!class_exists('EG_Plugin_113')) {
 		 * @return none
 		 */
 		function admin_head() {
-			global $wp_version;
 
-			if (version_compare($wp_version, '2.6.5', '<') && function_exists('wp_print_styles')) {
-				wp_print_styles($this->plugin_name.'_admin_stylesheet');
-			}
 		} // End of admin_head
 
 		/**
@@ -484,8 +453,7 @@ if (!class_exists('EG_Plugin_113')) {
 		} // End of admin_footer
 
 		/**
-		 * Filter_plugin_actions_27_and_after
-		 * Filter dedicated to WP 27 and later versions
+		 * Filter_plugin_actions
 		 *
 		 * Add a "settings" link to access to the option page from the plugin list
 		 *
@@ -493,36 +461,13 @@ if (!class_exists('EG_Plugin_113')) {
 		 * @param string	$link	list of existings links
 		 * @return none
 		 */
-		function filter_plugin_actions_27_and_after($links) {
+		function filter_plugin_actions($links) {
 
 			$settings_link = '<a href="options-general.php?page='.$this->option_page_url.'">' . __('Settings') . '</a>';
 			array_unshift( $links, $settings_link );
 
 			return $links;
-		} // End of filter_plugin_actions_27_and_after
-
-		/**
-		 * Filter_plugin_actions_27_and_after
-		 * Function for version prior WP 2.7
-		 *
-		 * Add a "settings" link to access to the option page from the plugin list
-		 *
-		 * @package EG-Plugins
-		 * @param string	$link	list of existings links
-		 * @param string	$file	plugin core file path
-		 * @return none
-		 */
-		function filter_plugin_actions_before_27($links, $file){
-			static $this_plugin;
-
-			if ( !$this_plugin ) $this_plugin = plugin_basename($this->plugin_corefile);
-
-			if ( $file == $this_plugin ) {
-				$settings_link = '<a href="options-general.php?page='.$this->option_page_url.'">' . __('Settings') . '</a>';
-				$links = array_merge( array($settings_link), $links);
-			}
-			return $links;
-		} // End of filter_plugin_actions_before_27
+		} // End of filter_plugin_actions
 
 		/**
 		 * register_button()
@@ -838,21 +783,8 @@ if (!class_exists('EG_Plugin_113')) {
 		  * @return 		none
 		 */
 		function admin_menu() {
-			global $wp_version;
 
-			if (version_compare($wp_version, '2.7', '<')) {
-				$page_list = array ( 'posts'	=> 'add_management_page',
-								 'options'	=> 'add_options_page',
-								 'settings'	=> 'add_options_page',
-								 'tools'	=> 'add_management_page',
-								 'theme'	=> 'add_theme_page',
-								 'users'	=> 'add_users_page',
-								 'media'	=> 'add_management_page',
-								 'links'	=> 'add_management_page',
-								 'pages'	=> 'add_management_page');
-			}
-			else {
-				$page_list = array ( 'posts'	=> 'add_posts_page',
+			$page_list = array ( 'posts'	=> 'add_posts_page',
 								 'options'	=> 'add_options_page',
 								 'settings'	=> 'add_options_page',
 								 'tools'	=> 'add_management_page',
@@ -861,7 +793,6 @@ if (!class_exists('EG_Plugin_113')) {
 								 'media'	=> 'add_media_page',
 								 'links'	=> 'add_links_page',
 								 'pages'	=> 'add_pages_page');
-			}
 
 			// Add a new submenu under Options:
 			$option_page_url = '';
@@ -892,13 +823,8 @@ if (!class_exists('EG_Plugin_113')) {
 				}
 
 				if ($option_page_url != '') {
-					if (version_compare($wp_version, '2.7', '<')) {
-						add_filter('plugin_action_links', array(&$this, 'filter_plugin_actions_before_27'), 10, 2);
-					}
-					else {
-						add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_corefile),
-									array( &$this, 'filter_plugin_actions_27_and_after') );
-					}
+					add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_corefile),
+									array( &$this, 'filter_plugin_actions') );
 				} // End of option_page_url
 
 				unset($this->pages);

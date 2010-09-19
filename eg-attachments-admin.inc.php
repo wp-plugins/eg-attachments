@@ -17,35 +17,10 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_113 {
+	Class EG_Attachments_Admin extends EG_Plugin_114 {
 
 		var $cache;
 
-		function plugins_loaded_toto() {
-
-			parent::plugins_loaded();
-
-			// Add options page
-			$this->add_page('options', 						/* page type: post, page, option, tool 	*/
-			 				'EG-Attachments Options',		/* Page title 							*/
-							'EG-Attachments',				/* Menu title 							*/
-							'manage_options', 				/* Access level / capability			*/
-							'ega_options',					/* file 								*/
-							'options_page');				/* function								*/
-
-			if ($this->options['stats_enable']) {
-
-				// Add click stats page
-				$this->add_page('tools', 					/* page type: post, page, option, tool 	*/
-							'EG-Attachments Statistics',	/* Page title 							*/
-							'EG-Attachments Stats',			/* Menu title 							*/
-							'edit_posts', 					/* Access level / capability			*/
-							'ega_stats',					/* file 								*/
-							'stats_page');					/* function								*/
-			}
-
-		} // End of plugins_loaded
-	
 		/**
 		 * Implement init action
 		 *
@@ -109,6 +84,20 @@ if (! class_exists('EG_Attachments_Admin')) {
 				upgrade_option($this->options_entry, $this->options);
 			} // End of version older than 1.4.3
 
+			if (/* version_compare($previous_version, '1.7.3.1', '<') && */ isset($this->options['shortcode_auto_format'])) {
+				$changed_options = array( 
+								'shortcode_auto_format_pre'  => 'custom_format_pre',
+								'shortcode_auto_format'      => 'custom_format',
+								'shortcode_auto_format_post' => 'custom_format_post');
+				foreach ($changed_options as $old_option => $new_option) {
+					if (isset($this->options[$old_option])) {
+						$this->options[$new_option] = $this->options[$old_option];
+						unset($this->options[$old_option]);
+					}
+				}
+				upgrade_option($this->options_entry, $this->options);
+			} // End of version older than 1.7.3
+			
 			$table_name = $wpdb->prefix . "eg_attachments_clicks";
 			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 
@@ -165,25 +154,15 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'select', 'Document label: ',   'shortcode_auto_label',    '', '', 'Choose the field that will be displayed as title of documents', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
 			$form->add_field($id_section, $id_group, 'select', 'Order by: ',         'shortcode_auto_orderby',  '', '', '', '', 'regular', array( 'ID' => 'ID', '0' => 'Title', 'date' => 'Date', 'mime' => 'Mime type'));
 			$form->add_field($id_section, $id_group, 'select', 'Sort Order: ',       'shortcode_auto_order',    '', '', '', '', 'regular', array( 'ASC' => 'Ascending', 'DESC' => 'Descending'));
-			$form->add_field($id_section, $id_group, 'checkbox', 'Fields: ',         'shortcode_auto_fields',   'Which fields do you want to display (large and medium size only)?', '', '', '', 'regular', array( 'caption' => 'Caption', 'description' => 'Description'));
+			$form->add_field($id_section, $id_group, 'checkbox', 'Fields: ',         'shortcode_auto_fields',   'Which fields do you want to display?', 'Large size: caption and description can be checked<br />Medium size: caption only will be displayed if checked', '', '', 'regular', array( 'caption' => 'Caption', 'description' => 'Description'));
 			$form->add_field($id_section, $id_group, 'checkbox', 'Check the box to display icons',  'shortcode_auto_icon', 'Display icons: ', '', '', '', 'regular');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?', 'shortcode_auto_default_opts', 'Default options? ', '', '', '', 'regular' );
 
-			$id_group   = $form->add_group($id_section, 'Custom format', 'Use this section only if you choose <strong>Custom</strong> in the <em>List format</em> field. <br />In this case, you can define how will be displayed the list of attachments. Keywords you can use are listed below.','Available keywords:<br /><table>
-<tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href="..."&gt;...), </td></tr>
-<tr><td><strong>%URL%</strong></td><td>url of document,</td></tr>
-<tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr>
-<tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr>
-<tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr>
-<tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr>
-<tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr>
-<tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr>
-<tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr>
-<tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr>
-</table>');
-			$form->add_field($id_section, $id_group, 'textarea', 'Custom format, before list: ', 'shortcode_auto_format_pre' );
-			$form->add_field($id_section, $id_group, 'textarea', 'Custom list format: ',         'shortcode_auto_format'     );
-			$form->add_field($id_section, $id_group, 'textarea', 'Custom format, after list: ',  'shortcode_auto_format_post');
+			$id_section = $form->add_section('Custom format','You can define your own display format, using <strong>custom</strong>. Parameters of this section will be applied only if you use <em>Custom</em> as display format for auto-shortcode (fifth option of this page), or if you specify <em>size=custom</em> in the shortcodes in your post.<br />Keywords you can use are listed below.');
+			$id_group   = $form->add_group($id_section, 'Format', '','Available keywords:<br /><table class="eg-attach-custom-format"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href="..."&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr></table>');
+			$form->add_field($id_section, $id_group, 'textarea', 'Custom format, before list: ', 'custom_format_pre' );
+			$form->add_field($id_section, $id_group, 'textarea', 'Custom list format: ',         'custom_format'     );
+			$form->add_field($id_section, $id_group, 'textarea', 'Custom format, after list: ',  'custom_format_post');
 
 			$id_section = $form->add_section('General behavior of shortcodes');
 			$id_group   = $form->add_group($id_section, '"Save As" activation', "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases.");
@@ -198,7 +177,11 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'checkbox', 'Record all clicks occuring in the listed attachements.', 'stats_enable');
 			$id_group   = $form->add_group($id_section, 'Exclude IP');
 			$form->add_field($id_section, $id_group, 'text', 'List of IP address you want to exclude', 'stats_ip_exclude');
-			
+
+			$id_section = $form->add_section('Styles', '', '');
+			$id_group   = $form->add_group($id_section, 'Styles');
+			$form->add_field($id_section, $id_group, 'checkbox', 'Check if you want to use the plugin stylesheet file, uncheck if you want to use your own styles, or include styles on the theme stylesheet.', 'load_css', '', '', '', '', 'regular' );
+						
 			$id_section = $form->add_section('Uninstall options', '', 'Be careful: these actions cannot be cancelled. All plugin\'s options will be deleted while plugin uninstallation.');
 			$id_group   = $form->add_group($id_section, 'Options');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Delete options during uninstallation.', 'uninstall_del_options');

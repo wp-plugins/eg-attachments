@@ -16,16 +16,17 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'shortcode_auto_fields'		  => 'caption',
 	'shortcode_auto_icon'		  => 1,
 	'shortcode_auto_default_opts' => 0,
-	'shortcode_auto_format_pre'	  => '<ul>',
-	'shortcode_auto_format'		  => '<li><a href="%URL%" title="%TITLE%">%TITLE%</a></li>',
-	'shortcode_auto_format_post'  => '</ul>',
+	'custom_format_pre'	  	  	  => '<ul>',
+	'custom_format'		  		  => '<li><a href="%URL%" title="%TITLE%">%TITLE%</a></li>',
+	'custom_format_post'  		  => '</ul>',
 	'force_saveas' 				  => 0,
 	'logged_users_only'			  => 0,
 	'login_url'					  => '',
 	'uninstall_del_options'		  => 0,
 	'stats_enable'				  => 0,
 	'clicks_table'				  => 0,
-	'stats_ip_exclude'			  => ''
+	'stats_ip_exclude'			  => '',
+	'load_css'					  => 1
 );
 
 $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
@@ -39,9 +40,12 @@ $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
 	'force_saveas'	=> -1,
 	'fields'		=> 'caption',
 	'icon'			=> 1,
-	'format_pre'	=> '<ul>',
-	'format'		=> '<li><a href="%URL%" title="%TITLE%">%TITLE%</a></li>',
-	'format_post'	=> '</ul>',
+	'format_pre'	=> '',
+	'format'		=> '',
+	'format_post'	=> '',
+	'format_pre'	=> '',
+	'format'		=> '',
+	'format_post'	=> '',
 	'logged_users'  => -1,
 	'id'            => 0
 );

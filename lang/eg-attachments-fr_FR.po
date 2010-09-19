@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2010-03-06 08:44+0100\n"
+"PO-Revision-Date: 2010-09-19 16:37+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -30,26 +30,26 @@ msgstr "octets"
 #: eg-attachments-public.inc.php:222
 #: eg-attachments-public.inc.php:237
 msgid "Size: "
-msgstr "Taille: "
+msgstr "Taille : "
 
 #: eg-attachments-public.inc.php:213
 #: window.php:227
 msgid "Title: "
-msgstr "Titre: "
+msgstr "Titre : "
 
 #: eg-attachments-public.inc.php:214
 #: eg-attachments-public.inc.php:232
 msgid "Caption: "
-msgstr "L&eacute;gende: "
+msgstr "L&eacute;gende : "
 
 #: eg-attachments-public.inc.php:266
 msgid "Description: "
-msgstr "Description: "
+msgstr "Description : "
 
 #: eg-attachments-public.inc.php:215
 #: eg-attachments-public.inc.php:230
 msgid "File: "
-msgstr "Fichier: "
+msgstr "Fichier : "
 
 #: eg-attachments-admin.inc.php:26
 #: eg-attachments-admin.inc.php:60
@@ -102,7 +102,7 @@ msgstr "Options du shortcode automatique"
 
 #: eg-attachments-admin.inc.php:76
 msgid "Title of the list: "
-msgstr "Titre de la liste: "
+msgstr "Titre de la liste : "
 
 #: eg-attachments-admin.inc.php:84
 msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
@@ -146,7 +146,7 @@ msgstr "Pas de pi&egrave;ces jointes attach&eacute;es &agrave; cet article."
 
 #: window.php:53
 msgid "Order by: "
-msgstr "Tri&eacute; par: "
+msgstr "Tri&eacute; par : "
 
 #: eg-attachments-admin.inc.php:82
 #: window.php:56
@@ -170,7 +170,7 @@ msgstr "Type mime"
 
 #: window.php:62
 msgid "Sort Order: "
-msgstr "Ordre de tri: "
+msgstr "Ordre de tri : "
 
 #: eg-attachments-admin.inc.php:83
 #: window.php:65
@@ -184,7 +184,7 @@ msgstr "Descendant"
 #: window.php:71
 #: eg-attachments-admin.inc.php:78
 msgid "List size: "
-msgstr "Taille: "
+msgstr "Taille : "
 
 #: eg-attachments-admin.inc.php:78
 #: window.php:74
@@ -204,7 +204,7 @@ msgstr "Petite"
 #: window.php:81
 #: eg-attachments-admin.inc.php:80
 msgid "Document label: "
-msgstr "Label des documents: "
+msgstr "Label des documents : "
 
 #: window.php:84
 #: eg-attachments-admin.inc.php:80
@@ -219,11 +219,11 @@ msgstr "Titre du document"
 #: window.php:90
 #: eg-attachments-admin.inc.php:79
 msgid "Document type: "
-msgstr "Type de document: "
+msgstr "Type de document : "
 
 #: window.php:99
 msgid "Document list: "
-msgstr "Liste des documents: "
+msgstr "Liste des documents : "
 
 #: window.php:
 msgid "Fields: "
@@ -240,7 +240,7 @@ msgstr "Annuler"
 #: eg-attachments-admin.inc.php:77
 #: window.php:109
 msgid "HTML Tag for title: "
-msgstr "Balise HTML pour le titre: "
+msgstr "Balise HTML pour le titre : "
 
 #: eg-plugin.inc.php:382
 msgid " cannot run with "
@@ -314,11 +314,11 @@ msgstr "Cette option d&eacute;finit le comportement par d&eacute;faut de tous le
 
 #: window.php
 msgid "Force \"saveas\": "
-msgstr "Forcer le \"t&eacute;l&eacute;chargement\": "
+msgstr "Forcer le \"t&eacute;l&eacute;chargement\" : "
 
 #: window.php
 msgid "Attachments access: "
-msgstr "Acc&egrave;s aux pi&egrave;ces jointes: "
+msgstr "Acc&egrave;s aux pi&egrave;ces jointes : "
 
 #: window.php
 msgid "No"
@@ -342,7 +342,7 @@ msgstr "Utilisateurs connect&eacute;s seulement"
 
 #: eg-attachments-admin.inc.php:
 msgid "Display icons: "
-msgstr "Afficher les ic&ocirc;ones:"
+msgstr "Afficher les ic&ocirc;nes : "
 
 #: eg-attachments-admin.inc.php:
 msgid "Check the box to display icons"
@@ -497,24 +497,24 @@ msgid "Custom format"
 msgstr "Format personnalis&eacute;"
 
 #: eg-attachments-admin.inc.php:
-msgid "Use this section only if you choose <strong>Custom</strong> in the <em>List format</em> field. <br />In this case, you can define how will be displayed the list of attachments. Keywords you can use are listed below."
-msgstr "Utiliser cette section uniquement si vous avez s&eacute;lectionnez <strong>Personalis&eacute;e</strong> dans la ligne <em>Liste des formats</em>.<br />Dans ce cas, vous pouvez d&eacute;finir vous-m&ecirc;me comment sera affich&eacute;e la liste des pi&egrave;ces jointes. Les mots-cl&eacute;s sont list&eacute;s ci-dessous."
+msgid "You can define your own display format, using <strong>custom</strong>. Parameters of this section will be applied only if you use <em>Custom</em> as display format for auto-shortcode (fifth option of this page), or if you specify <em>size=custom</em> in the shortcodes in your post.<br />Keywords you can use are listed below."
+msgstr "Vous pouvez d&eacute;finir votre propre format, en utilisant le <strong>format personnalis&eacute;</strong>. Les param&egrave;tres de cette section ne s'appliquent que si vous choisissez <em>Personnalis&eacute;</em> comme format d'affichage pour le shortcode automatique (cinqui&egrave;me option de cette page), ou si vous sp&eacute;cifi&eacute; <em>size=custom</em>, comme option des shortcodes dans vos articles.<br />Les mots-cl&eacute;s sont list&eacute;s ci-dessous."
 
 #: eg-attachments-admin.inc.php:
-msgid "Available keywords:<br /><table"
-msgstr "Mots-cl&eacute;s disponibles:<br /><table"
+msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr></table>"
+msgstr "Mots-cl&eacute;s disponibles :<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Lien complet vers le document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>L'url du document attach&eacute; (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>Le lien direct vers le document, tel qu'il est stock&eacute; dans la base de donn&eacute;es de WordPress,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>l'URL de l'icône,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Titre du document attach&eacute;,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>L&eacute;gende du fichier attach&eacute;,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description du fichier attach&eacute;,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Nom du fichier attach&eacute;,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Taille du document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID du fichier document.</td></tr></table>"
 
 #: eg-attachments-admin.inc.php:
 msgid "Custom format, before list: "
-msgstr "Format personnalis&eacute;, pr&eacute;fixe de la liste:"
+msgstr "Format personnalis&eacute;, pr&eacute;fixe de la liste : "
 
 #: eg-attachments-admin.inc.php:
 msgid "Custom list format: "
-msgstr "Format personnalis&eacute;, format de la liste:"
+msgstr "Format personnalis&eacute;, format de la liste : "
 
 #: eg-attachments-admin.inc.php:
 msgid "Custom format, after list: "
-msgstr "Format personnalis&eacute;, suffixe de la liste:"
+msgstr "Format personnalis&eacute;, suffixe de la liste : "
 
 #: eg-attachments-admin.inc.php:
 msgid "Before the excerpt"
@@ -523,4 +523,18 @@ msgstr "Avant l'extrait"
 #: eg-attachments-admin.inc.php:
 msgid "Between excerpt and content"
 msgstr "Entre l'extrait et le contenu"
+
+#: eg-attachments-admin.inc.php:
+msgid "Styles"
+msgstr "Styles"
+
+#: eg-attachments-admin.inc.php:
+msgid "Check if you want to use the plugin stylesheet file, uncheck if you want to use your own styles, or include styles on the theme stylesheet."
+msgstr "Cocher cette case, si souhaitez utiliser la feuille de styles du plugin. D&eacute;cocher la si vous souhaitez utiliser votre propre feuille de styles."
+
+msgid "Cannot display attachments. Current post or page is protected."
+msgstr "Impossible d'afficher les pi&egrave;ces jointes. L'article ou la page est prot&eacute;g&eacute;."
+
+msgid "Large size: caption and description can be checked<br />Medium size: caption only will be displayed if checked"
+msgstr "Grande taille: l&eacute;gende et description peuvent &ecirc;tre s&eacute;lectionn&eacute;es<br />Taille interm&eacute;diaire: seule la l&eacute;gende sera affich&eacute;e, si elle est s&eacute;lectionn&eacute;e."
 

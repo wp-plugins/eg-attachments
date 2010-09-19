@@ -130,7 +130,7 @@ if (! class_exists('EG_Cache_100')) {
 			$this->default_expire = $expire;
 			$this->default_flag   = $flag;
 
-			// Define persistent cache method: object-cache fif active, transient if WP 2.8, home made in other cases.
+			// Define persistent cache method: object-cache is active, transient if WP 2.8, home made in other cases.
 			if ( file_exists(WP_CONTENT_DIR . '/object-cache.php') )
 				$this->cache_enabled = 'WP';
 			elseif (function_exists('get_transient'))
