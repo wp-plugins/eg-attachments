@@ -1,0 +1,51 @@
+
+table.eg-attach-stats thead th,
+table.eg-attach-stats td {
+	text-align: center;
+}
+
+table.eg-attach-stats-details {
+	border-collapse: collapse;
+	margin: 0 auto;
+	border: 1px solid #ccc;
+}
+
+table.eg-attach-stats-details td {
+
+	background-color: white;
+	text-align: center;
+	vertical-align: bottom;
+	width: 50px;
+}
+
+table.eg-attach-stats-details tr.histogram  td{
+	height: 220px;
+}
+
+table.eg-attach-stats-details tr.histogram  td div{
+	width: 14px;
+	background-color: red;
+	margin: 0 auto;
+}
+
+textarea.regular-text {
+	width: 100%;
+}
+
+table.eg-attach-custom-format td { padding:0 2em 0 0; margin: 0;}
+
+table.eg-attach-list {
+	border: 1px solid #CCC;
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+
+table.eg-attach-list td, 
+table.eg-attach-list th {
+	border: 1px solid #CCC;
+	padding: 2px 10px;
+}
+
+table.eg-attach-list th {
+	background-color: #EEE;
+}

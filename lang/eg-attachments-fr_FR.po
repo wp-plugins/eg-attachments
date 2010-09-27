@@ -1,0 +1,564 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: EG-Attachments 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-14 11:00-0000\n"
+"PO-Revision-Date: 2010-09-24 16:49+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: eg-attachments-public.inc.php:118
+msgid "TB"
+msgstr "To"
+
+#: eg-attachments-public.inc.php:118
+msgid "MB"
+msgstr "Mo"
+
+#: eg-attachments-public.inc.php:118
+msgid "kB"
+msgstr "Ko"
+
+#: eg-attachments-public.inc.php:118
+msgid "B"
+msgstr "octets"
+
+#: eg-attachments-public.inc.php:210
+#: eg-attachments-public.inc.php:222
+#: eg-attachments-public.inc.php:237
+msgid "Size: "
+msgstr "Taille : "
+
+#: eg-attachments-public.inc.php:213
+#: window.php:227
+msgid "Title: "
+msgstr "Titre : "
+
+#: eg-attachments-public.inc.php:214
+#: eg-attachments-public.inc.php:232
+msgid "Caption: "
+msgstr "L&eacute;gende : "
+
+#: eg-attachments-public.inc.php:266
+msgid "Description: "
+msgstr "Description : "
+
+#: eg-attachments-public.inc.php:215
+#: eg-attachments-public.inc.php:230
+msgid "File: "
+msgstr "Fichier : "
+
+#: eg-attachments-admin.inc.php:26
+#: eg-attachments-admin.inc.php:60
+msgid "EG-Attachments Options"
+msgstr "Options de EG-Attachments"
+
+#: eg-attachments-admin.inc.php:27
+msgid "EG-Attachments"
+msgstr "EG-Attachments"
+
+#: eg-attachments-admin.inc.php:69
+msgid "Auto shortcode"
+msgstr "Shortcode automatique"
+
+#: eg-attachments-admin.inc.php:70
+msgid "Activation"
+msgstr "Activation"
+
+#: eg-attachments-admin.inc.php:71
+msgid "With this option, you can automaticaly add the list of attachments in your blog, without using shortcode"
+msgstr "Avec cette option, vous pouvez ajouter automatiquement la liste des pi&egrave;ces jointes, sans utiliser de shortcode"
+
+#: eg-attachments-admin.inc.php:71
+msgid "Not activated"
+msgstr "Non activ&eacute;"
+
+#: eg-attachments-admin.inc.php:71
+msgid "At the end"
+msgstr "En fin d'article"
+
+#: eg-attachments-admin.inc.php:73
+msgid "Where"
+msgstr "Page d'activation"
+
+#: eg-attachments-admin.inc.php:73
+msgid "Lists of attachments can be displayed everywhere posts are displayed, or only when a single post or a single page is displayed"
+msgstr "Les listes de pi&egrave;ces jointes peuvent appara&icirc;tre sur toutes les pages o&ugrave; les articles sont affich&eacute;s, ou seulement sur les pages 'article' ou 'page'."
+
+#: eg-attachments-admin.inc.php:73
+msgid "in all pages"
+msgstr "sur toutes les pages"
+
+#: eg-attachments-admin.inc.php:73
+msgid "Only for posts and pages"
+msgstr "Seulement pour les articles ou les pages"
+
+#: eg-attachments-admin.inc.php:75
+msgid "Auto Shortcode Options"
+msgstr "Options du shortcode automatique"
+
+#: eg-attachments-admin.inc.php:76
+msgid "Title of the list: "
+msgstr "Titre de la liste : "
+
+#: eg-attachments-admin.inc.php:84
+msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
+msgstr "Habituellement, lorsque l'on clique sur un lien pointant sur une pi&egrave;ce jointe, en fonction du type mime du document, celui-ci est affich&eacute; directement, ou une bo&icirc;te de dialogue appara&icirc;t offrant le choix de t&eacute;l&eacute;charger le document, ou de lancer une application capable de le lire. En activant cette option, cette bo&icirc;te de dialogue appara&icirc;tra syst&eacute;matiquement."
+
+#: eg-attachments-admin.inc.php:82
+msgid "Which fields do you want to display (large and medium size only)?"
+msgstr "Quels champs souhaitez-vous afficher (applicable pour les tailles grandes ou moyennes seulement)?"
+
+#: eg-attachments-admin.inc.php:82
+msgid "Caption"
+msgstr "L&eacute;gende"
+
+#: eg-attachments-admin.inc.php:82
+msgid "Description"
+msgstr "Description"
+
+#: eg-attachments-admin.inc.php:83
+msgid "\"Save As\" activation"
+msgstr "Activation de l'option \"T&eacute;l&eacute;chargement\""
+
+#: eg-attachments-admin.inc.php:84
+msgid "Force \"Save As\" when users click on the attachments"
+msgstr "Proposer syst&eacute;matiquement le t&eacute;l&eacute;chargement des documents lorsque les utilisateurs cliquent sur les pi&egrave;ces jointes"
+
+#: eg-attachments-admin.inc.php:86
+msgid "Save changes"
+msgstr "Sauvegarder les changements"
+
+#: eg-attachments-admin.inc.php:87
+msgid "Cancel changes"
+msgstr "Annuler les changements"
+
+#: eg-attachments-admin.inc.php:88
+msgid "Reset to defaults"
+msgstr "R&eacute;intialiser les param&egrave;tres"
+
+#: window.php:31
+msgid "No attachment available for this post"
+msgstr "Pas de pi&egrave;ces jointes attach&eacute;es &agrave; cet article."
+
+#: window.php:53
+msgid "Order by: "
+msgstr "Tri&eacute; par : "
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:56
+msgid "Title"
+msgstr "Titre"
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:57
+msgid "ID"
+msgstr "ID"
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:58
+msgid "Date"
+msgstr "Date"
+
+#: eg-attachments-admin.inc.php:82
+#: window.php:59
+msgid "Mime type"
+msgstr "Type mime"
+
+#: window.php:62
+msgid "Sort Order: "
+msgstr "Ordre de tri : "
+
+#: eg-attachments-admin.inc.php:83
+#: window.php:65
+msgid "Ascending"
+msgstr "Ascendant"
+
+#: window.php:66
+msgid "Descending"
+msgstr "Descendant"
+
+#: window.php:71
+#: eg-attachments-admin.inc.php:78
+msgid "List size: "
+msgstr "Taille : "
+
+#: eg-attachments-admin.inc.php:78
+#: window.php:74
+msgid "Large"
+msgstr "Grande"
+
+#: eg-attachments-admin.inc.php:78
+#: window.php:75
+msgid "Medium"
+msgstr "Moyenne"
+
+#: eg-attachments-admin.inc.php:78
+#: window.php:76
+msgid "Small"
+msgstr "Petite"
+
+#: window.php:81
+#: eg-attachments-admin.inc.php:80
+msgid "Document label: "
+msgstr "Label des documents : "
+
+#: window.php:84
+#: eg-attachments-admin.inc.php:80
+msgid "File name"
+msgstr "Nom du fichier"
+
+#: window.php:85
+#: eg-attachments-admin.inc.php:80
+msgid "Document title"
+msgstr "Titre du document"
+
+#: window.php:90
+#: eg-attachments-admin.inc.php:79
+msgid "Document type: "
+msgstr "Type de document : "
+
+#: window.php:99
+msgid "Document list: "
+msgstr "Liste des documents : "
+
+#: window.php:
+msgid "Fields: "
+msgstr "Champs: "
+
+#: window.php:119
+msgid "Insert"
+msgstr "Ins&eacute;rer"
+
+#: window.php:115
+msgid "Cancel"
+msgstr "Annuler"
+
+#: eg-attachments-admin.inc.php:77
+#: window.php:109
+msgid "HTML Tag for title: "
+msgstr "Balise HTML pour le titre : "
+
+#: eg-plugin.inc.php:382
+msgid " cannot run with "
+msgstr " ne fonctionne pas avec "
+
+#: eg-plugin.inc.php:382
+msgid " requires "
+msgstr " n&eacute;cessite "
+
+#: eg-plugin.inc.php:383
+#: eg-plugin.inc.php:385
+msgid " to "
+msgstr " &agrave; "
+
+#: eg-plugin.inc.php:384
+msgid " and later."
+msgstr " et sup&eacute;rieur."
+
+#: window.php:
+msgid "First"
+msgstr "Premier"
+
+#: window.php:
+msgid "Last"
+msgstr "Dernier"
+
+#: window.php:
+#: eg-attachments-admin.inc.php:
+msgid "All"
+msgstr "Tous"
+
+#: eg-attachments-admin.inc.php:
+msgid "Choose the field that will be displayed as title of documents"
+msgstr "Choisissez le champ qui sera affich&eacute; comme titre des documents"
+
+#: eg-attachments-admin.inc.php:89
+msgid "Uninstall options"
+msgstr "Options de d&eacute;sinstallation"
+
+#: eg-attachments-admin.inc.php:
+msgid "Be careful: these actions cannot be cancelled. All plugin's options will be deleted while plugin uninstallation."
+msgstr "Attention: Ces actions ne peuvent pas &egrave;tre annul&eacute;es. Toutes les options du plugin seront effac&eacute;es pendant la d&eacute;sinstallation."
+
+#: eg-attachments-admin.inc.php:
+msgid "Delete options during uninstallation."
+msgstr "Effacer les options pendant la d&eacute;sinstallation."
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments restricted to register users only"
+msgstr "L'acc&egrave;s aux pi&egrave;ces jointes est r&eacute;serv&eacute; aux utilisateurs enregistr&eacute;s."
+
+#: eg-attachments-admin.inc.php:
+msgid "General behavior of shortcodes"
+msgstr "Comportement du shortcode"
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments access"
+msgstr "Acc&egrave;s aux pi&egrave;ces jointes"
+
+#: eg-attachments-admin.inc.php:
+msgid "Restrict access to the attachments to logged users only!"
+msgstr "Limiter l'acc&egrave;s des pi&egrave;ces jointes aux utilisateurs enregistr&eacute;s."
+
+#: eg-attachments-admin.inc.php:
+msgid "Url to login or register page:"
+msgstr "Url du formulaire de connexion ou d'enregistrement:"
+
+#: eg-attachments-admin.inc.php:
+msgid "This option sets the default behavior of all shortcodes and auto-shortcode. You can change the behavior of specific shortcodes by adding <code>logged_users</code> parameter."
+msgstr "Cette option d&eacute;finit le comportement par d&eacute;faut de tous les shortcodes et de l'auto-shortcode. Vous pouvez ensuite changer ce comportement shortcode par shortcode, en leur ajoutant le param&egrave;tre <code>logged_users</code>."
+
+#: window.php
+msgid "Force \"saveas\": "
+msgstr "Forcer le \"t&eacute;l&eacute;chargement\" : "
+
+#: window.php
+msgid "Attachments access: "
+msgstr "Acc&egrave;s aux pi&egrave;ces jointes : "
+
+#: window.php
+msgid "No"
+msgstr "Non"
+
+#: window.php
+msgid "Yes"
+msgstr "Oui"
+
+#: window.php
+msgid "Use default parameter"
+msgstr "Utiliser le param&egrave;tre par d&eacute;faut"
+
+#: window.php
+msgid "All users"
+msgstr "Tous les utilisateurs"
+
+#: window.php
+msgid "Only logged  users"
+msgstr "Utilisateurs connect&eacute;s seulement"
+
+#: eg-attachments-admin.inc.php:
+msgid "Display icons: "
+msgstr "Afficher les ic&ocirc;nes : "
+
+#: eg-attachments-admin.inc.php:
+msgid "Check the box to display icons"
+msgstr "Cocher l'option pour afficher les ic&ocirc;nes."
+
+#: eg-attachments-admin.inc.php:
+msgid "Default options? "
+msgstr "Options par d&eacute;faut "
+
+#: eg-attachments-admin.inc.php:
+msgid "Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?"
+msgstr "Souhaitez-vous utiliser les options de l'auto-shortcode comme valeurs par d&eacute;faut pour le bouton EG-Attachments dans l'&eacute;diteur TinyMCE?"
+
+#: eg-attachments-admin.inc.php:
+msgid "Click counter"
+msgstr "Compteur de clics / t&eacute;l&eacute;chargements"
+
+#: eg-attachments-admin.inc.php:
+msgid "Activate"
+msgstr "Activer"
+
+#: eg-attachments-admin.inc.php:
+msgid "Record all clicks occuring in the listed attachements."
+msgstr "Enregistrer les statistiques des clics sur les pi&egrave;ces jointes."
+
+#: eg-attachments-admin.inc.php:
+msgid "Exclude IP"
+msgstr "Adresses IP &agrave; exclure"
+
+#: eg-attachments-admin.inc.php:
+msgid "EG-Attachments Statistics"
+msgstr "Statistiques EG-Attachments"
+
+#: eg-attachments-admin.inc.php:
+msgid "Attachments"
+msgstr "Pi&egrave;ces jointes"
+
+#: eg-attachments-admin.inc.php:
+msgid "All<br />time"
+msgstr "Toute la p&eacute;riode"
+
+#: eg-attachments-admin.inc.php:
+msgid "Last<br />month"
+msgstr "Mois<br />dernier"
+
+#: eg-attachments-admin.inc.php:
+msgid "Current<br />month"
+msgstr "Mois<br />courant"
+
+#: eg-attachments-admin.inc.php:
+msgid "Last<br />week"
+msgstr "Semaine<br />derni&egrave;re"
+
+#: eg-attachments-admin.inc.php:
+msgid "Current<br />week"
+msgstr "Semaine<br />actuelle"
+
+#: eg-attachments-admin.inc.php:
+msgid "Yesterday"
+msgstr "Hier"
+
+#: eg-attachments-admin.inc.php:
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: eg-attachments-admin.inc.php:
+msgid "Top 10"
+msgstr "Top 10"
+
+#: eg-attachments-admin.inc.php:
+msgid "Top 25"
+msgstr "Top 25"
+
+#: eg-attachments-admin.inc.php:
+msgid "Global"
+msgstr "Global"
+
+#: eg-attachments-admin.inc.php:
+msgid "Details of %s"
+msgstr "D&eacute;tails du document %s"
+
+#: eg-attachments-admin.inc.php:
+msgid "History of \"%s\" "
+msgstr "Historique du document \"%s\" "
+
+#: eg-attachments-admin.inc.php:
+msgid "Clicks"
+msgstr "Clics"
+
+#: eg-attachments-admin.inc.php:
+msgid "Posts"
+msgstr "Articles"
+
+#: eg-attachments-admin.inc.php:
+msgid "Total"
+msgstr "Total"
+
+#: eg-attachments-admin.inc.php:
+msgid "Jan"
+msgstr "Jan"
+
+#: eg-attachments-admin.inc.php:
+msgid "Feb"
+msgstr "F&eacute;v"
+
+#: eg-attachments-admin.inc.php:
+msgid "Mar"
+msgstr "Mar"
+
+#: eg-attachments-admin.inc.php:
+msgid "Apr"
+msgstr "Avr"
+
+#: eg-attachments-admin.inc.php:
+msgid "May"
+msgstr "Mai"
+
+#: eg-attachments-admin.inc.php:
+msgid "Jun"
+msgstr "Juin"
+
+#: eg-attachments-admin.inc.php:
+msgid "Jul"
+msgstr "Juil"
+
+#: eg-attachments-admin.inc.php:
+msgid "Aug"
+msgstr "Ao&ucirc;"
+
+#: eg-attachments-admin.inc.php:
+msgid "Sep"
+msgstr "Sep"
+
+#: eg-attachments-admin.inc.php:
+msgid "Oct"
+msgstr "Oct"
+
+#: eg-attachments-admin.inc.php:
+msgid "Nov"
+msgstr "Nov"
+
+#: eg-attachments-admin.inc.php:
+msgid "Dec"
+msgstr "D&eacute;c"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom"
+msgstr "Personnalis&eacute;e"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format"
+msgstr "Format personnalis&eacute;"
+
+#: eg-attachments-admin.inc.php:
+msgid "You can define your own display format, using <strong>custom</strong>. Parameters of this section will be applied only if you use <em>Custom</em> as display format for auto-shortcode (fifth option of this page), or if you specify <em>size=custom</em> in the shortcodes in your post.<br />Keywords you can use are listed below."
+msgstr "Vous pouvez d&eacute;finir votre propre format, en utilisant le <strong>format personnalis&eacute;</strong>. Les param&egrave;tres de cette section ne s'appliquent que si vous choisissez <em>Personnalis&eacute;</em> comme format d'affichage pour le shortcode automatique (cinqui&egrave;me option de cette page), ou si vous sp&eacute;cifi&eacute; <em>size=custom</em>, comme option des shortcodes dans vos articles.<br />Les mots-cl&eacute;s sont list&eacute;s ci-dessous."
+
+#: eg-attachments-admin.inc.php:
+msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr></table>"
+msgstr "Mots-cl&eacute;s disponibles :<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Lien complet vers le document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>L'url du document attach&eacute; (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>Le lien direct vers le document, tel qu'il est stock&eacute; dans la base de donn&eacute;es de WordPress,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>l'URL de l'icône,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Titre du document attach&eacute;,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>L&eacute;gende du fichier attach&eacute;,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description du fichier attach&eacute;,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Nom du fichier attach&eacute;,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Taille du document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID du fichier document.</td></tr></table>"
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format, before list: "
+msgstr "Format personnalis&eacute;, pr&eacute;fixe de la liste : "
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom list format: "
+msgstr "Format personnalis&eacute;, format de la liste : "
+
+#: eg-attachments-admin.inc.php:
+msgid "Custom format, after list: "
+msgstr "Format personnalis&eacute;, suffixe de la liste : "
+
+#: eg-attachments-admin.inc.php:
+msgid "Before the excerpt"
+msgstr "Avant l'extrait"
+
+#: eg-attachments-admin.inc.php:
+msgid "Between excerpt and content"
+msgstr "Entre l'extrait et le contenu"
+
+#: eg-attachments-admin.inc.php:
+msgid "Styles"
+msgstr "Styles"
+
+#: eg-attachments-admin.inc.php:
+msgid "Check if you want to use the plugin stylesheet file, uncheck if you want to use your own styles, or include styles on the theme stylesheet."
+msgstr "Cocher cette case, si souhaitez utiliser la feuille de styles du plugin. D&eacute;cocher la si vous souhaitez utiliser votre propre feuille de styles."
+
+msgid "Cannot display attachments. Current post or page is protected."
+msgstr "Impossible d'afficher les pi&egrave;ces jointes. L'article ou la page est prot&eacute;g&eacute;."
+
+msgid "Large size: caption and description can be checked<br />Medium size: caption only will be displayed if checked"
+msgstr "Grande taille: l&eacute;gende et description peuvent &ecirc;tre s&eacute;lectionn&eacute;es<br />Taille interm&eacute;diaire: seule la l&eacute;gende sera affich&eacute;e, si elle est s&eacute;lectionn&eacute;e."
+
+msgid "Attachments available for this post/page"
+msgstr ""
+
+msgid "File Name"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Size"
+msgstr ""
+
+msgid "Administration interface"
+msgstr "Interface d'administration"
+
+msgid "Post editor page"
+msgstr "Page d'&eacute;dition des articles"
+
+msgid "Show metabox to display list of attachments of the current post/page"
+msgstr "Faire appara&icirc;tre la m&eacute;tabox affichant la liste des documents attach&eacute;s a l'article en cours d'&eacute;dition"
+
+msgid "No document attached to this post/page"
+msgstr "Aucun document n'est attach&eacute; &agrave; l'article en cours d'&eacute;dition"
+
