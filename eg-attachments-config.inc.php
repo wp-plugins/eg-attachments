@@ -26,7 +26,8 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'stats_enable'				  => 0,
 	'clicks_table'				  => 0,
 	'stats_ip_exclude'			  => '',
-	'load_css'					  => 1
+	'load_css'					  => 1,
+	'use_metabox'				  => 0
 );
 
 $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(

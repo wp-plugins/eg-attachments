@@ -207,7 +207,7 @@ if (! class_exists('EG_Attachments')) {
 		  * @return string 			List of attachments (dl / dt /dd liste)
 		  */
 		function get_attachments($attr)  {
-			global $post; 
+			global $post;
 			global $EG_ATTACHMENT_SHORTCODE_DEFAULTS;
 
 			if (function_exists('hidepost_filter_post'))
@@ -283,7 +283,7 @@ if (! class_exists('EG_Attachments')) {
 					$doc_list = split(',', $docid);
 				}
 			}
-			
+
 			// Display title
 			$output = '';
 
@@ -300,6 +300,7 @@ if (! class_exists('EG_Attachments')) {
 					if ( $doctype == 'all' ||
 					    ($doctype == 'image' && $mime_type == 'image') ||
 					    ($doctype == 'document' && $mime_type != 'image') ) {
+
 						$file_size = $this->get_file_size(/* $attachment->guid */ $attachment->ID);
 						$attachment_title = htmlspecialchars(strip_tags($attachment->post_title));
 
@@ -311,11 +312,9 @@ if (! class_exists('EG_Attachments')) {
 						}
 						else {
 							$query = parse_url(get_permalink(), PHP_URL_QUERY);
-							$url = get_permalink() . 
-							       ($query == '' ? '?' : '&') . 
-								   http_build_query(
-										array( 'aid' => $attachment->ID, 'pid' => $id, 'sa' => $force_saveas)
-									);
+							$url = get_permalink() .
+							       ($query == '' ? '?' : '&amp;') .
+								   	'aid='.$attachment->ID.'&amp;pid='.$id.'&amp;sa='.$force_saveas;
 
 							$link = '<a title="'.$attachment_title.'" href="'.$url.'">';
 							$lock_icon = '';
@@ -339,6 +338,7 @@ if (! class_exists('EG_Attachments')) {
 
 							case 'large':
 								if ($file_size != '') $string_file_size = '<strong>'.__('Size: ', $this->textdomain).'</strong>'.$file_size;
+								else $string_file_size = '';
 								if ($icon) {
 									$output .= '<dl class="attachments attachments-large"><dt class="icon">'.
 										($hidepost_hide_link==1?'':$link).$this->get_icon($attachment->ID, $attachment, $size).
@@ -371,6 +371,7 @@ if (! class_exists('EG_Attachments')) {
 
 							case 'medium':
 								if ($file_size != '') $string_file_size = '('.$file_size.')';
+								else $string_file_size = '';
 								if ($icon) {
 									$output .= '<dl class="attachments attachments-medium">'.
 										'<dt class="icon">'.($hidepost_hide_link==1?'':$link).
@@ -403,6 +404,7 @@ if (! class_exists('EG_Attachments')) {
 
 							case 'small':
 								if ($file_size != '') $string_file_size = '('.$file_size.')';
+								else $string_file_size = '';
 								if ($icon) {
 									$output .= '<dl class="attachments attachments-small"><dt class="icon">'.
 								        ($hidepost_hide_link==1?'':$link).
@@ -449,7 +451,7 @@ if (! class_exists('EG_Attachments')) {
 			remove_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
 			return $output;
-		} // End of get_attachments 
+		} // End of get_attachments
 
 
 		/**

@@ -20,6 +20,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	Class EG_Attachments_Admin extends EG_Plugin_114 {
 
 		var $cache;
+		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
 
 		/**
 		 * Implement init action
@@ -125,7 +126,101 @@ if (! class_exists('EG_Attachments_Admin')) {
 			}
 
 		} // End of install_upgrade
-		
+	
+		/**
+		 * admin_menu
+		 *
+		 * Add metabox action
+		 *
+		 * @param	none
+		 * @return 	none
+		 */
+		function admin_menu() {
+			global $pagenow;
+
+			parent::admin_menu();
+
+			// if ($this->options['use_metabox'] && function_exists( 'add_meta_box' ) &&
+			if ($this->options['use_metabox'] && function_exists( 'add_meta_box' ) &&
+				in_array($pagenow, $this->edit_posts_pages) ) {
+
+				// Add metabox for posts 
+				add_meta_box( 'eg-attach-metabox', __( 'EG-Attachments', $this->textdomain ),
+							array(&$this, 'display_metabox'), 'post', 'normal', 'high' );
+
+				// Add metabox for pages 
+				add_meta_box( 'eg-series-metabox', __( 'EG-Series', $this->textdomain ),
+							array(&$this, 'display_metabox'), 'page', 'normal', 'high' );
+
+			}
+		} // End of admin_menu
+
+		/**
+		 * display_metabox
+		 *
+		 * Display attachments meta box
+		 *
+		 * @param	object	$post		post or page currently edited
+		 * @param	array	$args		other arguments
+		 * @return 	none
+		 */
+		function display_metabox($post, $args) {
+			global $post;
+
+?>
+			<div id="egattach-stuff">
+<?php
+			
+			/* $attachments = wp_cache_get( 'attachments', 'eg-attachments' );
+			if ($attachments === FALSE || !isset($attachments[$id])) {
+*/
+				$attachment_list  = get_posts( array('post_parent' => $post->ID,
+													'numberposts'	=> -1,
+													'post_type'		=> 'attachment',
+												)
+											);
+/*				if ($attachment_list !== FALSE && sizeof($attachment_list)>0) {
+					$attachments[$id] = $attachment_list;
+					wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
+				}
+			}
+			if ($attachments === FALSE || !isset($attachments[$id])) {
+				return '';
+			}
+*/
+			if ($attachment_list === FALSE && sizeof($attachment_list)==0) {
+				_e('No document attached to this post/page', $this->textdomain);
+			}
+			else {
+				$string = '<p>'.__('Attachments available for this post/page', $this->textdomain).'</p>'.
+						'<table class="eg-attach-list">'.
+							'<tr>'.
+								'<th>'.__('File Name', $this->textdomain).'</th>'.
+								'<th>'.__('Type', $this->textdomain).'</th>'.
+								'<th>'.__('Size', $this->textdomain).'</th>'.
+								'<th>'.__('Date', $this->textdomain).'</th>'.
+							'</tr>';
+				foreach ($attachment_list as $attachment) {
+					$file_path = get_attached_file($attachment->ID);
+					$file_type = wp_check_filetype($file_path);
+					$docsize = @filesize($file_path);
+					$size_value = split(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
+					$string .= '<tr>'.
+								'<td>'.wp_html_excerpt($attachment->post_title, 40).'</td>'.
+								'<td>'.$file_type['ext'] /* str_replace('vnd.','',str_replace('application/','',$attachment->post_mime_type)) */.'</td>'.
+								'<td>'.(sizeof($size_value)<2?'':$size_value[0].' '.__($size_value[1], $this->textdomain)).'</td>'.
+								'<td>'.mysql2date('j M Y',$attachment->post_date, true).'</td>'.
+							'</tr>';					
+				}
+				$string .= '</table>';
+				
+				echo $string;
+			}
+?>
+			</div>
+<?php
+		} // End of display_metabox
+
 		/**
 		 * add_form
 		 *
@@ -181,7 +276,12 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$id_section = $form->add_section('Styles', '', '');
 			$id_group   = $form->add_group($id_section, 'Styles');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Check if you want to use the plugin stylesheet file, uncheck if you want to use your own styles, or include styles on the theme stylesheet.', 'load_css', '', '', '', '', 'regular' );
-						
+		
+			$id_section = $form->add_section('Administration interface', '', '');
+			$id_group   = $form->add_group($id_section, 'Post editor page');
+			$form->add_field($id_section, $id_group, 'checkbox', 'Show metabox to display list of attachments of the current post/page', 'use_metabox', '', '', '', '', 'regular' );
+
+		
 			$id_section = $form->add_section('Uninstall options', '', 'Be careful: these actions cannot be cancelled. All plugin\'s options will be deleted while plugin uninstallation.');
 			$id_group   = $form->add_group($id_section, 'Options');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Delete options during uninstallation.', 'uninstall_del_options');

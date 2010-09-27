@@ -258,13 +258,18 @@ if (!class_exists('EG_Widget_201')) {
 				$form_field_id   = $this->get_field_id($field_name);
 				$form_field_name = $this->get_field_name($field_name);
 
-				if (!is_array($default_values[$field_name])) {
-					$def_value = attribute_escape($default_values[$field_name]);
+				if (! isset($default_values[$field_name])) {
+					$def_value = '';
 				}
 				else {
-					$def_value = $default_values[$field_name];
+					if (! is_array($default_values[$field_name])) {
+						$def_value = esc_attr($default_values[$field_name]);
+					}
+					else {
+						$def_value = $default_values[$field_name];
+					}
 				}
-
+				
 				switch ($field_value['type']) {
 
 					case 'comment':

@@ -4,7 +4,7 @@ Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
 Requires at least: 2.8.0
 Tested up to: 3.0.1
-Stable tag: 1.7.3.1
+Stable tag: 1.7.4
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -69,7 +69,7 @@ If you have created your own language pack, or have an update of an existing one
 * Activate the plugin, in the administration interface, through the menu Plugins
 
 The plugin is now ready to be used.
-You can also use the WordPress 2.7 features, and install the plugin directly from the WordPress interface.
+You can also install the plugin directly from the WordPress interface.
 
 Then you can go to menu **Settings / EG-Attachments** to set plugin parameters
 
@@ -78,9 +78,13 @@ About WordPress MU: the plugin is running properly on version 2.8.x and above.
 
 = Usage =
 
-* When editing a post, you can see a *paper clip* button in TinyMCE bar. 
-* Click on this button, choose the options, and click insert.
+Four ways to include the list of attachments into a post:
+* With the *paper clip* button in TinyMCE bar. Click on this button, choose the options, and click insert,
+* With the shortcode [attachments *options* ]
+* With the automatic shortcode: go to the **Settings / EG-Attachments**, and choose to activate the auto-shortcode. The list of attachments will be added to your post automatically.
 * In a template file, add the following code: `<?php do_shortcode('[attachments *options*]'); ?>`
+
+New (1.7.4): the plugin can display the list of attachments of the post being edited. Go to **Settings / EG-Attachments**, chapter *Administration Interface* for further details.
 
 The shortcode options are:
 
@@ -119,6 +123,9 @@ Just activate the **clicks counter** in the menu *Settings/EG-Attachments*, and 
 
 == Frequently Asked Questions ==
 
+= During post edition, how can I see the list of attachments that will be displayed? =
+In the menu **Settings / EG-Attachments**, in the chapter *Administration interface*, you can choose to show or hide, a metabox that displays attachments of the post being edited.
+
 = Could I have some examples of the usage of `orderby` shortcode option? =
 
 * **orderby="mime DESC"** to sort by mime type descending,
@@ -154,6 +161,11 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 8. Detailed statistics page.
 
 == Changelog ==
+
+= Version 1.7.4 - Sept 27th, 2010 =
+
+* New: Possibility to display a metabox under the post editor, to list attachments of the post being edited,
+* Bug fix: links of attachments are encoded (XHTML compliant),
 
 = Version 1.7.3.1 - Sept 19th, 2010 =
 

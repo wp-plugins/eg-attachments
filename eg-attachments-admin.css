@@ -33,3 +33,19 @@ textarea.regular-text {
 }
 
 table.eg-attach-custom-format td { padding:0 2em 0 0; margin: 0;}
+
+table.eg-attach-list {
+	border: 1px solid #CCC;
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+
+table.eg-attach-list td, 
+table.eg-attach-list th {
+	border: 1px solid #CCC;
+	padding: 2px 10px;
+}
+
+table.eg-attach-list th {
+	background-color: #EEE;
+}

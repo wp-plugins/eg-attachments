@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-14 11:00-0000\n"
-"PO-Revision-Date: 2010-09-19 16:37+0100\n"
+"PO-Revision-Date: 2010-09-24 16:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -537,4 +537,28 @@ msgstr "Impossible d'afficher les pi&egrave;ces jointes. L'article ou la page es
 
 msgid "Large size: caption and description can be checked<br />Medium size: caption only will be displayed if checked"
 msgstr "Grande taille: l&eacute;gende et description peuvent &ecirc;tre s&eacute;lectionn&eacute;es<br />Taille interm&eacute;diaire: seule la l&eacute;gende sera affich&eacute;e, si elle est s&eacute;lectionn&eacute;e."
+
+msgid "Attachments available for this post/page"
+msgstr ""
+
+msgid "File Name"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Size"
+msgstr ""
+
+msgid "Administration interface"
+msgstr "Interface d'administration"
+
+msgid "Post editor page"
+msgstr "Page d'&eacute;dition des articles"
+
+msgid "Show metabox to display list of attachments of the current post/page"
+msgstr "Faire appara&icirc;tre la m&eacute;tabox affichant la liste des documents attach&eacute;s a l'article en cours d'&eacute;dition"
+
+msgid "No document attached to this post/page"
+msgstr "Aucun document n'est attach&eacute; &agrave; l'article en cours d'&eacute;dition"
 

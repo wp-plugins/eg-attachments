@@ -537,3 +537,27 @@ msgstr ""
 
 msgid "Large size: caption and description can be checked<br />Medium size: caption only will be displayed if checked"
 msgstr ""
+
+msgid "Attachments available for this post/page"
+msgstr ""
+
+msgid "File Name"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Size"
+msgstr ""
+
+msgid "Administration interface"
+msgstr ""
+
+msgid "Post editor page"
+msgstr ""
+
+msgid "Show metabox to display list of attachments of the current post/page"
+msgstr ""
+
+msgid "No document attached to this post/page"
+msgstr ""
