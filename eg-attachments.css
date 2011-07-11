@@ -10,7 +10,9 @@ dl.attachments {
 	margin: 0.5em auto 0.5em auto;
 }
 
-dl.attachments-large {
+dl.attachments-large,
+dl.attachments-medium,
+dl.attachments-small {
 	border: 1px dashed black;
 }
 

@@ -3,13 +3,13 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.1.4
+Version: 1.1.6
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
 /*
-    Copyright 2009 Emmanuel GEORJON  (email : blog@georjon.eu)
+    Copyright 2009-2010 Emmanuel GEORJON  (email : blog@georjon.eu)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Plugin_114')) {
+if (!class_exists('EG_Plugin_116')) {
 
 	/**
 	  * Class EG_Plugin
@@ -34,7 +34,7 @@ if (!class_exists('EG_Plugin_114')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_114 {
+	Class EG_Plugin_116 {
 
 		var $plugin_name;
 		var $plugin_version;
@@ -76,11 +76,11 @@ if (!class_exists('EG_Plugin_114')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_114($name, $version, $core_file, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_116($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($name, $version, $core_file, $options_entry, $default_options);
-		} // End of EG_Plugin_114
+		} // End of EG_Plugin_116
 
 		/**
 		  * Class contructor
@@ -100,8 +100,8 @@ if (!class_exists('EG_Plugin_114')) {
 			$plugin_base_path	   = basename( dirname($core_file) );
 			$this->plugin_path 	   = trailingslashit(str_replace('\\', '/', WP_PLUGIN_DIR.'/'.$plugin_base_path));
 			$this->plugin_url  	   = trailingslashit(WP_PLUGIN_URL.'/'.$plugin_base_path);
-			$this->plugin_corefile = $this->plugin_path.basename($core_file);
-
+			$this->plugin_corefile = $core_file; // $this->plugin_path.basename($core_file);
+			
 		} // End of __construct
 
 		/**
@@ -128,17 +128,9 @@ if (!class_exists('EG_Plugin_114')) {
 
 			if (is_admin()) {
 
-				if ( function_exists('register_uninstall_hook') ) {
-					register_uninstall_hook ($this->plugin_corefile, array(&$this, 'uninstall') );
-				}
-
-				if ( function_exists('register_activation_hook') ) {
-					register_activation_hook( $this->plugin_corefile, array(&$this, 'install_upgrade') );
-				}
-
-				if ( function_exists('register_deactivation_hook') ) {
-					register_deactivation_hook( $this->plugin_corefile, array(&$this, 'desactivation') );
-				}
+				// register_uninstall_hook ($this->plugin_corefile, array(&$this, 'uninstall') );
+				register_activation_hook( $this->plugin_corefile, array(&$this, 'install_upgrade') );
+				register_deactivation_hook( $this->plugin_corefile, array(&$this, 'desactivation') );
 
 				add_action('admin_menu',   array( &$this, 'admin_menu')   );
 				add_action('admin_init',   array( &$this, 'admin_init')   );
@@ -536,7 +528,7 @@ if (!class_exists('EG_Plugin_114')) {
 				}
 		 */
 		function install_upgrade() {
-
+		
 			if (! $this->options)
 				$this->options = get_option($this->options_entry);
 
@@ -561,8 +553,6 @@ if (!class_exists('EG_Plugin_114')) {
 						$new_options = $this->options;
 					}
 					else {
-						// $new_options = wp_parse_args($this->options, $this->default_options );
-
 						$new_options = array();
 						foreach ($this->default_options as $key => $value) {
 							if (isset($this->options[$key])) $new_options[$key] = $this->options[$key];
@@ -574,6 +564,7 @@ if (!class_exists('EG_Plugin_114')) {
 					$this->options = $new_options;
 				} // End of version compare
 			} // End of options not empty (update)
+
 			return ($previous_options);
 
 		} // End of install_upgrade
@@ -759,21 +750,6 @@ if (!class_exists('EG_Plugin_114')) {
 		}
 
 		/**
-		  * Uninstall
-		  *
-		  * Actions required to uninstall the plugin.
-		  *
-		  * @package EG-Plugins
-		  * @param 		none
-		  * @return 	none
-		 */
-		function uninstall() {
-			if ( isset($this->options_entry) && $this->options_entry['uninstall_del_options']) {
-				delete_option($this->options_entry);
-			}
-		}
-
-		/**
 		  * add_plugin_pages
 		  *
 		  * Add an option page menu
@@ -891,6 +867,39 @@ if (!class_exists('EG_Plugin_114')) {
 					'</span>';
 		}
 
+		/**
+		 * option_page
+		 *
+		 * Install or upgrade options, tables, ...
+		 *
+		 * @param 	none
+		 * @return 	none
+		 */
+		function options_page() {
+		
+			$string = strtolower(sanitize_title($this->plugin_name));
+		
+		?>
+			<div class="wrap">
+				<?php screen_icon(); ?>
+				<h2>
+					<?php
+						_e($this->plugin_name, $this->textdomain);
+					?>
+				</h2>
+				<form id="<?php echo $string; ?>_admin_form" action="options.php" method="post">
+					<?php
+						settings_fields($this->options_entry);
+						do_settings_sections($this->options_entry);
+					?>
+					<br/>
+					<span class="submit"><input type="submit" name="save" value="<?php _e('Save Changes', $this->textdomain); ?>" /></span>
+					<span class="submit"><input name="restore" value="<?php _e('Restore Built-in Defaults', $this->textdomain); ?>" type="submit"/></span>
+				</form>
+			</div>
+		<?php
+		} // End of option_page
+		
 	} /* End of class */
 
 } /* End of class_exists */

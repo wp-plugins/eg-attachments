@@ -3,7 +3,7 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class to build admin forms
-Version: 1.1.0
+Version: 1.1.1
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,9 +26,9 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Forms_110')) {
+if (!class_exists('EG_Forms_111')) {
 
-	Class EG_Forms_110 {
+	Class EG_Forms_111 {
 
 		var $sections = array();
 		var $fields   = array();
@@ -62,7 +62,7 @@ if (!class_exists('EG_Forms_110')) {
 		 * @param	string	$author_address	author email or URL (must include mailto: or http:
 		 * @return 	none
 		 */
-		function EG_Forms_110($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
+		function EG_Forms_111($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
 			register_shutdown_function(array(&$this, "__destruct"));
 			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level);
 		}
@@ -89,7 +89,7 @@ if (!class_exists('EG_Forms_110')) {
 			$this->header         = $header;
 			$this->footer         = $footer;
 			$this->textdomain     = $textdomain;
-			$this->url    		  = $url; // sanitize_url($url);
+			$this->url    		  = $url;
 			$this->id_icon    	  = $id_icon;
 			$this->security_key   = $security_key;
 			$this->author_address = $author_address;
@@ -484,6 +484,8 @@ if (!class_exists('EG_Forms_110')) {
 							$string .= '<p><font color="red">'.__('No data available', $this->textdomain).'</font></p>';
 						}
 						else {
+							$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain):'').
+									($field->text_before== ''?'':__($field->text_before, $this->textdomain));
 							$grid_default_values = $default_values[$option_name];
 							$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend><table border="0"><thead><tr>';
 							foreach ($field->values['header'] as $item) {
@@ -498,11 +500,12 @@ if (!class_exists('EG_Forms_110')) {
 								foreach ($item['select'] as $key => $value) {
 									if ($key == $grid_default_values[$item['value']]) $selected = 'selected';
 									else $selected = '';
-									$string .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
+									$string .= '<option value="'.$key.'" '.$selected.'>'.__($value, $this->textdomain).'</option>';
 								}
 								$string .=	'</select>'.($group?'</label>':'').'</td></tr>';
 							}
 							$string .= '</tbody></table></fieldset>';
+							$string .= ($field->text_after== ''?'':__($field->text_after, $this->textdomain)).($group?'</label>':'');
 						}
 					break;
 				}

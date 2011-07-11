@@ -51,17 +51,18 @@ else {
 		'force_saveas'	=> $eg_attach_options['force_saveas'],
 		'fields'		=> $eg_attach_options['shortcode_auto_fields'],
 		'icon'			=> $eg_attach_options['shortcode_auto_icon'],
-		'logged_users'  => $eg_attach_options['logged_users_only']
+		'logged_users'  => $eg_attach_options['logged_users_only'],
+		'nofollow'  	=> $eg_attach_options['nofollow']
 	);
 }
 
+$order_by_parameters = array();
+foreach ($EG_ATTACH_FIELDS_ORDER_KEY as $key => $value) {
+	$order_by_parameters[$key] = __($EG_ATTACH_FIELDS_TITLE[$key], EG_ATTACH_TEXTDOMAIN);
+}
+
 $select_fields = array(
-	'orderby'      => array(
-		'ID'       => __('ID',        EG_ATTACH_TEXTDOMAIN),
-		'0'        => __('Title',     EG_ATTACH_TEXTDOMAIN),
-		'date'     => __('Date',      EG_ATTACH_TEXTDOMAIN),
-		'mime'     => __('Mime type', EG_ATTACH_TEXTDOMAIN)
-	),
+	'orderby'      => $order_by_parameters,
 	'sortorder'    => array(
 		'ASC'      => __('Ascending',  EG_ATTACH_TEXTDOMAIN),
 		'DESC'     => __('Descending', EG_ATTACH_TEXTDOMAIN),
@@ -74,7 +75,7 @@ $select_fields = array(
 	),
 	'label'        => array(
 		'0'        => __('File name',      EG_ATTACH_TEXTDOMAIN),
-		'doctitle' => __('Document title', EG_ATTACH_TEXTDOMAIN),	
+		'doctitle' => __('Document title', EG_ATTACH_TEXTDOMAIN),
 	),
 	'doctype'	   => array(
 		'all'	   => __('All',      EG_ATTACH_TEXTDOMAIN),
@@ -90,12 +91,12 @@ $select_fields = array(
 		'-1'       => __('Use default parameter', EG_ATTACH_TEXTDOMAIN),
 		'0'        => __('All users', EG_ATTACH_TEXTDOMAIN),
 		'1'        => __('Only logged users', EG_ATTACH_TEXTDOMAIN)
-	)	
+	)
 );
 
 function get_select($key, $default_values) {
 	global $select_fields;
-	
+
 	$string = '<select id="'.$key.'" name="'.$key.'">';
 	foreach ($select_fields[$key] as $id => $value) {
 		if ($default_values[$key] == $id) $selected = 'selected'; else $selected = '';
@@ -136,8 +137,13 @@ function get_select($key, $default_values) {
 			<tr>
 				<td valign="top"><?php _e('Fields: ',EG_ATTACH_TEXTDOMAIN); ?></td>
 				<td>
-					<input type="checkbox" id="field_caption" <?php echo (strpos($default_values['fields'], 'caption')!==FALSE?'checked':''); ?> /><?php _e('Caption',EG_ATTACH_TEXTDOMAIN); ?><br />
-					<input type="checkbox" id="field_description" <?php echo (strpos($default_values['fields'], 'description')!==FALSE?'checked':''); ?>/><?php _e('Description',EG_ATTACH_TEXTDOMAIN); ?>
+					<input type="checkbox" id="default_fields" value="default" checked /><?php _e('Display default fields?', EG_ATTACH_TEXTDOMAIN); ?><br />
+					<?php
+					$i = 0;
+					foreach ($EG_ATTACH_FIELDS_TITLE as $id => $value) {
+						echo '<input type="checkbox" name="fields" '.(isset($default_values[$id])?'checked':'').' value="'.$id.'" />'.__($value,EG_ATTACH_TEXTDOMAIN).'<br />';
+					}
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -162,6 +168,10 @@ function get_select($key, $default_values) {
 				<td valign="top"><label for="logged_users"><?php _e('Attachments access: ',EG_ATTACH_TEXTDOMAIN); ?></label></td>
 				<td><?php echo get_select('logged_users', $default_values); ?></td>
 			</tr>
+			<tr>
+				<td valign="top"><?php _e('Nofollow: ',EG_ATTACH_TEXTDOMAIN); ?></td>
+				<td><input type="checkbox" id="nofollow" <?php echo ($default_values['nofollow']?'checked':''); ?> /></td>
+			</tr>			
 		</table>
 	<div class="mceActionPanel">
 		<div style="float: left">

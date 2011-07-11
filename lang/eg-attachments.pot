@@ -550,6 +550,12 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
+msgid "Small size"
+msgstr ""
+
+msgid "Document label"
+msgstr ""
+
 msgid "Administration interface"
 msgstr ""
 
@@ -560,4 +566,34 @@ msgid "Show metabox to display list of attachments of the current post/page"
 msgstr ""
 
 msgid "No document attached to this post/page"
+msgstr ""
+
+msgid "Auto / Manual"
+msgstr ""
+
+msgid "Disable auto-shortcode when a manual shortcode is detected"
+msgstr ""
+
+msgid "The default list is: "
+msgstr ""
+
+msgid "Do you want to display default fields?"
+msgstr ""
+
+msgid "Position"
+msgstr ""
+
+msgid "Field"
+msgstr ""
+
+msgid " list"
+msgstr ""
+
+msgid "or display the following fields"
+msgstr ""
+
+msgid "&laquo;Nofollow&raquo; attribute"
+msgstr ""
+
+msgid "Check if you want to automatically add rel=\"nofollow\" to attachment links"
 msgstr ""

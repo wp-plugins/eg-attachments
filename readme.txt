@@ -2,9 +2,9 @@
 Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
-Requires at least: 2.8.0
-Tested up to: 3.0.1
-Stable tag: 1.7.4
+Requires at least: 2.9.0
+Tested up to: 3.2
+Stable tag: 1.8.0
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -55,6 +55,7 @@ The plugin comes up to 5 translations. Thanks to the following people for their 
 * Dutch (NL) - [Rene at WP webshop](http://wpwebshop.com/premium-wordpress-themes/)
 * Spanish (ES) - [David Arinez](http://www.codeeta.com/)
 * Swedish (SE) - [Jonas Floden](http://www.koalasoft.se/)
+* Romanian (RO) - [Armand Coveanu](http://caveatlector.eu/)
 
 If you want to help to translate the plugin to your language, please have a look at the eg_attachments.pot file which contains all definitions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
 
@@ -73,8 +74,7 @@ You can also install the plugin directly from the WordPress interface.
 
 Then you can go to menu **Settings / EG-Attachments** to set plugin parameters
 
-This plugin was tested on WordPress 2.8.4, 2.9.2, and up to 3.0.1.
-About WordPress MU: the plugin is running properly on version 2.8.x and above.
+This plugin was tested on WordPress 2.9.x, and up to 3.2 Beta 2.
 
 = Usage =
 
@@ -84,7 +84,7 @@ Four ways to include the list of attachments into a post:
 * With the automatic shortcode: go to the **Settings / EG-Attachments**, and choose to activate the auto-shortcode. The list of attachments will be added to your post automatically.
 * In a template file, add the following code: `<?php do_shortcode('[attachments *options*]'); ?>`
 
-New (1.7.4): the plugin can display the list of attachments of the post being edited. Go to **Settings / EG-Attachments**, chapter *Administration Interface* for further details.
+Since 1.7.4, the plugin can display the list of attachments of the post being edited. Go to **Settings / EG-Attachments**, chapter *Administration Interface* for further details.
 
 The shortcode options are:
 
@@ -92,15 +92,17 @@ The shortcode options are:
 * **doctype**: type of documents to display. Values: image or document. Defaults: document,
 * **docid** list of attachments' id (comma separated) you want to display. Default: nothing to display all attachments,
 * **id**: id of the post we want to display attachments
-* **orderby**: sort option. Values: ID, title, date, mime and ASC or DESC. `ASC`is the default sort order. Default: `title ASC`.
+* **orderby**: sort option. Values: Title, Caption, Description, File name, Size, Date, Type and ASC or DESC. `ASC`is the default sort order. Default: `title ASC`.
 * **title**: title to display before the list. Default: '',
 * **titletag**: tag to add before and after the title. Default: h2
 * **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
-* **fields**, list of fields to display. Values: none, caption, description, or a set of values such as "caption,description" (comma separated). Default: caption (same behavior than previous version)
+* **fields**, list of fields to display. Values: Document label, Title, Caption, Description, File name, Size, Small size, Date, Type, or a set of values such as "caption,description" (comma separated).
 * **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
 * **icon** specify if icons will be displayed or not. Default value: 1 or TRUE. If value is 0 or FALSE, list displayed will be ul/li (html simple list) rather than dl/dt/dd (definition list).
 Two specific keywords can be used with **docid** option: **first** and **last** allow to display the first and the last attachment of list. Be careful, **first** or **last** can change according the sort option ! These keywords must be used alone. You can have syntax such as: first,10,11.
 * **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: the default value is defined in the **Settings page** in administration interface.
+* **limit**: choose the number of attachements you want to display. Default: all attachments are displayed
+* **nofollow**: add the attribut "nofollow" to the link, if value is set to 1 or TRUE. Default nofollow=0
 
 **Example 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
 
@@ -116,6 +118,14 @@ The options in the section are
 * used as default value for the shortcode manually inserted into posts.
 
 **Example:** if you check the option *Force "Save As" when users click on the attachments*, you force download for all attachments displayed by auto-shortcodes, and manual shortcode, except if you specify `force_saveas` in a shortcode option.
+
+The defaults parameters of auto-shortcode are:
+
+* Small size: label, size,
+* Medium size: label, caption, size,
+* Large size: title, file name, caption, size.
+
+Where **label** is: title or file name according selected option.
 
 = Statistics =
 
@@ -140,8 +150,6 @@ The stylesheet is named eg-attachments.css, and can be stored in two places:
 * In the plugin directory,
 * In the directory of your current theme
 
-Use FTP client and text editor to modify it.
-
 = I would like to change the icons =
 Just copy/upload your own icons in the `images` subdirectory of the plugin.
 Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file extension.
@@ -161,6 +169,28 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 8. Detailed statistics page.
 
 == Changelog ==
+
+= Version 1.8.0 - July 11th, 2011 =
+
+In this version, I rewrote the module displaying shortcode content. Three targets:
+
+* Simplify the code,
+* Clarify fields display (options are more consistent now)
+* Remove bugs.
+
+List of changes and bug fixes:
+
+* Bug fix: logged_users didn't work with size=medium,
+* Bug fix: link didn't work when title was set to doctitle,
+* Bug fix: PHP parse error with PHP version lower than 5.1.2,
+* Bug fix: title was displayed, even if the list is empty,
+* New: parameter **limit** for shortcode. Limit is the number of attachments to display. Default: -1, all documents,
+* New: fields parameter accepts now: Document label, Title, Caption, Description, File name, Size, Small size, Date, Type,
+* New: orderby parameter accepts now: Title, Caption, Description, File name, Size, Date, Type,
+* New: automatic shortcode won't be displayed if a manual shortcode exists in the post,
+* New: Choose if you want to add the 'nofollow' attribute or not,
+* Change: run with WordPress up to 3.2,
+* Change: internal libraries.
 
 = Version 1.7.4 - Sept 27th, 2010 =
 
