@@ -3,13 +3,13 @@
 Plugin Name: EG-Attachments
 Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 1.8.0
+Version: 1.8.1
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
 /*
-     Copyright 2009-2010 Emmanuel GEORJON  (email : blog@georjon.eu)
+     Copyright 2009-2011 Emmanuel GEORJON  (email : blog@georjon.eu)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ Author URI: http://www.emmanuelgeorjon.com/
 */
 
 define('EG_ATTACH_COREFILE', __FILE__);
-define('EG_ATTACH_VERSION',  '1.8.0');
+define('EG_ATTACH_VERSION',  '1.8.1');
 
 require_once('eg-attachments-config.inc.php');
 

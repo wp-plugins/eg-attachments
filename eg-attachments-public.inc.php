@@ -251,7 +251,7 @@ if (! class_exists('EG_Attachments')) {
 
 			extract( shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr ));
 
-			if ($fields == '') $fields = $EG_ATTACH_DEFAULT_FIELDS[$size];
+			if ($fields == '' || $fields == 'none') $fields = $EG_ATTACH_DEFAULT_FIELDS[$size];
 			else if (! is_array($fields)) $fields = explode(',', $fields);
 
 			if (! is_array($fields)) $fields = $EG_ATTACH_DEFAULT_FIELDS[$size];
