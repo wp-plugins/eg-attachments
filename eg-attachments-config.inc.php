@@ -3,6 +3,7 @@
 define('EG_ATTACH_OPTIONS_ENTRY', 'EG-Attachments-Options');
 define('EG_ATTACH_TEXTDOMAIN',    'eg-attachments');
 define('EG_ATTACH_SHORTCODE',     'attachments');
+define('EG_ATTACH_REPOSITORY', 'http://wordpress.org/extend/plugins/eg-attachments');
 
 $EG_ATTACH_FIELDS_TITLE = array(
 	'label'			=> 'Document label',
@@ -41,7 +42,7 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'shortcode_auto_fields'		  => array_values($EG_ATTACH_FIELDS_TITLE),
 	'shortcode_auto_icon'		  => 1,
 	'shortcode_auto_default_opts' => 0,
-	'shortcode_auto_limist'		  => -1,
+	'shortcode_auto_limit'		  => -1,
 	'custom_format_pre'	  	  	  => '<ul>',
 	'custom_format'		  		  => '<li><a href="%URL%" title="%TITLE%">%TITLE%</a></li>',
 	'custom_format_post'  		  => '</ul>',

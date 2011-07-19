@@ -3,13 +3,13 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.1.6
+Version: 1.1.8
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
 /*
-    Copyright 2009-2010 Emmanuel GEORJON  (email : blog@georjon.eu)
+    Copyright 2009-2010 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Plugin_116')) {
+if (!class_exists('EG_Plugin_118')) {
 
 	/**
 	  * Class EG_Plugin
@@ -34,7 +34,7 @@ if (!class_exists('EG_Plugin_116')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_116 {
+	Class EG_Plugin_118 {
 
 		var $plugin_name;
 		var $plugin_version;
@@ -49,7 +49,7 @@ if (!class_exists('EG_Plugin_116')) {
 		var $options;
 		var $default_options;
 
-		var $tinyMCE_button;
+		var $tinyMCE_buttons;
 		var $textdomain = '';
 
 		var $wp_version_min = '2.8';
@@ -76,11 +76,11 @@ if (!class_exists('EG_Plugin_116')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_116($name, $version, $core_file, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_118($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($name, $version, $core_file, $options_entry, $default_options);
-		} // End of EG_Plugin_116
+		} // End of EG_Plugin_118
 
 		/**
 		  * Class contructor
@@ -99,9 +99,8 @@ if (!class_exists('EG_Plugin_116')) {
 			/* Define the plugin path */
 			$plugin_base_path	   = basename( dirname($core_file) );
 			$this->plugin_path 	   = trailingslashit(str_replace('\\', '/', WP_PLUGIN_DIR.'/'.$plugin_base_path));
-			$this->plugin_url  	   = trailingslashit(WP_PLUGIN_URL.'/'.$plugin_base_path);
-			$this->plugin_corefile = $core_file; // $this->plugin_path.basename($core_file);
-			
+			$this->plugin_url  	   = trailingslashit(plugins_url($plugin_base_path));
+			$this->plugin_corefile = $this->plugin_path.basename($core_file);
 		} // End of __construct
 
 		/**
@@ -249,7 +248,7 @@ if (!class_exists('EG_Plugin_116')) {
 		} // End of set_php_version
 
 		/**
-		 * add_tinymce_button
+		 * add_tinyMCE_button
 		 *
 		 * Add a TinyMCE button
 		 *
@@ -258,10 +257,12 @@ if (!class_exists('EG_Plugin_116')) {
 		 * @param	string	$button_name	Name of the button
 		 * @return none
 		 */
-		function add_tinymce_button($button_name, $tinymce_plugin_path) {
-			$this->tinyMCE_button[]->name                                = $button_name;
-			$this->tinyMCE_button[sizeof($this->tinyMCE_button)-1]->path = $tinymce_plugin_path;
-		} // End of add_tinymce_button
+		function add_tinyMCE_button($button_name, $tinymce_plugin_path, $js_file_name='editor_plugin.js') {
+			$index = sizeof($this->tinyMCE_buttons);
+			$this->tinyMCE_buttons[$index]->name 	= $button_name;
+			$this->tinyMCE_buttons[$index]->js_file = $js_file_name;
+			$this->tinyMCE_buttons[$index]->path 	= $tinymce_plugin_path;
+		} // End of add_tinyMCE_button
 
 		/**
 		 * add_page
@@ -308,13 +309,13 @@ if (!class_exists('EG_Plugin_116')) {
 			if (! $this->options) $this->options = get_option($this->options_entry);
 
 			// Add only in Rich Editor mode
-			if ( isset($this->tinyMCE_button) &&
+			if ( isset($this->tinyMCE_buttons) &&
 				 get_user_option('rich_editing') == 'true' ) {
 			// && current_user_can('edit_posts') && current_user_can('edit_pages') )  {
 
-				// add the button for wp2.5 in a new way
-				add_filter('mce_external_plugins', array(&$this, 'add_tinymce_plugin' ), 5);
-				add_filter('mce_buttons',          array(&$this, 'register_button' ),    5);
+				add_filter('tiny_mce_version', 		array(&$this, 'tiny_mce_version'   ));
+				add_filter('mce_external_plugins', 	array(&$this, 'add_tinymce_plugin' ));
+				add_filter('mce_buttons', 			array(&$this, 'register_button'    ));				
 			}
 		} // End of admin_init
 
@@ -471,7 +472,7 @@ if (!class_exists('EG_Plugin_116')) {
 		 */
 		function register_button($buttons) {
 
-			foreach ($this->tinyMCE_button as $value) {
+			foreach ($this->tinyMCE_buttons as $value) {
 				array_push($buttons, $value->name );
 			}
 			return $buttons;
@@ -487,12 +488,16 @@ if (!class_exists('EG_Plugin_116')) {
 		 */
 		function add_tinymce_plugin($plugin_array) {
 
-			foreach ($this->tinyMCE_button as $value) {
-				$plugin_array[$value->name] = $this->plugin_url.$value->path.'/editor_plugin.js';
+			foreach ($this->tinyMCE_buttons as $value) {
+				$plugin_array[$value->name] = $this->plugin_url.$value->path.'/'.$value->js_file;
 			}
 			return $plugin_array;
 		}
 
+		function tiny_mce_version($version) {
+			return ++$version;
+		}
+	
 		/**
 		 * options_reset
 		 *

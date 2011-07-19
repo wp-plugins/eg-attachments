@@ -1,6 +1,6 @@
 <?php
 
-if (! class_exists('EG_Forms_111')) {
+if (! class_exists('EG_Forms_112')) {
 	require('lib/eg-forms.inc.php');
 }
 
@@ -17,7 +17,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_116 {
+	Class EG_Attachments_Admin extends EG_Plugin_118 {
 
 		var $cache;
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
@@ -150,7 +150,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 							array(&$this, 'display_metabox'), 'post', 'normal', 'high' );
 
 				// Add metabox for pages
-				add_meta_box( 'eg-series-metabox', __( 'EG-Series', $this->textdomain ),
+				add_meta_box( 'eg-attach-metabox', __( 'EG-Attachments', $this->textdomain ),
 							array(&$this, 'display_metabox'), 'page', 'normal', 'high' );
 
 			}
@@ -226,7 +226,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 			global $EG_ATTACH_FIELDS_TITLE;
 			global $EG_ATTACH_FIELDS_ORDER_KEY;
 
-			$form = new EG_Forms_111('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', 'mailto:'.get_option('admin_email'));
+			$form = new EG_Forms_112('EG-Attachments Options', '', '', $this->textdomain, '', 'icon-options-general', 'ega_options', EG_ATTACH_REPOSITORY);
 
 			$id_section = $form->add_section('Auto shortcode');
 			$id_group   = $form->add_group($id_section, 'Activation');
@@ -244,17 +244,18 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$form->add_field($id_section, $id_group, 'select', 'List format: ',      'shortcode_auto_size',     '', '', '', '', 'regular', array( 'small' => 'Small', 'medium' => 'Medium', 'large' => 'Large', 'custom' => 'Custom'));
 
 			$form->add_field($id_section, $id_group, 'select', 'Document type: ',    'shortcode_auto_doc_type', '', '', '', '', 'regular', array( 'all' => 'All', 'document' => 'Documents', 'image' => 'Images'));
-			
+
 			$sort_key_list = array_intersect_key($EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY);
-			
+
 			$form->add_field($id_section, $id_group, 'select', 'Order by: ',         'shortcode_auto_orderby',  '', '', '', '', 'regular', $sort_key_list);
 			$form->add_field($id_section, $id_group, 'select', 'Sort Order: ',       'shortcode_auto_order',    '', '', '', '', 'regular', array( 'ASC' => 'Ascending', 'DESC' => 'Descending'));
 			$form->add_field($id_section, $id_group, 'checkbox', 'Check the box to display icons',  'shortcode_auto_icon', 'Display icons: ', '', '', '', 'regular');
+			$form->add_field($id_section, $id_group, 'text', 'Number of documents to display: ',  'shortcode_auto_limit', '', '(Default: -1, for all document are listed)', '', '', 'small');
 			$form->add_field($id_section, $id_group, 'checkbox', 'Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?', 'shortcode_auto_default_opts', 'Default options? ', '', '', '', 'regular' );
 
 			$default_fields = __('The default list is: ', $this->textdomain).'<br />';
 			foreach ($EG_ATTACH_DEFAULT_FIELDS as $list_size => $fields_list) {
-				$default_fields .= '<strong>'.__(ucfirst(strtolower($list_size)),$this->textdomain).'</strong> '.__(' list', $this->textdomain).': ';
+				$default_fields .= '<strong>'.__(ucfirst(strtolower($list_size)).' list:',$this->textdomain).'</strong> ';
 				foreach ($fields_list as $value) {
 					$default_fields .= __($EG_ATTACH_FIELDS_TITLE[$value], $this->textdomain).', ';
 				}
@@ -262,7 +263,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 			}
 
 			$id_group   = $form->add_group($id_section, 'Fields to be displayed');
-			$form->add_field($id_section, $id_group, 'select', 'Document label: ',   'shortcode_auto_label',    '', '', 'Choose the field that will be displayed as title of documents', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
+			$form->add_field($id_section, $id_group, 'select', 'Documents label: ',   'shortcode_auto_label',    '', '', 'Choose the field that will be displayed as title of documents', '', 'regular', array( 'filename' => 'File name', 'doctitle' => 'Document title'));
 			$form->add_field($id_section, $id_group, 'checkbox', 'Do you want to display default fields?', 'shortcode_auto_fields_def', '', '', $default_fields, '', 'regular');
 
 			$field_values = $this->options['shortcode_auto_fields'];
@@ -380,7 +381,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 				'<h2>'.__('EG-Attachments Statistics', $this->textdomain).'</h2>';
 
 			if (! isset($_GET['id'])) {
-				$this->stats_display_global($limit);
+				$this->stats_display_global();
 			}
 			else {
 				if (is_numeric($_GET['id'])) {
@@ -481,8 +482,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 					' GROUP BY DATE_FORMAT(click_date,\'%Y-%m\')';
 
 				$current_year    = date('Y');
-				$previous_year   = $current_year -1;
-				$field_list = array( $previous_year, $current_year, 'Q1', 'Q2', 'Q3', 'Q4',
+				$field_list = array( $current_year-1, $current_year, $current_year, 'Q1', 'Q2', 'Q3', 'Q4',
 									 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 				foreach ( $field_list as $field ) {
 					$details[$field] = 0;
@@ -496,7 +496,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 					list($year, $month) = split('-', $result->month);
 					$month = intval($month);
 
-					$details[$year] += $result->clicks_total;
+					if (isset($details[$year])) $details[$year] += $result->clicks_total;
 					if ($year == $current_year) {
 						$details[$month] += $result->clicks_total;
 						$details[$quarter_list[$month]] += $result->clicks_total;
@@ -590,12 +590,12 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 * @param int	$id		id of the attachment
 		 * @return none
 		 */
-		function stats_display_global($limit) {
+		function stats_display_global($limit=10) {
 			global $wpdb;
 
 			// Purge statistics table (2 years of retention)
 			$sql = 'DELETE FROM '.$wpdb->prefix.'eg_attachments_clicks '.
-					'WHERE click_date<'.date('Y-m-d H:i:s', mktime(0, 0, 0, 12, 1, date('Y')-2));
+					'WHERE click_date<"'.date('Y-m-d H:i:s', mktime(0, 0, 0, 12, 1, date('Y')-2)).'"';
 			$status = $wpdb->query($sql);
 
 			$global_stats = $this->cache->get('eg_attachment_clicks_total');
@@ -737,12 +737,13 @@ $eg_attach_admin = new EG_Attachments_Admin('EG-Attachments',
 											EG_ATTACH_OPTIONS_ENTRY,
 											$EG_ATTACH_DEFAULT_OPTIONS);
 
-$eg_attach_admin->set_textdomain('eg-attachments');
+$eg_attach_admin->set_textdomain(EG_ATTACH_TEXTDOMAIN);
 $eg_attach_admin->set_wp_versions('2.9', FALSE, '2.9', FALSE);
-$eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce');
+$eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce', 'eg_attach_plugin.js');
 $eg_attach_admin->set_stylesheets(FALSE, 'eg-attachments-admin.css');
 
 register_uninstall_hook (EG_ATTACH_COREFILE, 'eg_attachments_uninstall' );
+
 $eg_attach_admin->load();
 
 ?>

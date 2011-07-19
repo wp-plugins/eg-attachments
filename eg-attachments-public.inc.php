@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_116 {
+	Class EG_Attachments extends EG_Plugin_118 {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
@@ -345,7 +345,7 @@ if (! class_exists('EG_Attachments')) {
 						$file_size = $this->get_file_size($attachment->ID);
 						$fields_value = array(
 							'title' 		=> htmlspecialchars(strip_tags($attachment->post_title)),
-							'filename'		=> htmlspecialchars(basename(get_attachment_link($attachment->ID))),
+							'filename'		=> htmlspecialchars(basename(get_attached_file($attachment->ID))),
 							'caption' 		=> htmlspecialchars(strip_tags($attachment->post_excerpt)),
 							'description' 	=> htmlspecialchars(strip_tags($attachment->post_content)),
 							'size' 			=> $file_size,
@@ -365,12 +365,16 @@ if (! class_exists('EG_Attachments')) {
 							// $query = parse_url(get_permalink(), PHP_URL_QUERY);
 							$lock_icon = '';
 							$query = parse_url(get_permalink());
+							
+							print_r($query); 
+							
 							$url = $query['scheme'].'://'.
 									(isset($query['user'])?$query['user'].
 									(isset($query['password'])?':'.$query['password']:'').'@':'').
 									(isset($query['host'])?$query['host']:'').
 									(isset($query['path'])?$query['path']:'').
-							        (isset($query['query'])&& $query['query']!='' ? $query['query'].'&amp;' : '?' ) .
+									'?'.
+							        (isset($query['query'])&& $query['query']!='' ? $query['query'].'&amp;' : '' ) .
 								   	'aid='.$attachment->ID.'&amp;pid='.$id.'&amp;sa='.$force_saveas.
 									(isset($query['anchor'])?'#'.$query['anchor']:'');
 						}
@@ -434,7 +438,7 @@ if (! class_exists('EG_Attachments')) {
 			} // End of foreach attachment
 
 			$output = trim($output);
-			
+
 			if ($output != '') {
 				if ($size == 'custom' && $format_post != '')
 					$output = html_entity_decode (stripslashes($format_pre)).$output.html_entity_decode (stripslashes($format_post));
@@ -555,7 +559,8 @@ if (! class_exists('EG_Attachments')) {
 								'logged_users' => $this->options['logged_users_only'],
 								'format'       => $this->options['custom_format'     ],
 								'format_pre'   => $this->options['custom_format_pre' ],
-								'format_post'  => $this->options['custom_format_post']
+								'format_post'  => $this->options['custom_format_post'],
+								'limit'		   => $this->options['shortcode_auto_limit']
 					);
 				$shortcode_output = $this->get_attachments($attrs);
 

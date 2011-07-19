@@ -3,13 +3,13 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class to build admin forms
-Version: 1.1.1
+Version: 1.1.2
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
 /*
-    Copyright 2009 Emmanuel GEORJON  (email : blog@georjon.eu)
+    Copyright 2009-2011 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Forms_111')) {
+if (!class_exists('EG_Forms_112')) {
 
-	Class EG_Forms_111 {
+	Class EG_Forms_112 {
 
 		var $sections = array();
 		var $fields   = array();
@@ -41,7 +41,7 @@ if (!class_exists('EG_Forms_111')) {
 		var $url;
 		var $id_icon ;
 		var $security_key ;
-		var $author_address;
+		var $plugin_url;
 		var $access_level;
 
 
@@ -53,18 +53,18 @@ if (!class_exists('EG_Forms_111')) {
 		 * @package EG-Forms
 		 *
 		 * @param 	string	$title			form title
-		 * @param 	string	$header		text to display before the first section or field
-		 * @param	string	$footer		text to display at the form's bottom (before submit button)
-		 * @param	string	$textdomain	textdomain
+		 * @param 	string	$header			text to display before the first section or field
+		 * @param	string	$footer			text to display at the form's bottom (before submit button)
+		 * @param	string	$textdomain		textdomain
 		 * @param	string	$url			url for form action
 		 * @param	string	$id_icon		icon id to display before the title
 		 * @param	string	$security_key	key to generate nonce
-		 * @param	string	$author_address	author email or URL (must include mailto: or http:
+		 * @param	string	$plugin_url		url of the plugin
 		 * @return 	none
 		 */
-		function EG_Forms_111($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
+		function EG_Forms_112($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $plugin_url, $access_level=FALSE) {
 			register_shutdown_function(array(&$this, "__destruct"));
-			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level);
+			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $plugin_url, $access_level);
 		}
 
 		/**
@@ -75,24 +75,24 @@ if (!class_exists('EG_Forms_111')) {
 		 * @package EG-Forms
 		 *
 		 * @param 	string	$title			form title
-		 * @param 	string	$header		text to display before the first section or field
-		 * @param	string	$footer		text to display at the form's bottom (before submit button)
-		 * @param	string	$textdomain	textdomain
+		 * @param 	string	$header			text to display before the first section or field
+		 * @param	string	$footer			text to display at the form's bottom (before submit button)
+		 * @param	string	$textdomain		textdomain
 		 * @param	string	$url			url for form action
 		 * @param	string	$id_icon		icon id to display before the title
 		 * @param	string	$security_key	key to generate nonce
-		 * @param	string	$author_address	author email or URL (must include mailto: or http:
+		 * @param	string	$plugin_url		url of the plugin
 		 * @return 	none
 		 */
-		function __construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address,$access_level=FALSE) {
+		function __construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $plugin_url,$access_level=FALSE) {
 			$this->title          = $title;
 			$this->header         = $header;
 			$this->footer         = $footer;
 			$this->textdomain     = $textdomain;
-			$this->url    		  = $url;
+			$this->url    		  = $url; // sanitize_url($url);
 			$this->id_icon    	  = $id_icon;
 			$this->security_key   = $security_key;
-			$this->author_address = $author_address;
+			$this->plugin_url 	  = $plugin_url;
 			$this->access_level   = $access_level;
 		}
 
@@ -105,32 +105,6 @@ if (!class_exists('EG_Forms_111')) {
 		 * @return 	none
 		 */
 		function __destruct() {
-		}
-
-		/**
-		 * save_form
-		 *
-		 * @package EG-Forms
-		 *
-		 * @param	string	$file_path	configuration file
-		 * @return 	none
-		 */
-		function save_form($file_path) {
-			$handle = fopen($file_path, 'w');
-			fwrite($handle, serialize($this));
-			fclose($handle);
-		}
-
-		/**
-		 * read_form
-		 *
-		 * @package EG-Forms
-		 *
-		 * @param	string	$file_path	configuration file
-		 * @return 	object				object of EG_Forms class
-		 */
-		function read_form($file_path) {
-			return unserialize(file_get_contents($file_path));
 		}
 
 		/**
@@ -248,7 +222,7 @@ if (!class_exists('EG_Forms_111')) {
 				$this->set_field_values($index, $values);
 			}
 			return ($index);
-		}
+		} // End of add_field
 
 		/**
 		 * add_button
@@ -323,7 +297,7 @@ if (!class_exists('EG_Forms_111')) {
 					($this->id_icon!=''?'<div id="'.$this->id_icon.'" class="icon32"></div>':'').
 */
 					echo ($this->title==''?'':'<h2>'.__($this->title, $this->textdomain).'</h2>').
-					'<div id="message" class="error fade"><p>'.sprintf(__('Security problem. Try again. If this problem persist, contact <a href="%s">plugin author</a>.', $this->textdomain), $this->author_address).'</p></div>'.
+					'<div id="message" class="error fade"><p>'.sprintf(__('Security problem. Try again. If this problem persist, contact <a href="%s">plugin author</a>.', $this->textdomain), $this->plugin_url).'</p></div>'.
 					'</div>';
 
 					die();
@@ -377,15 +351,13 @@ if (!class_exists('EG_Forms_111')) {
 		 */
 		function display_field($option_name, $group, $default_values) {
 
+			$string = '';
 			// if field doesn't exist => stop
-			if (! isset($this->fields[$option_name]))
-				return '';
-			else {
+			if (isset($this->fields[$option_name])) {
 				// Get field
 				$field = $this->fields[$option_name];
 
 				// in all the procedure: if group = TRUE, we are in a set of field. if group = FALSE, the current group contains ony one field
-				$string = ($group?'<li>':'');
 				switch ($field->type) {
 					case 'comment':
 						echo '<p>'.__($field->values, $this->textdomain).'</p>';
@@ -424,10 +396,11 @@ if (!class_exists('EG_Forms_111')) {
 					break;
 
 					case 'checkbox':
+					case 'radio':
 						if (! is_array($field->values)) {
 							$string .= ($group?'<label for="'.$option_name.'">':'').
 									($field->text_before== ''?'':__($field->text_before, $this->textdomain)).
-									'<input type="checkbox" name="'.$option_name.'" id="'.$option_name.'" value="1" '.($default_values[$option_name]==1?'checked':'').' '.$field->status.' /> '.
+									'<input type="'.$field->type.'" name="'.$option_name.'" id="'.$option_name.'" value="1" '.($default_values[$option_name]==1?'checked':'').' '.$field->status.' /> '.
 									__($field->label, $this->textdomain).
 									($field->text_after== ''?'':__($field->text_after, $this->textdomain)).
 									($group?'</label>':'');
@@ -438,14 +411,16 @@ if (!class_exists('EG_Forms_111')) {
 										__($field->label, $this->textdomain).'<br />';
 
 							foreach ($field->values as $key => $value) {
+								if ($field->type == 'radio') $input_name_id = $option_name;
+								else $input_name_id = $option_name.'['.$key.']';
 								if (!is_array($default_values[$option_name])) {
-									$checked = ($key === $default_values[$option_name]?'checked':'');
+									$checked = ($key == $default_values[$option_name]?'checked':'');
 								}
 								else {
 									$checked = (in_array($key, $default_values[$option_name])===FALSE?'':'checked');
 								}
 								$string .= ($group?'<label for="'.$option_name.'['.$key.']">':'').
-									'<input type="checkbox" name="'.$option_name.'['.$key.']" id="'.$option_name.'['.$key.']" value="'.$key.'" '.$checked.' '.$field->status.' /> '.
+									'<input type="'.$field->type.'" name="'.$input_name_id.'" id="'.$input_name_id.'" value="'.$key.'" '.$checked.' '.$field->status.' /> '.
 									__($value, $this->textdomain).
 									($group?'</label>':'').
 									'<br />';
@@ -465,27 +440,12 @@ if (!class_exists('EG_Forms_111')) {
 						$string .= '</select>'.($field->text_after== ''?'':__($field->text_after, $this->textdomain)).($group?'</label>':'');
 					break;
 
-					case 'radio':
-						$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend>';
-						foreach ($field->values as $key => $value) {
-							$checked = ($default_values[$option_name]==$key?'checked':'');
-							$string .= ($group?'<label for="'.$option_name.'">':'').
-								'<input type="radio" name="'.$option_name.'" id="'.$option_name.'" value="'.$key.'" '.$checked.' '.$field->status.'/> '.
-								__($value, $this->textdomain).
-								($group?'</label>':'').
-								'<br />';
-						}
-						$string .= '</fieldset>';
-					break;
-
 					case 'grid select':
 						if (! isset($field->values['header']) || sizeof($field->values['header']) == 0 ||
 							! isset($field->values['list'])   || sizeof($field->values['list'])   == 0) {
 							$string .= '<p><font color="red">'.__('No data available', $this->textdomain).'</font></p>';
 						}
 						else {
-							$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain):'').
-									($field->text_before== ''?'':__($field->text_before, $this->textdomain));
 							$grid_default_values = $default_values[$option_name];
 							$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend><table border="0"><thead><tr>';
 							foreach ($field->values['header'] as $item) {
@@ -505,19 +465,15 @@ if (!class_exists('EG_Forms_111')) {
 								$string .=	'</select>'.($group?'</label>':'').'</td></tr>';
 							}
 							$string .= '</tbody></table></fieldset>';
-							$string .= ($field->text_after== ''?'':__($field->text_after, $this->textdomain)).($group?'</label>':'');
 						}
 					break;
 				}
 				// Adding description
 				if ($field->description) $string .= '<br /><span class="setting-description">'.__($field->description, $this->textdomain).'</span>';
 
-				// Close the list (if group = TRUE only)
-				$string .= ($group?'</li>':'');
-
-				return $string;
-			}
-		}
+			} // End of option is defined
+			return $string;
+		} // End of display_field
 
 		/**
 		 * display_group
@@ -550,7 +506,7 @@ if (!class_exists('EG_Forms_111')) {
 					'<fieldset><legend class="hidden">'.__($group->title, $this->textdomain).'</legend><ul>';
 				// Displaying all of fields
 				foreach ($group->list as $option_name) {
-					echo $this->display_field($option_name, TRUE, $default_values);
+					echo '<li>'.$this->display_field($option_name, TRUE, $default_values).'</li>';
 				}
 				echo '</ul></fieldset>'.
 					($group->footer==''?'':'<p>'.__($group->footer, $this->textdomain).'</p>').
@@ -602,7 +558,7 @@ if (!class_exists('EG_Forms_111')) {
 
 			if ($this->access_level !== FALSE && ! current_user_can($this->access_level)) {
 				echo '<div id="message" class="error fade"><p>'.
-					sprintf(__('You cannot access to the synchronization page. You haven\'t the "%1s" capability. Please contact <a href="%2s">the blog administrator</a>.', $this->textdomain), $this->access_level, $this->author_address).
+					sprintf(__('You cannot access to the synchronization page. You haven\'t the "%1s" capability. Please contact <a href="%2s">the blog administrator</a>.', $this->textdomain), $this->access_level, $this->plugin_url).
 					'</p></div>';
 			}
 			else {
