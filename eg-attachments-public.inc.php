@@ -366,8 +366,6 @@ if (! class_exists('EG_Attachments')) {
 							$lock_icon = '';
 							$query = parse_url(get_permalink());
 							
-							print_r($query); 
-							
 							$url = $query['scheme'].'://'.
 									(isset($query['user'])?$query['user'].
 									(isset($query['password'])?':'.$query['password']:'').'@':'').
