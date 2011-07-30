@@ -250,7 +250,7 @@ if (! class_exists('EG_Attachments')) {
 			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
 			extract( shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr ));
-
+			
 			if ($fields == '' || $fields == 'none') $fields = $EG_ATTACH_DEFAULT_FIELDS[$size];
 			else if (! is_array($fields)) $fields = explode(',', $fields);
 
@@ -272,6 +272,10 @@ if (! class_exists('EG_Attachments')) {
 				$logged_users = $this->options['logged_users_only'];
 			}
 
+			if ($display_label < 0) {
+				$display_label = $this->options['display_label'];
+			}
+			
 			list($this->order_by, $this->order) = split(' ', addslashes($orderby));
 
 			if (isset($EG_ATTACH_FIELDS_ORDER_KEY[$this->order_by]))
@@ -393,6 +397,8 @@ if (! class_exists('EG_Attachments')) {
 								$tmp = preg_replace("/%FILENAME%/",    $fields_value['filename'],	$tmp);
 								$tmp = preg_replace("/%FILESIZE%/",    $fields_value['size'],		$tmp);
 								$tmp = preg_replace("/%ATTID%/",       $attachment->ID,				$tmp); //For use with stylesheets
+								$tmp = preg_replace("/%TYPE%/",		   strtoupper($fields_value['type']),$tmp);
+
 								$output .= $tmp;
 								if(strlen($format)) break; //If !strlen continue in 'large'
 
@@ -406,8 +412,7 @@ if (! class_exists('EG_Attachments')) {
 										if ($field == 'small_size')
 											$caption_list[max(sizeof($caption_list)-1,0)] .= ' ('.$file_size.')';
 										else {
-											$caption_list[] = '<strong>'.__($EG_ATTACH_FIELDS_TITLE[$field], $this->textdomain).'</strong>'.
-											' : '.
+											$caption_list[] = (($size!='small' || $display_label)?'<strong>'.__($EG_ATTACH_FIELDS_TITLE[$field], $this->textdomain).'</strong> : ':'').
 											($first_field?$link:'').$fields_value[$field].($first_field?'</a>':'');
 										}
 										$first_field=FALSE;

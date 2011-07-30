@@ -673,3 +673,23 @@ msgstr ""
 #: eg-attachments-admin.inc.php:702
 msgid "No statistics available yet"
 msgstr ""
+
+#: eg-attachments-admin.inc.php:288
+msgid "Display label of fields"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:289
+msgid "For Small size only, check the box if you want display labels"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:289
+msgid "(For the other sizes, labels are always displayed)"
+msgstr ""
+
+#: eg-attach_popup.php:
+msgid "Display label: "
+msgstr ""
+
+#: eg-attach_popup.php:
+msgid "(for size=small only)"
+msgstr ""

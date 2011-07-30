@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2011-07-17 11:13+0100\n"
+"PO-Revision-Date: 2011-07-30 01:41+0100\n"
 "Last-Translator: \n"
 "Language-Team: Emmanuel GEORJON <blog@emmanuelgeorjon.com>\n"
 
@@ -680,4 +680,24 @@ msgstr "Aujourd'hui"
 #: eg-attachments-admin.inc.php:702
 msgid "No statistics available yet"
 msgstr "Les statistiques ne sont pas encore disponibles"
+
+#: eg-attachments-admin.inc.php:288
+msgid "Display label of fields"
+msgstr "Affichage des labels des champs"
+
+#: eg-attachments-admin.inc.php:289
+msgid "For Small size only, check the box if you want display labels"
+msgstr "Pour les listes de petites tailles seulement, cocher la bo&icirc;te, si vous souhaitez afficher les labels"
+
+#: eg-attachments-admin.inc.php:289
+msgid "(For the other sizes, labels are always displayed)"
+msgstr "(Pour les autres tailles de liste, les labels sont toujours affich&eacute;s"
+
+#: eg-attach_popup.php:
+msgid "Display label: "
+msgstr "Afficher le label: "
+
+#: eg-attach_popup.php:
+msgid "(for size=small only)"
+msgstr "(pour liste de petite taille seulement)"
 

@@ -4,8 +4,7 @@ Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
 Requires at least: 2.9.0
 Tested up to: 3.2.1
-Stable tag: 1.8.3
-
+Stable tag: 1.8.4
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
 == Description ==
@@ -103,6 +102,7 @@ Two specific keywords can be used with **docid** option: **first** and **last** 
 * **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: the default value is defined in the **Settings page** in administration interface.
 * **limit**: choose the number of attachements you want to display. Default: all attachments are displayed
 * **nofollow**: add the attribut "nofollow" to the link, if value is set to 1 or TRUE. Default nofollow=0
+* **display_label**: for size=small only. Allow to display label of fields, when value is set to 1. Default display_label=0
 
 **Example 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
 
@@ -170,7 +170,13 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 
 == Changelog ==
 
-= Version 1.8.2 - July 19th, 2011 =
+= Version 1.8.4 - July 30th, 2011 =
+
+* New: add ability to display TYPE in custom format
+* Bug fix: now, by default, label of fields are not displayed when size is small (same behavior than version 1.7.4)
+* New: for small size, you can choose to display labels or not (default not).
+
+= Version 1.8.3 - July 19th, 2011 =
 
 * Bug fix: Remove some debug information. Sorry
 

@@ -55,7 +55,8 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'stats_ip_exclude'			  => '',
 	'load_css'					  => 1,
 	'use_metabox'				  => 0,
-	'nofollow'				  	  => 0
+	'nofollow'				  	  => 0,
+	'display_label'				  => 0
 );
 
 $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
@@ -75,7 +76,8 @@ $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
 	'logged_users'  => -1,
 	'id'            => 0,
 	'limit'			=> -1,
-	'nofollow'		=> 0
+	'nofollow'		=> 0,
+	'display_label' => -1
 );
 
 

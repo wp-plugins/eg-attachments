@@ -32,6 +32,7 @@ else {
 		'icon'			=> $eg_attach_options['shortcode_auto_icon'],
 		'logged_users'  => $eg_attach_options['logged_users_only'],
 		'nofollow'  	=> $eg_attach_options['nofollow'],
+		'display_label'	=> $eg_attach_options['display_label'],
 		'limit' 	 	=> $eg_attach_options['shortcode_auto_limit']
 	);
 }
@@ -134,6 +135,7 @@ function get_select($key, $default_values) {
 			var logged_users	= parseInt(document.getElementById('logged_users').value);
 			var limit			= parseInt(document.getElementById('limit').value);
 			var nofollow		= document.getElementById('nofollow');
+			var display_label	= document.getElementById('display_label');
 			var default_doclist	= document.getElementById('default_doclist');
 			var doclist 		= getCheckedValue(document.getElementsByName('doclist'));
 			
@@ -172,6 +174,9 @@ function get_select($key, $default_values) {
 
 			if (nofollow.checked)
 				tagtext = tagtext + " nofollow=1";
+
+			if (display_label.checked)
+				tagtext = tagtext + " display_label=1";
 
 			if ( default_doclist && !default_doclist.checked) {
 				if (doclist!="")
@@ -243,8 +248,13 @@ function get_select($key, $default_values) {
 					<input type="text" id="limit" value="<?php echo $default_values['limit']; ?>" />
 				</p>
 				<p>
-					<label for="nofollow"><strong><?php _e('Nofollow: ',EG_ATTACH_TEXTDOMAIN); ?></strong></label><br />
+					<label for="nofollow"><strong><?php _e('Nofollow: ',EG_ATTACH_TEXTDOMAIN); ?></strong></label> 
 					<input type="checkbox" id="nofollow" <?php echo ($default_values['nofollow']?'checked':''); ?> />
+				</p>
+				<p>
+					<label for="display_label"><strong><?php _e('Display label: ',EG_ATTACH_TEXTDOMAIN); ?></strong></label>
+					<input type="checkbox" id="display_label" <?php echo ($default_values['display_label']>0?'checked':''); ?> /> <br />
+					<?php _e('(for size=small only)', EG_ATTACH_TEXTDOMAIN); ?>
 				</p>
 				<p>
 					<label for="doclist"><strong><?php _e('Document list: ',EG_ATTACH_TEXTDOMAIN); ?></strong></label><br />
