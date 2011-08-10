@@ -137,6 +137,10 @@ msgstr ""
 msgid "Number of documents to display: "
 msgstr ""
 
+#: tinymce/window.php:174 eg-attachments-admin.inc.php:253
+msgid "(Default: -1, for all document are listed)"
+msgstr ""
+
 #: tinymce/window.php:172
 msgid "Nofollow: "
 msgstr ""
@@ -419,7 +423,7 @@ msgid "You can define your own display format, using <strong>custom</strong>. Pa
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
-msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr></table>"
+msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type of the documents</td></tr></table>"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:

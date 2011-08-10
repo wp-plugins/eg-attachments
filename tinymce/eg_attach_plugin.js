@@ -38,5 +38,3 @@
 	// Register plugin
 	tinymce.PluginManager.add('EGAttachments', tinymce.plugins.EGAttachments);
 })();
-
-

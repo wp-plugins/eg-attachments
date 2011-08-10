@@ -1,11 +1,11 @@
 <?php
 
-define('EG_ATTACH_OPTIONS_ENTRY', 'EG-Attachments-Options');
 define('EG_ATTACH_TEXTDOMAIN',    'eg-attachments');
 define('EG_ATTACH_SHORTCODE',     'attachments');
 define('EG_ATTACH_REPOSITORY', 'http://wordpress.org/extend/plugins/eg-attachments');
 
 $EG_ATTACH_FIELDS_TITLE = array(
+	'id'			=> 'Document id',
 	'label'			=> 'Document label',
 	'title' 		=> 'Title',
 	'caption' 		=> 'Caption',
@@ -18,6 +18,7 @@ $EG_ATTACH_FIELDS_TITLE = array(
 );
 
 $EG_ATTACH_FIELDS_ORDER_KEY = array(
+	'id'			=> 'ID',
 	'title' 		=> 'post_title',
 	'caption' 		=> 'post_excerpt',
 	'description' 	=> 'post_content',

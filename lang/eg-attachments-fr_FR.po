@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2011-07-30 01:41+0100\n"
+"PO-Revision-Date: 2011-08-10 08:46+0100\n"
 "Last-Translator: \n"
 "Language-Team: Emmanuel GEORJON <blog@emmanuelgeorjon.com>\n"
 
@@ -143,6 +143,11 @@ msgstr "Acc&egrave;s aux pi&egrave;ces jointes : "
 #: eg-attachments-admin.inc.php:253
 msgid "Number of documents to display: "
 msgstr "Nombre de documents &agrave; afficher: "
+
+#: tinymce/window.php:174
+#: eg-attachments-admin.inc.php:253
+msgid "(Default: -1, for all document are listed)"
+msgstr "(Valeur par d&eacute;faut: -1, tous les documents sont affich&eacute;s)"
 
 #: tinymce/window.php:172
 msgid "Nofollow: "
@@ -427,8 +432,8 @@ msgid "You can define your own display format, using <strong>custom</strong>. Pa
 msgstr "Vous pouvez d&eacute;finir votre propre format, en utilisant le <strong>format personnalis&eacute;</strong>. Les param&egrave;tres de cette section ne s'appliquent que si vous choisissez <em>Personnalis&eacute;</em> comme format d'affichage pour le shortcode automatique (cinqui&egrave;me option de cette page), ou si vous sp&eacute;cifi&eacute; <em>size=custom</em>, comme option des shortcodes dans vos articles.<br />Les mots-cl&eacute;s sont list&eacute;s ci-dessous."
 
 #: eg-attachments-admin.inc.php:
-msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr></table>"
-msgstr "Mots-cl&eacute;s disponibles :<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Lien complet vers le document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>L'url du document attach&eacute; (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>Le lien direct vers le document, tel qu'il est stock&eacute; dans la base de donn&eacute;es de WordPress,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>l'URL de l'icône,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Titre du document attach&eacute;,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>L&eacute;gende du fichier attach&eacute;,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description du fichier attach&eacute;,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Nom du fichier attach&eacute;,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Taille du document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID du fichier document.</td></tr></table>"
+msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type of the documents</td></tr></table>"
+msgstr "Mots-cl&eacute;s disponibles :<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Lien complet vers le document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>L'url du document attach&eacute; (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>Le lien direct vers le document, tel qu'il est stock&eacute; dans la base de donn&eacute;es de WordPress,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>l'URL de l'icône,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Titre du document attach&eacute;,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>L&eacute;gende du fichier attach&eacute;,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description du fichier attach&eacute;,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Nom du fichier attach&eacute;,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Taille du document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID du fichier document.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type des documents</td></tr></table>"
 
 #: eg-attachments-admin.inc.php:
 msgid "Custom format, before list: "

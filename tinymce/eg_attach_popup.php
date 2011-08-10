@@ -13,7 +13,7 @@ $eg_attach_options = get_option(EG_ATTACH_OPTIONS_ENTRY);
 
 if (!$eg_attach_options['shortcode_auto_default_opts']) {
 	$default_values = $EG_ATTACHMENT_SHORTCODE_DEFAULTS;
-	list($default_values['orderby'], $default_values['sortorder']) = split(' ', $EG_ATTACHMENT_SHORTCODE_DEFAULTS['orderby'] );
+	list($default_values['orderby'], $default_values['sortorder']) = explode(' ', $EG_ATTACHMENT_SHORTCODE_DEFAULTS['orderby'] );
 	$default_values['force_saveas'] = $eg_attach_options['force_saveas'];
 	$default_values['logged_users'] = $eg_attach_options['logged_users_only'];
 }

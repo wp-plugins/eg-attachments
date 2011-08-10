@@ -184,6 +184,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 				$string = '<p>'.__('Attachments available for this post/page', $this->textdomain).'</p>'.
 						'<table class="eg-attach-list">'.
 							'<tr>'.
+								'<th>'.__('ID', $this->textdomain).'</th>'.
 								'<th>'.__('File Name', $this->textdomain).'</th>'.
 								'<th>'.__('Type', $this->textdomain).'</th>'.
 								'<th>'.__('Size', $this->textdomain).'</th>'.
@@ -193,8 +194,9 @@ if (! class_exists('EG_Attachments_Admin')) {
 					$file_path = get_attached_file($attachment->ID);
 					$file_type = wp_check_filetype($file_path);
 					$docsize = @filesize($file_path);
-					$size_value = split(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
+					$size_value = explode(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
 					$string .= '<tr>'.
+								'<td>'.$attachment->ID.'</td>'.
 								'<td>'.wp_html_excerpt($attachment->post_title, 40).'</td>'.
 								'<td>'.$file_type['ext'] /* str_replace('vnd.','',str_replace('application/','',$attachment->post_mime_type)) */.'</td>'.
 								'<td>'.(sizeof($size_value)<2?'':$size_value[0].' '.__($size_value[1], $this->textdomain)).'</td>'.
@@ -496,7 +498,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 				$max_number = 0;
 				foreach ($results as $result) {
 
-					list($year, $month) = split('-', $result->month);
+					list($year, $month) = explode('-', $result->month);
 					$month = intval($month);
 
 					if (isset($details[$year])) $details[$year] += $result->clicks_total;
@@ -655,7 +657,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 					foreach ($results as $result) {
 						$id = $result->attach_id;
 
-						list($year, $month, $day, $click_time) = split('[- ]', $result->click_date);
+						list($year, $month, $day, $click_time) = preg_split('[- ]', $result->click_date);
 						$week = date('W', mktime(0,0,0, $month, $day, $year)).$year;
 
 						$month = $month.$year;
@@ -726,14 +728,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 	} /* End of Class */
 } /* End of if class_exists */
 
-function eg_attachments_uninstall() {
-	$options = get_option(EG_ATTACH_OPTIONS_ENTRY);
-	if ( isset($options) && $options['uninstall_del_options']) {
-		delete_option(EG_ATTACH_OPTIONS_ENTRY);
-	}
-} // End of eg_attachments_uninstall
-
-
 $eg_attach_admin = new EG_Attachments_Admin('EG-Attachments',
 											EG_ATTACH_VERSION ,
 											EG_ATTACH_COREFILE,
@@ -744,8 +738,6 @@ $eg_attach_admin->set_textdomain(EG_ATTACH_TEXTDOMAIN);
 $eg_attach_admin->set_wp_versions('2.9', FALSE, '2.9', FALSE);
 $eg_attach_admin->add_tinymce_button( 'EGAttachments', 'tinymce', 'eg_attach_plugin.js');
 $eg_attach_admin->set_stylesheets(FALSE, 'eg-attachments-admin.css');
-
-register_uninstall_hook (EG_ATTACH_COREFILE, 'eg_attachments_uninstall' );
 
 $eg_attach_admin->load();
 

@@ -67,54 +67,76 @@ if (! class_exists('EG_Attachments')) {
 					return;
 
 				$stats_enable = ($this->options['stats_enable'] && $this->options['clicks_table']);
-				if ($stats_enable) {
+				if ($stats_enable && $this->options['stats_ip_exclude'] != '') {
 					$stat_ip = (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : FALSE);
-					if ($stat_ip !== FALSE && $this->options['stats_ip_exclude'] != '')
-						$stats_enable = ( in_array($stat_ip, explode(',', $this->options['stats_ip_exclude'])) );
+					if ($stat_ip !== FALSE ) {
+						if (EG_ATTACH_DEBUG_MODE)
+							$this->display_debug_info('IP: '.$stat_ip.', exclusion list: '.$this->options['stats_ip_exclude']);
+						$stats_enable = (! in_array($stat_ip, explode(',', $this->options['stats_ip_exclude'])) );
+					}
 				}
 
 				if ($stats_enable) {
+					/* Get some details from post parent */
 					$post = get_post($_GET['pid']);
 					if (! $post || ! in_array($post->post_type, array('post', 'page')))
 						return;
-
 					// Count click
-					$sql = 'SELECT click_id FROM '.$wpdb->prefix.'eg_attachments_clicks '.
-							'WHERE attach_id='.$attach->ID.' AND post_id='.$post->ID.' AND CURRENT_DATE() = click_date';
-
+					$sql = $wpdb->prepare('SELECT click_id '.
+										'FROM '.$wpdb->prefix.'eg_attachments_clicks '.
+										'WHERE attach_id=%d '.
+										'AND post_id=%d '.
+										'AND CURRENT_DATE() = click_date',
+										$attach->ID,$post->ID);
 					$click_id = $wpdb->get_results($sql);
 
 					if (! $click_id){
-						$sql = 'INSERT INTO '.$wpdb->prefix.'eg_attachments_clicks'.
-							' SET attach_id='.$attach->ID.', attach_title="'.$attach->post_title.'"'.
-							', post_id='.$post->ID.', post_title="'.$post->post_title.'"'.
-							', click_date= CURRENT_DATE()'.
-							', clicks_number=1';
+						$sql = $wpdb->prepare('INSERT INTO '.$wpdb->prefix.'eg_attachments_clicks'.
+							' SET attach_id=%d, attach_title="%s", post_id=%d, post_title="%s"'.
+							', click_date= CURRENT_DATE(), clicks_number=1',
+							$attach->ID, $attach->post_title, $post->ID,$post->post_title);
 					}
 					else {
-						$sql = 'UPDATE '.$wpdb->prefix.'eg_attachments_clicks'.
+						$sql = $wpdb->prepare('UPDATE '.$wpdb->prefix.'eg_attachments_clicks'.
 							' SET clicks_number = clicks_number + 1'.
-							' WHERE click_id='.$click_id[0]->click_id;
+							' WHERE click_id=%d',$click_id[0]->click_id);
 					}
 					$wpdb->query($sql);
 				} // End of stat enable
 
+				$file_url = wp_get_attachment_url($attach->ID);
+				
 				if ($_GET['sa'] < 1) {
-					wp_redirect($this->prepare_url($attach->guid));
+					// wp_redirect($this->prepare_url($attach->guid));
+					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('Simple redirect: '.wp_get_attachment_url($attach->ID));
+					wp_redirect($this->prepare_url($file_url));
 					exit;
 				} // End of redirect mode
 				else {
-					$url = pathinfo($attach->guid);
-					header("Pragma: public");
-					header("Expires: 0");
-					header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-					header("Content-Type: application/force-download");
-					header("Content-Type: application/octet-stream");
-					header("Content-Type: application/download");
-					header("Content-Disposition: attachment; filename=".$url['basename'].";");
-					header("Content-Transfer-Encoding: binary");
-					// header("Content-Length: ".filesize($file_path));
-					@readfile($this->prepare_url($attach->guid));
+					$url = pathinfo($file_url);
+
+					global $is_IE;
+					if (strtolower($url['extension']) == 'zip' && $is_IE && ini_get('zlib.output_compression')) {
+						ini_set('zlib.output_compression', 'Off');
+						// apache_setenv('no-gzip', '1');
+					}
+
+					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('mime: '.get_post_mime_type($attach->ID));
+					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('file: '.$this->prepare_url(wp_get_attachment_url($attach->ID)));
+
+					header('Pragma: public');
+					header('Expires: 0');
+					header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+					header('Cache-Control: private', FALSE); // required for certain browsers
+					header('Content-Type: application/force-download');
+					header('Content-Type: '.get_post_mime_type($attach->ID), FALSE);
+					//header("Content-Type: application/octet-stream", FALSE);
+					header("Content-Type: application/download", FALSE);
+					header('Content-Disposition: attachment; filename='.$url['basename'].';');
+					header('Content-Transfer-Encoding: binary');
+					// header('Content-Length: '.filesize($file_path));
+					// @readfile($this->prepare_url($attach->guid));
+					@readfile($this->prepare_url(wp_get_attachment_url($attach->ID)));
 					exit;
 				} // End of Download mode
 			} // End of parameters OK
@@ -158,7 +180,7 @@ if (! class_exists('EG_Attachments')) {
 			$docsize = @filesize($file_path);
 			if ($docsize === FALSE) $docsize = '';
 			else {
-				$size_value = split(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
+				$size_value = explode(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
 				$docsize = $size_value[0].' '.__($size_value[1], $this->textdomain);
 			}
 			if ($docsize == 0 || $docsize == '') return __('unknown', $this->textdomain);
@@ -196,7 +218,7 @@ if (! class_exists('EG_Attachments')) {
 		  * @return string					readable type of the attachment
 		  */
 		function get_type($mime_type) {
-			list($part1, $part2) = split('/', $mime_type);
+			list($part1, $part2) = explode('/', $mime_type);
 			switch ($part1) {
 				case 'image':
 					$attachment_type = $mime_type;
@@ -250,7 +272,7 @@ if (! class_exists('EG_Attachments')) {
 			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
 
 			extract( shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr ));
-			
+
 			if ($fields == '' || $fields == 'none') $fields = $EG_ATTACH_DEFAULT_FIELDS[$size];
 			else if (! is_array($fields)) $fields = explode(',', $fields);
 
@@ -267,6 +289,7 @@ if (! class_exists('EG_Attachments')) {
 				// Take default options
 				$force_saveas = $this->options['force_saveas'];
 			}
+
 			if ($logged_users < 0) {
 				// Take default options
 				$logged_users = $this->options['logged_users_only'];
@@ -275,13 +298,14 @@ if (! class_exists('EG_Attachments')) {
 			if ($display_label < 0) {
 				$display_label = $this->options['display_label'];
 			}
-			
-			list($this->order_by, $this->order) = split(' ', addslashes($orderby));
 
-			if (isset($EG_ATTACH_FIELDS_ORDER_KEY[$this->order_by]))
+			list($this->order_by, $this->order) = explode(' ', addslashes($orderby));
+
+			if (isset($EG_ATTACH_FIELDS_ORDER_KEY[strtolower($this->order_by)]))
 				$this->order_by = $EG_ATTACH_FIELDS_ORDER_KEY[$this->order_by];
 
-			if ($this->order == '' || ( $this->order != 'ASC' && $this->order != 'DESC')) $this->order = 'ASC';
+			if (is_string($this->order)) $this->order = strtoupper($this->order);
+			if ($this->order == '' || ( ! in_array($this->order, array('ASC', 'DESC')))) $this->order = 'ASC';
 
 			// get attachments
 			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
@@ -324,7 +348,7 @@ if (! class_exists('EG_Attachments')) {
 					$doc_list = array( $temp->ID );
 				}
 				else {
-					$doc_list = split(',', $docid);
+					$doc_list = explode(',', $docid);
 				}
 			}
 
@@ -369,7 +393,20 @@ if (! class_exists('EG_Attachments')) {
 							// $query = parse_url(get_permalink(), PHP_URL_QUERY);
 							$lock_icon = '';
 							$query = parse_url(get_permalink());
-							
+
+							$query['query'] = (isset($query['query'])&& $query['query']!='' ? $query['query'].'&amp;' : '' ).
+												http_build_query( array( 'aid' => $attachment->ID,
+																		 'pid' => $id,
+																		 'sa'  => $force_saveas ));
+							$url = $query['scheme'].'://'.
+									(isset($query['user'])?$query['user'].
+									(isset($query['password'])?':'.$query['password']:'').'@':'').
+									(isset($query['host'])?$query['host']:'').
+									(isset($query['path'])?$query['path']:'').
+									'?'.
+							        $query['query'].
+									(isset($query['anchor'])?'#'.$query['anchor']:'');
+/*
 							$url = $query['scheme'].'://'.
 									(isset($query['user'])?$query['user'].
 									(isset($query['password'])?':'.$query['password']:'').'@':'').
@@ -379,6 +416,7 @@ if (! class_exists('EG_Attachments')) {
 							        (isset($query['query'])&& $query['query']!='' ? $query['query'].'&amp;' : '' ) .
 								   	'aid='.$attachment->ID.'&amp;pid='.$id.'&amp;sa='.$force_saveas.
 									(isset($query['anchor'])?'#'.$query['anchor']:'');
+*/
 						}
 						$link = '<a title="'.$fields_value['title'].'" href="'.$url.'" '.($this->options['nofollow']?'rel="nofollow"':'').'>';
 
@@ -603,6 +641,10 @@ $eg_attach = new EG_Attachments('EG-Attachments', EG_ATTACH_VERSION, EG_ATTACH_C
 $eg_attach->set_textdomain(EG_ATTACH_TEXTDOMAIN);
 $eg_attach->set_stylesheets('eg-attachments.css', FALSE);
 $eg_attach->set_wp_versions('2.9',	FALSE, '2.9', FALSE);
+
+if (EG_ATTACH_DEBUG_MODE)
+	$eg_attach->set_debug_mode(TRUE, 'debug.log');
+
 $eg_attach->load();
 
 ?>

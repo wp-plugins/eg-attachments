@@ -3,13 +3,13 @@
 Plugin Name: EG-Attachments
 Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 1.8.4
+Version: 1.8.5
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
 /*
-     Copyright 2009-2011 Emmanuel GEORJON  (email : blog@georjon.eu)
+     Copyright 2009-2011 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,8 +26,11 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('EG_ATTACH_COREFILE', __FILE__);
-define('EG_ATTACH_VERSION',  '1.8.4');
+define('EG_ATTACH_COREFILE', 		__FILE__);
+define('EG_ATTACH_VERSION',  		'1.8.5' );
+define('EG_ATTACH_OPTIONS_ENTRY', 	'EG-Attachments-Options');
+
+define('EG_ATTACH_DEBUG_MODE',	FALSE);
 
 require_once('eg-attachments-config.inc.php');
 
@@ -45,4 +48,22 @@ else {
 require_once('lib/eg-widgets280.inc.php');
 require_once('eg-attachments-widgets.inc.php');
 
+/**
+ * eg_attachments_uninstall
+ *
+ * Delete option of the plugin during uninstallation
+ *
+ * @package EG-Attachments
+ *
+ * @param 	none
+ * @return	none
+ */
+function eg_attachments_uninstall() {
+	$options = get_option(EG_ATTACH_OPTIONS_ENTRY);
+	if ( isset($options) && $options['uninstall_del_options']) {
+		delete_option(EG_ATTACH_OPTIONS_ENTRY);
+	}
+} // End of eg_attachments_uninstall
+
+register_uninstall_hook (EG_ATTACH_COREFILE, 'eg_attachments_uninstall' );
 ?>
