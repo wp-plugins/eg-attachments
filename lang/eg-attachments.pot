@@ -697,3 +697,11 @@ msgstr ""
 #: eg-attach_popup.php:
 msgid "(for size=small only)"
 msgstr ""
+
+# eg-attachments-admin.inc.php:
+msgid "Use PHP <strong>date()</strong> parameters to configure the date:<br />d&nbsp;&nbsp;&nbsp;&nbsp;Day of the month, 2 digits with leading zeros<br />D&nbsp;&nbsp;&nbsp;&nbsp;A textual representation of a day, three letters<br />j&nbsp;&nbsp;&nbsp;&nbsp;Day of the month without leading zeros<br />S&nbsp;&nbsp;&nbsp;&nbsp;English ordinal suffix for the day of the month, 2 characters<br />F&nbsp;&nbsp;&nbsp;&nbsp;A full textual representation of a month, such as January or March<br />m&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, with leading zeros<br />M&nbsp;&nbsp;&nbsp;&nbsp;A short textual representation of a month, three letters<br />n&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, without leading zeros<br />Y&nbsp;&nbsp;&nbsp;&nbsp;A full numeric representation of a year, 4 digits<br />y&nbsp;&nbsp;&nbsp;&nbsp;A two digit representation of a year"
+msgstr ""
+
+# eg-attachments-admin.inc.php:
+msgid "Default value: "
+msgstr ""

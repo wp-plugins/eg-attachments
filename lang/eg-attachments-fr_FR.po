@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2011-08-10 08:46+0100\n"
+"PO-Revision-Date: 2011-08-11 07:51+0100\n"
 "Last-Translator: \n"
 "Language-Team: Emmanuel GEORJON <blog@emmanuelgeorjon.com>\n"
 
@@ -705,4 +705,12 @@ msgstr "Afficher le label: "
 #: eg-attach_popup.php:
 msgid "(for size=small only)"
 msgstr "(pour liste de petite taille seulement)"
+
+# eg-attachments-admin.inc.php:
+msgid "Use PHP <strong>date()</strong> parameters to configure the date:<br />d&nbsp;&nbsp;&nbsp;&nbsp;Day of the month, 2 digits with leading zeros<br />D&nbsp;&nbsp;&nbsp;&nbsp;A textual representation of a day, three letters<br />j&nbsp;&nbsp;&nbsp;&nbsp;Day of the month without leading zeros<br />S&nbsp;&nbsp;&nbsp;&nbsp;English ordinal suffix for the day of the month, 2 characters<br />F&nbsp;&nbsp;&nbsp;&nbsp;A full textual representation of a month, such as January or March<br />m&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, with leading zeros<br />M&nbsp;&nbsp;&nbsp;&nbsp;A short textual representation of a month, three letters<br />n&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, without leading zeros<br />Y&nbsp;&nbsp;&nbsp;&nbsp;A full numeric representation of a year, 4 digits<br />y&nbsp;&nbsp;&nbsp;&nbsp;A two digit representation of a year"
+msgstr "Utiliser les param&agrave;tres de la fonction date() de PHP<br />d&nbsp;&nbsp;&nbsp;&nbsp;jour du mois, sur 2 caract&agrave;res,<br />D&nbsp;&nbsp;&nbsp;&nbsp;abr&eacute;viation du jour de la semaine, 3 lettres,<br />j&nbsp;&nbsp;&nbsp;&nbsp;jour du mois,<br />F&nbsp;&nbsp;&nbsp;&nbsp;nom complet du mois. Par exemple: Janvier, Mars,<br />m&nbsp;&nbsp;&nbsp;&nbsp;num&eacute;ro du mois, sur 2 caract&agrave;res,<br />M&nbsp;&nbsp;&nbsp;&nbsp;abr&eacute;viation du mois, sur 3 lettres,<br />n&nbsp;&nbsp;&nbsp;&nbsp;num&eacute;ro du mois,<br />Y&nbsp;&nbsp;&nbsp;&nbsp;ann&eacute;e sur 4 lettres,<br />y&nbsp;&nbsp;&nbsp;&nbsp;ann&eacute;e sur 2 lettres."
+
+# eg-attachments-admin.inc.php:
+msgid "Default value: "
+msgstr "Valeur par d&eacute;faut: "
 

@@ -103,17 +103,16 @@ if (! class_exists('EG_Attachments')) {
 					}
 					$wpdb->query($sql);
 				} // End of stat enable
-
-				$file_url = wp_get_attachment_url($attach->ID);
 				
 				if ($_GET['sa'] < 1) {
-					// wp_redirect($this->prepare_url($attach->guid));
-					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('Simple redirect: '.wp_get_attachment_url($attach->ID));
+					$file_url = wp_get_attachment_url($attach->ID);
+					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('Simple redirect: '.$file_url);
 					wp_redirect($this->prepare_url($file_url));
 					exit;
 				} // End of redirect mode
 				else {
-					$url = pathinfo($file_url);
+					$file_path = get_attached_file($attach->ID);
+					$file_size = @filesize($file_path);
 
 					global $is_IE;
 					if (strtolower($url['extension']) == 'zip' && $is_IE && ini_get('zlib.output_compression')) {
@@ -122,22 +121,20 @@ if (! class_exists('EG_Attachments')) {
 					}
 
 					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('mime: '.get_post_mime_type($attach->ID));
-					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('file: '.$this->prepare_url(wp_get_attachment_url($attach->ID)));
+					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('file: '.$this->prepare_url($file_path));
 
 					header('Pragma: public');
 					header('Expires: 0');
 					header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-					header('Cache-Control: private', FALSE); // required for certain browsers
-					header('Content-Type: application/force-download');
-					header('Content-Type: '.get_post_mime_type($attach->ID), FALSE);
-					//header("Content-Type: application/octet-stream", FALSE);
-					header("Content-Type: application/download", FALSE);
-					header('Content-Disposition: attachment; filename='.$url['basename'].';');
+					header('Cache-Control: private', FALSE);
+					header('Content-Type: application/force-download', FALSE);
+					header('Content-Type: application/octet-stream', FALSE);
+					header('Content-Type: application/download', FALSE);
+					header('Content-Disposition: attachment; filename="'.basename($file_path).'";');
 					header('Content-Transfer-Encoding: binary');
-					// header('Content-Length: '.filesize($file_path));
-					// @readfile($this->prepare_url($attach->guid));
-					@readfile($this->prepare_url(wp_get_attachment_url($attach->ID)));
-					exit;
+					if ($file_size!==FALSE) header('Content-Length: '.$file_size);
+					@readfile($file_path);
+					exit();
 				} // End of Download mode
 			} // End of parameters OK
 		} // End of manage_link

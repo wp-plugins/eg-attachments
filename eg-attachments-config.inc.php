@@ -57,7 +57,8 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'load_css'					  => 1,
 	'use_metabox'				  => 0,
 	'nofollow'				  	  => 0,
-	'display_label'				  => 0
+	'display_label'				  => 0,
+	'date_format'				  => ''
 );
 
 $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
