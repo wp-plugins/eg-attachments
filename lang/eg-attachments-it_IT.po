@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/extend/plugins/eg-attachments/admin/\n"
-"POT-Creation-Date: 2011-07-17 07:06:31+00:00\n"
-"PO-Revision-Date: 2011-07-17 19:22+0100\n"
-"Last-Translator: Roberto Scano <mail@robertoscano.info>\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/eg-attachments\n"
+"POT-Creation-Date: 2011-09-12 12:00:00+00:00\n"
+"PO-Revision-Date: 2011-10-24 08:24+0100\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -45,11 +45,6 @@ msgstr "Media"
 #: tinymce/window.php:73
 msgid "Small"
 msgstr "Piccola"
-
-#: tinymce/window.php:74
-#: eg-attachments-admin.inc.php:
-msgid "Custom"
-msgstr "Personalizzata"
 
 #: tinymce/window.php:77
 msgid "File name"
@@ -142,6 +137,11 @@ msgstr "Accesso agli allegati: "
 msgid "Number of documents to display: "
 msgstr "Numero di documenti da visualizzare: "
 
+#: tinymce/window.php:174
+#: eg-attachments-admin.inc.php:253
+msgid "(Default: -1, for all document are listed)"
+msgstr ""
+
 #: tinymce/window.php:172
 msgid "Nofollow: "
 msgstr "Nofollow: "
@@ -166,19 +166,19 @@ msgstr "Allegati scaricabili dai soli utenti registrati"
 msgid "Document locked"
 msgstr "Documento protetto"
 
-#: eg-attachments-public.inc.php:118
+#: eg-attachments-public.inc.php:
 msgid "TB"
 msgstr "TB"
 
-#: eg-attachments-public.inc.php:118
+#: eg-attachments-public.inc.php:
 msgid "MB"
 msgstr "MB"
 
-#: eg-attachments-public.inc.php:118
+#: eg-attachments-public.inc.php:
 msgid "kB"
 msgstr "kB"
 
-#: eg-attachments-public.inc.php:118
+#: eg-attachments-public.inc.php:
 msgid "B"
 msgstr "B"
 
@@ -255,10 +255,6 @@ msgid "Activation"
 msgstr "Attivazione"
 
 #: eg-attachments-admin.inc.php:
-msgid "Auto / Manual"
-msgstr "Automatica / Manuale"
-
-#: eg-attachments-admin.inc.php:
 msgid "With this option, you can automaticaly add the list of attachments in your blog, without using shortcode"
 msgstr "Con questa opzione puoi automaticamente aggiungere l'elenco degli allegati nel tuo blog senza usare lo shortcode"
 
@@ -329,10 +325,6 @@ msgid "Title"
 msgstr "Titolo"
 
 #: eg-attachments-config.inc.php:
-msgid "File Name"
-msgstr "Nome file"
-
-#: eg-attachments-config.inc.php:
 msgid "Document label"
 msgstr "Etichetta documento"
 
@@ -389,12 +381,12 @@ msgid "The default list is: "
 msgstr "L'elenco predefinito è:"
 
 #: eg-attachments-admin.inc.php:
-msgid "Fields to be displayed"
-msgstr "Campi da visualizzare"
-
-#: eg-attachments-admin.inc.php:
 msgid "Do you want to display default fields?"
 msgstr "Vuoi visualizzare i campi predefiniti?"
+
+#: eg-attachments-admin.inc.php:
+msgid "Fields to be displayed"
+msgstr "Campi da visualizzare"
 
 #: eg-attachments-admin.inc.php:
 msgid "Small list:"
@@ -417,6 +409,10 @@ msgid "Field"
 msgstr "Campo"
 
 #: eg-attachments-admin.inc.php:
+msgid "Custom"
+msgstr "Personalizzata"
+
+#: eg-attachments-admin.inc.php:
 msgid "Custom format"
 msgstr "Formato personalizzato"
 
@@ -425,19 +421,35 @@ msgid "You can define your own display format, using <strong>custom</strong>. Pa
 msgstr "Puoi definire un formato di visualizzazione personalizzato, utilizzando <strong>personalizzata</strong>. I parametri di questa sezione saranno applicati solo se si utilizzerà <em>personalizzata</em> come formato di visualizzazione per lo shortcode automatico (quinta opzione di questa pagina), oppure se specifichi <em>size=custom</em> nei shortcode del tuo articolo.<br />I parametri che puoi utilizzare sono indicati di seguito."
 
 #: eg-attachments-admin.inc.php:
-msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr></table>"
+#, fuzzy
+msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type of the documents</td></tr><tr><td><strong>%DATE%</strong></td><td>Date of last modification</td></tr></table>"
 msgstr "Parametri disponibili:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Collegamento completo al documento (esempio &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>URL del documento (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>collegamento diretto al documento così come salvato nel database di Wordpress,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL con icona,</td></tr><tr><td><strong>%TITLE%</strong></td><td>titolo del documento,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>didascalia del documento,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>descrizione del documento,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>nome del file allegato,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>dimensione del file allegato,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID del file allegato.</td></tr></table>"
 
 #: eg-attachments-admin.inc.php:
 msgid "Custom format, before list: "
 msgstr "Formato personalizzato, prima dell'elenco: "
 
+#: eg-attachments-widget.inc.php:
+#, fuzzy
+msgid "Custom format, before list"
+msgstr "Formato personalizzato, prima dell'elenco: "
+
 #: eg-attachments-admin.inc.php:
 msgid "Custom list format: "
 msgstr "Formato elenco personalizzato: "
 
+#: eg-attachments-widget.inc.php:
+#, fuzzy
+msgid "Custom list format"
+msgstr "Formato elenco personalizzato: "
+
 #: eg-attachments-admin.inc.php:
 msgid "Custom format, after list: "
+msgstr "Formato personalizzato, dopo l'elenco: "
+
+#: eg-attachments-widget.inc.php:
+#, fuzzy
+msgid "Custom format, after list"
 msgstr "Formato personalizzato, dopo l'elenco: "
 
 #: eg-attachments-admin.inc.php:
@@ -485,16 +497,25 @@ msgid "Click counter"
 msgstr "Contatore dei click"
 
 #: eg-attachments-admin.inc.php:
-msgid "Activate"
-msgstr "Attiva"
+#, fuzzy
+msgid "Activate statistics"
+msgstr "Statistiche di EG-Attachments"
+
+#: eg-attachments-admin.inc.php:
+msgid "Auto / Manual"
+msgstr "Automatica / Manuale"
 
 #: eg-attachments-admin.inc.php:
 msgid "Record all clicks occuring in the listed attachements."
 msgstr "Memorizza tutti i click nell'elenco degli allegati."
 
 #: eg-attachments-admin.inc.php:
-msgid "Exclude IP"
-msgstr "Escludi IP"
+msgid "Statistics, IP to exclude"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "List of IP address you want to exclude"
+msgstr ""
 
 #: eg-attachments-admin.inc.php:
 msgid "Styles"
@@ -679,24 +700,171 @@ msgstr "Oggi"
 msgid "No statistics available yet"
 msgstr "Non sono disponibili statistiche"
 
+#: eg-attachments-admin.inc.php:288
+#, fuzzy
+msgid "Display label of fields"
+msgstr "Visualizza i campi predefiniti?"
+
+#: eg-attachments-admin.inc.php:289
+msgid "For Small size only, check the box if you want display labels"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:289
+msgid "(For the other sizes, labels are always displayed)"
+msgstr ""
+
+#: eg-attach_popup.php:
+#, fuzzy
+msgid "Display label: "
+msgstr "Visualizza le icone: "
+
+#: eg-attach_popup.php:
+msgid "(for size=small only)"
+msgstr ""
+
+# eg-attachments-admin.inc.php:
+msgid "Use PHP <strong>date()</strong> parameters to configure the date:<br />d&nbsp;&nbsp;&nbsp;&nbsp;Day of the month, 2 digits with leading zeros<br />D&nbsp;&nbsp;&nbsp;&nbsp;A textual representation of a day, three letters<br />j&nbsp;&nbsp;&nbsp;&nbsp;Day of the month without leading zeros<br />S&nbsp;&nbsp;&nbsp;&nbsp;English ordinal suffix for the day of the month, 2 characters<br />F&nbsp;&nbsp;&nbsp;&nbsp;A full textual representation of a month, such as January or March<br />m&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, with leading zeros<br />M&nbsp;&nbsp;&nbsp;&nbsp;A short textual representation of a month, three letters<br />n&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, without leading zeros<br />Y&nbsp;&nbsp;&nbsp;&nbsp;A full numeric representation of a year, 4 digits<br />y&nbsp;&nbsp;&nbsp;&nbsp;A two digit representation of a year"
+msgstr ""
+
+# eg-attachments-admin.inc.php:
+msgid "Default value: "
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "This plugin required and requires many hours of work. If you use the plugin, and like it, feel free to show your appreciation to the author."
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "PayPal - The safer, easier way to pay online!"
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "Plugin's homepage"
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "Support forum"
+msgstr ""
+
+#: eg-attachments-admin.php:
+#, fuzzy
+msgid "Last changes"
+msgstr "Salva le modifiche"
+
+#: eg-attachments-admin.php:
+msgid "Links"
+msgstr ""
+
+#, fuzzy
+msgid "Donate"
+msgstr "Data"
+
+#, fuzzy
+msgid "Custom fields"
+msgstr "Personalizzata"
+
+#, fuzzy
+msgid "or display the following fields"
+msgstr "Visualizza i campi predefiniti?"
+
+#, fuzzy
+msgid "Links to attachments"
+msgstr "Allegati"
+
+msgid "<strong>Permalink</strong>. <br /><em>The URL of the attachment is using defined permalink structure. For example: <code>http://blog url/post url/attachment slug/</code>, or <code>http://blog url/?p=xx</code>.<br/>The attachment will be displayed inside your blog, as a post.</em>"
+msgstr ""
+
+msgid "<strong>File</strong>. <br /><em>The URL is the document's address. For example: <code>http://blog url/wp-content/upload/2011/09/file name.file extension/</code>.<br />When you click on the attachment, it is displayed directly, as a document, and not as a page of blog. WordPress mechanisms are not used</em>"
+msgstr ""
+
+msgid "<strong>Direct</strong>. <br /><em>It's the default behavior of the plugin. The URL is pointing to the file, but in this case, the link is encoded. When you click on the attachment, it is displayed as a document, and not as a page of blog. WordPress mechanisms are used</em>"
+msgstr ""
+
+msgid "<br />All features cannot be implemented with all of these modes.<br /><table class=\"eg-attach-help\"><tr><th>Link type</th><th>Statistics</th><th>Force \"Save as\"</th><th>Security</th></tr><tr><th class=\"row\">Permalink</th><td>x</td><td>x</td><td>x</td></tr><tr><th class=\"row\">File</th><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><th class=\"row\">Direct</th><td>x</td><td>x</td><td>x</td></tr></table>"
+msgstr ""
+
+#, fuzzy
+msgid "Date format"
+msgstr "Formato elenco:"
+
+msgid "(tag like h2, or h3, ...)"
+msgstr ""
+
+#: eg-attachments-widget.inc.php
+#, fuzzy
+msgid "Order by"
+msgstr "Ordina per: "
+
+#: eg-attachments-widget.inc.php
+#, fuzzy
+msgid "Order"
+msgstr "Ordina per: "
+
+#: eg-attachments-widget.inc.php:
+#, fuzzy
+msgid "Number of documents to display"
+msgstr "Numero di documenti da visualizzare: "
+
+#, fuzzy
+msgid "Display icon"
+msgstr "Visualizza le icone: "
+
+msgid "Activate automatic shortcode on the following cases"
+msgstr ""
+
+msgid "Homepage,"
+msgstr ""
+
+#, fuzzy
+msgid "Posts,"
+msgstr "Articoli"
+
+#, fuzzy
+msgid "Pages,"
+msgstr "Immagini"
+
+msgid "Lists of posts."
+msgstr ""
+
+#, fuzzy
+msgid "General shortcode behavior"
+msgstr "Impostazioni generali per shortcode"
+
+#, fuzzy
+msgid "Automatic Shortcode"
+msgstr "Auto shortcode"
+
+#, fuzzy
+msgid "Administration"
+msgstr "Interfaccia di amministrazione"
+
+msgid "All of the following parameters are applied on manual AND automatic shortcode."
+msgstr ""
+
+#, fuzzy
+msgid "EG-Attachments settings"
+msgstr "Opzioni EG-Attachments"
+
+#~ msgid "Activate"
+#~ msgstr "Attiva"
+#~ msgid "Exclude IP"
+#~ msgstr "Escludi IP"
 #~ msgid "Caption: "
 #~ msgstr "Etichetta: "
-
 #~ msgid "Description: "
 #~ msgstr "Descrizione: "
-
 #~ msgid "File: "
 #~ msgstr "File: "
-
 #~ msgid "Which fields do you want to display (large and medium size only)?"
 #~ msgstr "Quali campi vuoi visualizzare? (solo misure media e grande)"
-
 #~ msgid "ID"
 #~ msgstr "ID"
-
 #~ msgid "Mime type"
 #~ msgstr "Tipo di documento"
-
 #~ msgid ""
 #~ "Use this section only if you choose <strong>Custom</strong> in the "
 #~ "<em>List format</em> field. <br />In this case, you can define how will "
@@ -707,7 +875,6 @@ msgstr "Non sono disponibili statistiche"
 #~ "campo <em>Formato elenco</em>. <br />In questo caso puoi definire come "
 #~ "sarà visualizzato l'elenco degli allegati. Le parole chiave che puoi "
 #~ "usare sono elencate sotto."
-
 #~ msgid "Available keywords:<br /><table"
 #~ msgstr "Parole chiave disponibili:<br /><table"
 

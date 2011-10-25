@@ -9,13 +9,12 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_118 {
+	Class EG_Attachments extends EG_Plugin_122 {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
-		var $cacheexpiration = 300;
-
-		var $shortcode_exists = FALSE;
+		var $attachments = FALSE;
+		var $shortcode_exists = array();
 
 		/**
 		 * Implement init action
@@ -28,23 +27,48 @@ if (! class_exists('EG_Attachments')) {
 		 */
 		function init() {
 
-			$this->manage_link();
+			add_action('template_redirect', array(&$this, 'manage_link'));
 
 			parent::init();
 
-			if (! is_admin()) {
-
-				add_shortcode(EG_ATTACH_SHORTCODE, array(&$this, 'get_attachments'));
-				if ($this->options['shortcode_auto']>0) {
+				add_shortcode(EGA_SHORTCODE, array(&$this, 'get_attachments'));
+				/* && $this->shortcode_is_visible(): cannot put this function here. wp_query object is not ready */
+				if ($this->options['shortcode_auto']>0  ) {
 					add_filter('get_the_excerpt', array(&$this, 'shortcode_auto_excerpt'));
 					add_filter('the_content',     array(&$this, 'shortcode_auto_content'));
 				}
-			}
 		} /* End of init */
 
-		function prepare_url($url) {
+		/**
+		 * Encode_url
+		 *
+		 * Add filter, hooks or action.
+		 *
+		 * @package EG-Attachments
+		 * @param none
+		 * @return none
+		 */
+		function encode_url($url) {
+			$url = parse_url($url);
 
-			return esc_url($url, array('http', 'https'));
+			// Split query part
+			$query_params = array();
+			if (isset($url['query'])) {
+				$params = explode('&',$url['query']);
+				foreach ($params as $param) {
+					list($key, $value) = explode('=', $param);
+					$query_params[] = rawurlencode(utf8_encode($key)).'='.rawurlencode(utf8_encode($value));
+				}
+			}
+
+			$new_url = $url['scheme'].'://'.
+						(isset($url['user'])?$url['user'].(isset($url['pass'])?':'.$url['pass']:'').'@':'').
+						$url['host'].
+						(isset($url['path'])?str_replace('%2F','/', rawurlencode(utf8_encode($url['path']))):'').
+						(sizeof($query_params)>0?'?'.implode('&',$query_param):'').
+						(isset($url['fragment'])?'#'.$url['fragment']:'');
+
+			return htmlspecialchars($new_url);
 		}
 
 		/**
@@ -58,85 +82,110 @@ if (! class_exists('EG_Attachments')) {
 		 */
 		function manage_link() {
 			global $wpdb;
+			global $post;
 
-			if (isset($_GET['aid']) && isset($_GET['pid']) && isset($_GET['sa']) &&
-				is_numeric($_GET['aid']) && is_numeric($_GET['pid']) && is_numeric($_GET['sa']) ) {
+			// Be sure that the link is coming from EG-Attachments
+			if ( isset($_GET['aid']) && is_numeric($_GET['aid']) &&
+				 isset($_GET['sa']) && is_numeric($_GET['sa']) ) {
+
+				// First security check. If post not defined, potential hack tentative.
+				if (! isset($post))
+					wp_die(__('Something is going wrong. Bad address, or perhaps you try to access to a private document.', $this->textdomain));
 
 				$attach = get_post($_GET['aid']);
-				if (! $attach || $attach->post_type != 'attachment')
-					return;
+				if (isset($attach) && $attach && $attach->post_type=='attachment')
+					$attach_id = $attach->ID;
 
-				$stats_enable = ($this->options['stats_enable'] && $this->options['clicks_table']);
-				if ($stats_enable && $this->options['stats_ip_exclude'] != '') {
-					$stat_ip = (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : FALSE);
-					if ($stat_ip !== FALSE ) {
-						if (EG_ATTACH_DEBUG_MODE)
-							$this->display_debug_info('IP: '.$stat_ip.', exclusion list: '.$this->options['stats_ip_exclude']);
-						$stats_enable = (! in_array($stat_ip, explode(',', $this->options['stats_ip_exclude'])) );
-					}
-				}
+				if ( isset($attach_id) ) {
 
-				if ($stats_enable) {
-					/* Get some details from post parent */
-					$post = get_post($_GET['pid']);
-					if (! $post || ! in_array($post->post_type, array('post', 'page')))
-						return;
-					// Count click
-					$sql = $wpdb->prepare('SELECT click_id '.
-										'FROM '.$wpdb->prefix.'eg_attachments_clicks '.
-										'WHERE attach_id=%d '.
-										'AND post_id=%d '.
-										'AND CURRENT_DATE() = click_date',
-										$attach->ID,$post->ID);
-					$click_id = $wpdb->get_results($sql);
+					$parent_id = reset(get_post_ancestors($attach_id));
 
-					if (! $click_id){
-						$sql = $wpdb->prepare('INSERT INTO '.$wpdb->prefix.'eg_attachments_clicks'.
-							' SET attach_id=%d, attach_title="%s", post_id=%d, post_title="%s"'.
-							', click_date= CURRENT_DATE(), clicks_number=1',
-							$attach->ID, $attach->post_title, $post->ID,$post->post_title);
-					}
-					else {
-						$sql = $wpdb->prepare('UPDATE '.$wpdb->prefix.'eg_attachments_clicks'.
-							' SET clicks_number = clicks_number + 1'.
-							' WHERE click_id=%d',$click_id[0]->click_id);
-					}
-					$wpdb->query($sql);
-				} // End of stat enable
-				
-				if ($_GET['sa'] < 1) {
-					$file_url = wp_get_attachment_url($attach->ID);
-					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('Simple redirect: '.$file_url);
-					wp_redirect($this->prepare_url($file_url));
-					exit;
-				} // End of redirect mode
-				else {
-					$file_path = get_attached_file($attach->ID);
-					$file_size = @filesize($file_path);
-
-					global $is_IE;
-					if (strtolower($url['extension']) == 'zip' && $is_IE && ini_get('zlib.output_compression')) {
-						ini_set('zlib.output_compression', 'Off');
-						// apache_setenv('no-gzip', '1');
+					// Second security check: private posts / pages
+					if ('private' == get_post_field('post_status', $parent_id) && !is_user_logged_in()) {
+						wp_die(__('This post is private. You must be a user of the site, and logged in, to display this file.', $this->textdomain));
 					}
 
-					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('mime: '.get_post_mime_type($attach->ID));
-					if (EG_ATTACH_DEBUG_MODE) $this->display_debug_info('file: '.$this->prepare_url($file_path));
+					// Third security check: protected post
+					if (post_password_required($parent_id)) {
+						wp_die(__('This post is password protected. Please go to the site, and enter the password required to display the document', $this->textdomain));
+					}
 
-					header('Pragma: public');
-					header('Expires: 0');
-					header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-					header('Cache-Control: private', FALSE);
-					header('Content-Type: application/force-download', FALSE);
-					header('Content-Type: application/octet-stream', FALSE);
-					header('Content-Type: application/download', FALSE);
-					header('Content-Disposition: attachment; filename="'.basename($file_path).'";');
-					header('Content-Transfer-Encoding: binary');
-					if ($file_size!==FALSE) header('Content-Length: '.$file_size);
-					@readfile($file_path);
-					exit();
-				} // End of Download mode
-			} // End of parameters OK
+					$stats_enable = ($this->options['stats_enable'] && $this->options['clicks_table']);
+					if ($stats_enable && $this->options['stats_ip_exclude'] != '') {
+						$stat_ip = (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : FALSE);
+						if ($stat_ip !== FALSE ) {
+							if (EGA_DEBUG_MODE)
+								$this->display_debug_info('IP: '.$stat_ip.', exclusion list: '.$this->options['stats_ip_exclude']);
+							$stats_enable = (! in_array($stat_ip, explode(',', $this->options['stats_ip_exclude'])) );
+						}
+					}
+
+					if ($stats_enable) {
+						/* Get some details from post parent */
+						$post = get_post($parent_id);
+						if (! $post || ! in_array($post->post_type, array('post', 'page')))
+							return;
+						// Count click
+						$sql = $wpdb->prepare('SELECT click_id '.
+											'FROM '.$wpdb->prefix.'eg_attachments_clicks '.
+											'WHERE attach_id=%d '.
+											'AND post_id=%d '.
+											'AND CURRENT_DATE() = click_date',
+											$attach->ID,$parent_id);
+						$click_id = $wpdb->get_results($sql);
+
+						if (! $click_id){
+							$sql = $wpdb->prepare('INSERT INTO '.$wpdb->prefix.'eg_attachments_clicks'.
+								' SET attach_id=%d, attach_title="%s", post_id=%d, post_title="%s"'.
+								', click_date= CURRENT_DATE(), clicks_number=1',
+								$attach_id, $attach->post_title, $post->ID,$post->post_title);
+						}
+						else {
+							$sql = $wpdb->prepare('UPDATE '.$wpdb->prefix.'eg_attachments_clicks'.
+								' SET clicks_number = clicks_number + 1'.
+								' WHERE click_id=%d',$click_id[0]->click_id);
+						}
+						$wpdb->query($sql);
+					} // End of stat enable
+
+
+					if ($_GET['sa'] < 1) {
+						if (!is_attachment()) {
+							wp_redirect($this->encode_url(wp_get_attachment_url($attach_id)));
+							exit;
+						}
+					}
+					else { // Force "Save as"
+
+						$file_path = get_attached_file($attach_id);
+						$file_size = @filesize($file_path);
+
+						global $is_IE;
+						$path = pathinfo($file_path);
+
+						if (isset($path['extension']) && strtolower($path['extension']) == 'zip' &&
+							$is_IE && ini_get('zlib.output_compression')) {
+							ini_set('zlib.output_compression', 'Off');
+							// apache_setenv('no-gzip', '1');
+						}
+
+						header('Pragma: public');
+						header('Expires: 0');
+						header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+						header('Cache-Control: private', FALSE);
+						header('Content-Type: application/force-download', FALSE);
+						header('Content-Type: application/octet-stream', FALSE);
+						header('Content-Type: application/download', FALSE);
+						header('Content-Disposition: attachment; filename="'.basename($file_path).'";');
+						header('Content-Transfer-Encoding: binary');
+						if ($file_size!==FALSE) header('Content-Length: '.$file_size);
+						@readfile($file_path);
+						exit();
+					} // End of force save as
+
+				} // End of $attach_id exists
+
+			} // End of parameters exist (aid, and sa)
 		} // End of manage_link
 
 		/**
@@ -154,10 +203,10 @@ if (! class_exists('EG_Attachments')) {
 				$new_args = $args ;
 			else {
 				// Add the icons path of the current plugin
-				$new_args = array_merge(array($this->plugin_path.'images' => $this->plugin_url.'images'),$args);
+				$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),$args);
 			}
 			return ($new_args);
-		} /* End of icon_dirs */
+		} // End of icon_dirs
 
 		/**
 		  *  get_file_size() - Try to get the size of the specified file
@@ -256,80 +305,59 @@ if (! class_exists('EG_Attachments')) {
 		function get_attachments($attr)  {
 			global $post;
 			global $EG_ATTACHMENT_SHORTCODE_DEFAULTS;
-
 			global $EG_ATTACH_FIELDS_ORDER_KEY;
 			global $EG_ATTACH_FIELDS_TITLE;
 			global $EG_ATTACH_DEFAULT_FIELDS;
+
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['id'] 			= $post->ID;
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['force_saveas'] 	= $this->options['force_saveas'];
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['logged_users'] 	= $this->options['logged_users_only'];
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['login_url'] 		= $this->options['login_url'];
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['display_label'] 	= $this->options['display_label'];
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['format'] 		= $this->options['custom_format'];
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['format_pre'] 	= $this->options['custom_format_pre'];
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['format_post'] 	= $this->options['custom_format_post'];
+
+			extract( shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr ));
+
+			list($this->order_by, $this->order) = explode(' ', $orderby);
+
+			if (! isset($EG_ATTACH_FIELDS_ORDER_KEY[strtolower($this->order_by)]))
+				$this->order_by = reset(explode(' ',$EG_ATTACHMENT_SHORTCODE_DEFAULTS['orderby'] ));
+			$this->order_by = $EG_ATTACH_FIELDS_ORDER_KEY[strtolower($this->order_by)];
+
+			// get attachments
+			$cache_id = $id.'-'.$this->order_by.'-'.$this->order;
+			if ($this->attachments === FALSE || !isset($this->attachments[$cache_id])) {
+
+				// file wp-includes/query.php, line 2271, only the following order keys are allowed
+				// $allowed_keys = array('author', 'date', 'title', 'modified', 'menu_order', 'parent', 'ID', 'rand', 'comment_count');
+				// So we need to add our own filter, and the parameter suppress_filters = false
+				add_filter('posts_orderby', array(&$this, 'get_orderby') );
+				$this->attachments[$cache_id] = get_posts( array('post_parent' => $id,
+													 'numberposts' => -1,
+													 'post_type'   => 'attachment',
+													 'suppress_filters' => false)
+											);
+				remove_filter('posts_orderby',array(&$this, 'get_orderby') );
+			}
+
+			// if no attachments, stop and exit
+			if ($this->attachments === FALSE || !isset($this->attachments[$cache_id]) || sizeof($this->attachments[$cache_id])==0) {
+				return '';
+			}
 
 			if (function_exists('hidepost_filter_post'))
 				global $hidepost_hide_link;
 			else
 				$hidepost_hide_link = 0;
 
-			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
+			if ($size == 'custom') $fields = array();
+			else {
+				if ($fields == '' || $fields == 'none') $fields = $EG_ATTACH_DEFAULT_FIELDS[$size];
+				else if (! is_array($fields)) $fields = explode(',', $fields);
 
-			extract( shortcode_atts( $EG_ATTACHMENT_SHORTCODE_DEFAULTS, $attr ));
-
-			if ($fields == '' || $fields == 'none') $fields = $EG_ATTACH_DEFAULT_FIELDS[$size];
-			else if (! is_array($fields)) $fields = explode(',', $fields);
-
-			if (! is_array($fields)) $fields = $EG_ATTACH_DEFAULT_FIELDS[$size];
-
-			if ($id == 0) $id = $post->ID;
-			else $id = intval($id);
-
-			$limit = intval($limit);
-			if (! is_int($limit)) $limit = -1;
-			elseif ($limit < 0) $limit = -1;
-
-			if ($force_saveas < 0) {
-				// Take default options
-				$force_saveas = $this->options['force_saveas'];
-			}
-
-			if ($logged_users < 0) {
-				// Take default options
-				$logged_users = $this->options['logged_users_only'];
-			}
-
-			if ($display_label < 0) {
-				$display_label = $this->options['display_label'];
-			}
-
-			list($this->order_by, $this->order) = explode(' ', addslashes($orderby));
-
-			if (isset($EG_ATTACH_FIELDS_ORDER_KEY[strtolower($this->order_by)]))
-				$this->order_by = $EG_ATTACH_FIELDS_ORDER_KEY[$this->order_by];
-
-			if (is_string($this->order)) $this->order = strtoupper($this->order);
-			if ($this->order == '' || ( ! in_array($this->order, array('ASC', 'DESC')))) $this->order = 'ASC';
-
-			// get attachments
-			$attachments = wp_cache_get( 'attachments', 'eg-attachments' );
-			$cache_id = $id.'-'.$this->order_by.'-'.$this->order;
-			if ($attachments === FALSE || !isset($attachments[$cache_id])) {
-
-				// file wp-includes/query.php, line 2271, only the following order keys are allowed
-				// $allowed_keys = array('author', 'date', 'title', 'modified', 'menu_order', 'parent', 'ID', 'rand', 'comment_count');
-				// So we need to add our own filter, and the parameter suppress_filters = false
-				add_filter('posts_orderby', array(&$this, 'get_orderby') );
-				$attachment_list  = get_posts( array('post_parent' => $id,
-													 'numberposts' => -1,
-													 'post_type'   => 'attachment',
-													 'suppress_filters' => false)
-											);
-				remove_filter('posts_orderby',array(&$this, 'get_orderby') );
-
-				/* is it useful: is cache managed by get_posts? */
-				if ($attachment_list !== FALSE && sizeof($attachment_list)>0) {
-					$attachments[$cache_id] = $attachment_list;
-					wp_cache_set('attachments', $attachments, 'eg-attachments', $this->cacheexpiration);
-				}
-			}
-
-			// if no attachments, stop and exit
-			if ($attachments === FALSE || !isset($attachments[$cache_id])) {
-				return '';
+				if (! is_array($fields)) $fields = $EG_ATTACH_DEFAULT_FIELDS[$size];
 			}
 
 			if ($docid == '0') {
@@ -337,11 +365,11 @@ if (! class_exists('EG_Attachments')) {
 			}
 			else {
 				if ($docid == 'first') {
-					$temp = current($attachments[$id]);
+					$temp = reset($this->attachments[$cache_id]);
 					$doc_list = array( $temp->ID );
 				}
 				elseif ($docid == 'last') {
-					$temp = end($attachments[$id]);
+					$temp = end($this->attachments[$cache_id]);
 					$doc_list = array( $temp->ID );
 				}
 				else {
@@ -349,80 +377,61 @@ if (! class_exists('EG_Attachments')) {
 				}
 			}
 
+			$date_format = ($this->options['date_format']!=''?$this->options['date_format']:get_option('date_format'));
+
 			// Display title
 			$output = '';
 
-			if ($size == 'custom') {
-			    $format      = ($format==''?$this->options['custom_format']:$format);
-			    $format_pre  = ($format_pre==''?$this->options['custom_format_pre']:$format_pre);
-				$format_post = ($format_post==''?$this->options['custom_format_post']:$format_post);
-			}
-
 			// Display attachment list
 			$numberposts = 1;
-			foreach ( $attachments[$cache_id] as $attachment ) {
+			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
+			foreach ( $this->attachments[$cache_id] as $attachment ) {
 				if (sizeof($doc_list) == 0 || array_search($attachment->ID, $doc_list) !== FALSE) {
 					$mime_type = substr($attachment->post_mime_type,0,5);
 					if ( $doctype == 'all' ||
 					    ($doctype == 'image' && $mime_type == 'image') ||
-					    ($doctype == 'document' && $mime_type != 'image') ) {
+					    ($doctype == 'document' && $mime_type != 'image')) {
 
 						$file_size = $this->get_file_size($attachment->ID);
 						$fields_value = array(
+							'id'			=> $attachment->ID,
 							'title' 		=> htmlspecialchars(strip_tags($attachment->post_title)),
 							'filename'		=> htmlspecialchars(basename(get_attached_file($attachment->ID))),
 							'caption' 		=> htmlspecialchars(strip_tags($attachment->post_excerpt)),
 							'description' 	=> htmlspecialchars(strip_tags($attachment->post_content)),
-							'size' 			=> $file_size,
+							'size' 			=> $this->get_file_size($attachment->ID),
 							'icon'			=> $this->get_icon($attachment->ID, $attachment, $size),
-							'date'			=> $attachment->post_date /*mysql2date(get_option('date_format'), $attachment->post_date, TRUE)*/,
+							'date'			=> mysql2date($date_format, $attachment->post_date, TRUE),
 							'type'			=> $this->get_type($attachment->post_mime_type)
 						);
 						$fields_value['label'] = ($label=="filename"?$fields_value['filename']:$fields_value['title']);
 
-						if ($logged_users && ! is_user_logged_in()) {
+						if ($logged_users>0 && ! is_user_logged_in()) {
 							$url =  ($this->options['login_url']==''?'#':$this->options['login_url']).
 								'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');';
 							$lock_icon = '<img class="lock" src="'.$this->plugin_url.'img/lock.png" height="16" width="16" alt="'.__('Document locked', $this->textdomain).'" />';
 						}
 						else {
-							// --- Change in version 1.7.4.1 - Oct 3rd, 2010 ---
-							// $query = parse_url(get_permalink(), PHP_URL_QUERY);
 							$lock_icon = '';
-							$query = parse_url(get_permalink());
 
-							$query['query'] = (isset($query['query'])&& $query['query']!='' ? $query['query'].'&amp;' : '' ).
-												http_build_query( array( 'aid' => $attachment->ID,
-																		 'pid' => $id,
-																		 'sa'  => $force_saveas ));
-							$url = $query['scheme'].'://'.
-									(isset($query['user'])?$query['user'].
-									(isset($query['password'])?':'.$query['password']:'').'@':'').
-									(isset($query['host'])?$query['host']:'').
-									(isset($query['path'])?$query['path']:'').
-									'?'.
-							        $query['query'].
-									(isset($query['anchor'])?'#'.$query['anchor']:'');
-/*
-							$url = $query['scheme'].'://'.
-									(isset($query['user'])?$query['user'].
-									(isset($query['password'])?':'.$query['password']:'').'@':'').
-									(isset($query['host'])?$query['host']:'').
-									(isset($query['path'])?$query['path']:'').
-									'?'.
-							        (isset($query['query'])&& $query['query']!='' ? $query['query'].'&amp;' : '' ) .
-								   	'aid='.$attachment->ID.'&amp;pid='.$id.'&amp;sa='.$force_saveas.
-									(isset($query['anchor'])?'#'.$query['anchor']:'');
-*/
+							switch ($this->options['link']) {
+								case 'link': 	$url = get_permalink($attachment->ID); 			break;
+								case 'file': 	$url = wp_get_attachment_url($attachment->ID); 	break;
+								case 'direct':	$url = get_permalink($post->ID);				break;
+							}
+							if ($this->options['link'] != 'file') {
+								$query = parse_url($url , PHP_URL_QUERY);
+								$url = $url.($query['query']!=''?'&amp;':'?').htmlentities( 'aid='.$attachment->ID.'&sa='.$force_saveas );
+							}
 						}
-						$link = '<a title="'.$fields_value['title'].'" href="'.$url.'" '.($this->options['nofollow']?'rel="nofollow"':'').'>';
+
+						$full_link = '<a title="'.$fields_value['title'].'" href="'.$url.'" '.($this->options['nofollow']?'rel="nofollow"':'').'>';
 
 						switch ($size) {
 
 							case 'custom':  //Functionality added by Jxs / www.jxs.nl
 								$tmp = html_entity_decode (stripslashes($format));
 								$tmp = preg_replace("/%URL%/",        ($hidepost_hide_link==1?'#':$url),$tmp);
-								//A direct link to some files may be necessary - some programs don't work when the mimetype is not set correctly
 								$tmp = preg_replace("/%GUID%/",        $attachment->guid,			$tmp);
 								$tmp = preg_replace("/%ICONURL%/",     $fields_value['icon'],		$tmp);
 								$tmp = preg_replace("/%TITLE%/",       $fields_value['title'],		$tmp);
@@ -433,6 +442,7 @@ if (! class_exists('EG_Attachments')) {
 								$tmp = preg_replace("/%FILESIZE%/",    $fields_value['size'],		$tmp);
 								$tmp = preg_replace("/%ATTID%/",       $attachment->ID,				$tmp); //For use with stylesheets
 								$tmp = preg_replace("/%TYPE%/",		   strtoupper($fields_value['type']),$tmp);
+								$tmp = preg_replace("/%DATE%/",		   strtoupper($fields_value['date']),$tmp);
 
 								$output .= $tmp;
 								if(strlen($format)) break; //If !strlen continue in 'large'
@@ -445,17 +455,17 @@ if (! class_exists('EG_Attachments')) {
 								foreach ($fields as $field) {
 									if (isset($EG_ATTACH_FIELDS_TITLE[$field])) {
 										if ($field == 'small_size')
-											$caption_list[max(sizeof($caption_list)-1,0)] .= ' ('.$file_size.')';
+											$caption_list[max(sizeof($caption_list)-1,0)] .= ' ('.$fields_value['size'].')';
 										else {
 											$caption_list[] = (($size!='small' || $display_label)?'<strong>'.__($EG_ATTACH_FIELDS_TITLE[$field], $this->textdomain).'</strong> : ':'').
-											($first_field?$link:'').$fields_value[$field].($first_field?'</a>':'');
+											($first_field?$full_link:'').$fields_value[$field].($first_field?'</a>':'');
 										}
 										$first_field=FALSE;
 									}
 								} // End of foreach
 								if ($icon) {
 									$output .= '<dl class="attachments attachments-'.$size.'"><dt class="icon">'.
-										($hidepost_hide_link==1?'':$link).$fields_value['icon'].
+										($hidepost_hide_link==1?'':$full_link).$fields_value['icon'].
 										($hidepost_hide_link==1?'':'</a>').'</dt>'.
 										'<dd class="caption">'.$lock_icon.
 										implode('<br />', $caption_list).
@@ -474,7 +484,7 @@ if (! class_exists('EG_Attachments')) {
 					} // End of document type
 				} // End of doc_list
 			} // End of foreach attachment
-
+			remove_filter('icon_dirs', array(&$this, 'icon_dirs'));
 			$output = trim($output);
 
 			if ($output != '') {
@@ -485,33 +495,61 @@ if (! class_exists('EG_Attachments')) {
 						$output = '<ul>'.$output.'</ul>';
 				}
 				if ( $title != '') {
-					$output = '<'.$titletag.'>'.htmlspecialchars(stripslashes(strip_tags($title))).'</'.$titletag.'>'.$output;
+					$output = ($titletag==''?'':'<'.$titletag.'>').
+								htmlspecialchars(stripslashes(strip_tags($title))).
+								($titletag==''?'':'</'.$titletag.'>').
+								$output;
 				}
 				$output = '<div class="attachments">'.$output.'</div>';
 				if (function_exists('hidepost_filter_post')) $output = hidepost_filter_post($output);
 
 			} // End of $output
-
-			remove_filter('icon_dirs', array(&$this, 'icon_dirs'));
-
 			return $output;
 		} // End of get_attachments
-
 
 		/**
 		 * shortcode_is_visible
 		 *
-		 * Define if the auto shortcode is visible or not
+		 * Define is auto shortcode must be displayed of not.
 		 *
-		 * @return 	boolean		TRUE if shortcode is visible, FALSE if not
+		 * @return  int		1 if a shortcode is visble, 0 if not
 		 */
 		function shortcode_is_visible() {
-			global $post;
-			return (!post_password_required($post) &&
-			        ( $this->options['shortcode_auto_where'] != 'post' || is_single() || is_page() )
-				);
+
+			if (! is_array($this->options['shortcode_auto_where']))
+				$list = array($this->options['shortcode_auto_where']);
+			else
+				$list = $this->options['shortcode_auto_where'];
+
+			if (sizeof($list)==4)
+				$is_visible = TRUE;
+			else {
+				if (is_front_page() || is_home()) $current_page = 'home';
+				elseif (is_page()) $current_page = 'page';
+				elseif (is_single()) $current_page = 'post';
+				elseif (is_feed()) $current_page = 'feed';
+				elseif (is_archive() || is_category() || is_tag() || is_date() || is_day() || is_month() || is_year()) $current_page = 'index';
+				else $current_page='unknown';
+
+				$is_visible = in_array($current_page, $list);
+			}
+			return ($is_visible);
 		} // End of shortcode_is_visible
 
+		/**
+		 * shortcode_right_access
+		 *
+		 * Define if the auto shortcode password protected, or private
+		 *
+		 * @return 	boolean
+		 */
+/*		function shortcode_right_access() {
+			global $post;
+			return (!is_attachment() &&
+					!post_password_required($post) &&
+					('private' != get_post_field('post_status', $post->ID) || is_user_logged_in()) );
+		} // End of shortcode_right_access
+*/
 		/**
 		 * shortcode_auto_check_manual_shortcode
 		 *
@@ -522,11 +560,16 @@ if (! class_exists('EG_Attachments')) {
 		function shortcode_auto_check_manual_shortcode() {
 			global $post;
 
-			if ($this->shortcode_exists === FALSE) {
-				if ($this->options['shortcode_auto_exclusive']==0) $this->shortcode_exists = 0;
-				else $this->shortcode_exists = (strpos($post->post_excerpt.' '.$post->post_content, '['.EG_ATTACH_SHORTCODE.' ') !== FALSE);
-			}
-			return ($this->shortcode_exists);
+			$value = FALSE;
+			if ($this->options['shortcode_auto_exclusive']>0) {
+				if (isset($post)) {
+					if (! isset($this->shortcode_exists[$post->ID])) {
+						$this->shortcode_exists[$post->ID] = (strpos($post->post_excerpt.' '.$post->post_content, '['.EGA_SHORTCODE) !== FALSE);
+					}
+					$value = $this->shortcode_exists[$post->ID];
+				}
+			} // End of shortcode_auto_exclusive
+			return ($value);
 		} // End of shortcode_auto_check_manual_shortcode
 
 		/**
@@ -538,26 +581,20 @@ if (! class_exists('EG_Attachments')) {
 		 */
 		function shortcode_auto_excerpt($output) {
 
-			if ($output && $this->options['shortcode_auto'] == 3 &&
-			    $this->shortcode_is_visible() &&
+			if ($output &&
+				$this->options['shortcode_auto'] == 3 &&
+			     $this->shortcode_is_visible() &&  
 				! $this->shortcode_auto_check_manual_shortcode()) {
 
-				if ($this->options['shortcode_auto_fields_def']) $fields = '';
-				else $fields = $this->options['shortcode_auto_fields'];
-
-				$attrs = array( 'size'	   => $this->options['shortcode_auto_size'],
+				$attrs = array( 'size' => $this->options['shortcode_auto_size'],
 						'doctype'  	   => $this->options['shortcode_auto_doc_type'],
 						'title'    	   => $this->options['shortcode_auto_title'],
 						'titletag'     => $this->options['shortcode_auto_title_tag'],
 						'label'    	   => $this->options['shortcode_auto_label'],
 						'orderby'      => $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order'],
-						'fields'	   => $fields,
-						'force_saveas' => $this->options['force_saveas'],
+						'fields'	   => ($this->options['shortcode_auto_fields_def']?'':$this->options['shortcode_auto_fields']),
 						'icon'         => $this->options['shortcode_auto_icon'],
-						'logged_users' => $this->options['logged_users_only'],
-						'format'       => $this->options['custom_format'     ],
-						'format_pre'   => $this->options['custom_format_pre' ],
-						'format_post'  => $this->options['custom_format_post']
+						'limit'		   =>  $this->options['shortcode_auto_limit']
 				);
 				$output = $this->get_attachments($attrs).$output;
 			} // End of shortcode activated and visible
@@ -579,27 +616,19 @@ if (! class_exists('EG_Attachments')) {
 
 			if ($this->options['shortcode_auto']  > 0 	&&
 				/* $this->options['shortcode_auto'] != 3 	&& */
-				$this->shortcode_is_visible() 			&&
+			 	$this->shortcode_is_visible() 			&&
 				! $this->shortcode_auto_check_manual_shortcode()) {
 
-				if ($this->options['shortcode_auto_fields_def']) $fields = '';
-				else $fields = $this->options['shortcode_auto_fields'];
-
-				$attrs = array( 'size'		   => $this->options['shortcode_auto_size'],
-								'doctype'  	   => $this->options['shortcode_auto_doc_type'],
-								'title'    	   => $this->options['shortcode_auto_title'],
-								'titletag'     => $this->options['shortcode_auto_title_tag'],
-								'label'    	   => $this->options['shortcode_auto_label'],
-								'orderby'      => $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order'],
-								'fields'	   => $fields,
-								'force_saveas' => $this->options['force_saveas'],
-								'icon'         => $this->options['shortcode_auto_icon'],
-								'logged_users' => $this->options['logged_users_only'],
-								'format'       => $this->options['custom_format'     ],
-								'format_pre'   => $this->options['custom_format_pre' ],
-								'format_post'  => $this->options['custom_format_post'],
-								'limit'		   => $this->options['shortcode_auto_limit']
-					);
+				$attrs = array( 'size' => $this->options['shortcode_auto_size'],
+						'doctype'  	   => $this->options['shortcode_auto_doc_type'],
+						'title'    	   => $this->options['shortcode_auto_title'],
+						'titletag'     => $this->options['shortcode_auto_title_tag'],
+						'label'    	   => $this->options['shortcode_auto_label'],
+						'orderby'      => $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order'],
+						'fields'	   => ($this->options['shortcode_auto_fields_def']?'':$this->options['shortcode_auto_fields']),
+						'icon'         => $this->options['shortcode_auto_icon'],
+						'limit'		   =>  $this->options['shortcode_auto_limit']
+				);
 				$shortcode_output = $this->get_attachments($attrs);
 
 				switch ($this->options['shortcode_auto']) {
@@ -633,13 +662,12 @@ if (! class_exists('EG_Attachments')) {
 	} /* End of Class */
 } /* End of if class_exists */
 
-$eg_attach = new EG_Attachments('EG-Attachments', EG_ATTACH_VERSION, EG_ATTACH_COREFILE, EG_ATTACH_OPTIONS_ENTRY, $EG_ATTACH_DEFAULT_OPTIONS);
+$eg_attach = new EG_Attachments('EG-Attachments', EGA_VERSION, EGA_COREFILE,
+								EGA_TEXTDOMAIN, EGA_OPTIONS_ENTRY, $EG_ATTACH_DEFAULT_OPTIONS);
+$eg_attach->set_stylesheets('css/eg-attachments.css');
+$eg_attach->set_wp_versions('2.9',	'3.3-beta1', FALSE);
 
-$eg_attach->set_textdomain(EG_ATTACH_TEXTDOMAIN);
-$eg_attach->set_stylesheets('eg-attachments.css', FALSE);
-$eg_attach->set_wp_versions('2.9',	FALSE, '2.9', FALSE);
-
-if (EG_ATTACH_DEBUG_MODE)
+if (EGA_DEBUG_MODE)
 	$eg_attach->set_debug_mode(TRUE, 'debug.log');
 
 $eg_attach->load();

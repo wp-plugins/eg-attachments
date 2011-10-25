@@ -1,9 +1,5 @@
 <?php
 
-define('EG_ATTACH_TEXTDOMAIN',    'eg-attachments');
-define('EG_ATTACH_SHORTCODE',     'attachments');
-define('EG_ATTACH_REPOSITORY', 'http://wordpress.org/extend/plugins/eg-attachments');
-
 $EG_ATTACH_FIELDS_TITLE = array(
 	'id'			=> 'Document id',
 	'label'			=> 'Document label',
@@ -31,7 +27,7 @@ $EG_ATTACH_FIELDS_ORDER_KEY = array(
 $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'shortcode_auto'			  => 0, /* 0='Not activated', 1=no more used, 2=At the end, 3=Before the excerpt, 4=Between excerpt and content */
 	'shortcode_auto_exclusive'	  => 0,
-	'shortcode_auto_where'		  => 'post',
+	'shortcode_auto_where'		  => array('post', 'page'),
 	'shortcode_auto_title'  	  => '',
 	'shortcode_auto_title_tag'	  => 'h2',
 	'shortcode_auto_size'		  => 'large',
@@ -50,7 +46,6 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'force_saveas' 				  => 0,
 	'logged_users_only'			  => 0,
 	'login_url'					  => '',
-	'uninstall_del_options'		  => 0,
 	'stats_enable'				  => 0,
 	'clicks_table'				  => 0,
 	'stats_ip_exclude'			  => '',
@@ -58,7 +53,9 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'use_metabox'				  => 0,
 	'nofollow'				  	  => 0,
 	'display_label'				  => 0,
-	'date_format'				  => ''
+	'date_format'				  => '',
+	'link'						  => 'direct',
+	'uninstall_del_options'		  => 0
 );
 
 $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
@@ -78,8 +75,7 @@ $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
 	'logged_users'  => -1,
 	'id'            => 0,
 	'limit'			=> -1,
-	'nofollow'		=> 0,
-	'display_label' => -1
+	'nofollow'		=> 0
 );
 
 

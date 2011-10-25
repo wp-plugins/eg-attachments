@@ -1,15 +1,17 @@
 <?php
 /*
-Plugin Name: EG-Attachments
-Plugin URI:  http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
-Description: Shortcode displaying lists of attachments for a post
-Version: 1.8.6
-Author: Emmanuel GEORJON
-Author URI: http://www.emmanuelgeorjon.com/
-*/
+	Plugin Name: EG-Attachments
+	Plugin URI: http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
+	Description: Shortcode displaying lists of attachments for a post
+	Author: Emmanuel GEORJON
+	Version: 1.9.0
+	Author URI: http://www.emmanuelgeorjon.com/
+	Text Domain: eg-attachments
+	Domain Path: /lang
+ */
 
 /*
-     Copyright 2009-2011 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
+    Copyright 2009-2011 Emmanuel GEORJON (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,27 +28,29 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('EG_ATTACH_COREFILE', 		__FILE__);
-define('EG_ATTACH_VERSION',  		'1.8.6' );
-define('EG_ATTACH_OPTIONS_ENTRY', 	'EG-Attachments-Options');
+define('EGA_COREFILE', 		__FILE__);
+define('EGA_VERSION',  		'1.9.0' );
+define('EGA_OPTIONS_ENTRY',	'EG-Attachments-Options');
+define('EGA_TEXTDOMAIN',    'eg-attachments');
+define('EGA_SHORTCODE',     'attachments');
 
-define('EG_ATTACH_DEBUG_MODE',	FALSE);
+define('EGA_DEBUG_MODE', FALSE);
 
-require_once('eg-attachments-config.inc.php');
+require_once('inc/eg-attachments-config.inc.php');
 
-if (! class_exists('EG_Plugin_118')) {
+if (! class_exists('EG_Plugin_122')) {
 	require('lib/eg-plugin.inc.php');
 }
 
 if (is_admin()) {
-	require_once('eg-attachments-admin.inc.php');
+	require_once('inc/eg-attachments-admin.inc.php');
 }
 else {
-	require_once('eg-attachments-public.inc.php');
+	require_once('inc/eg-attachments-public.inc.php');
 }
 
 require_once('lib/eg-widgets280.inc.php');
-require_once('eg-attachments-widgets.inc.php');
+require_once('inc/eg-attachments-widgets.inc.php');
 
 /**
  * eg_attachments_uninstall
@@ -59,11 +63,11 @@ require_once('eg-attachments-widgets.inc.php');
  * @return	none
  */
 function eg_attachments_uninstall() {
-	$options = get_option(EG_ATTACH_OPTIONS_ENTRY);
+	$options = get_option(EGA_OPTIONS_ENTRY);
 	if ( isset($options) && $options['uninstall_del_options']) {
-		delete_option(EG_ATTACH_OPTIONS_ENTRY);
+		delete_option(EGA_OPTIONS_ENTRY);
 	}
 } // End of eg_attachments_uninstall
 
-register_uninstall_hook (EG_ATTACH_COREFILE, 'eg_attachments_uninstall' );
+register_uninstall_hook (EGA_COREFILE, 'eg_attachments_uninstall' );
 ?>

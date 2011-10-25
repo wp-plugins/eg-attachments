@@ -1,10 +1,11 @@
-=== Plugin Name ===
+=== EG-Attachments ===
 Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
 Requires at least: 2.9.0
-Tested up to: 3.2.1
-Stable tag: 1.8.6
+Tested up to: 3.3-beta2
+Stable tag: 1.9.0
+
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
 == Description ==
@@ -14,13 +15,16 @@ But you don't need to know all of these options, because the plugin is "TinyMCE 
 
 You can insert the **shortcode** by hand if you want, or use it in a template using the **do_shortcode** function.
 
-An another way is to activate option **auto shortcode** that adds automaticaly lists of attachments at the end of posts or pages.
+An another way is to activate option **auto shortcode** that automaticaly adds the list of attachments, where you want in your posts or pages.
 
 The list includes, for each attachments:
 
 * Icon, 
 * Title, 
 * Description, 
+* Caption,
+* Type,
+* Date, 
 * Size.
 
 Options are 
@@ -31,9 +35,9 @@ Options are
 * Document list,
 * Title of the list,
 * Label of each document,
-* Description field to display (caption and/or description),
+* Fields to display (caption, description, date, type, ...),
+* Type of link to attachments: permalink, or direct link to the file,
 * Force "Save as" (rather than display document),
-* Restrict access of the attachments to the logged users.
 
 Since the version 1.5.0, **EG-Attachments** plugin counts the number of clicks occuring on each attached document.
 
@@ -44,15 +48,18 @@ Thanks to
 * [Dave](http://www.jxs.nl/) for the "custom style" feature,
 * [Rebekah](http://www.learntowebdesign.com/) for her [video tutorial](http://www.learntowebdesign.com/2009/12/placing-attachments-wordpress-post-page/)
 * [Luca Maida](http://www.qsin.it/) for his comments on HTML standards compliance
+* [Roberto Scano](http://robertoscano.info/) for his help on debugging
+* David Lingren for his help on debugging
 
 = Translations =
 
-The plugin comes up to 5 translations. Thanks to the following people for their contributions:
+The plugin comes up with 7 translations. Thanks to the following people for their contributions:
 
-* Belarusian (BY) - [Fatcow](http://www.fatcow.com)
+* Belarusian (BY) - Fatcow
 * Italian (IT) - [Luca Maida](www.qsin.it) and [Roberto Scano](http://robertoscano.info/)
 * Dutch (NL) - [Rene at WP webshop](http://wpwebshop.com/premium-wordpress-themes/)
 * Spanish (ES) - [David Arinez](http://www.codeeta.com/)
+* German (DE) - [DesignContext](http://www.designcontest.com/)
 * Swedish (SE) - [Jonas Floden](http://www.koalasoft.se/)
 * Romanian (RO) - [Armand Coveanu](http://caveatlector.eu/)
 
@@ -73,7 +80,7 @@ You can also install the plugin directly from the WordPress interface.
 
 Then you can go to menu **Settings / EG-Attachments** to set plugin parameters
 
-This plugin was tested on WordPress 2.9.x, and up to 3.2 Beta 2.
+This plugin was tested on WordPress 3.0.x, and up to 3.3 pre-alpha version (3.3-aortic-dissection).
 
 = Usage =
 
@@ -83,7 +90,7 @@ Four ways to include the list of attachments into a post:
 * With the automatic shortcode: go to the **Settings / EG-Attachments**, and choose to activate the auto-shortcode. The list of attachments will be added to your post automatically.
 * In a template file, add the following code: `<?php do_shortcode('[attachments *options*]'); ?>`
 
-Since 1.7.4, the plugin can display the list of attachments of the post being edited. Go to **Settings / EG-Attachments**, chapter *Administration Interface* for further details.
+Since 1.7.4, the plugin can display, in the admin interface, the list of attachments of the post being edited. Go to **Settings / EG-Attachments**, chapter *Administration Interface* for further details.
 
 The shortcode options are:
 
@@ -99,10 +106,10 @@ The shortcode options are:
 * **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
 * **icon** specify if icons will be displayed or not. Default value: 1 or TRUE. If value is 0 or FALSE, list displayed will be ul/li (html simple list) rather than dl/dt/dd (definition list).
 Two specific keywords can be used with **docid** option: **first** and **last** allow to display the first and the last attachment of list. Be careful, **first** or **last** can change according the sort option ! These keywords must be used alone. You can have syntax such as: first,10,11.
-* **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: the default value is defined in the **Settings page** in administration interface.
 * **limit**: choose the number of attachements you want to display. Default: all attachments are displayed
 * **nofollow**: add the attribut "nofollow" to the link, if value is set to 1 or TRUE. Default nofollow=0
 * **display_label**: for size=small only. Allow to display label of fields, when value is set to 1. Default display_label=0
+* **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: the default value is defined in the **Settings page** in administration interface.
 
 **Example 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
 
@@ -132,6 +139,12 @@ Where **label** is: title or file name according selected option.
 Just activate the **clicks counter** in the menu *Settings/EG-Attachments*, and then go to the menu **Tools / EG-Attachments statistics** to see how many clicks you have, for each document.
 
 == Frequently Asked Questions ==
+
+= How to display documents that are not related to the current post? =
+You have two ways:
+
+* Specify, with parameter **id**, the post to which documents are attached,
+* With the parameter **docid**, give the list of documents you want to display.
 
 = During post edition, how can I see the list of attachments that will be displayed? =
 In the menu **Settings / EG-Attachments**, in the chapter *Administration interface*, you can choose to show or hide, a metabox that displays attachments of the post being edited.
@@ -170,7 +183,35 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 
 == Changelog ==
 
-= Version 1.8.6 - Aug 31st, 2011 =
+= Version 1.9.0 - Oct 25th, 2011 =
+
+* New: choose type of link for attachments (permalink, file, or direct),
+* New: translation in German (Thanks to [DesignContext](http://www.designcontest.com/) )
+* New: attachments has the same security level than post to which they are attached:
+	* if the post is private, attachments are considered as private, and cannot be read or download if user is not logged
+	* if the post is passwordd protected, attachments can be accessed only if the users provide the right password.
+* Bug fix: HTML validation error,
+* Bug fix: Bad statistics values,
+* Bug fix: Statistics: Bad alignments for month (data for September were displayed in the column October)
+* Bug fix: Bad HTML syntax, when titletag is set to empty string,
+* Bug fix: Error when custom is selected, and no attachment are to be displayed,
+* Bug fix: date format option didn't applied,
+* Bug fix: cannot display field ID,
+* Bug fix: sort issue for ID ASC, or ID DESC,
+* Bug fix: docid=first and docid=last didn't work,
+* Bug fix: widget didn't display the right attachments,
+* Bug fix: option logged_users_only didn't work in widget,
+* Bug fix: fatal error during upgrade,
+* Change: encode url to prevent error with file name containing some specific characters
+* Change: New options page,
+	* Use boxes that can be collapsed, opened, moved, ...
+	* Group some sections and move fields to *General behavior of shortcodes*,
+* Change: reduce the size of stylesheets,
+* Change: align widgets options, with the shortcode parameters,
+* Change: updated documentation (this file), and screenshots,
+* Change: update plugin library,
+
+= Version 1.8.6 - Aug 27th, 2011 =
 
 * Bug fix: force download option doesn't work when the PHP **fopen wrappers** option is disabled 
 * New: add %DATE% keyword is available now for the custom format.

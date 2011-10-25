@@ -3,12 +3,12 @@
 Package Name: EG-Widgets
 Plugin URI:
 Description:  Abstract class to create and manage widget
-Version: 2.0.1
+Version: 2.0.3
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
-/*  Copyright 2009-2010  Emmanuel GEORJON  (email : blog@georjon.eu)
+/*  Copyright 2009-2011  Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Widget_201')) {
+if (!class_exists('EG_Widget_203')) {
 
 	/**
 	  *  EG_Widget - Class
@@ -35,7 +35,7 @@ if (!class_exists('EG_Widget_201')) {
 	  * @package EG-Widgets
 	  *
 	  */
-	class EG_Widget_201 extends WP_Widget {
+	class EG_Widget_203 extends WP_Widget {
 
 		var $textdomain;
 		var $plugin_corefile;
@@ -190,6 +190,7 @@ if (!class_exists('EG_Widget_201')) {
 
 				switch ($field_value['type']) {
 					case 'text':
+					case 'textarea':
 					case 'ftext':
 					case 'select':
 					case 'radio':
@@ -199,6 +200,7 @@ if (!class_exists('EG_Widget_201')) {
 					case 'numeric':
 						$value = $new_instance[$field_name];
 						if (is_numeric($value)) $instance[$field_name] = intval($value);
+						else $instance[$field_name] = '';
 					break;
 
 					case 'checkbox':
@@ -294,6 +296,14 @@ if (!class_exists('EG_Widget_201')) {
 						         "\n".'<input type="text" id="'.$form_field_id.'" name="'.$form_field_name.'" value="'.format_to_edit($def_value).'" size="10" />'.
 								 "\n".'</label></p>';
 					break;
+
+					case 'textarea':
+						if (is_string($def_value)) $def_value = __($def_value, $this->textdomain);
+						$form .= "\n".'<p><label for="'.$form_field_name.'">'.__($field_value['label'], $this->textdomain).': '.
+						         "\n".'<textarea cols="30" rows="3" id="'.$form_field_id.'" name="'.$form_field_name.'">'.format_to_edit($def_value).'</textarea>'.
+								 "\n".'</label></p>';
+					break;
+
 					case 'select':
 						$form .= "\n".'<p><label for="'.$form_field_name.'">'.__($field_value['label'], $this->textdomain).': '.
 						         "\n".$this->generate_select_form($form_field_id, $form_field_name, $field_value['list'], $def_value).

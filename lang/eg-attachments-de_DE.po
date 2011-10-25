@@ -5,12 +5,12 @@ msgstr ""
 "POT-Creation-Date: 2011-09-12 12:00:00+00:00\n"
 "PO-Revision-Date: 2011-10-24 08:24+0100\n"
 "Last-Translator: \n"
-"Language-Team: Fat Cow\n"
+"Language-Team: Roland Heide <roland.heide@ymail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Belarusian\n"
-"X-Poedit-Country: BELARUS\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: eg-attachments-widgets.inc.php:57
@@ -19,97 +19,97 @@ msgstr ""
 
 #: tinymce/window.php:23
 msgid "No attachment available for this post"
-msgstr "Няма ўкладанняў для гэтага паста"
+msgstr "Kein Anhang zu diesem Beitrag"
 
 #: tinymce/window.php:25
 msgid "First"
-msgstr "Першы"
+msgstr "Erste"
 
 #: tinymce/window.php:29
 msgid "Last"
-msgstr "Апошні"
+msgstr "Letzte"
 
 #: tinymce/window.php:67
 msgid "Ascending"
-msgstr "Па ўзрастанні"
+msgstr "Aufsteigend"
 
 #: tinymce/window.php:68
 msgid "Descending"
-msgstr "Па змяншэнні"
+msgstr "Absteigend"
 
 #: tinymce/window.php:71
 msgid "Large"
-msgstr "Вялікі"
+msgstr "Groß"
 
 #: tinymce/window.php:72
 msgid "Medium"
-msgstr "Сярэдні"
+msgstr "Medium"
 
 #: tinymce/window.php:73
 msgid "Small"
-msgstr "Маленькі"
+msgstr "Klein"
 
 #: tinymce/window.php:77
 msgid "File name"
-msgstr "Імя файла"
+msgstr "Dateiname"
 
 #: tinymce/window.php:78
 msgid "Document title"
-msgstr "Загаловак дакумента"
+msgstr "Document title"
 
 #: tinymce/window.php:81
 #: eg-attachments-admin.inc.php:429
 msgid "All"
-msgstr "Усё"
+msgstr "Alle"
 
 #: tinymce/window.php:86
 #: tinymce/window.php:91
 msgid "Use default parameter"
-msgstr "Выкарыстоўваць стандартнае значэнне"
+msgstr "Verwenden Sie Standard-Parameter"
 
 #: tinymce/window.php:87
 msgid "No"
-msgstr "Не"
+msgstr "Nicht"
 
 #: tinymce/window.php:88
 msgid "Yes"
-msgstr "Так"
+msgstr "Ja"
 
 #: tinymce/window.php:92
 msgid "All users"
-msgstr "Усе карыстачы"
+msgstr "Alle Benutzer"
 
 #: tinymce/window.php:93
 #, fuzzy
 msgid "Only logged users"
-msgstr "Толькі якія ўвайшлі карыстачы"
+msgstr "Nur angemeldete Benutzer"
 
 #: tinymce/window.php:122
 #: eg-attachments-admin.inc.php
 msgid "Order by: "
-msgstr "Сартаваць па:"
+msgstr "Sortieren nach:"
 
 #: tinymce/window.php:123
 #: eg-attachments-admin.inc.php
 msgid "Sort Order: "
-msgstr "Парадак сартавання:"
+msgstr "Sortiert nach:"
 
 #: tinymce/window.php:126
 msgid "List size: "
-msgstr "Памер спісу"
+msgstr "Liste size:"
 
 #: tinymce/window.php:130
 msgid "Document label: "
-msgstr "Надпіс да дакумента:"
+msgstr "Document-Label:"
 
 #: tinymce/window.php:134
 #: eg-attachments-admin.inc.php:
 msgid "Document type: "
-msgstr "Тып дакумента"
+msgstr "Document type:"
 
 #: tinymce/window.php:138
 msgid "Fields: "
-msgstr "Палі: "
+msgstr "Felder:"
 
 #: tinymce/window.php:140
 msgid "Display default fields?"
@@ -117,24 +117,24 @@ msgstr ""
 
 #: tinymce/window.php:150
 msgid "Document list: "
-msgstr "Спіс дакументаў:"
+msgstr "Document-Liste:"
 
 #: tinymce/window.php:156
 msgid "Title: "
-msgstr "Загаловак:"
+msgstr "Titel:"
 
 #: tinymce/window.php:160
 #: eg-attachments-admin.inc.php:
 msgid "HTML Tag for title: "
-msgstr "HTML-тэг для загалоўка: "
+msgstr "HTML Tag für den Titel:"
 
 #: tinymce/window.php:164
 msgid "Force \"saveas\": "
-msgstr "Прымусова \"saveas\": "
+msgstr "Kraft \"saveas \":"
 
 #: tinymce/window.php:168
 msgid "Attachments access: "
-msgstr "Доступ да ўкладанняў:"
+msgstr "Attachments zugreifen:"
 
 #: tinymce/window.php:174
 #: eg-attachments-admin.inc.php:253
@@ -152,11 +152,11 @@ msgstr ""
 
 #: tinymce/window.php:178
 msgid "Cancel"
-msgstr "Адмена"
+msgstr "Stornieren"
 
 #: tinymce/window.php:182
 msgid "Insert"
-msgstr "Уставіць"
+msgstr "Einfügen"
 
 #: eg-attachments-public.inc.php:164
 msgid "unknown"
@@ -164,12 +164,12 @@ msgstr ""
 
 #: eg-attachments-public.inc.php:360
 msgid "Attachments restricted to register users only"
-msgstr "Укладанні абмежаваны Рэгістрацыяй карыстачоў"
+msgstr "Attachments beschränkt auf Benutzer nur registrieren"
 
 #: eg-attachments-public.inc.php:361
 #, fuzzy
 msgid "Document locked"
-msgstr "Загаловак дакумента"
+msgstr "Document title"
 
 #: eg-attachments-public.inc.php:
 msgid "TB"
@@ -205,19 +205,19 @@ msgstr ""
 
 #: lib/eg-plugin.inc.php:591
 msgid " cannot run with "
-msgstr " не запушчаны з"
+msgstr "kann nicht mit laufen"
 
 #: lib/eg-plugin.inc.php:594
 msgid " requires "
-msgstr " патрабуецца"
+msgstr "erfordert"
 
 #: lib/eg-plugin.inc.php:595
 msgid " and later."
-msgstr "і пазней."
+msgstr "und später."
 
 #: lib/eg-plugin.inc.php:596
 msgid " to "
-msgstr " на  "
+msgstr "zu"
 
 #: lib/eg-plugin.inc.php:649
 msgid "The plugin <strong>%1s</strong> requires the following PHP extensions: %2s"
@@ -229,15 +229,15 @@ msgstr ""
 
 #: eg-attachments-admin.inc.php:86
 msgid "Save changes"
-msgstr "Захаваць змены"
+msgstr "Speichern Sie die Änderungen"
 
 #: eg-attachments-admin.inc.php:87
 msgid "Cancel changes"
-msgstr "Адмена змен"
+msgstr "Änderungen abbrechen"
 
 #: eg-attachments-admin.inc.php:88
 msgid "Reset to defaults"
-msgstr "Скінуць"
+msgstr "Auf Standardwerte zurücksetzen"
 
 #: lib/eg-tools.inc.php:629
 msgid "Error "
@@ -245,31 +245,31 @@ msgstr ""
 
 #: eg-attachments-admin.inc.php:
 msgid "EG-Attachments Options"
-msgstr "Налады EG-Attachments "
+msgstr "EG-Anhänge Optionen"
 
 #: eg-attachments-admin.inc.php:
 msgid "EG-Attachments"
-msgstr "EG-Attachments"
+msgstr "EG-Anhänge "
 
 #: eg-attachments-admin.inc.php:
 msgid "Auto shortcode"
-msgstr "Аўта-shortcode"
+msgstr "Auto shortcode"
 
 #: eg-attachments-admin.inc.php:
 msgid "Activation"
-msgstr "Актывацыя"
+msgstr "Aktivierung"
 
 #: eg-attachments-admin.inc.php:
 msgid "With this option, you can automaticaly add the list of attachments in your blog, without using shortcode"
-msgstr "З гэтай опцыяй вы можаце аўтаматычна дадаць спіс укладанняў у свой блог, без выкарыстання Shortcode"
+msgstr "Mit dieser Option können Sie die automatische Hinzufügen der Liste der Anlagen in Ihrem Blog, ohne Shortcode"
 
 #: eg-attachments-admin.inc.php:
 msgid "Not activated"
-msgstr "Не актывавана"
+msgstr "Nicht aktiviert"
 
 #: eg-attachments-admin.inc.php:
 msgid "At the end"
-msgstr "У канцы"
+msgstr "Am Ende"
 
 #: eg-attachments-admin.inc.php:
 msgid "Before the excerpt"
@@ -289,27 +289,27 @@ msgstr ""
 
 #: eg-attachments-admin.inc.php:
 msgid "Where"
-msgstr "Дзе"
+msgstr "Wo"
 
 #: eg-attachments-admin.inc.php:
 msgid "Lists of attachments can be displayed everywhere posts are displayed, or only when a single post or a single page is displayed"
-msgstr "Спісы ўкладанняў могуць быць адлюстраваны ва ўсім свеце паведамленняў, ці толькі пры адлюстраванні аднаго паста ці адной старонкі"
+msgstr "Die Listen der Anhänge können angezeigt überall Beiträge angezeigt werden, oder nur, wenn ein einzelner Beitrag oder eine einzelne Seite angezeigt wird"
 
 #: eg-attachments-admin.inc.php:
 msgid "in all pages"
-msgstr "на ўсіх старонках"
+msgstr "auf allen Seiten"
 
 #: eg-attachments-admin.inc.php:73
 msgid "Only for posts and pages"
-msgstr "Толькі для пастоў і старонак"
+msgstr "Nur für Beiträge und Seiten"
 
 #: eg-attachments-admin.inc.php:75
 msgid "Auto Shortcode Options"
-msgstr "Налады Auto Shortcode "
+msgstr "Auto Shortcode Optionen"
 
 #: eg-attachments-admin.inc.php:76
 msgid "Title of the list: "
-msgstr "Назва для спісу:"
+msgstr "Titel der Liste:"
 
 #: eg-attachments-admin.inc.php:
 msgid "List format: "
@@ -319,7 +319,7 @@ msgstr ""
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "Documents"
-msgstr "Спіс дакументаў:"
+msgstr "Document-Liste:"
 
 #: tinymce/window.php:83
 #: eg-attachments-admin.inc.php:
@@ -328,20 +328,20 @@ msgstr ""
 
 #: eg-attachments-config.inc.php:
 msgid "Title"
-msgstr "Загаловак:"
+msgstr "Titel"
 
 #: eg-attachments-config.inc.php:
 #, fuzzy
 msgid "Document label"
-msgstr "Надпіс да дакумента:"
+msgstr "Document-Label:"
 
 #: eg-attachments-admin.inc.php:
 msgid "Caption"
-msgstr "Загаловак"
+msgstr "Beschriftung"
 
 #: eg-attachments-admin.inc.php:
 msgid "Description"
-msgstr "Апісанне"
+msgstr "Beschreibung"
 
 #: eg-attachments-config.inc.php:
 msgid "Type"
@@ -350,47 +350,47 @@ msgstr ""
 #: eg-attachments-config.inc.php:
 #, fuzzy
 msgid "Size"
-msgstr "Памер:"
+msgstr "Größe:"
 
 #: eg-attachments-config.inc.php:
 #, fuzzy
 msgid "Small size"
-msgstr "Маленькі"
+msgstr "Klein"
 
 #: eg-attachments-config.inc.php:
 msgid "Date"
-msgstr "Дата"
+msgstr "Datum"
 
 #: eg-attachments-admin.inc.php:
 msgid "Display icons: "
-msgstr "Адлюстроўваць значкі:"
+msgstr "Symbole auf dem Display:"
 
 #: eg-attachments-admin.inc.php:
 msgid "Check the box to display icons"
-msgstr "Адзначце сцяжком для адлюстравання абразкоў"
+msgstr "Aktivieren Sie das Kontrollkästchen Symbole angezeigt"
 
 #: eg-attachments-admin.inc.php:
 msgid "Default options? "
-msgstr "Стандартнае значэнне?"
+msgstr "Standard-Optionen?"
 
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?"
-msgstr "Вы жадаеце, каб налады Аўта Shortcode стаць параметраў па змаўчанні для  TinyMCE EG-Series рэдактара?"
+msgstr "Wollen Sie, dass auto Shortcode Optionen die Standard-Optionen für den TinyMCE EG-Series Editor werden?"
 
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "Documents label: "
-msgstr "Надпіс да дакумента:"
+msgstr "Document-Label:"
 
 #: eg-attachments-admin.inc.php:
 msgid "Choose the field that will be displayed as title of documents"
-msgstr "Загаловак"
+msgstr "Wählen Sie das Feld, das als Titel der Dokumente angezeigt werden"
 
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "The default list is: "
-msgstr "Назва для спісу:"
+msgstr "Titel der Liste:"
 
 #: eg-attachments-admin.inc.php:
 msgid "Do you want to display default fields?"
@@ -403,27 +403,27 @@ msgstr ""
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "Small list:"
-msgstr "Маленькі"
+msgstr "Klein"
 
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "Medium list:"
-msgstr "Сярэдні"
+msgstr "Medium"
 
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "Large list:"
-msgstr "Вялікі"
+msgstr "Groß"
 
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "Position"
-msgstr "Апісанне"
+msgstr "Beschreibung"
 
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "Field"
-msgstr "Палі: "
+msgstr "Felder:"
 
 #: eg-attachments-admin.inc.php:
 msgid "Custom"
@@ -467,7 +467,7 @@ msgstr ""
 
 #: eg-attachments-admin.inc.php:
 msgid "General behavior of shortcodes"
-msgstr "Агульныя паводзіны кароткіх кодаў"
+msgstr "Allgemeines Verhalten der Kurzwahlnummern"
 
 #: eg-attachments-admin.inc.php:
 msgid "&laquo;Nofollow&raquo; attribute"
@@ -479,32 +479,32 @@ msgstr ""
 
 #: eg-attachments-admin.inc.php:
 msgid "\"Save As\" activation"
-msgstr "\"Захаваць як\" актывацыя"
+msgstr "\"Save As\" Aktivierung"
 
 #: eg-attachments-admin.inc.php:
 msgid "In normal mode, when you click on the attachments' links, according their mime type, documents are displayed, or a dialog box appears to choose 'run with' or 'Save As'. By activating the following option, the dialog box will appear for all cases."
-msgstr "У звычайным рэжыме, пры націску на спасылку 'укладанні', у адпаведнасці з іх MIME-тыпам, адлюстроўваюцца дакументы, ці дыялогавае акно, абярыце параметр 'працаваць з' ці 'Захаваць як'. Актываваўшы наступныя опцыі, з'явіцца дыялогавае акно для ўсіх выпадкаў."
+msgstr "Im normalen Modus, wenn Sie auf die Anhänge klicken Sie auf 'Links nach ihren MIME-Typ, werden Dokumente angezeigt oder erscheint ein Dialogfenster zur Auswahl \"mit laufen\" oder \"Save As\". Durch die Aktivierung der folgenden Option, wird das Dialogfenster für alle Fälle angezeigt werden."
 
 #: eg-attachments-admin.inc.php:
 msgid "Force \"Save As\" when users click on the attachments"
-msgstr "Прымусова \"Захаваць як\" пры націску на ўкладанне"
+msgstr "Speichern erzwingen\"Save As\", wie wenn der Benutzer auf die Anhänge klicken"
 
 #: eg-attachments-admin.inc.php:
 msgid "Attachments access"
-msgstr "Доступ да ўкладанняў"
+msgstr "Attachments zugreifen"
 
 #: eg-attachments-admin.inc.php:
 msgid "Restrict access to the attachments to logged users only!"
-msgstr "Абмежаваць доступ да ўкладанняў толькі зарэгістраваным карыстачам!"
+msgstr "Beschränken Sie den Zugriff auf die Anlagen angemeldet Nutzer!"
 
 #: eg-attachments-admin.inc.php:
 msgid "Url to login or register page:"
-msgstr "Url для старонкі ўваходу ў сістэму ці рэгістрацыі:"
+msgstr "URL anmelden oder registrieren Seite:"
 
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "This option sets the default behavior of all shortcodes and auto-shortcode. You can change the behavior of specific shortcodes by adding <code>logged_users</code> parameter."
-msgstr "Гэта опцыя ўсталёўваецца па змаўчанні ўсе кароткія коды і аўтаматычнай Shortcode. Вы можаце змяніць паводзіны пэўнай кароткія коды, дадаючы \"logged_users\" параметр."
+msgstr "Diese Option setzt den Standard-Verhalten aller Kurzwahlnummern und Auto-Shortcode. Sie können das Verhalten von bestimmten Kurzwahlnummern, indem \"logged_users\" Parameter zu ändern."
 
 #: eg-attachments-admin.inc.php:
 msgid "Click counter"
@@ -552,35 +552,35 @@ msgstr ""
 
 #: eg-attachments-admin.inc.php:89
 msgid "Uninstall options"
-msgstr "налады выдалення"
+msgstr "Uninstall-Optionen"
 
 #: eg-attachments-admin.inc.php:
 msgid "Be careful: these actions cannot be cancelled. All plugin's options will be deleted while plugin uninstallation."
-msgstr "Гэта дзеянне нельга адмяніць!"
+msgstr "Seien Sie vorsichtig: Diese Aktionen können nicht storniert werden. Alle Plugins Optionen werden während Plugin Deinstallation gelöscht werden."
 
 #: eg-attachments-admin.inc.php:
 msgid "Delete options during uninstallation."
-msgstr "Выдаліць параметры падчас выдалення."
+msgstr "Löschen Optionen, während der Deinstallation."
 
 #: eg-attachments-admin.inc.php:181
 #, fuzzy
 msgid "No document attached to this post/page"
-msgstr "Няма ўкладанняў для гэтага паста"
+msgstr "Kein Anhang zu diesem Beitrag"
 
 #: eg-attachments-admin.inc.php:184
 #, fuzzy
 msgid "Attachments available for this post/page"
-msgstr "Няма ўкладанняў для гэтага паста"
+msgstr "Kein Anhang zu diesem Beitrag"
 
 #: eg-attachments-admin.inc.php:380
 #, fuzzy
 msgid "EG-Attachments Statistics"
-msgstr "Налады EG-Attachments "
+msgstr "EG-Anhänge Optionen"
 
 #: eg-attachments-admin.inc.php:
 #, fuzzy
 msgid "EG-Attachments Stats"
-msgstr "EG-Attachments"
+msgstr "EG-Anhänge "
 
 #: eg-attachments-admin.inc.php:405
 #: eg-attachments-admin.inc.php:407
@@ -667,7 +667,7 @@ msgstr ""
 #: eg-attachments-admin.inc.php:542
 #, fuzzy
 msgid "Nov"
-msgstr "Не"
+msgstr "Nicht"
 
 #: eg-attachments-admin.inc.php:543
 msgid "Dec"
@@ -681,12 +681,12 @@ msgstr ""
 #: eg-attachments-admin.inc.php:576
 #, fuzzy
 msgid "Total"
-msgstr "Загаловак:"
+msgstr "Titel"
 
 #: eg-attachments-admin.inc.php:689
 #, fuzzy
 msgid "Attachments"
-msgstr "EG-Attachments"
+msgstr "EG-Anhänge "
 
 #: eg-attachments-admin.inc.php:690
 msgid "All<br />time"
@@ -735,7 +735,7 @@ msgstr ""
 #: eg-attach_popup.php:
 #, fuzzy
 msgid "Display label: "
-msgstr "Адлюстроўваць значкі:"
+msgstr "Symbole auf dem Display:"
 
 #: eg-attach_popup.php:
 msgid "(for size=small only)"
@@ -772,7 +772,7 @@ msgstr ""
 #: eg-attachments-admin.php:
 #, fuzzy
 msgid "Last changes"
-msgstr "Захаваць змены"
+msgstr "Speichern Sie die Änderungen"
 
 #: eg-attachments-admin.php:
 msgid "Links"
@@ -780,7 +780,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Donate"
-msgstr "Дата"
+msgstr "Datum"
 
 msgid "Custom fields"
 msgstr ""
@@ -812,12 +812,12 @@ msgstr ""
 #: eg-attachments-widget.inc.php
 #, fuzzy
 msgid "Order by"
-msgstr "Сартаваць па:"
+msgstr "Sortieren nach:"
 
 #: eg-attachments-widget.inc.php
 #, fuzzy
 msgid "Order"
-msgstr "Сартаваць па:"
+msgstr "Sortieren nach:"
 
 #: eg-attachments-widget.inc.php:
 msgid "Number of documents to display"
@@ -825,7 +825,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Display icon"
-msgstr "Адлюстроўваць значкі:"
+msgstr "Symbole auf dem Display:"
 
 msgid "Activate automatic shortcode on the following cases"
 msgstr ""
@@ -844,11 +844,11 @@ msgstr ""
 
 #, fuzzy
 msgid "General shortcode behavior"
-msgstr "Агульныя паводзіны кароткіх кодаў"
+msgstr "Allgemeines Verhalten der Kurzwahlnummern"
 
 #, fuzzy
 msgid "Automatic Shortcode"
-msgstr "Аўта-shortcode"
+msgstr "Auto shortcode"
 
 msgid "Administration"
 msgstr ""
@@ -858,19 +858,18 @@ msgstr ""
 
 #, fuzzy
 msgid "EG-Attachments settings"
-msgstr "Налады EG-Attachments "
+msgstr "EG-Anhänge Optionen"
 
 #~ msgid "Caption: "
-#~ msgstr "Загаловак:"
+#~ msgstr "Bildunterschrift:"
 #~ msgid "Description: "
-#~ msgstr "Апісанне:"
+#~ msgstr "Beschreibung:"
 #~ msgid "File: "
-#~ msgstr "Файл:"
+#~ msgstr "Datei:"
 #~ msgid "Which fields do you want to display (large and medium size only)?"
-#~ msgstr ""
-#~ "Якія палі вы жадаеце, каб адлюстроўваліся (толькі вялікія і сярэднія)?"
+#~ msgstr "Welche Felder angezeigt werden sollen (große und mittlere only)?"
 #~ msgid "ID"
 #~ msgstr "ID"
 #~ msgid "Mime type"
-#~ msgstr "Тып"
+#~ msgstr "Mime-Typ"
 

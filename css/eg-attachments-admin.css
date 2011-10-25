@@ -40,7 +40,7 @@ table.eg-attach-list {
 	margin: 0 auto;
 }
 
-table.eg-attach-list td, 
+table.eg-attach-list td,
 table.eg-attach-list th {
 	border: 1px solid #CCC;
 	padding: 2px 10px;
@@ -49,3 +49,28 @@ table.eg-attach-list th {
 table.eg-attach-list th {
 	background-color: #EEE;
 }
+
+table.eg-attach-help th {
+	text-align: center;
+	background-color: #EEE;
+}
+table.eg-attach-help th.row {
+	text-align: left;
+}
+table.eg-attach-help th, table.eg-attach-help td {
+    padding: 4px 6px;
+	border: 1px solid #DDDDDD;
+	/* border-collapse: collapse;*/
+}
+
+table.eg-attach-help {
+    text-align: center;
+    vertical-align: text-top;
+	border-collapse: collapse;	
+}
+
+table.eg-forms td {
+	padding: 0;
+	border:0;
+}
+

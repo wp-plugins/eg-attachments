@@ -1,16 +1,13 @@
-# Copyright (C) 2010 EG-Attachments
+# Copyright (C) 2011 EG-Attachments
 # This file is distributed under the same license as the EG-Attachments package.
 msgid ""
 msgstr ""
-"Project-Id-Version: EG-Attachments 1.8.1\n"
+"Project-Id-Version: EG-Attachments 1.8.8\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/eg-attachments\n"
-"POT-Creation-Date: 2011-07-17 07:06:31+00:00\n"
+"POT-Creation-Date: 2011-09-12 12:00:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
 
 #: eg-attachments-widgets.inc.php:57
 msgid "Cannot display attachments. Current post or page is protected."
@@ -46,10 +43,6 @@ msgstr ""
 
 #: tinymce/window.php:73
 msgid "Small"
-msgstr ""
-
-#: tinymce/window.php:74 eg-attachments-admin.inc.php
-msgid "Custom"
 msgstr ""
 
 #: tinymce/window.php:77
@@ -323,10 +316,6 @@ msgid "Title"
 msgstr ""
 
 #: eg-attachments-config.inc.php:
-msgid "File Name"
-msgstr ""
-
-#: eg-attachments-config.inc.php:
 msgid "Document label"
 msgstr ""
 
@@ -423,19 +412,31 @@ msgid "You can define your own display format, using <strong>custom</strong>. Pa
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
-msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type of the documents</td></tr></table>"
+msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type of the documents</td></tr><tr><td><strong>%DATE%</strong></td><td>Date of last modification</td></tr></table>"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
 msgid "Custom format, before list: "
 msgstr ""
 
+#: eg-attachments-widget.inc.php:
+msgid "Custom format, before list"
+msgstr ""
+
 #: eg-attachments-admin.inc.php:
 msgid "Custom list format: "
 msgstr ""
 
+#: eg-attachments-widget.inc.php:
+msgid "Custom list format"
+msgstr ""
+
 #: eg-attachments-admin.inc.php:
 msgid "Custom format, after list: "
+msgstr ""
+
+#: eg-attachments-widget.inc.php:
+msgid "Custom format, after list"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
@@ -483,7 +484,7 @@ msgid "Click counter"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
-msgid "Activate"
+msgid "Activate statistics"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
@@ -495,7 +496,11 @@ msgid "Record all clicks occuring in the listed attachements."
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
-msgid "Exclude IP"
+msgid "Statistics, IP to exclude"
+msgstr ""
+
+#: eg-attachments-admin.inc.php:
+msgid "List of IP address you want to exclude"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
@@ -704,4 +709,128 @@ msgstr ""
 
 # eg-attachments-admin.inc.php:
 msgid "Default value: "
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "This plugin required and requires many hours of work. If you use the plugin, and like it, feel free to show your appreciation to the author."
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "PayPal - The safer, easier way to pay online!"
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "Plugin's homepage"
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "Support forum"
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "Last changes"
+msgstr ""
+
+#: eg-attachments-admin.php:
+msgid "Links"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Donate"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Custom fields"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "or display the following fields"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Links to attachments"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "<strong>Permalink</strong>. <br /><em>The URL of the attachment is using defined permalink structure. For example: <code>http://blog url/post url/attachment slug/</code>, or <code>http://blog url/?p=xx</code>.<br/>The attachment will be displayed inside your blog, as a post.</em>"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "<strong>File</strong>. <br /><em>The URL is the document's address. For example: <code>http://blog url/wp-content/upload/2011/09/file name.file extension/</code>.<br />When you click on the attachment, it is displayed directly, as a document, and not as a page of blog. WordPress mechanisms are not used</em>"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "<strong>Direct</strong>. <br /><em>It's the default behavior of the plugin. The URL is pointing to the file, but in this case, the link is encoded. When you click on the attachment, it is displayed as a document, and not as a page of blog. WordPress mechanisms are used</em>"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "<br />All features cannot be implemented with all of these modes.<br /><table class=\"eg-attach-help\"><tr><th>Link type</th><th>Statistics</th><th>Force \"Save as\"</th><th>Security</th></tr><tr><th class=\"row\">Permalink</th><td>x</td><td>x</td><td>x</td></tr><tr><th class=\"row\">File</th><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><th class=\"row\">Direct</th><td>x</td><td>x</td><td>x</td></tr></table>"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Date format"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "(tag like h2, or h3, ...)"
+msgstr ""
+
+#: eg-attachments-widget.inc.php
+msgid "Order by"
+msgstr ""
+
+#: eg-attachments-widget.inc.php
+msgid "Order"
+msgstr ""
+
+#: eg-attachments-widget.inc.php:
+msgid "Number of documents to display"
+msgstr ""
+
+#:eg-attachments-widget.inc.php:
+msgid "Display icon"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Activate automatic shortcode on the following cases"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Homepage,"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Posts,"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Pages,"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Lists of posts."
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "General shortcode behavior"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Automatic Shortcode"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "Administration"
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "All of the following parameters are applied on manual AND automatic shortcode."
+msgstr ""
+
+#:eg-attachments-admin.php:
+msgid "EG-Attachments settings"
 msgstr ""
