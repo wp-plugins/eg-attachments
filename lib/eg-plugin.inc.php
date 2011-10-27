@@ -3,7 +3,7 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.2.2
+Version: 1.2.3
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -34,7 +34,7 @@ if (!function_exists('eg_detect_page')) {
 	}
 }
 
-if (!class_exists('EG_Plugin_122')) {
+if (!class_exists('EG_Plugin_123')) {
 
 	/**
 	  * Class EG_Plugin
@@ -42,7 +42,7 @@ if (!class_exists('EG_Plugin_122')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_122 {
+	Class EG_Plugin_123 {
 
 		var $name;
 		var $version;
@@ -71,7 +71,7 @@ if (!class_exists('EG_Plugin_122')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_122($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_123($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options);
@@ -607,9 +607,9 @@ if (!class_exists('EG_Plugin_122')) {
 		} // End of add_page
 
 		/**
-		  * add_plugin_pages
+		  * admin_menu
 		  *
-		  * Add an option page menu
+		  * Run the amdin menu hook
 		  *
 		  * @package EG-Plugins
 		  * @param 		none
@@ -676,9 +676,10 @@ if (!class_exists('EG_Plugin_122')) {
 					if ($page['load_scripts'] !== FALSE) {
 						add_action('admin_print_scripts-'.$hook, array(&$this, $page['load_scripts']));
 					}
+		
 					// Add the link into the plugin page
 					if ($this->options_page_id == $id) {
-						add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_corefile),
+						add_filter( 'plugin_action_links_' . plugin_basename($this->corefile),
 									array( &$this, 'filter_plugin_actions') );
 					}
 

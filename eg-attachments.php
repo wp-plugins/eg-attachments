@@ -1,14 +1,14 @@
 <?php
 /*
-	Plugin Name: EG-Attachments
-	Plugin URI: http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
-	Description: Shortcode displaying lists of attachments for a post
-	Author: Emmanuel GEORJON
-	Version: 1.9.0
-	Author URI: http://www.emmanuelgeorjon.com/
-	Text Domain: eg-attachments
-	Domain Path: /lang
- */
+Plugin Name: EG-Attachments
+Plugin URI: http://www.emmanuelgeorjon.com/en/eg-attachments-plugin-1233
+Description: Shortcode displaying lists of attachments for a post
+Author: Emmanuel GEORJON
+Version: 1.9.1
+Author URI: http://www.emmanuelgeorjon.com/
+Text Domain: eg-attachments
+Domain Path: /lang
+*/
 
 /*
     Copyright 2009-2011 Emmanuel GEORJON (email : blog@emmanuelgeorjon.com)
@@ -29,7 +29,7 @@
 */
 
 define('EGA_COREFILE', 		__FILE__);
-define('EGA_VERSION',  		'1.9.0' );
+define('EGA_VERSION',  		'1.9.1' );
 define('EGA_OPTIONS_ENTRY',	'EG-Attachments-Options');
 define('EGA_TEXTDOMAIN',    'eg-attachments');
 define('EGA_SHORTCODE',     'attachments');
@@ -38,7 +38,7 @@ define('EGA_DEBUG_MODE', FALSE);
 
 require_once('inc/eg-attachments-config.inc.php');
 
-if (! class_exists('EG_Plugin_122')) {
+if (! class_exists('EG_Plugin_123')) {
 	require('lib/eg-plugin.inc.php');
 }
 

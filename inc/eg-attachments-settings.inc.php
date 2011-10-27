@@ -269,6 +269,7 @@ $auto_shortcode_section_id = $this->options_form->add_section( array( 'tab' => '
 	);
 
 	$field_values = $this->options['shortcode_auto_fields'];
+	if (! is_array($field_values)) $field_values = explode(',', $field_values);
 	for ($i=sizeof($field_values)+1; $i<=sizeof($EG_ATTACH_FIELDS_TITLE); $i++) {
 		$field_values[$i]= '0';
 	}

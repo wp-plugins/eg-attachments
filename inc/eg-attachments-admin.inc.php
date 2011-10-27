@@ -17,7 +17,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_122 {
+	Class EG_Attachments_Admin extends EG_Plugin_123 {
 
 //		var $cache;
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
@@ -117,7 +117,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			$this->add_page( array(
 					'id' 				=> 'ega_options',
-					'display_callback'	=> 'options_page')
+					'display_callback'	=> 'options_page',
+					'option_link'		=> TRUE)
 			);
 
 			if ($this->options['stats_enable']) {
