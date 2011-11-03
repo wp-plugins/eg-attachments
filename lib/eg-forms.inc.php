@@ -3,7 +3,7 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class for WordPress plugins
-Version: 2.1.0
+Version: 2.1.1
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,15 +26,15 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Form_210')) {
+if (!class_exists('EG_Form_211')) {
 
 	/**
-	  * Class EG_Form_210
+	  * Class EG_Form_211
 	  *
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Form_210 {
+	Class EG_Form_211 {
 
 		var $options_entry;
 		var $options_group;
@@ -48,13 +48,13 @@ if (!class_exists('EG_Form_210')) {
 		var $sections = array();
 		var $fields	  = array();
 
-		var $debug_msg, $debug_file;
+		var $debug_mode, $debug_file;
 
-		function EG_Form_210($page_id, $title, $options_entry, $textdomain=FALSE, $header='', $footer='', $sidebar_callback=FALSE) {
+		function EG_Form_211($page_id, $title, $options_entry, $textdomain=FALSE, $header='', $footer='', $sidebar_callback=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($page_id, $title, $options_entry, $textdomain, $header, $footer, $sidebar_callback);
-		} // End of EG_Form_210
+		} // End of EG_Form_211
 
 		/**
 		  * Class contructor
@@ -126,7 +126,7 @@ if (!class_exists('EG_Form_210')) {
 		} // End of add_field
 
 		function set_debug_mode($debug_mode = FALSE, $debug_file='') {
-			$this->debug_msg = $debug_mode;
+			$this->debug_mode = $debug_mode;
 			if ($debug_file != '')
 				$this->debug_file = $debug_file;
 		}
@@ -415,22 +415,40 @@ if (!class_exists('EG_Form_210')) {
 		/**
 		 * display_debug_info
 		 *
-		 * @package EG-Plugin
+		 * @package EG-Form
 		 *
 		 * @param	string	$msg	message to display
+		 * @param	mixed	$mixed	variable to display
 		 * @return 	none
 		 */
-		function display_debug_info($msg) {
+		 function display_debug_info($mixed, $msg='') {
 
-			if ($this->debug_msg) {
+			if ($this->debug_mode) {
 				$debug_info = debug_backtrace(FALSE);
-				$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - '.$debug_info[2]['function'].' - '.$msg;
+				$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - '.$debug_info[2]['function'].($msg!=''?' - '.$msg:'').': ';
+				if (! isset($mixed)) $output .= 'Not set';
+				else {
+					switch (gettype($mixed)) {
+						case 'boolean':
+							$output .= ($mixed === TRUE ? 'TRUE' : 'FALSE');
+						break;
 
-				if ($this->debug_file != '')
-					file_put_contents($this->debug_file, $output."\n", FILE_APPEND);
-				else
-					echo $output.'<br />';
-			}
+						case 'array':
+						case 'object':
+						case 'resource':
+							$output .= var_export($mixed, TRUE);
+						break;
+
+						case 'NULL':
+							$output .= 'NULL';
+						break;
+
+						default: $output .= $mixed;
+					}
+				}
+				if ($this->debug_file == '') echo $output.'<br />';
+				else file_put_contents($this->debug_file, $output."\n", FILE_APPEND);
+			} // End of debug_mode
 		} // End of display_debug_info
 
 	} // End of class

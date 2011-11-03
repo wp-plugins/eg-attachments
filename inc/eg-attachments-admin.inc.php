@@ -17,7 +17,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_123 {
+	Class EG_Attachments_Admin extends EG_Plugin_124 {
 
 //		var $cache;
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
@@ -134,7 +134,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			parent::admin_menu();
 
-			if (class_exists('EG_Form_210')) {
+			if (class_exists('EG_Form_211')) {
 				require($this->path.'inc/eg-attachments-settings.inc.php');
 			}
 

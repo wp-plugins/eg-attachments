@@ -2,13 +2,16 @@
 
 global $EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY, $EG_ATTACH_DEFAULT_FIELDS;
 
-$this->options_form = new EG_Form_210('ega_options', 'EG-Attachements Settings', $this->options_entry, $this->textdomain, '', '',
+$this->options_form = new EG_Form_211('ega_options', 'EG-Attachements Settings', $this->options_entry, $this->textdomain, '', '',
 										array(&$this, 'display_sidebar'));
 
+//$this->options_form->set_debug_mode(TRUE, dirname(EGA_COREFILE).'/debug.log');
+
+/*
 $this->options_form->add_tab('behavior', 'General shortcode behavior', 'All of the following parameters are applied on manual AND automatic shortcode.');
 $this->options_form->add_tab('auto_shortcode',  'Automatic Shortcode');
 $this->options_form->add_tab('admin', 'Administration');
-	
+*/
 $shortcode_behavior_section_id = $this->options_form->add_section( array( 'tab' => 'behavior', 'title' => 'General behavior of shortcodes'));
 
 

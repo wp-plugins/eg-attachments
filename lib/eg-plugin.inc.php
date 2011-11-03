@@ -3,7 +3,7 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.2.3
+Version: 1.2.4
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -34,7 +34,7 @@ if (!function_exists('eg_detect_page')) {
 	}
 }
 
-if (!class_exists('EG_Plugin_123')) {
+if (!class_exists('EG_Plugin_124')) {
 
 	/**
 	  * Class EG_Plugin
@@ -42,7 +42,7 @@ if (!class_exists('EG_Plugin_123')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_123 {
+	Class EG_Plugin_124 {
 
 		var $name;
 		var $version;
@@ -71,11 +71,11 @@ if (!class_exists('EG_Plugin_123')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_123($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_124($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options);
-		} // End of EG_Plugin_121
+		} // End of EG_Plugin_124
 
 		/**
 		  * Class contructor
@@ -374,33 +374,34 @@ if (!class_exists('EG_Plugin_123')) {
 		 * @param	mixed	$mixed	variable to display
 		 * @return 	none
 		 */
-		function display_debug_info($mixed, $msg='') {
+		 function display_debug_info($mixed, $msg='') {
 
-			$debug_info = debug_backtrace(FALSE);
-			$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - '.$debug_info[2]['function'].($msg!=''?' - '.$msg:'').': ';
-			if (! isset($mixed)) $output .= 'Not set';
-			else {
-				switch (gettype($mixed)) {
-					case 'boolean':
-						$output .= ($mixed === TRUE ? 'TRUE' : 'FALSE');
-					break;
+			if ($this->debug_mode) {
+				$debug_info = debug_backtrace(FALSE);
+				$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - '.$debug_info[2]['function'].($msg!=''?' - '.$msg:'').': ';
+				if (! isset($mixed)) $output .= 'Not set';
+				else {
+					switch (gettype($mixed)) {
+						case 'boolean':
+							$output .= ($mixed === TRUE ? 'TRUE' : 'FALSE');
+						break;
 
-					case 'array':
-					case 'object':
-					case 'resource':
-						$output .= var_export($mixed, TRUE);
-					break;
+						case 'array':
+						case 'object':
+						case 'resource':
+							$output .= var_export($mixed, TRUE);
+						break;
 
-					case 'NULL':
-						$output .= 'NULL';
-					break;
+						case 'NULL':
+							$output .= 'NULL';
+						break;
 
-					default: $output .= $mixed;
+						default: $output .= $mixed;
+					}
 				}
-			}
-			if ($this->debug_file == '') echo $output.'<br />';
-			else file_put_contents(dirname(dirname(__FILE__)).'/debug.log', $output."\n", FILE_APPEND);
-
+				if ($this->debug_file == '') echo $output.'<br />';
+				else file_put_contents($this->debug_file, $output."\n", FILE_APPEND);
+			} // End of debug_mode
 		} // End of display_debug_info
 
 		/**
