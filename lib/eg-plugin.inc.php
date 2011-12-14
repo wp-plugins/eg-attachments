@@ -3,7 +3,7 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.2.4
+Version: 1.2.5
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -34,7 +34,7 @@ if (!function_exists('eg_detect_page')) {
 	}
 }
 
-if (!class_exists('EG_Plugin_124')) {
+if (!class_exists('EG_Plugin_125')) {
 
 	/**
 	  * Class EG_Plugin
@@ -42,7 +42,7 @@ if (!class_exists('EG_Plugin_124')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_124 {
+	Class EG_Plugin_125 {
 
 		var $name;
 		var $version;
@@ -71,11 +71,11 @@ if (!class_exists('EG_Plugin_124')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_124($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_125($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options);
-		} // End of EG_Plugin_124
+		} // End of EG_Plugin_125
 
 		/**
 		  * Class contructor
@@ -141,16 +141,21 @@ if (!class_exists('EG_Plugin_124')) {
 			if ($this->textdomain != '')
 				load_plugin_textdomain( $this->textdomain, FALSE, dirname( plugin_basename( $this->corefile ) ).'/lang');
 
-			$this->load_styles();
-			// Add only in Rich Editor mode
-			if ( isset($this->tinyMCE_buttons) &&
-				 get_user_option('rich_editing') == 'true' ) {
-			// && current_user_can('edit_posts') && current_user_can('edit_pages') )  {
-
-				add_filter('tiny_mce_version', 		array(&$this, 'tiny_mce_version'   ));
-				add_filter('mce_external_plugins', 	array(&$this, 'add_tinymce_plugin' ));
-				add_filter('mce_buttons', 			array(&$this, 'register_button'    ));
+			if (! is_admin()) {
+				add_action('wp_enqueue_scripts', array(&$this, 'load_styles'));
 			}
+			else {
+
+				// Add only in Rich Editor mode
+				if ( isset($this->tinyMCE_buttons) &&
+					 get_user_option('rich_editing') == 'true' ) {
+				// && current_user_can('edit_posts') && current_user_can('edit_pages') )  {
+
+					add_filter('tiny_mce_version', 		array(&$this, 'tiny_mce_version'   ));
+					add_filter('mce_external_plugins', 	array(&$this, 'add_tinymce_plugin' ));
+					add_filter('mce_buttons', 			array(&$this, 'register_button'    ));
+				}
+			} // End of is_admin
 		} // End of init
 
 		function desactivation() {
@@ -215,6 +220,7 @@ if (!class_exists('EG_Plugin_124')) {
 		} // End of install_upgrade
 
 		function admin_init() {
+			add_action('admin_enqueue_scripts', array (&$this, 'load_styles'));
 		} // End of admin_init
 
 		/**
@@ -313,6 +319,34 @@ if (!class_exists('EG_Plugin_124')) {
 			$this->stylesheet = $stylesheet;
 		} // End of set_styleshhet
 
+		function get_stylesheet_url() {
+
+			$style_url = '';
+			if ($this->stylesheet != '') {
+				if (is_admin()) {
+					if (@file_exists($this->path.$this->stylesheet)) {
+						$style_url = $this->url.$this->stylesheet;
+					}
+				} // End of is_admin
+				else {
+					$load_css = isset($this->options['load_css']) ? $this->options['load_css'] : 1;
+					if ($load_css) {
+						if (@file_exists(TEMPLATEPATH.'/'.$this->stylesheet)) {
+							$style_url = get_stylesheet_directory_uri().'/'.$this->stylesheet;
+						}
+						else {
+							if (@file_exists($this->path.$this->stylesheet)) {
+								$style_url = $this->url.$this->stylesheet;
+							}
+						}
+					} // End of load_css
+				} // End of not is_admin
+			} // End of stylesheet != ''
+
+			return ($style_url);
+
+		} // End of get_stylesheet_url
+
 		/**
 		 * load_styles
 		 *
@@ -324,28 +358,9 @@ if (!class_exists('EG_Plugin_124')) {
 		 */
 		function load_styles() {
 
-			if ($this->stylesheet != '') {
+			$style_url = $this->get_stylesheet_url();
+			if ($style_url != '') wp_enqueue_style( $this->name.'_stylesheet', $style_url);
 
-				$style_path = '';
-				if (is_admin()) {
-					if (@file_exists($this->path.$this->stylesheet)) {
-						$style_path = $this->url.$this->stylesheet;
-					}
-				} // End of is_admin
-				else {
-					$load_css = isset($this->options['load_css']) ? $this->options['load_css'] : 1;
-					if ($load_css) {
-						if (@file_exists(TEMPLATEPATH.'/'.$this->stylesheet)) {
-							$style_path = get_stylesheet_directory_uri().'/'.$this->stylesheet;
-						}
-						else {
-							if (@file_exists($this->path.$this->stylesheet))
-								$style_path = $this->url.$this->stylesheet;
-						}
-					} // End of load_css
-				} // End of not is_admin
-				if ($style_path != '') wp_enqueue_style( $this->name.'_stylesheet', $style_path);
-			} // End of stylesheet defined
 		} // End of load_styles
 
 		/**
@@ -677,7 +692,7 @@ if (!class_exists('EG_Plugin_124')) {
 					if ($page['load_scripts'] !== FALSE) {
 						add_action('admin_print_scripts-'.$hook, array(&$this, $page['load_scripts']));
 					}
-		
+
 					// Add the link into the plugin page
 					if ($this->options_page_id == $id) {
 						add_filter( 'plugin_action_links_' . plugin_basename($this->corefile),

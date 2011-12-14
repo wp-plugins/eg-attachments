@@ -55,6 +55,8 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'display_label'				  => 0,
 	'date_format'				  => '',
 	'link'						  => 'direct',
+	'comment_status'			  => 'default',
+	'ping_status'				  => 'default',
 	'uninstall_del_options'		  => 0
 );
 
@@ -75,7 +77,8 @@ $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
 	'logged_users'  => -1,
 	'id'            => 0,
 	'limit'			=> -1,
-	'nofollow'		=> 0
+	'nofollow'		=> 0,
+	'tags'			=> ''
 );
 
 

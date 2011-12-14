@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_124 {
+	Class EG_Attachments extends EG_Plugin_125 {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
@@ -325,7 +325,7 @@ if (! class_exists('EG_Attachments')) {
 			if (! isset($EG_ATTACH_FIELDS_ORDER_KEY[strtolower($this->order_by)]))
 				$this->order_by = reset(explode(' ',$EG_ATTACHMENT_SHORTCODE_DEFAULTS['orderby'] ));
 			$this->order_by = $EG_ATTACH_FIELDS_ORDER_KEY[strtolower($this->order_by)];
-
+			
 			// get attachments
 			$cache_id = $id.'-'.$this->order_by.'-'.$this->order;
 			if ($this->attachments === FALSE || !isset($this->attachments[$cache_id])) {
@@ -334,11 +334,20 @@ if (! class_exists('EG_Attachments')) {
 				// $allowed_keys = array('author', 'date', 'title', 'modified', 'menu_order', 'parent', 'ID', 'rand', 'comment_count');
 				// So we need to add our own filter, and the parameter suppress_filters = false
 				add_filter('posts_orderby', array(&$this, 'get_orderby') );
-				$this->attachments[$cache_id] = get_posts( array('post_parent' => $id,
-													 'numberposts' => -1,
-													 'post_type'   => 'attachment',
-													 'suppress_filters' => false)
-											);
+				
+				$params = array('post_parent' => $id, 'numberposts' => -1, 'post_type' => 'attachment', 'suppress_filters' => false);
+
+				if (isset($tags) && $tags != '') {
+					$list = explode(',', $tags);
+					if (! is_array($list)) $params['tag'] = $list;
+					else {
+						if (sizeof($list) == 1) $params['tag'] = current($list);
+						$params['tag_slug__in'] = $list;
+					}
+				}
+
+				$this->attachments[$cache_id] = get_posts( $params );
+
 				remove_filter('posts_orderby',array(&$this, 'get_orderby') );
 			}
 
@@ -405,11 +414,11 @@ if (! class_exists('EG_Attachments')) {
 							'type'			=> $this->get_type($attachment->post_mime_type)
 						);
 						$fields_value['label'] = ($label=="filename"?$fields_value['filename']:$fields_value['title']);
-
+						
 						if ($logged_users>0 && ! is_user_logged_in()) {
 							$url =  ($this->options['login_url']==''?'#':$this->options['login_url']).
 								'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');';
-							$lock_icon = '<img class="lock" src="'.$this->plugin_url.'img/lock.png" height="16" width="16" alt="'.__('Document locked', $this->textdomain).'" />';
+							$lock_icon = '<img class="lock" src="'.$this->url.'img/lock.png" height="16" width="16" alt="'.__('Document locked', $this->textdomain).'" />';
 						}
 						else {
 							$lock_icon = '';

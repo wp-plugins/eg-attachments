@@ -322,6 +322,24 @@ $admin_section_id = $this->options_form->add_section( array( 'tab' => 'admin', '
 			'after'		=> 'Show metabox to display list of attachments of the current post/page'
 		)
 	);
+	$this->options_form->add_field( array(
+			'section'	=> $admin_section_id,
+			'name'		=> 'comment_status',
+			'label'		=> 'Comments',
+			'type'		=> 'select',
+			'options'	=> array( 'default' => 'Keep default', 'open' => 'Allow the comments', 'closed' => 'Closed the comments'),
+			'before'	=> 'When you upload an attachment file, which value to you want for comments'
+		)
+	);
+	$this->options_form->add_field( array(
+			'section'	=> $admin_section_id,
+			'name'		=> 'ping_status',
+			'label'		=> 'Pingbacks/Trackbacks',
+			'type'		=> 'select',
+			'options'	=> array( 'default' => 'Keep default', 'open' => 'Allow the pings', 'closed' => 'Closed the pings'),
+			'before'	=> 'When you upload an attachment file, which value to you want for pingbacks / trackbacks'
+		)
+	);
 
 $uninstall_section_id = $this->options_form->add_section( array( 'tab' => 'admin', 'title' => 'Uninstall options'));
 

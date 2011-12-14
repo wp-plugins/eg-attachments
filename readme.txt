@@ -3,7 +3,7 @@ Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
 Requires at least: 2.9.0
-Tested up to: 3.3-beta2
+Tested up to: 3.3
 Stable tag: 1.9.2
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
@@ -41,6 +41,8 @@ Options are
 
 Since the version 1.5.0, **EG-Attachments** plugin counts the number of clicks occuring on each attached document.
 
+Since the version 1.9.3, the plugin helps you to fight against spam, by closing the comments, and pingbacks for attachments.
+
 = Contributions =
 
 Thanks to 
@@ -48,20 +50,23 @@ Thanks to
 * [Dave](http://www.jxs.nl/) for the "custom style" feature,
 * [Rebekah](http://www.learntowebdesign.com/) for her [video tutorial](http://www.learntowebdesign.com/2009/12/placing-attachments-wordpress-post-page/)
 * [Luca Maida](http://www.qsin.it/) for his comments on HTML standards compliance
-* [Roberto Scano](http://robertoscano.info/) for his help on debugging
+* [Roberto Scano](http://robertoscano.info/) for his help on debugging, and ideas for new features
 * David Lingren for his help on debugging
 
 = Translations =
 
-The plugin comes up with 7 translations. Thanks to the following people for their contributions:
+The plugin comes up with 10 translations. Thanks to the following people for their contributions:
 
-* Italian (IT) - [Luca Maida](www.qsin.it) and [Roberto Scano](http://robertoscano.info/)
-* Dutch (NL) - [Rene at WP webshop](http://wpwebshop.com/premium-wordpress-themes/)
-* Spanish (ES) - [David Arinez](http://www.codeeta.com/)
-* German (DE) - [DesignContext](http://www.designcontest.com/)
-* Swedish (SE) - [Jonas Floden](http://www.koalasoft.se/)
-* Romanian (RO) - [Armand Coveanu](http://caveatlector.eu/)
+* Arabic (AR) - Mahmoud Ahmed,
 * Belarusian (BY) - Fatcow
+* Dutch (NL) - [Rene at WP webshop](http://wpwebshop.com/premium-wordpress-themes/),
+* French (FR) - [Emmanuel](http://www.emmanuelgeorjon.com/),
+* German (DE) - [DesignContext](http://www.designcontest.com/),
+* Italian (IT) - [Luca Maida](www.qsin.it) and [Roberto Scano](http://robertoscano.info/),
+* Spanish (ES) - [David Arinez](http://www.codeeta.com/),
+* Polish (PL) - [Mariusz Szatkowski](http://www.trojmiasto.us/),
+* Romanian (RO) - [Armand Coveanu](http://caveatlector.eu/),
+* Swedish (SE) - [Jonas Floden](http://www.koalasoft.se/),
 
 If you want to help to translate the plugin to your language, please have a look at the eg_attachments.pot file which contains all definitions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
 
@@ -110,10 +115,13 @@ Two specific keywords can be used with **docid** option: **first** and **last** 
 * **nofollow**: add the attribut "nofollow" to the link, if value is set to 1 or TRUE. Default nofollow=0
 * **display_label**: for size=small only. Allow to display label of fields, when value is set to 1. Default display_label=0
 * **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: the default value is defined in the **Settings page** in administration interface.
+* **tags** allows you to select attachments according tags (post tags). Syntax: tags=tag1,tag2.
 
 **Example 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
 
 **Example 2:** `[attachments size=large title="Documents" titletag=h3 orderby="mime DESC"]`
+
+**Example 3:** `[attachments title="Books and DVD Reviews" orderby="date DESC" tags="books,dvd"]`
 
 = Some explanations about *General behavior of shortcodes =
 
@@ -183,7 +191,16 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 
 == Changelog ==
 
-= Version 1.9.2 - Nov 3rd, 2011 =
+= Version 1.9.3-beta =
+
+* Bug fix: broken link to lock.png image
+* New: translation to Polish (thanks to Mariusz Szatkowski)
+* New: translation to Arabic (thanks to Mahmoud Ahmed)
+* New: Ability to open or close comments for attachments
+* New: Ability to associate attachments with tags, and select attachments according tags.
+* Change: internal librairies updates acccording recommendations about enqueuing styles and scripts (for WP 3.3)
+
+= Version 1.9.2 - Nov 1st, 2011 =
 
 * Bug fix: settings was not saved properly
 
