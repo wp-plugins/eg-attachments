@@ -43,6 +43,8 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'custom_format_pre'	  	  	  => '<ul>',
 	'custom_format'		  		  => '<li><a href="%URL%" title="%TITLE%">%TITLE%</a></li>',
 	'custom_format_post'  		  => '</ul>',
+	'custom_format_icon_width'	  => 48,
+	'custom_format_icon_height'	  => 48,
 	'force_saveas' 				  => 0,
 	'logged_users_only'			  => 0,
 	'login_url'					  => '',
@@ -50,6 +52,7 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'clicks_table'				  => 0,
 	'stats_ip_exclude'			  => '',
 	'load_css'					  => 1,
+	'display_admin_bar'			  => 1,
 	'use_metabox'				  => 0,
 	'nofollow'				  	  => 0,
 	'display_label'				  => 0,
@@ -57,6 +60,7 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'link'						  => 'direct',
 	'comment_status'			  => 'default',
 	'ping_status'				  => 'default',
+	'tags_assignment'			  => 0,
 	'uninstall_del_options'		  => 0
 );
 

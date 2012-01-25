@@ -17,10 +17,22 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_125 {
+	Class EG_Attachments_Admin extends EG_Plugin_126 {
 
-//		var $cache;
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
+
+		function init() {
+
+			parent::init();
+
+			global $wp_version;
+			if (isset($this->options['display_admin_bar']) && $this->options['display_admin_bar']) {
+				if (version_compare($wp_version, '3.2.99', '>') )
+					add_action( 'admin_bar_menu',  'eg_attachments_custom_admin_bar', 99 );
+				else if (version_compare($wp_version, '3.1.99', '>'))
+					add_action( 'wp_before_admin_bar_render', 'eg_eg_attachment_custom_admin_bar' );
+			}
+		} // End of init
 
 		/**
 		 * install_upgrade
@@ -105,9 +117,25 @@ if (! class_exists('EG_Attachments_Admin')) {
 		} // End of install_upgrade
 
 		/**
+		 * admin_init
+		 *
+		 * Add post_tag as taxonomy of attachments
+		 *
+		 * @param	none
+		 * @return 	none
+		 */
+		function admin_init() {
+			parent::admin_init();
+
+			if ($this->options['tags_assignment']) {
+				register_taxonomy_for_object_type('post_tag', 'attachment');
+			}
+		} // End of admin_init
+
+		/**
 		 * admin_menu
 		 *
-		 * Add metabox action
+		 * Add menus, and metabox
 		 *
 		 * @param	none
 		 * @return 	none
@@ -134,7 +162,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			parent::admin_menu();
 
-			if (class_exists('EG_Form_211')) {
+			if (class_exists('EG_Form_212')) {
 				require($this->path.'inc/eg-attachments-settings.inc.php');
 			}
 
@@ -152,8 +180,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			}
 
-			add_filter( 'attachment_fields_to_edit', array(& $this, 'media_upload_comments_pingback_fields_edit'), 10, 2 );
-			add_filter( 'attachment_fields_to_save', array(& $this, 'media_upload_comments_pingback_fields_save'), 10, 2 );
+			add_filter( 'attachment_fields_to_edit', array(& $this, 'media_upload_custom_fields_edit'), 10, 2 );
+			add_filter( 'attachment_fields_to_save', array(& $this, 'media_upload_custom_fields_save'), 10, 2 );
 		} // End of admin_menu
 
 		/**
@@ -211,61 +239,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 <?php
 		} // End of display_metabox
 
-		function display_sidebar() {
-			global $locale;
-
-			$string = sprintf('<ul>'.
-							  '<li><a href="http://wordpress.org/extend/plugins/eg-attachments/">%s</a></li>'.
-							  '<li><a href="http://wordpress.org/extend/plugins/eg-attachments/faq">%s</a></li>'.
-							  '<li><a href="http://wordpress.org/tags/eg-attachments">%s</a></li>'.
-							  '<li><a href="http://wordpress.org/extend/plugins/eg-attachments/changelog/">%s</a></li>'.
-							  '</ul>',
-							__('Plugin\'s homepage', 		$this->textdomain),
-							__('Frequently Asked Questions',$this->textdomain),
-							__('Support forum', 			$this->textdomain),
-							__('Last changes', 				$this->textdomain));
-			$this->display_box('links', 'Links', $string);
-
-			$string = '<p>'.__('This plugin required and requires many hours of work. If you use the plugin, and like it, feel free to show your appreciation to the author.', $this->textdomain).'</p>';
-			$string .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">'.
-						'<input type="hidden" name="cmd" value="_donations">'.
-						'<input type="hidden" name="business" value="CPCKAJFRB5NNA">'.
-						'<input type="hidden" name="lc" value="'.($locale=='fr_FR'?'FR':'US').'">'.
-						'<input type="hidden" name="item_number" value="eg-attachments">'.
-						'<input type="hidden" name="currency_code" value="EUR">'.
-						'<input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_LG.gif:NonHosted">'.
-						'<input type="image" src="https://www.paypalobjects.com/'.($locale=='fr_FR'?'fr_FR':'en_US').'/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="'.__('PayPal - The safer, easier way to pay online!', $this->textdomain).'">'.
-						'<img alt="" border="0" src="https://www.paypalobjects.com/'.($locale=='fr_FR'?'fr_FR':'en_US').'/i/scr/pixel.gif" width="1" height="1">'.
-						'</form>';
-			$this->display_box('paypal', 'Donate', $string);
-		} // End of display_sidebar
-
-		/**
-		 * options_page
-		 *
-		 * Display the options page
-		 *
-		 * @param 	none
-		 * @return 	none
-		 */
-		function options_page() {
-			if ($this->options_form)
-				$this->options_form->display_page($this->options);
-		} // End of options_page
-
-		/**
-		 * clean_cache
-		 *
-		 * Clear cache containing lists of attachments per post
-		 *
-		 * @package EG-Attachments
-		 * @param int	$id	(unused) id of post
-		 * @return none
-		 */
-//		function clean_cache($id) {
-//			wp_cache_delete( 'attachments', 'eg-attachments' );
-//		} // End of clean_cache
-
 		/**
 		 * stats_page
 		 *
@@ -276,11 +249,11 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 * @return none
 		 */
 		function stats_page() {
-?>
-			<div class="wrap">'.
-			<?php screen_icon(); ?>
-				<h2><?php _e('EG-Attachments Statistics', $this->textdomain); ?></h2>
-<?php
+
+			echo '<div class="wrap">';
+			screen_icon();
+			echo '<h2>'.__('EG-Attachments Statistics', $this->textdomain).'</h2>';
+
 			if (! isset($_GET['id'])) {
 				$this->stats_display_global();
 			}
@@ -375,7 +348,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			$attachment = get_post($id);
 			if (! $attachment) {
-				echo 'Error msg';
+				_e('Cannot get attachments details', $this->textdomain);
 			}
 			else {
 				$this->stats_display_breadcrumb(array( $id => $attachment->post_title));
@@ -463,7 +436,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 					'</table>';
 			}
 		} // End of stats_display_details
-
 
 		/**
 		 * stats_display_global
@@ -575,70 +547,107 @@ if (! class_exists('EG_Attachments_Admin')) {
 			echo '</tbody></table>';
 		} // End of stats_display_globals
 
+
+		/**
+		 * media_upload_custom_fields_edit
+		 *
+		 * Check fields of the media upload form, and proceed with required actions
+		 *
+		 * @package EG-Attachments
+		 * @param 	object		$post			the edit attachment
+		 * @param	array		$attachment		the fields of the form
+		 * @return the modified attachment
+		 */
 		// Tips from http://www.billerickson.net/wordpress-add-custom-fields-media-gallery/ (Bill Erickson)
-		function media_upload_comments_pingback_fields_edit( $form_fields, $post ) {
+		// http://wordpress.stackexchange.com/questions/496/can-i-add-a-category-metabox-to-attachment (Rick Curran)
+		function media_upload_custom_fields_edit( $form_fields, $post ) {
 
-			if ($this->options['comment_status'] == 'default') $default = ( $post->comment_status == 'open' ? ' checked="checked"' : '' );
-			else if ($this->options['comment_status'] == 'open') $default = ' checked="checked"';
-			else $default = '';
+			if (post_type_supports('attachment', 'comments')) {
 
-			$form_fields['comment_status'] = array(
-					'label' => 'Allow comments',
-					'input' => 'html',
-					'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][comment_status]" id="comment_status-'.$post->ID.'" value="1" '.$default.' />'.'<label for="comment_status-'.$post->ID.'">'.__('Allow comments on this attachments', $this->textdomain).'</label>');
+				if ($this->options['comment_status'] == 'default') $default = ( $post->comment_status == 'open' ? ' checked="checked"' : '' );
+				else if ($this->options['comment_status'] == 'open') $default = ' checked="checked"';
+				else $default = '';
 
-			if ($this->options['ping_status'] == 'default') $default = ( $post->ping_status == 'open' ? ' checked="checked"' : '' );
-			else if ($this->options['ping_status'] == 'open') $default = ' checked="checked"';
-			else $default = '';
+				$form_fields['comment_status'] = array(
+						'label' => 'Allow comments',
+						'input' => 'html',
+						'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][comment_status]" id="attachments['.$post->ID.'][comment_status]" value="1" '.$default.' />'.'<label for="attachments['.$post->ID.'][comment_status]">'.__('Allow comments on this attachments', $this->textdomain).'</label>');
+			} // End of support comments
 
-			$form_fields['ping_status'] = array(
-					'label' => 'Allow comments',
-					'input' => 'html',
-					'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][ping_status]" id="ping_status-'.$post->ID.'" value="1" '.$default.'/>'.'<label for="ping_status-'.$post->ID.'">'.sprintf(__('Allow <a target="_blank" href="%s">trackbacks and pingbacks</a> on this attachment', $this->textdomain), 'http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments').'</label>'	);
+			if (post_type_supports('attachment', 'trackbacks')) {
 
-			$terms = get_the_terms($post->ID, 'post_tag');
+				if ($this->options['ping_status'] == 'default') $default = ( $post->ping_status == 'open' ? ' checked="checked"' : '' );
+				else if ($this->options['ping_status'] == 'open') $default = ' checked="checked"';
+				else $default = '';
 
-			if (is_array($terms) && sizeof($terms)>0) {
-				foreach ($terms as $term) {
-					$default_tags[$term->term_id] = $term->slug;
-				}
-			}
-			else {
+				$form_fields['ping_status'] = array(
+						'label' => 'Allow comments',
+						'input' => 'html',
+						'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][ping_status]" id="attachments['.$post->ID.'][ping_status]" value="1" '.$default.'/>'.'<label for="attachments['.$post->ID.'][ping_status]">'.sprintf(__('Allow <a target="_blank" href="%s">trackbacks and pingbacks</a> on this attachment', $this->textdomain), 'http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments').'</label>'	);
+			} // End of support comments
+
+			if ($this->options['tags_assignment']) {
+
+				// Get tags linked to the attachments
+				$terms = get_the_terms($post->ID, 'post_tag');
 				$default_tags = array();
-			}
-file_put_contents(dirname(__FILE__).'/log.log', '<br />------------------------------<br />'.var_export($default_tags, TRUE).'<br />------------------------------<br />', FILE_APPEND);		
+				if (is_array($terms) && sizeof($terms)>0) {
+					foreach ($terms as $term) {
+						$default_tags[$term->term_id] = $term->slug;
+					}
+				}
+				// Get all terms (tags)
+				$tags_list = get_terms('post_tag');
 
-			$tags_list = get_terms('post_tag');
-			$string = '<select size="5" multiple name="attachments['.$post->ID.'][tags][]" id="tags-'.$post->ID.'"><option value="none"> </option>';
-			foreach ($tags_list as $tag) {
-				if (isset($default_tags[$tag->term_id])) $selected = 'selected'; else $selected = '';
-				$string .= '<option value="'.$tag->slug.'" '.$selected.' >'.$tag->name.'</option>';
-			}
-			$string .= '</select >';
+				$string = '';
+				foreach ($tags_list as $tag) {
+					if (isset($default_tags[$tag->term_id])) $checked = 'checked="checked"'; else $checked = '';
+					$string .= '<li style="width:32%;float:left;">'.
+							'<input type="checkbox" value="'.$tag->slug.'" name="attachments['.$post->ID.'][tags][]" id="tags-'.$post->ID.'" '. $checked .' /> '.
+							'<label for="tags-'.$post->ID.'">'.htmlspecialchars($tag->name).'</label>'.
+							'</li>';
+				} // End of foreach
+				if ($string != '') $string = '<ul style="width:100%;">'.$string.'</ul>';
 
-			$form_fields['tags'] = array(
-					'label' => 'Tags',
-					'input' => 'html',
-					'html'	=> $string
-			);
+				$form_fields['post_tag'] = array_merge($form_fields['post_tag'], array(	'input' => 'html', 'html' => $string));
+			} // End of tags_assignments
+
 			return $form_fields;
-		}	 // End of media_upload_comments_pingback_fields_edit
 
-		function media_upload_comments_pingback_fields_save( $post, $attachment ) {
+		} // End of media_upload_custom_fields_edit
+
+		/**
+		 * media_upload_custom_fields_save
+		 *
+		 * Check fields of the media upload form, and proceed with required actions
+		 *
+		 * @package EG-Attachments
+		 * @param 	object		$post			the edit attachment
+		 * @param	array		$attachment		the fields of the form
+		 * @return the modified attachment
+		 */
+		function media_upload_custom_fields_save( $post, $attachment ) {
+
+			$this->display_debug_info($post);
+			$this->display_debug_info($attachment);
+
 			if (isset($attachment['comment_status'])) $post['comment_status'] = 'open';
 			else $post['comment_status'] = 'closed';
+
 			if (isset($attachment['ping_status'])) $post['ping_status'] = 'open';
 			else $post['ping_status'] = 'closed';
-			
-			if (! isset($attachment['tags'])) $selected_tags = array();
-			else if (is_array($attachment['tags'])) $selected_tags = $attachment['tags'];
-			else $selected_tags = array($attachment['tags']);
 
-			if (sizeof($selected_tags)== 0 || $selected_tags[0] == 'none') wp_delete_object_term_relationships( $post['ID'], 'post_tag' ) ;
-			else wp_set_object_terms($post['ID'], $selected_tags, 'post_tag');
+			if ($this->options['tags_assignment']) {
+				if (! isset($attachment['tags'])) $selected_tags = array();
+				else if (is_array($attachment['tags'])) $selected_tags = $attachment['tags'];
+				else $selected_tags = array($attachment['tags']);
+
+				if (sizeof($selected_tags)== 0) wp_delete_object_term_relationships( $post['ID'], 'post_tag' ) ;
+				else wp_set_object_terms($post['ID'], $selected_tags, 'post_tag');
+			} // End of tags_assignments
 
 			return ($post);
-		} // End of media_upload_comments_pingback_fields_save
+		} // End of media_upload_custom_fields_save
 
 	} /* End of Class */
 } /* End of if class_exists */
@@ -650,7 +659,7 @@ $eg_attach_admin = new EG_Attachments_Admin('EG-Attachments',
 											EGA_OPTIONS_ENTRY,
 											$EG_ATTACH_DEFAULT_OPTIONS);
 
-$eg_attach_admin->set_wp_versions('3.0', '3.3-RC2');
+$eg_attach_admin->set_wp_versions('3.1', '3.3.1');
 $eg_attach_admin->add_tinymce_button( 'EGAttachments', 'inc/tinymce', 'eg_attach_plugin.js');
 $eg_attach_admin->set_stylesheets('css/eg-attachments-admin.css');
 if (EGA_DEBUG_MODE)

@@ -2,20 +2,12 @@
 
 global $EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY, $EG_ATTACH_DEFAULT_FIELDS;
 
-$this->options_form = new EG_Form_211('ega_options', 'EG-Attachements Settings', $this->options_entry, $this->textdomain, '', '',
+$this->options_form = new EG_Form_212('ega_options', 'EG-Attachements Settings', $this->options_entry, $this->textdomain, '', '',
 										array(&$this, 'display_sidebar'));
-
 //$this->options_form->set_debug_mode(TRUE, dirname(EGA_COREFILE).'/debug.log');
 
-/*
-$this->options_form->add_tab('behavior', 'General shortcode behavior', 'All of the following parameters are applied on manual AND automatic shortcode.');
-$this->options_form->add_tab('auto_shortcode',  'Automatic Shortcode');
-$this->options_form->add_tab('admin', 'Administration');
-*/
 $shortcode_behavior_section_id = $this->options_form->add_section( array( 'tab' => 'behavior', 'title' => 'General behavior of shortcodes'));
 
-
-	
 	$this->options_form->add_field( array(
 			'section'	=> $shortcode_behavior_section_id,
 			'name'		=> 'link',
@@ -137,6 +129,24 @@ $custom_format_section_id = $this->options_form->add_section( array(
 		)
 	);
 
+	$this->options_form->add_field( array(
+			'section'	=> $custom_format_section_id,
+			'name'		=> 'custom_format_icon_height',
+			'label'		=> 'Icon height: ',
+			'type'		=> 'text',
+			'size'		=> 'small'
+		)
+	);
+
+	$this->options_form->add_field( array(
+			'section'	=> $custom_format_section_id,
+			'name'		=> 'custom_format_icon_width',
+			'label'		=> 'Icon width: ',
+			'type'		=> 'text',
+			'size'		=> 'small'
+		)
+	);
+
 $auto_shortcode_section_id = $this->options_form->add_section( array( 'tab' => 'auto_shortcode', 'title' => 'Auto shortcode'));
 
 	$this->options_form->add_field( array(
@@ -201,7 +211,8 @@ $auto_shortcode_section_id = $this->options_form->add_section( array( 'tab' => '
 			'name'		=> 'shortcode_auto_orderby',
 			'label'		=> 'Order by: ',
 			'type'		=> 'select',
-			'options'	=> array_intersect_key($EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY)
+			'options'	=> array_merge(array_intersect_key($EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY),
+										array('menu_order' => 'Menu order'))
 		)
 	);
 
@@ -322,23 +333,47 @@ $admin_section_id = $this->options_form->add_section( array( 'tab' => 'admin', '
 			'after'		=> 'Show metabox to display list of attachments of the current post/page'
 		)
 	);
-	$this->options_form->add_field( array(
+
+	if (post_type_supports('attachment', 'comments')) {
+		$this->options_form->add_field( array(
 			'section'	=> $admin_section_id,
 			'name'		=> 'comment_status',
 			'label'		=> 'Comments',
 			'type'		=> 'select',
 			'options'	=> array( 'default' => 'Keep default', 'open' => 'Allow the comments', 'closed' => 'Closed the comments'),
-			'before'	=> 'When you upload an attachment file, which value to you want for comments'
-		)
-	);
-	$this->options_form->add_field( array(
+			'before'	=> 'When you upload an attachment file, which behavior do you want for comments'
+			)
+		);
+	}
+
+	if (post_type_supports('attachment', 'trackbacks')) {
+		$this->options_form->add_field( array(
 			'section'	=> $admin_section_id,
 			'name'		=> 'ping_status',
 			'label'		=> 'Pingbacks/Trackbacks',
 			'type'		=> 'select',
 			'options'	=> array( 'default' => 'Keep default', 'open' => 'Allow the pings', 'closed' => 'Closed the pings'),
-			'before'	=> 'When you upload an attachment file, which value to you want for pingbacks / trackbacks'
+			'before'	=> 'When you upload an attachment file, which behavior do you want for pingbacks / trackbacks'
+			)
+		);
+	}
+
+	$this->options_form->add_field( array(
+		'section'	=> $admin_section_id,
+		'name'		=> 'tags_assignment',
+		'label'		=> 'Tags assigments',
+		'type'		=> 'checkbox',
+		'after'		=> 'Do you want to assign tags to attachments?',
+		'description' => 'If you select this option, you will be able to select attachments by using the <strong>tags</strong> parameter in the shortcode.'
 		)
+	);
+
+	$this->options_form->add_field( array(
+			'section'	=> $admin_section_id,
+			'name'		=> 'display_admin_bar',
+			'label'		=> 'Administration bar',
+			'after'		=> 'Display a <strong>EG-Attachments</strong> menu in the administration bar',
+			'type'		=> 'checkbox')
 	);
 
 $uninstall_section_id = $this->options_form->add_section( array( 'tab' => 'admin', 'title' => 'Uninstall options'));

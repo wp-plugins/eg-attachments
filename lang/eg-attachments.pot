@@ -834,3 +834,57 @@ msgstr ""
 #:eg-attachments-admin.php:
 msgid "EG-Attachments settings"
 msgstr ""
+
+msgid "Comments"
+msgstr ""
+
+msgid "When you upload an attachment file, which behavior do you want for comments"
+msgstr ""
+
+msgid "Keep default"
+msgstr ""
+
+msgid "Allow the comments"
+msgstr ""
+
+msgid "Closed the comments"
+msgstr ""
+
+msgid "Pingbacks/Trackbacks"
+msgstr ""
+
+msgid "Allow the pings"
+msgstr ""
+
+msgid "Closed the pings"
+msgstr ""
+
+msgid "When you upload an attachment file, which behavior do you want for pingbacks / trackbacks"
+msgstr ""
+
+msgid "Tags assigments"
+msgstr ""
+
+msgid "Do you want to assign tags to attachments?"
+msgstr ""
+
+msgid "If you select this option, you will be able to select attachments by using the <strong>tags</strong> parameter in the shortcode."
+msgstr ""
+
+msgid "Administration bar"
+msgstr ""
+
+msgid "Display a <strong>EG-Attachments</strong> menu in the administration bar"
+msgstr ""
+
+msgid "Icon height: "
+msgstr ""
+
+msgid "Icon width: "
+msgstr ""
+
+msgid "Filter attachments using tags"
+msgstr ""
+
+msgid "Menu Order"
+msgstr ""

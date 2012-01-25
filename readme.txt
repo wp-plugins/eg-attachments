@@ -2,9 +2,9 @@
 Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: posts, attachments
-Requires at least: 2.9.0
-Tested up to: 3.3
-Stable tag: 1.9.2
+Requires at least: 3.1
+Tested up to: 3.3.1
+Stable tag: 1.9.3
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -41,8 +41,6 @@ Options are
 
 Since the version 1.5.0, **EG-Attachments** plugin counts the number of clicks occuring on each attached document.
 
-Since the version 1.9.3, the plugin helps you to fight against spam, by closing the comments, and pingbacks for attachments.
-
 = Contributions =
 
 Thanks to 
@@ -50,7 +48,7 @@ Thanks to
 * [Dave](http://www.jxs.nl/) for the "custom style" feature,
 * [Rebekah](http://www.learntowebdesign.com/) for her [video tutorial](http://www.learntowebdesign.com/2009/12/placing-attachments-wordpress-post-page/)
 * [Luca Maida](http://www.qsin.it/) for his comments on HTML standards compliance
-* [Roberto Scano](http://robertoscano.info/) for his help on debugging, and ideas for new features
+* [Roberto Scano](http://robertoscano.info/) for his help on debugging, and ideas for new features (tags for example)
 * David Lingren for his help on debugging
 
 = Translations =
@@ -85,7 +83,12 @@ You can also install the plugin directly from the WordPress interface.
 
 Then you can go to menu **Settings / EG-Attachments** to set plugin parameters
 
-This plugin was tested on WordPress 3.0.x, and up to 3.3 pre-alpha version (3.3-aortic-dissection).
+This plugin was tested on WordPress 3.1, and up to 3.3.1.
+
+= Update =
+
+When a new version is available, options of the plugins are updated during the activation. 
+So during the upgrade procedure, please desactivate / reactivate the plugin, in order to ensure that options are properly modified.
 
 = Usage =
 
@@ -103,7 +106,7 @@ The shortcode options are:
 * **doctype**: type of documents to display. Values: image or document. Defaults: document,
 * **docid** list of attachments' id (comma separated) you want to display. Default: nothing to display all attachments,
 * **id**: id of the post we want to display attachments
-* **orderby**: sort option. Values: Title, Caption, Description, File name, Size, Date, Type and ASC or DESC. `ASC`is the default sort order. Default: `title ASC`.
+* **orderby**: sort option. Values: title, caption, description, file name, size, date, type, menu_order and ASC or DESC. `ASC`is the default sort order. Default: `title ASC`.
 * **title**: title to display before the list. Default: '',
 * **titletag**: tag to add before and after the title. Default: h2
 * **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
@@ -191,14 +194,18 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 
 == Changelog ==
 
-= Version 1.9.3-beta =
+= Version 1.9.3 - Jan 24th, 2011 =
 
-* Bug fix: broken link to lock.png image
-* New: translation to Polish (thanks to Mariusz Szatkowski)
-* New: translation to Arabic (thanks to Mahmoud Ahmed)
-* New: Ability to open or close comments for attachments
-* New: Ability to associate attachments with tags, and select attachments according tags.
-* Change: internal librairies updates acccording recommendations about enqueuing styles and scripts (for WP 3.3)
+* Bug fix: broken link to lock.png image,
+* New: translation to Polish (thanks to Mariusz Szatkowski),
+* New: translation to Arabic (thanks to Mahmoud Ahmed),
+* New: Ability to open or close comments for attachments,
+* New: Ability to associate attachments with tags, and select attachments according tags,
+* New: Add an optional menu in the admin menu bar,
+* New: ability to choose the size of the icon with custom format,
+* New: add "menu_order" as sort key for auto-shortcode,
+* Change: documentation updated
+* Change: internal librairies updates because of bug fix, and recommendations about enqueuing styles and scripts (for WP 3.3)
 
 = Version 1.9.2 - Nov 1st, 2011 =
 

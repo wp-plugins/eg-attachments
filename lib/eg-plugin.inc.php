@@ -3,7 +3,7 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.2.5
+Version: 1.2.6
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -34,7 +34,7 @@ if (!function_exists('eg_detect_page')) {
 	}
 }
 
-if (!class_exists('EG_Plugin_125')) {
+if (!class_exists('EG_Plugin_126')) {
 
 	/**
 	  * Class EG_Plugin
@@ -42,7 +42,7 @@ if (!class_exists('EG_Plugin_125')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_125 {
+	Class EG_Plugin_126 {
 
 		var $name;
 		var $version;
@@ -63,6 +63,9 @@ if (!class_exists('EG_Plugin_125')) {
 		var $pages 				= array();
 		var $hooks 				= array();
 		var $tinyMCE_buttons 	= array();
+		var $help				= array();
+		var $notice_pages		= array();
+		var $errors_entry		= '';
 
 		/**
 		  * Class contructor for PHP 4 compatibility
@@ -71,11 +74,11 @@ if (!class_exists('EG_Plugin_125')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_125($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_126($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options);
-		} // End of EG_Plugin_125
+		} // End of EG_Plugin_126
 
 		/**
 		  * Class contructor
@@ -172,7 +175,7 @@ if (!class_exists('EG_Plugin_125')) {
 		 */
 		 /*
 			To use this function:
-				function insta_upgrade() {
+				function install_upgrade() {
 					$current_version = parent::install_upgrade();
 
 					put here your upgrade or install features
@@ -220,6 +223,7 @@ if (!class_exists('EG_Plugin_125')) {
 		} // End of install_upgrade
 
 		function admin_init() {
+			add_action('admin_notices', array(&$this, 'display_notice_error'));
 			add_action('admin_enqueue_scripts', array (&$this, 'load_styles'));
 		} // End of admin_init
 
@@ -342,9 +346,7 @@ if (!class_exists('EG_Plugin_125')) {
 					} // End of load_css
 				} // End of not is_admin
 			} // End of stylesheet != ''
-
 			return ($style_url);
-
 		} // End of get_stylesheet_url
 
 		/**
@@ -389,7 +391,7 @@ if (!class_exists('EG_Plugin_125')) {
 		 * @param	mixed	$mixed	variable to display
 		 * @return 	none
 		 */
-		 function display_debug_info($mixed, $msg='') {
+		function display_debug_info($mixed, $msg='') {
 
 			if ($this->debug_mode) {
 				$debug_info = debug_backtrace(FALSE);
@@ -513,8 +515,6 @@ if (!class_exists('EG_Plugin_125')) {
 		/**
 		 * set_update_notice
 		 *
-		 *
-		 *
 		 * @package EG-Plugins
 		 *
 		 * @param	string	$msg	Message to add.
@@ -558,7 +558,6 @@ if (!class_exists('EG_Plugin_125')) {
 			}
 			return $links;
 		} // End of filter_plugin_actions
-
 
 		/**
 		 * display_box
@@ -604,12 +603,13 @@ if (!class_exists('EG_Plugin_125')) {
 				'page_title'		=> $this->name.__(' settings', $this->textdomain),
 				'menu_title'		=> $this->name,
 				'access_level'		=> 'manage_options',
-				'display_callback'	=> '',
+				'display_callback'	=> 'options_page',
 				'option_link' 		=> FALSE,
 				'load_callback' 	=> FALSE,
 				'load_scripts'		=> FALSE,
 				'shortname'			=> null,
-				'icon_url'			=> null
+				'icon_url'			=> null,
+				'load_help'			=> FALSE
 			);
 
 			$values = wp_parse_args($args, $default_args);
@@ -621,6 +621,54 @@ if (!class_exists('EG_Plugin_125')) {
 			else
 				return (FALSE);
 		} // End of add_page
+
+		function set_notice_error($errors_entry, $area_id, $pages_list) {
+			$this->errors_entry = $errors_entry;
+			foreach (explode(',',$pages_list) as $page) {
+				$notice_pages[$page] = $area_id;
+			}
+		} // End of create_notice_area
+
+		function add_notice($code, $msg, $level, $details=FALSE, $area='') {
+			$errors = get_transient($this->errors_entry);
+			if ($errors === FALSE) $errors = new WP_Error();
+			$string = '';
+			if ($details) {
+				if (is_wp_error($details))
+					$string = $details->get_error_message().' ('. $details->get_error_code().')';
+				else if (is_string($details))
+					$string = $details;
+			}
+			$errors->add($code, $msg, array('level' => $level, 'details' => $string, 'area' => $area));
+			set_transient($this->errors_entry, $errors);
+		}
+
+		function display_notice_error() {
+			if ($this->errors_entry != '') {
+				$screen = get_current_screen();
+				$this->display_debug_info($screen->id, 'Screen ID for notice error');
+				if (isset($this->notice_pages[$screen->id])) {
+					$area = $this->notice_pages[$screen->id];
+					$errors = get_transient($this->errors_entry);
+					$this->display_debug_info($errors, 'Displaying errors: ');
+					if ($errors !== FALSE) {
+						foreach ($errors->get_error_codes() AS $code) {
+							$msg  = $errors->get_error_message($code);
+							$data = $errors->get_error_data($code);
+							if ($data['area']=='' || $data['area'] == $area) {
+								echo '<div class="'.$data['level'].'">'.
+										'<p>'.
+											'<strong>'.$code.'</strong>: '.$msg.
+											(isset($data['details']) ? '<br /><em>'.$data['details'].'</em>' : '').
+										'</p>'.
+									'</div>';
+							}
+						} // End of foreach
+						delete_transient($this->errors_entry);
+					} // End of errors to display
+				} // Endif screen
+			} // End of errors_entry define
+		}  // End of display_notice_error
 
 		/**
 		  * admin_menu
@@ -699,10 +747,31 @@ if (!class_exists('EG_Plugin_125')) {
 									array( &$this, 'filter_plugin_actions') );
 					}
 
+					// Manage help
+					if ($page['load_help'] !== FALSE) {
+						add_action('load-'.$hook, array(&$this, $page['load_help']));
+					}
+
 				} // End of foreach
 				unset($this->pages);
 			} // End of isset this->pages
 		} // End of admin_menu
+
+		function add_help($id, $title, $content, $type='tab') {
+			    $screen = get_current_screen();
+			    if ($type='tab')
+					$screen->add_help_tab( array(
+						'id'      => $id,
+						'title'   => __($title, $this->textdomain),
+						'content' => __($content, $this->textdomain))
+					);
+				else
+					$screen->set_help_sidebar( array(
+						'id'      => $id,
+						'title'   => __($title, $this->textdomain),
+						'content' => __($content, $this->textdomain))
+					);
+		} // End of page_help
 
 		/**
 		 * get_page_hook
@@ -772,7 +841,51 @@ if (!class_exists('EG_Plugin_125')) {
 			return ++$version;
 		} // End of tiny_mce_version
 
-	} /* End of class */
-} /* End of class_exists */
+		function options_page() {
+
+			if (isset($this->options_form))
+				$this->options_form->display_page($this->options);
+
+		} // End of options_page
+
+		function display_sidebar() {
+			global $locale;
+
+			$string = sprintf('<ul>'.
+							  '<li><a href="http://wordpress.org/extend/plugins/%s/">%s</a></li>'.
+							  '<li><a href="http://wordpress.org/extend/plugins/%s/faq">%s</a></li>'.
+							  '<li><a href="http://wordpress.org/tags/%s">%s</a></li>'.
+							  '<li><a href="http://wordpress.org/extend/plugins/%s/changelog/">%s</a></li>'.
+							  '</ul>',
+							strtolower($this->name),
+							__('Plugin\'s homepage', $this->textdomain),
+							strtolower($this->name),
+							__('Frequently Asked Questions',$this->textdomain),
+							strtolower($this->name),
+							__('Support forum', $this->textdomain),
+							strtolower($this->name),
+							__('Last changes', $this->textdomain));
+			$this->display_box('links', 'Links', $string);
+
+			$string = '<p>'.__('This plugin required and requires many hours of work. If you use the plugin, and like it, feel free to show your appreciation to the author.', $this->textdomain).'</p>';
+			if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME']=='localhost') {
+				$string .= '<a href="#">PayPal - The safer, easier way to pay online!</a>';
+			}
+			else {
+				$string .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">'.
+						'<input type="hidden" name="cmd" value="_donations">'.
+						'<input type="hidden" name="business" value="CPCKAJFRB5NNA">'.
+						'<input type="hidden" name="lc" value="'.($locale=='fr_FR'?'FR':'US').'">'.
+						'<input type="hidden" name="item_number" value="eg-delicious">'.
+						'<input type="hidden" name="currency_code" value="EUR">'.
+						'<input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_LG.gif:NonHosted">'.
+						'<input type="image" src="https://www.paypalobjects.com/'.($locale=='fr_FR'?'fr_FR':'en_US').'/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="'.__('PayPal - The safer, easier way to pay online!', $this->textdomain).'">'.
+						'<img alt="" border="0" src="https://www.paypalobjects.com/'.($locale=='fr_FR'?'fr_FR':'en_US').'/i/scr/pixel.gif" width="1" height="1">'.
+						'</form>';
+			}
+			$this->display_box('paypal', 'Donate', $string);
+		} // End of display_sidebar
+	} // End of class
+} // End of class_exists
 
 ?>

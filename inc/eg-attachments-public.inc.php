@@ -9,10 +9,10 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_125 {
+	Class EG_Attachments extends EG_Plugin_126 {
 
-		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
-		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16, 'custom' => 48);
+		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16);
+		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
 		var $attachments = FALSE;
 		var $shortcode_exists = array();
 
@@ -31,12 +31,21 @@ if (! class_exists('EG_Attachments')) {
 
 			parent::init();
 
-				add_shortcode(EGA_SHORTCODE, array(&$this, 'get_attachments'));
-				/* && $this->shortcode_is_visible(): cannot put this function here. wp_query object is not ready */
-				if ($this->options['shortcode_auto']>0  ) {
-					add_filter('get_the_excerpt', array(&$this, 'shortcode_auto_excerpt'));
-					add_filter('the_content',     array(&$this, 'shortcode_auto_content'));
-				}
+			add_shortcode(EGA_SHORTCODE, array(&$this, 'get_attachments'));
+			/* && $this->shortcode_is_visible(): cannot put this function here. wp_query object is not ready */
+			if ($this->options['shortcode_auto']>0  ) {
+				add_filter('get_the_excerpt', array(&$this, 'shortcode_auto_excerpt'));
+				add_filter('the_content',     array(&$this, 'shortcode_auto_content'));
+			}
+
+			global $wp_version;
+			if (isset($this->options['display_admin_bar']) && $this->options['display_admin_bar']) {
+				if (version_compare($wp_version, '3.2.99', '>') )
+					add_action( 'admin_bar_menu',  'eg_attachments_custom_admin_bar', 99 );
+				else if (version_compare($wp_version, '3.1.99', '>'))
+					add_action( 'wp_before_admin_bar_render', 'eg_eg_attachment_custom_admin_bar' );
+			}		
+
 		} /* End of init */
 
 		/**
@@ -245,8 +254,14 @@ if (! class_exists('EG_Attachments')) {
 		function get_icon($id, $attachment, $size) {
 			$output      = '';
 
-			$width  = $this->icon_width[$size];
-			$height = $this->icon_height[$size];
+			if ($size == 'custom') {
+				$width  = $this->options['custom_format_icon_width'];
+				$height = $this->options['custom_format_icon_height'];
+			}
+			else {
+				$width  = $this->icon_width[$size];
+				$height = $this->icon_height[$size];
+			}
 			if (! $icon_url = wp_mime_type_icon($id) ) {
 				$icon_url = trailingslashit(get_bloginfo('wpurl')).WPINC.'/images/crystal/default.png';
 			}
@@ -434,7 +449,11 @@ if (! class_exists('EG_Attachments')) {
 							}
 						}
 
-						$full_link = '<a title="'.$fields_value['title'].'" href="'.$url.'" '.($this->options['nofollow']?'rel="nofollow"':'').'>';
+						$full_link = '<a title="'.$fields_value['title'].
+									'" href="'.$url.'"'.
+									' '.($this->options['nofollow']?'rel="nofollow"':'').
+									/* "onClick=\"_gaq.push(['_trackEvent', 'File', 'display', $fields_value['title']]);\" */
+									'>';
 
 						switch ($size) {
 
@@ -545,20 +564,6 @@ if (! class_exists('EG_Attachments')) {
 			return ($is_visible);
 		} // End of shortcode_is_visible
 
-		/**
-		 * shortcode_right_access
-		 *
-		 * Define if the auto shortcode password protected, or private
-		 *
-		 * @return 	boolean
-		 */
-/*		function shortcode_right_access() {
-			global $post;
-			return (!is_attachment() &&
-					!post_password_required($post) &&
-					('private' != get_post_field('post_status', $post->ID) || is_user_logged_in()) );
-		} // End of shortcode_right_access
-*/
 		/**
 		 * shortcode_auto_check_manual_shortcode
 		 *
@@ -674,7 +679,7 @@ if (! class_exists('EG_Attachments')) {
 $eg_attach = new EG_Attachments('EG-Attachments', EGA_VERSION, EGA_COREFILE,
 								EGA_TEXTDOMAIN, EGA_OPTIONS_ENTRY, $EG_ATTACH_DEFAULT_OPTIONS);
 $eg_attach->set_stylesheets('css/eg-attachments.css');
-$eg_attach->set_wp_versions('2.9',	'3.3-beta1', FALSE);
+$eg_attach->set_wp_versions('3.1',	'3.3.1', FALSE);
 
 if (EGA_DEBUG_MODE)
 	$eg_attach->set_debug_mode(TRUE, 'debug.log');

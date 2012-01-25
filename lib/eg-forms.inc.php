@@ -3,7 +3,7 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class for WordPress plugins
-Version: 2.1.1
+Version: 2.1.2
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,15 +26,15 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Form_211')) {
+if (!class_exists('EG_Form_212')) {
 
 	/**
-	  * Class EG_Form_211
+	  * Class EG_Form_212
 	  *
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Form_211 {
+	Class EG_Form_212 {
 
 		var $options_entry;
 		var $options_group;
@@ -50,11 +50,11 @@ if (!class_exists('EG_Form_211')) {
 
 		var $debug_mode, $debug_file;
 
-		function EG_Form_211($page_id, $title, $options_entry, $textdomain=FALSE, $header='', $footer='', $sidebar_callback=FALSE) {
+		function EG_Form_212($page_id, $title, $options_entry, $textdomain=FALSE, $header='', $footer='', $sidebar_callback=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($page_id, $title, $options_entry, $textdomain, $header, $footer, $sidebar_callback);
-		} // End of EG_Form_211
+		} // End of EG_Form_212
 
 		/**
 		  * Class contructor
@@ -156,12 +156,16 @@ if (!class_exists('EG_Form_211')) {
 						break;
 
 						case 'grid_select':
+						$this->display_debug_info($inputs[$key], 'inputs');
 							$validated_inputs[$key] = array();
 							if (isset($inputs[$key]) && is_array($inputs[$key])) {
-								$i=1;
-								foreach ($inputs[$key] as $input_value) {
-									if ($input_value != '0') $validated_inputs[$key][$i++] = $input_value;
-								}
+								foreach ($inputs[$key] as $id => $input_value) {
+									if ($input_value != '0') {
+										if (is_int($input_valu)) $validated_inputs[$key][$id] = intval($input_value);
+										elseif (is_numeric($input_valu)) $validated_inputs[$key][$id] = floatval($input_value);
+										else $validated_inputs[$key][$id] = $input_value;
+									} // End of input_value!=0
+								} // End of foreach
 							} // End of isset($inputs[$key]
 						break;
 
@@ -273,10 +277,11 @@ if (!class_exists('EG_Form_211')) {
 						'<label for="'.$entry_name.'['.$item['value'].']">'.
 						'<select name="'.$entry_name.'['.$item['value'].']" id="'.$field['name'].'['.$item['value'].']" >';
 					foreach ($item['select'] as $key => $value) {
-						if (sizeof($default_value)>0 &&
-							isset($default_value[$item['value']]) &&
-							$key == $default_value[$item['value']]) $selected = 'selected';
-						else $selected = '';
+						if (sizeof($default_value)>0 && isset($default_value[$item['value']]) &&
+							$key == $default_value[$item['value']])
+							$selected = 'selected';
+						else
+							$selected = '';
 						$string .= '<option value="'.$key.'" '.$selected.'>'.__($value, $this->textdomain).'</option>';
 					}
 					$string .=	'</select></label></td></tr>';

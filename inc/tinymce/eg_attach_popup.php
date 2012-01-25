@@ -19,7 +19,7 @@ $default_values['nofollow']  	= $eg_attach_options['nofollow'];
 
 $current_values = $default_values;
 if ($eg_attach_options['shortcode_auto_default_opts']) {
-	$current_values = array(
+	$current_values = array_merge($current_values, array(
 		'orderby'  		=> $eg_attach_options['shortcode_auto_orderby'],
 		'order'			=> $eg_attach_options['shortcode_auto_order'],
 		'size'     		=> $eg_attach_options['shortcode_auto_size'],
@@ -30,7 +30,7 @@ if ($eg_attach_options['shortcode_auto_default_opts']) {
 		'label'    		=> $eg_attach_options['shortcode_auto_label'],
 		'fields'		=> $eg_attach_options['shortcode_auto_fields'],
 		'icon'			=> $eg_attach_options['shortcode_auto_icon'],
-		'limit' 	 	=> $eg_attach_options['shortcode_auto_limit']
+		'limit' 	 	=> $eg_attach_options['shortcode_auto_limit'])
 	);
 }
 
@@ -82,6 +82,25 @@ function get_select($html_id, $key, $current_values, $default_values) {
 	}
 	$string .= '</select><input type="hidden" name="'.$html_id.'_def" id="'.$html_id.'_def" value="'.$default_values[$key].'" />';
 	return $string;
+}
+
+// Preparing list of tags, if required
+$tags_select_string = '';
+if ($eg_attach_options['tags_assignment']) {
+
+	// Get all terms (tags)
+	$tags_list = get_terms('post_tag');
+
+	foreach ($tags_list as $tag) {
+		$tags_select_string .= '<option value="'.$tag->slug.'" /> '.
+					htmlspecialchars($tag->name).
+					'</option>';
+	} // End of foreach
+	if ($tags_select_string != '')
+		$tags_select_string = '<select multiple size="10" name="tags" id="tags">'.
+								'<option value="none"> </option>'.
+								$tags_select_string.
+								'</select>';
 }
 
 @header('Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
@@ -145,6 +164,7 @@ function get_select($html_id, $key, $current_values, $default_values) {
 			var nofollow_def	 = parseInt(document.getElementById('nofollow_def').value)
 			var default_doclist	 = document.getElementById('default_doclist');
 			var doclist 		 = getCheckedValue(document.getElementsByName('doclist'));
+			var taglist			 = document.getElementById('tags');
 
 			var tagtext = "[attachments";
 			if (sortorder != sortorder_def || orderby != orderby_def )
@@ -192,6 +212,16 @@ function get_select($html_id, $key, $current_values, $default_values) {
 					tagtext = tagtext + " docid=" + doclist;
 			}
 
+			var values = '';
+			for(var i=0; i< taglist.options.length; i++)	{
+				if (taglist.options[i].selected == true && taglist.options[i].value != "none") {
+					if (values=='') values = taglist.options[i].value;
+					else values = values + ',' + taglist.options[i].value;
+				}
+			}
+			if (values != '') {
+				tagtext = tagtext + " tags=\"" + values + "\"";
+			}
 			var tagtext = tagtext + "]";
 
 			if(window.tinyMCE) {
@@ -289,6 +319,12 @@ function get_select($html_id, $key, $current_values, $default_values) {
 					echo $attachment_string;
 					?>
 				</p>
+				<?php if ($tags_select_string != '') { ?>
+				<p>
+					<label for="tags"><strong><?php _e('Filter attachments using tags', EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo $tags_select_string; ?>
+				</p>
+				<?php } ?>
 			</div>
 		</form>
 	</div>
