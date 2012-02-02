@@ -424,7 +424,7 @@ msgstr "Vous pouvez d&eacute;finir votre propre format, en utilisant le <strong>
 
 #: eg-attachments-admin.inc.php:
 msgid "Available keywords:<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type of the documents</td></tr><tr><td><strong>%DATE%</strong></td><td>Date of last modification</td></tr></table>"
-msgstr "Mots-cl&eacute;s disponibles :<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Lien complet vers le document (comme &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>L'url du document attach&eacute; (permalien),</td></tr><tr><td><strong>%GUID%</strong></td><td>Le lien direct vers le document, tel qu'il est stock&eacute; dans la base de donn&eacute;es de WordPress,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>l'URL de l'ic√¥ne,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Titre du document attach&eacute;,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>L&eacute;gende du fichier attach&eacute;,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description du fichier attach&eacute;,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Nom du fichier attach&eacute;,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Taille du document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID du fichier document.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type des documents</td></tr></table>"
+msgstr "Mots-cl&eacute;s disponibles :<br /><table class=\"eg-attach-custom-format\"><tr><td><strong>%LINK%</strong></td><td>Lien complet vers le document (comme &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>L'url du document attach&eacute; (permalien),</td></tr><tr><td><strong>%GUID%</strong></td><td>Le lien direct vers le document, tel qu'il est stock&eacute; dans la base de donn&eacute;es de WordPress,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>l'URL de l'ic&ocirc;ne,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Titre du document attach&eacute;,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>L&eacute;gende du fichier attach&eacute;,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description du fichier attach&eacute;,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Nom du fichier attach&eacute;,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Taille du document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID du fichier document.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type des documents</td></tr></table>"
 
 #: eg-attachments-admin.inc.php:
 msgid "Custom format, before list: "
@@ -884,3 +884,27 @@ msgstr "S&eacute;lectionner les pi&egrave;ces jointes avec les mots-cl&eacute;s"
 
 msgid "Menu order"
 msgstr "Ordre &quote;utilisateur&quote;"
+
+msgid "&laquo;target=blank&raquo; attribute"
+msgstr "Attribut &laquo;target=blank&raquo;"
+
+msgid "Icons Management"
+msgstr "Gestion des ic&ocirc;nes"
+
+msgid "EG-Attachments provides icons, to complete the existing WordPress' list. You can add your own icons, by specifying a directory/url were these icons are stored."
+msgstr "EG-Attachments fournit des ic&ocirc;nes, pour compl&eacute;ter ceux fournis en standard par WordPress. Vous pouvez ajouter votre propre list, en indiquant un chemin/une url o&ugrave; sont stock&eacute;s ces ic&ocirc;nes."
+
+msgid "Please enter a location outside of EG-Attachments directories. By this way, your icons won't be deleted while a plugin upgrade"
+msgstr "Saisir un r&eacute;pertoire en dehors de l'arborescence de EG-Attachments. De cette fa&ccedil;on, vos ic&ocirc;nes ne seront pas effac&eacute;s pendant les mises ‡ jour du plugin."
+
+msgid "Icon path (beta)"
+msgstr "R&eacute;pertoire des ic&ocirc;nes (BÍta)"
+
+msgid "Path where the plugin can get icons"
+msgstr "Chemin o&ugrave; le plugin peut r&eacute;cup&eacute;rer les ic&ocirc;nes"
+
+msgid "Icon urlh (beta)"
+msgstr "Url des ic&ocirc;nes (BÍta)"
+
+msgid "Additional url that can be used by the plugin can display icons"
+msgstr "Url utilis&eacute;es par le plugins pour afficher les ic&ocirc;nes"

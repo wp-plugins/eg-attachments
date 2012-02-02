@@ -13,15 +13,28 @@ $EG_ATTACH_FIELDS_TITLE = array(
 	'type'			=> 'Type',
 );
 
-$EG_ATTACH_FIELDS_ORDER_KEY = array(
+$EG_ATTACH_FIELDS_ORDER_LABEL = array(
 	'id'			=> 'ID',
-	'title' 		=> 'post_title',
+	'caption' 		=> 'Caption',
+	'date'			=> 'Date',
+	'description' 	=> 'Description',
+	'filename'		=> 'File name',
+	'menu_order'	=> 'Menu order',
+	'rand'			=> 'Random',
+	'title' 		=> 'Title',
+	'type'			=> 'Type'
+);
+
+$EG_ATTACH_FIELDS_ORDER_KEY = array(
+	'menu_order'	=> 'menu_order',
+	'rand'			=> 'rand',
+	'id'			=> 'ID',
+	'title' 		=> 'title',
 	'caption' 		=> 'post_excerpt',
 	'description' 	=> 'post_content',
 	'filename'		=> 'post_name',
-	'size'			=> '',
-	'date'			=> 'post_date',
-	'type'			=> 'post_mime_type',
+	'date'			=> 'date',
+	'type'			=> 'post_mime_type'
 );
 
 $EG_ATTACH_DEFAULT_OPTIONS = array(
@@ -55,13 +68,16 @@ $EG_ATTACH_DEFAULT_OPTIONS = array(
 	'display_admin_bar'			  => 1,
 	'use_metabox'				  => 0,
 	'nofollow'				  	  => 0,
+	'target_blank'				  => 0,
 	'display_label'				  => 0,
 	'date_format'				  => '',
 	'link'						  => 'direct',
 	'comment_status'			  => 'default',
 	'ping_status'				  => 'default',
 	'tags_assignment'			  => 0,
-	'uninstall_del_options'		  => 0
+	'uninstall_del_options'		  => 0,
+	'icon_path'					  => '',
+	'icon_url'					  => ''
 );
 
 $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
@@ -82,9 +98,9 @@ $EG_ATTACHMENT_SHORTCODE_DEFAULTS = array(
 	'id'            => 0,
 	'limit'			=> -1,
 	'nofollow'		=> 0,
+	'target'		=> 0,
 	'tags'			=> ''
 );
-
 
 $EG_ATTACH_DEFAULT_FIELDS = array(
 	'small' 	=> array( 1 => 'label', 2 => 'small_size'),
@@ -92,4 +108,30 @@ $EG_ATTACH_DEFAULT_FIELDS = array(
 	'large'		=> array( 1 => 'title', 2 => 'caption', 	3 => 'filename', 4 => 'size')
 );
 
+
+function eg_attach_get_tags_select($mode='string') {
+
+	// Get all terms (tags)
+	$tags_list = get_terms('post_tag');
+	if ($mode == 'string') {
+		$tags_select = '';
+		foreach ($tags_list as $tag) {
+			$tags_select .= '<option value="'.$tag->slug.'" /> '.htmlspecialchars($tag->name).'</option>';
+		} // End of foreach
+		if ($tags_select != '') 
+			$tags_select = '<select multiple size="10" name="tags" id="tags">'.
+								'<option value="none"> </option>'.
+								$tags_select.
+							'</select>';
+	}
+	else {
+		$tags_select = array();
+		foreach ($tags_list as $tag) {
+			$tags_select[$tag->slug] =  $tag->name;
+		} // End of foreach
+		if (sizeof($tags_select)>0) 
+			$tags_select = array_merge( array('none' => ''), $tags_select);
+	}
+	return ($tags_select);
+}
 ?>

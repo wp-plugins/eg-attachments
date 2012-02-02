@@ -1,6 +1,24 @@
 <?php
 
-global $EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY, $EG_ATTACH_DEFAULT_FIELDS;
+global $EG_ATTACH_FIELDS_TITLE, 
+		$EG_ATTACH_FIELDS_ORDER_LABEL, 
+		$EG_ATTACH_DEFAULT_FIELDS,
+		$EG_ATTACH_DEFAULT_OPTIONS;
+
+// Build the list of post_types
+$post_type_list = array();
+if (function_exists('get_post_types')) {
+	$custom_post_types = get_post_types(array(), 'object');
+	$exclusion_list    = array('post', 'page', 'attachment', 'nav_menu_item', 'revision');
+
+	foreach ($custom_post_types as $post_type_id => $post_type_value) {
+		if (! in_array($post_type_id, $exclusion_list)) {
+			$post_type_list[$post_type_id] = $post_type_value->label;
+		}
+	} // End of foreach
+} // End of function get_post_types exists
+
+
 
 $this->options_form = new EG_Form_212('ega_options', 'EG-Attachements Settings', $this->options_entry, $this->textdomain, '', '',
 										array(&$this, 'display_sidebar'));
@@ -53,6 +71,15 @@ $shortcode_behavior_section_id = $this->options_form->add_section( array( 'tab' 
 
 	$this->options_form->add_field( array(
 			'section'	=> $shortcode_behavior_section_id,
+			'name'		=> 'target_blank',
+			'label'		=> '&laquo;target=blank&raquo; attribute',
+			'type'		=> 'checkbox',
+			'after'		=> 'Check if you want to automatically add <code>target="nofollow"</code> to attachment links'
+		)
+	);
+
+	$this->options_form->add_field( array(
+			'section'	=> $shortcode_behavior_section_id,
 			'name'		=> 'force_saveas',
 			'label'		=> '"Save As" activation',
 			'type'		=> 'checkbox',
@@ -94,6 +121,35 @@ $shortcode_behavior_section_id = $this->options_form->add_section( array( 'tab' 
 			'label'		=> 'Statistics, IP to exclude',
 			'type'		=> 'text',
 			'desc'		=> 'List of IP address you want to exclude',
+		)
+	);
+
+$icon_section_id = $this->options_form->add_section( array( 
+			'tab'    => 'behavior', 
+			'title'  => 'Icons Management', 
+			'header' => 'EG-Attachments provides icons, to complete the existing WordPress\' list. You can add your own icons, by specifying a directory/url were these icons are stored.',
+			'footer' => 'Please enter a location outside of EG-Attachments directories. By this way, your icons won\'t be deleted while a plugin upgrade'
+		));
+
+	$this->options_form->add_field( array(
+			'section'	=> $icon_section_id,
+			'name'		=> 'icon_path',
+			'label'		=> 'Icon path (beta)',
+			'type'		=> 'text',
+			'size'		=> 'medium',
+			'desc'		=> 'Additional path where the plugin can get icons',
+			'before'	=> trailingslashit(str_replace('\\', '/', ABSPATH))
+		)
+	);
+
+	$this->options_form->add_field( array(
+			'section'	=> $icon_section_id,
+			'name'		=> 'icon_url',
+			'label'		=> 'Icon urlh (beta)',
+			'type'		=> 'text',
+			'size'		=> 'medium',
+			'desc'		=> 'Additional url where the plugin can get icons',
+			'before'	=> trailingslashit(get_bloginfo('url'))
 		)
 	);
 
@@ -175,7 +231,8 @@ $auto_shortcode_section_id = $this->options_form->add_section( array( 'tab' => '
 			'label'		=> 'Where',
 			'before'	=> 'Activate automatic shortcode only on the following cases',
 			'type'		=> 'checkbox',
-			'options'	=> array( 'home' => 'Homepage,', 'post' => 'Posts,', 'page' => 'Pages,', 'index' => 'Lists of posts (archives, categories, ...).')
+			'options'	=> array_merge(array( 'home' => 'Homepage,', 'post' => 'Posts,', 'page' => 'Pages,', 'index' => 'Lists of posts (archives, categories, ...).'),
+										$post_type_list)
 		)
 	);
 
@@ -211,9 +268,7 @@ $auto_shortcode_section_id = $this->options_form->add_section( array( 'tab' => '
 			'name'		=> 'shortcode_auto_orderby',
 			'label'		=> 'Order by: ',
 			'type'		=> 'select',
-			'options'	=> array_merge(array_intersect_key($EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY),
-										array('menu_order' => 'Menu order'))
-		)
+			'options'	=> $EG_ATTACH_FIELDS_ORDER_LABEL)
 	);
 
 	$this->options_form->add_field( array(
@@ -333,6 +388,13 @@ $admin_section_id = $this->options_form->add_section( array( 'tab' => 'admin', '
 			'after'		=> 'Show metabox to display list of attachments of the current post/page'
 		)
 	);
+	$this->options_form->add_field( array(
+			'section'	=> $admin_section_id,
+			'name'		=> 'display_admin_bar',
+			'label'		=> 'Administration bar',
+			'after'		=> 'Display a <strong>EG-Attachments</strong> menu in the administration bar',
+			'type'		=> 'checkbox')
+	);
 
 	if (post_type_supports('attachment', 'comments')) {
 		$this->options_form->add_field( array(
@@ -366,14 +428,6 @@ $admin_section_id = $this->options_form->add_section( array( 'tab' => 'admin', '
 		'after'		=> 'Do you want to assign tags to attachments?',
 		'description' => 'If you select this option, you will be able to select attachments by using the <strong>tags</strong> parameter in the shortcode.'
 		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $admin_section_id,
-			'name'		=> 'display_admin_bar',
-			'label'		=> 'Administration bar',
-			'after'		=> 'Display a <strong>EG-Attachments</strong> menu in the administration bar',
-			'type'		=> 'checkbox')
 	);
 
 $uninstall_section_id = $this->options_form->add_section( array( 'tab' => 'admin', 'title' => 'Uninstall options'));

@@ -34,13 +34,8 @@ if ($eg_attach_options['shortcode_auto_default_opts']) {
 	);
 }
 
-$order_by_parameters = array();
-foreach ($EG_ATTACH_FIELDS_ORDER_KEY as $key => $value) {
-	$order_by_parameters[$key] = __($EG_ATTACH_FIELDS_TITLE[$key], EGA_TEXTDOMAIN);
-}
-
 $select_fields = array(
-	'orderby'      => $order_by_parameters,
+	'orderby'      => $EG_ATTACH_FIELDS_ORDER_LABEL,
 	'sortorder'    => array(
 		'ASC'      => __('Ascending',  EGA_TEXTDOMAIN),
 		'DESC'     => __('Descending', EGA_TEXTDOMAIN),
@@ -82,25 +77,6 @@ function get_select($html_id, $key, $current_values, $default_values) {
 	}
 	$string .= '</select><input type="hidden" name="'.$html_id.'_def" id="'.$html_id.'_def" value="'.$default_values[$key].'" />';
 	return $string;
-}
-
-// Preparing list of tags, if required
-$tags_select_string = '';
-if ($eg_attach_options['tags_assignment']) {
-
-	// Get all terms (tags)
-	$tags_list = get_terms('post_tag');
-
-	foreach ($tags_list as $tag) {
-		$tags_select_string .= '<option value="'.$tag->slug.'" /> '.
-					htmlspecialchars($tag->name).
-					'</option>';
-	} // End of foreach
-	if ($tags_select_string != '')
-		$tags_select_string = '<select multiple size="10" name="tags" id="tags">'.
-								'<option value="none"> </option>'.
-								$tags_select_string.
-								'</select>';
 }
 
 @header('Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
@@ -162,6 +138,8 @@ if ($eg_attach_options['tags_assignment']) {
 			var limit_def		 = parseInt(document.getElementById('limit_def').value);
 			var nofollow		 = document.getElementById('nofollow');
 			var nofollow_def	 = parseInt(document.getElementById('nofollow_def').value)
+			var target		 	 = document.getElementById('target');
+			var target_def	 	 = parseInt(document.getElementById('target_def').value)
 			var default_doclist	 = document.getElementById('default_doclist');
 			var doclist 		 = getCheckedValue(document.getElementsByName('doclist'));
 			var taglist			 = document.getElementById('tags');
@@ -207,23 +185,32 @@ if ($eg_attach_options['tags_assignment']) {
 			if (nofollow_val != nofollow_def)
 				tagtext = tagtext + " nofollow=" + nofollow_val;
 
+			if (target.checked)
+				target_val=1
+			else
+				target_val=0
+
+			if (target_val != target_def)
+				tagtext = tagtext + " target=" + target_val;
+				
 			if ( default_doclist && !default_doclist.checked) {
 				if (doclist!="")
 					tagtext = tagtext + " docid=" + doclist;
 			}
 
-			var values = '';
-			for(var i=0; i< taglist.options.length; i++)	{
-				if (taglist.options[i].selected == true && taglist.options[i].value != "none") {
-					if (values=='') values = taglist.options[i].value;
-					else values = values + ',' + taglist.options[i].value;
+			if (taglist) {
+				var values = '';
+				for(var i=0; i< taglist.options.length; i++)	{
+					if (taglist.options[i].selected == true && taglist.options[i].value != "none") {
+						if (values=='') values = taglist.options[i].value;
+						else values = values + ',' + taglist.options[i].value;
+					}
+				}
+				if (values != '') {
+					tagtext = tagtext + " tags=\"" + values + "\"";
 				}
 			}
-			if (values != '') {
-				tagtext = tagtext + " tags=\"" + values + "\"";
-			}
 			var tagtext = tagtext + "]";
-
 			if(window.tinyMCE) {
 				window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, tagtext);
 				/* tinyMCEPopup.editor.execCommand('mceRepaint'); */
@@ -294,6 +281,11 @@ if ($eg_attach_options['tags_assignment']) {
 					<input type="checkbox" id="nofollow" <?php echo ($default_values['nofollow']>0?'checked':''); ?> />
 					<input type="hidden" name="nofollow_def" id="nofollow_def" value="<?php echo $default_values['nofollow']; ?>" />
 				</p>
+				<p>
+					<label for="target"><strong><?php _e('Target="blank" : ',EGA_TEXTDOMAIN); ?></strong></label>
+					<input type="checkbox" id="target" <?php echo ($default_values['target']>0?'checked':''); ?> />
+					<input type="hidden" name="target_def" id="target_def" value="<?php echo $default_values['target']; ?>" />
+				</p>
 <?php /*
 				<p>
 					<label for="display_label"><strong><?php _e('Display label of fields: ',EGA_TEXTDOMAIN); ?></strong></label>
@@ -319,12 +311,18 @@ if ($eg_attach_options['tags_assignment']) {
 					echo $attachment_string;
 					?>
 				</p>
-				<?php if ($tags_select_string != '') { ?>
+				<?php
+					if ($eg_attach_options['tags_assignment'])  {
+						$tags_select_string = eg_attach_get_tags_select();
+						if ($tags_select_string != '') { ?>
 				<p>
 					<label for="tags"><strong><?php _e('Filter attachments using tags', EGA_TEXTDOMAIN); ?></strong></label><br />
 					<?php echo $tags_select_string; ?>
 				</p>
-				<?php } ?>
+				<?php
+					}
+				} 
+				?>
 			</div>
 		</form>
 	</div>

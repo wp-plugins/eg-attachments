@@ -44,8 +44,7 @@ if (! class_exists('EG_Attachments')) {
 					add_action( 'admin_bar_menu',  'eg_attachments_custom_admin_bar', 99 );
 				else if (version_compare($wp_version, '3.1.99', '>'))
 					add_action( 'wp_before_admin_bar_render', 'eg_eg_attachment_custom_admin_bar' );
-			}		
-
+			}
 		} /* End of init */
 
 		/**
@@ -212,7 +211,17 @@ if (! class_exists('EG_Attachments')) {
 				$new_args = $args ;
 			else {
 				// Add the icons path of the current plugin
-				$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),$args);
+				//$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),$args);
+				if ($this->options['icon_path']!='' && 
+					$this->options['icon_url']!='' &&
+					file_exists(str_replace('\\','/',trailingslashit(ABSPATH).$this->options['icon_path']))) {
+					$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),
+										array(str_replace('\\','/',trailingslashit(ABSPATH).$this->options['icon_path']) => trailingslashit(get_bloginfo('home')).$this->options['icon_url']),
+										$args);				
+				}
+				else {
+					$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),$args);
+				}
 			}
 			return ($new_args);
 		} // End of icon_dirs
@@ -298,15 +307,15 @@ if (! class_exists('EG_Attachments')) {
 
 
 		/**
-		  *  get_orderby() - return the order sequence for the post query
+		  *  sort_attachments
 		  *
 		  * @package EG-Attachments
-		  * @param 	array 	$args
-		  * @return string 			order sequence for post query
+		  * @param 	object		$a, $b
+		  * @return boolean		1 if $a>$b, -1 if $a<$b
 		  */
-		function get_orderby($args) {
-			return ($this->order_by.' '.$this->order);
-		} // End of get_orderby
+		//function sort_attachments($a, $a) {
+		//	return ($this->order_by.' '.$this->order);
+		//} // End of sort_attachments
 
 		/**
 		  *  get_attachments() - Display the list of attachments
@@ -340,7 +349,7 @@ if (! class_exists('EG_Attachments')) {
 			if (! isset($EG_ATTACH_FIELDS_ORDER_KEY[strtolower($this->order_by)]))
 				$this->order_by = reset(explode(' ',$EG_ATTACHMENT_SHORTCODE_DEFAULTS['orderby'] ));
 			$this->order_by = $EG_ATTACH_FIELDS_ORDER_KEY[strtolower($this->order_by)];
-			
+
 			// get attachments
 			$cache_id = $id.'-'.$this->order_by.'-'.$this->order;
 			if ($this->attachments === FALSE || !isset($this->attachments[$cache_id])) {
@@ -348,9 +357,13 @@ if (! class_exists('EG_Attachments')) {
 				// file wp-includes/query.php, line 2271, only the following order keys are allowed
 				// $allowed_keys = array('author', 'date', 'title', 'modified', 'menu_order', 'parent', 'ID', 'rand', 'comment_count');
 				// So we need to add our own filter, and the parameter suppress_filters = false
-				add_filter('posts_orderby', array(&$this, 'get_orderby') );
-				
-				$params = array('post_parent' => $id, 'numberposts' => -1, 'post_type' => 'attachment', 'suppress_filters' => false);
+				//add_filter('posts_orderby', array(&$this, 'get_orderby') );
+
+				$params = array('post_parent' => $id,
+								'numberposts' => -1,
+								'post_type'   => 'attachment',
+								'orderby'	  => $this->order_by,
+								'order'	   	  => $this->order);
 
 				if (isset($tags) && $tags != '') {
 					$list = explode(',', $tags);
@@ -363,12 +376,30 @@ if (! class_exists('EG_Attachments')) {
 
 				$this->attachments[$cache_id] = get_posts( $params );
 
-				remove_filter('posts_orderby',array(&$this, 'get_orderby') );
+				//remove_filter('posts_orderby',array(&$this, 'get_orderby') );
 			}
 
 			// if no attachments, stop and exit
 			if ($this->attachments === FALSE || !isset($this->attachments[$cache_id]) || sizeof($this->attachments[$cache_id])==0) {
 				return '';
+			}
+
+			$wordpress_sort_keys = array('author' 	=> 'author',
+										'date'		=> 'date',
+										'title'		=> 'title',
+										'modified'	=> 'modified',
+										'menu_order'=> 'menu_order',
+										'parent'	=> 'parent',
+										'ID'		=> 'ID',
+										'rand'		=> 'rand',
+										'comment_count' => 'comment_count');
+
+			if (!isset($wordpress_sort_keys[$this->order_by])) {
+			//file_put_contents(dirname(__FILE__).'/debug.log', var_export($this->attachments[$cache_id], TRUE), FILE_APPEND);
+				$compare = ($this->order === 'ASC')
+							? 'return strcmp($a->'.$this->order_by.', $b->'.$this->order_by.');'
+							: 'return -strcmp($a->'.$this->order_by.', $b->'.$this->order_by.');';
+				uasort($this->attachments[$cache_id], create_function('$a,$b', $compare));
 			}
 
 			if (function_exists('hidepost_filter_post'))
@@ -429,7 +460,7 @@ if (! class_exists('EG_Attachments')) {
 							'type'			=> $this->get_type($attachment->post_mime_type)
 						);
 						$fields_value['label'] = ($label=="filename"?$fields_value['filename']:$fields_value['title']);
-						
+
 						if ($logged_users>0 && ! is_user_logged_in()) {
 							$url =  ($this->options['login_url']==''?'#':$this->options['login_url']).
 								'"  OnClick="alert(\''.addslashes(__('Attachments restricted to register users only', $this->textdomain)).'\');';
@@ -451,7 +482,8 @@ if (! class_exists('EG_Attachments')) {
 
 						$full_link = '<a title="'.$fields_value['title'].
 									'" href="'.$url.'"'.
-									' '.($this->options['nofollow']?'rel="nofollow"':'').
+									($this->options['nofollow']?' rel="nofollow"':'').
+									($this->options['target']?' target="blank"':'').
 									/* "onClick=\"_gaq.push(['_trackEvent', 'File', 'display', $fields_value['title']]);\" */
 									'>';
 
@@ -548,19 +580,18 @@ if (! class_exists('EG_Attachments')) {
 				$list = array($this->options['shortcode_auto_where']);
 			else
 				$list = $this->options['shortcode_auto_where'];
-
+/*
 			if (sizeof($list)==4)
 				$is_visible = TRUE;
-			else {
+			else {*/
 				if (is_front_page() || is_home()) $current_page = 'home';
-				elseif (is_page()) $current_page = 'page';
-				elseif (is_single()) $current_page = 'post';
+				elseif (is_singular()) $current_page = get_post_type();
 				elseif (is_feed()) $current_page = 'feed';
 				elseif (is_archive() || is_category() || is_tag() || is_date() || is_day() || is_month() || is_year()) $current_page = 'index';
 				else $current_page='unknown';
 
 				$is_visible = in_array($current_page, $list);
-			}
+		/*	}*/
 			return ($is_visible);
 		} // End of shortcode_is_visible
 
@@ -597,7 +628,7 @@ if (! class_exists('EG_Attachments')) {
 
 			if ($output &&
 				$this->options['shortcode_auto'] == 3 &&
-			     $this->shortcode_is_visible() &&  
+			     $this->shortcode_is_visible() &&
 				! $this->shortcode_auto_check_manual_shortcode()) {
 
 				$attrs = array( 'size' => $this->options['shortcode_auto_size'],

@@ -32,6 +32,7 @@ if (!class_exists('EG_Attach_Widget')) {
 					'force_saveas'	=> array( 'type'  => 'checkbox', 'label'  => '"Save As" activation'),
 					'limit'			=> array( 'type'  => 'text', 'label'      => 'Number of documents to display'),
 					'nofollow'	    => array( 'type'  => 'checkbox', 'label'  => '&laquo;Nofollow&raquo; attribute'),
+					'target'	    => array( 'type'  => 'checkbox', 'label'  => '&laquo;Target&raquo; attribute'),
 					'logged_users'  => array( 'type'  => 'select', 'label' => 'Attachments access',
 						'list' => array( -1 => 'Use default parameter', 0 => 'All users', 1 => 'Only logged users')),
 					'sep2'			=> array( 'type'  => 'separator'),
@@ -40,6 +41,10 @@ if (!class_exists('EG_Attach_Widget')) {
 					'format_post'	=> array( 'type'  => 'textarea',	'label' => 'Custom format, after list')
 			);
 
+			if ($plugin_options['tags_assignment']) {
+				$fields['sep3']	= array( 'type'  => 'separator');
+				$fields['tags'] = array( 'type'  => 'select',		'label' => 'Tags', 'list' => eg_attach_get_tags_select('array'));
+			}
 			$default_values = array_intersect_key($EG_ATTACHMENT_SHORTCODE_DEFAULTS, $fields);
 			$default_values['format_pre']   = isset($plugin_options['custom_format_pre'])  ? $plugin_options['custom_format_pre']  : '' ;
 			$default_values['format']       = isset($plugin_options['custom_format'])      ? $plugin_options['custom_format']      :'' ;

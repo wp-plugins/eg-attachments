@@ -547,6 +547,21 @@ if (! class_exists('EG_Attachments_Admin')) {
 			echo '</tbody></table>';
 		} // End of stats_display_globals
 
+		function get_comment_trackback_default($mode='comment') {
+			switch ($this->options[$mode.'_status']) {
+				case 'default':
+					$value = ( get_option('default_'.$mode.'_status') == 'open' ? ' checked="checked"' : '' );
+				break;
+
+				case 'open':
+					$value = ' checked="checked"';
+				break;
+
+				default:
+					$value = '';
+			} // End of switch
+			return ($value);
+		} // End of get_comment_trackback_default
 
 		/**
 		 * media_upload_custom_fields_edit
@@ -563,27 +578,17 @@ if (! class_exists('EG_Attachments_Admin')) {
 		function media_upload_custom_fields_edit( $form_fields, $post ) {
 
 			if (post_type_supports('attachment', 'comments')) {
-
-				if ($this->options['comment_status'] == 'default') $default = ( $post->comment_status == 'open' ? ' checked="checked"' : '' );
-				else if ($this->options['comment_status'] == 'open') $default = ' checked="checked"';
-				else $default = '';
-
 				$form_fields['comment_status'] = array(
 						'label' => 'Allow comments',
 						'input' => 'html',
-						'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][comment_status]" id="attachments['.$post->ID.'][comment_status]" value="1" '.$default.' />'.'<label for="attachments['.$post->ID.'][comment_status]">'.__('Allow comments on this attachments', $this->textdomain).'</label>');
+						'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][comment_status]" id="attachments['.$post->ID.'][comment_status]" value="1" '.$this->get_comment_trackback_default().' />'.'<label for="attachments['.$post->ID.'][comment_status]">'.__('Allow comments on this attachments', $this->textdomain).'</label>');
 			} // End of support comments
 
 			if (post_type_supports('attachment', 'trackbacks')) {
-
-				if ($this->options['ping_status'] == 'default') $default = ( $post->ping_status == 'open' ? ' checked="checked"' : '' );
-				else if ($this->options['ping_status'] == 'open') $default = ' checked="checked"';
-				else $default = '';
-
 				$form_fields['ping_status'] = array(
 						'label' => 'Allow comments',
 						'input' => 'html',
-						'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][ping_status]" id="attachments['.$post->ID.'][ping_status]" value="1" '.$default.'/>'.'<label for="attachments['.$post->ID.'][ping_status]">'.sprintf(__('Allow <a target="_blank" href="%s">trackbacks and pingbacks</a> on this attachment', $this->textdomain), 'http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments').'</label>'	);
+						'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][ping_status]" id="attachments['.$post->ID.'][ping_status]" value="1" '.$this->get_comment_trackback_default('ping').'/>'.'<label for="attachments['.$post->ID.'][ping_status]">'.sprintf(__('Allow <a target="_blank" href="%s">trackbacks and pingbacks</a> on this attachment', $this->textdomain), 'http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments').'</label>'	);
 			} // End of support comments
 
 			if ($this->options['tags_assignment']) {

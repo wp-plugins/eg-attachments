@@ -1,10 +1,10 @@
 === EG-Attachments ===
 Contributors: Emmanuel Georjon
-Donate link: http://www.emmanuelgeorjon.com/
-Tags: posts, attachments
+Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
+Tags: posts, attachments, shortcode, widgets
 Requires at least: 3.1
 Tested up to: 3.3.1
-Stable tag: 1.9.3
+Stable tag: 1.9.4
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -19,18 +19,18 @@ An another way is to activate option **auto shortcode** that automaticaly adds t
 
 The list includes, for each attachments:
 
-* Icon, 
-* Title, 
-* Description, 
+* Icon,
+* Title,
+* Description,
 * Caption,
 * Type,
-* Date, 
+* Date,
 * Size.
 
-Options are 
+Options are
 
-* Icon size, 
-* Sort order, 
+* Icon size,
+* Sort order,
 * Document type,
 * Document list,
 * Title of the list,
@@ -41,9 +41,16 @@ Options are
 
 Since the version 1.5.0, **EG-Attachments** plugin counts the number of clicks occuring on each attached document.
 
+= Plugin's Official Site =
+
+* [Overview](http://www.emmanuelgeorjon.com/eg-attachments-1233/)
+* [Docs](http://www.emmanuelgeorjon.com/eg-attachments-documentation-4733/)
+* [Support & FAQ](http://www.emmanuelgeorjon.com/eg-attachments-support-4735/)
+* [Changelog](http://www.emmanuelgeorjon.com/eg-attachments-changelog-4737/)
+
 = Contributions =
 
-Thanks to 
+Thanks to
 
 * [Dave](http://www.jxs.nl/) for the "custom style" feature,
 * [Rebekah](http://www.learntowebdesign.com/) for her [video tutorial](http://www.learntowebdesign.com/2009/12/placing-attachments-wordpress-post-page/)
@@ -87,7 +94,7 @@ This plugin was tested on WordPress 3.1, and up to 3.3.1.
 
 = Update =
 
-When a new version is available, options of the plugins are updated during the activation. 
+When a new version is available, options of the plugins are updated during the activation.
 So during the upgrade procedure, please desactivate / reactivate the plugin, in order to ensure that options are properly modified.
 
 = Usage =
@@ -129,7 +136,7 @@ Two specific keywords can be used with **docid** option: **first** and **last** 
 = Some explanations about *General behavior of shortcodes =
 
 In the menu **Settings / EG-Attachments**, you will find a section named *General behavior of shortcodes*.
-The options in the section are 
+The options in the section are
 
 * applied to all shortcodes (automatic or manually inserted into posts),
 * used as options for the automatic shortcode,
@@ -194,6 +201,17 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 
 == Changelog ==
 
+= Version 1.9.4 - Feb 2nd, 2011 =
+
+* Bug fix: EG-Attachments button in the TinyMCE editor doesn't work,
+* Bug fix: some conflicts with plugins using filters in the `get_posts` function,
+* Bug fix: order_by=menu_order didn't work properly,
+* New: manage "custom post type",
+* New: ability to add `target=blank` attribute to the links,
+* New: ability to add a path to store your own icons,
+* New: Select attachments with tags in the widget,
+* Change: internal librairies updates
+
 = Version 1.9.3 - Jan 24th, 2011 =
 
 * Bug fix: broken link to lock.png image,
@@ -246,17 +264,17 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 
 = Version 1.8.6 - Aug 27th, 2011 =
 
-* Bug fix: force download option doesn't work when the PHP **fopen wrappers** option is disabled 
+* Bug fix: force download option doesn't work when the PHP **fopen wrappers** option is disabled
 * New: add %DATE% keyword is available now for the custom format.
 
 = Version 1.8.5 - Aug 10th, 2011 =
 
 * Bug fix: zip files were corrupted after download (with Internet explorer, and zlib, or gzip enable on server).
-* Bug fix: sort order didn't work when not specify in uppercase, 
+* Bug fix: sort order didn't work when not specify in uppercase,
 * Bug fix: cannot sort by ID.
 * Bug fix: uninstallation didn't run properly
 * Bug fix: exclusion list for statistic didn't work properly
-* Change: replace some PHP depredicated functions 
+* Change: replace some PHP depredicated functions
 
 = Version 1.8.4 - July 30th, 2011 =
 
@@ -270,7 +288,7 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 
 = Version 1.8.2 - July 18th, 2011 =
 
-* New: parameter limit can be modified with the button 
+* New: parameter limit can be modified with the button
 * Bug fix: SSL compatibility,
 * Bug fix: parameter limit doesn't work properly with auto-shortcode,
 * Bug fix: bad url when use standard URL (http://host/path/?p= ...)
@@ -333,7 +351,7 @@ List of changes and bug fixes:
 
 * Bug fix: Some errors in the readme.txt file,
 * Bug fix: Attachments was displayed in the widget, evenif post was password restricted,
-* Bug fix: widget didn't displayed in a page (only post). 
+* Bug fix: widget didn't displayed in a page (only post).
 
 = Version 1.7.0 - May 20nd, 2010 =
 
@@ -397,7 +415,7 @@ List of changes and bug fixes:
 
 = Version 1.3.0 - June 22th, 2009 =
 
-* Bugfix: All users can use the EG-Attachments button in the TinyMCE editor.	
+* Bugfix: All users can use the EG-Attachments button in the TinyMCE editor.
 
 = Version 1.2.9 - June 20th, 2009 =
 
@@ -466,7 +484,7 @@ List of changes and bug fixes:
 = Version 1.1.1 - Feb 11th, 2009 =
 
 * Bugfix: Disable temporarily the management of the cache
-	
+
 = Version 1.1.0 - Feb 9th, 2009 =
 
 * Bugfix: Sanitize title

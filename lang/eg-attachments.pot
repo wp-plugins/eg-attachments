@@ -888,3 +888,27 @@ msgstr ""
 
 msgid "Menu Order"
 msgstr ""
+
+msgid "&laquo;target=blank&raquo; attribute"
+msgstr ""
+
+msgid "Icons paths"
+msgstr ""
+
+msgid "EG-Attachments provides icons, to complete the existing WordPress' list. You can add your own icons, by specifying a directory/url were these icons are stored."
+msgstr ""
+
+msgid "Please enter a location outside of EG-Attachments directories. By this way, your icons won't be deleted while a plugin upgrade"
+msgstr ""
+
+msgid "Icon path (beta)"
+msgstr ""
+
+msgid "Additional path where the plugin can get icons"
+msgstr ""
+
+msgid "Icon urlh (beta)"
+msgstr ""
+
+msgid "Additional url where the plugin can get icons"
+msgstr ""
