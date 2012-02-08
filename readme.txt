@@ -4,7 +4,7 @@ Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode, widgets
 Requires at least: 3.1
 Tested up to: 3.3.1
-Stable tag: 1.9.4
+Stable tag: 1.9.4.1
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -63,7 +63,8 @@ Thanks to
 The plugin comes up with 10 translations. Thanks to the following people for their contributions:
 
 * Arabic (AR) - Mahmoud Ahmed,
-* Belarusian (BY) - Fatcow
+* Belarusian (BY) - Fatcow,
+* Czech (CZ) - Josef &#353;abata,
 * Dutch (NL) - [Rene at WP webshop](http://wpwebshop.com/premium-wordpress-themes/),
 * French (FR) - [Emmanuel](http://www.emmanuelgeorjon.com/),
 * German (DE) - [DesignContext](http://www.designcontest.com/),
@@ -71,7 +72,7 @@ The plugin comes up with 10 translations. Thanks to the following people for the
 * Spanish (ES) - [David Arinez](http://www.codeeta.com/),
 * Polish (PL) - [Mariusz Szatkowski](http://www.trojmiasto.us/),
 * Romanian (RO) - [Armand Coveanu](http://caveatlector.eu/),
-* Swedish (SE) - [Jonas Floden](http://www.koalasoft.se/),
+* Swedish (SE) - [Jonas Floden](http://www.koalasoft.se/)
 
 If you want to help to translate the plugin to your language, please have a look at the eg_attachments.pot file which contains all definitions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
 
@@ -200,6 +201,15 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 8. Detailed statistics page.
 
 == Changelog ==
+
+= Version 1.9.4.1 - Feb 7th, 2011 =
+
+* New: Czech translation,
+* Change: Updated italian translation,
+* Bug fix: Tags without posts weren't displayed 
+* Bug fix: *Target=_blank* option didn't work
+* Bug fix: Options not updated during the automatic upgrade procedure (since WP 3.1, see [Function Reference/register activation hook
+](http://codex.wordpress.org/Function_Reference/register_activation_hook#Changelog))
 
 = Version 1.9.4 - Feb 2nd, 2011 =
 

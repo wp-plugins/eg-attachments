@@ -51,7 +51,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$previous_version = ($previous_options === FALSE ? FALSE : $previous_options['version']);
 
 			if ($previous_version !== FALSE) { // Is it a new installation
-
 				if (version_compare($previous_version, '1.4.3', '<') && isset($this->options['uninstall_del_option'])) {
 					$this->options['uninstall_del_options'] = $previous_options['uninstall_del_option'];
 					unset($this->options['uninstall_del_option']);
@@ -90,6 +89,9 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$table_name = $wpdb->prefix . "eg_attachments_clicks";
 			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 
+				$this->options['clicks_table'] = 0;
+				update_option($this->options_entry, $this->options);			
+			
 				$sql = "CREATE TABLE " . $table_name . " (
 						click_id bigint(20) NOT NULL auto_increment,
 						click_date datetime NOT NULL default '0000-00-00 00:00:00',
@@ -111,8 +113,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 					// Table created successfully => save a flag.
 					$this->options['clicks_table'] = 1;
 					update_option($this->options_entry, $this->options);
-				}
-			}
+				} // End of table check
+			} // End of table not exist
 
 		} // End of install_upgrade
 
@@ -602,7 +604,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 					}
 				}
 				// Get all terms (tags)
-				$tags_list = get_terms('post_tag');
+				$tags_list = get_terms('post_tag', 'hide_empty=0');
 
 				$string = '';
 				foreach ($tags_list as $tag) {

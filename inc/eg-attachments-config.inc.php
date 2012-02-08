@@ -112,7 +112,7 @@ $EG_ATTACH_DEFAULT_FIELDS = array(
 function eg_attach_get_tags_select($mode='string') {
 
 	// Get all terms (tags)
-	$tags_list = get_terms('post_tag');
+	$tags_list = get_terms('post_tag', 'hide_empty=0');
 	if ($mode == 'string') {
 		$tags_select = '';
 		foreach ($tags_list as $tag) {

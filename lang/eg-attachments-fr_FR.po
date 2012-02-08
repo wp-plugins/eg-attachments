@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: EG-Attachments 1.9.3\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/eg-attachments\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tags/eg-attachments\n"
 "POT-Creation-Date: 2011-09-12 12:00:00+00:00\n"
 "PO-Revision-Date: 2012-01-24 19:13+0100\n"
 "Last-Translator: \n"

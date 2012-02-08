@@ -9,7 +9,7 @@ Author URI: http://www.emmanuelgeorjon.com/
 */
 
 /*
-    Copyright 2009-2011 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
+    Copyright 2009-2012 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ if (!class_exists('EG_Plugin_126')) {
 		var $default_options;
 		var $stylesheet 		= '';
 		var $debug_mode, $debug_file;
-		var $wp_version_min 	= '3.0';
+		var $wp_version_min 	= '3.1';
 		var $wp_version_max;
 		var $multi_site			=TRUE;
 		var $requirements_error_msg = '';
@@ -187,7 +187,6 @@ if (!class_exists('EG_Plugin_126')) {
 				$this->options = get_option($this->options_entry);
 
 			if ($this->options === FALSE) {
-
 				$previous_options = FALSE;
 				// Create option from the defaults
 				if ($this->default_options !== FALSE) {
@@ -196,13 +195,12 @@ if (!class_exists('EG_Plugin_126')) {
 				$this->options['version'] = $this->version;
 				add_option($this->options_entry, $this->options);
 			} // End of options empty (first install)
-			else {
-
+			elseif (version_compare($this->options['version'], $this->version, '<')) {
 				$previous_options = $this->options;
-				$current_version = (isset($this->options['version'])? $this->options['version']: '0.0.0');
+				//$current_version = (isset($this->options['version'])? $this->options['version']: '0.0.0');
 
 				// Plugin previously installed. Check the version and update options
-				if (version_compare($current_version, $this->version, '<')) {
+				//if (version_compare($current_version, $this->version, '<')) {
 					if ($this->default_options === FALSE) {
 						$new_options = $this->options;
 					}
@@ -216,13 +214,14 @@ if (!class_exists('EG_Plugin_126')) {
 					$new_options['version'] = $this->version;
 					update_option($this->options_entry, $new_options);
 					$this->options = $new_options;
-				} // End of version compare
+				// } // End of version compare
 			} // End of options not empty (update)
 			return ($previous_options);
 
 		} // End of install_upgrade
 
 		function admin_init() {
+			$this->install_upgrade();
 			add_action('admin_notices', array(&$this, 'display_notice_error'));
 			add_action('admin_enqueue_scripts', array (&$this, 'load_styles'));
 		} // End of admin_init
@@ -292,7 +291,7 @@ if (!class_exists('EG_Plugin_126')) {
 			if (is_admin()) {
 
 				register_deactivation_hook( $this->corefile, array(&$this, 'desactivation') );
-				register_activation_hook( $this->corefile, array(&$this, 'install_upgrade') );
+				//register_activation_hook( $this->corefile, array(&$this, 'install_upgrade') );
 				add_action('in_plugin_update_message-' . basename($this->corefile),
 							array( &$this, 'plugin_update_notice') );
 

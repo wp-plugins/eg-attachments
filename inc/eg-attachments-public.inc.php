@@ -483,7 +483,7 @@ if (! class_exists('EG_Attachments')) {
 						$full_link = '<a title="'.$fields_value['title'].
 									'" href="'.$url.'"'.
 									($this->options['nofollow']?' rel="nofollow"':'').
-									($this->options['target']?' target="blank"':'').
+									($this->options['target']?' target="_blank"':'').
 									/* "onClick=\"_gaq.push(['_trackEvent', 'File', 'display', $fields_value['title']]);\" */
 									'>';
 
