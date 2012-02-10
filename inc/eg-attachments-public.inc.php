@@ -335,6 +335,8 @@ if (! class_exists('EG_Attachments')) {
 
 			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['id'] 			= $post->ID;
 			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['force_saveas'] 	= $this->options['force_saveas'];
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['nofollow'] 		= $this->options['nofollow'];
+			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['target'] 		= $this->options['target_blank'];
 			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['logged_users'] 	= $this->options['logged_users_only'];
 			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['login_url'] 		= $this->options['login_url'];
 			$EG_ATTACHMENT_SHORTCODE_DEFAULTS['display_label'] 	= $this->options['display_label'];
@@ -482,9 +484,8 @@ if (! class_exists('EG_Attachments')) {
 
 						$full_link = '<a title="'.$fields_value['title'].
 									'" href="'.$url.'"'.
-									($this->options['nofollow']?' rel="nofollow"':'').
-									($this->options['target']?' target="_blank"':'').
-									/* "onClick=\"_gaq.push(['_trackEvent', 'File', 'display', $fields_value['title']]);\" */
+									($nofollow?' rel="nofollow"':'').
+									($target ?' target="_blank"':'').
 									'>';
 
 						switch ($size) {

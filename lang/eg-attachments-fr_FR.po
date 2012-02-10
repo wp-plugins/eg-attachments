@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the EG-Attachments package.
 msgid ""
 msgstr ""
-"Project-Id-Version: EG-Attachments 1.9.3\n"
+"Project-Id-Version: EG-Attachments 1.9.4.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tags/eg-attachments\n"
 "POT-Creation-Date: 2011-09-12 12:00:00+00:00\n"
-"PO-Revision-Date: 2012-01-24 19:13+0100\n"
+"PO-Revision-Date: 2012-02-10 15:17+0100\n"
 "Last-Translator: \n"
 "Language-Team: Emmanuel GEORJON <blog@emmanuelgeorjon.com>\n"
 "MIME-Version: 1.0\n"
@@ -888,6 +888,9 @@ msgstr "Ordre &quote;utilisateur&quote;"
 msgid "&laquo;target=blank&raquo; attribute"
 msgstr "Attribut &laquo;target=blank&raquo;"
 
+msgid "Check if you want to automatically add target=\"_blank\" to attachment links"
+msgstr "Cocher cette option si vous souhaitez ajouter automatiquement l'attribut target=\"_blank\" au lien vers les pi&egrave;ces jointes"
+
 msgid "Icons Management"
 msgstr "Gestion des ic&ocirc;nes"
 
@@ -895,16 +898,17 @@ msgid "EG-Attachments provides icons, to complete the existing WordPress' list. 
 msgstr "EG-Attachments fournit des ic&ocirc;nes, pour compl&eacute;ter ceux fournis en standard par WordPress. Vous pouvez ajouter votre propre list, en indiquant un chemin/une url o&ugrave; sont stock&eacute;s ces ic&ocirc;nes."
 
 msgid "Please enter a location outside of EG-Attachments directories. By this way, your icons won't be deleted while a plugin upgrade"
-msgstr "Saisir un r&eacute;pertoire en dehors de l'arborescence de EG-Attachments. De cette fa&ccedil;on, vos ic&ocirc;nes ne seront pas effac&eacute;s pendant les mises à jour du plugin."
+msgstr "Saisir un r&eacute;pertoire en dehors de l'arborescence de EG-Attachments. De cette fa&ccedil;on, vos ic&ocirc;nes ne seront pas effac&eacute;s pendant les mises &agrave; jour du plugin."
 
 msgid "Icon path (beta)"
-msgstr "R&eacute;pertoire des ic&ocirc;nes (Bêta)"
+msgstr "R&eacute;pertoire des ic&ocirc;nes (B&ecirc;ta)"
 
 msgid "Path where the plugin can get icons"
 msgstr "Chemin o&ugrave; le plugin peut r&eacute;cup&eacute;rer les ic&ocirc;nes"
 
 msgid "Icon urlh (beta)"
-msgstr "Url des ic&ocirc;nes (Bêta)"
+msgstr "Url des ic&ocirc;nes (B&ecirc;ta)"
 
 msgid "Additional url that can be used by the plugin can display icons"
 msgstr "Url utilis&eacute;es par le plugins pour afficher les ic&ocirc;nes"
+

@@ -65,7 +65,7 @@ $shortcode_behavior_section_id = $this->options_form->add_section( array( 'tab' 
 			'name'		=> 'nofollow',
 			'label'		=> '&laquo;Nofollow&raquo; attribute',
 			'type'		=> 'checkbox',
-			'after'		=> 'Check if you want to automatically add rel="nofollow" to attachment links'
+			'after'		=> 'Check if you want to automatically add <code>rel="nofollow"</code> to attachment links'
 		)
 	);
 
@@ -74,7 +74,7 @@ $shortcode_behavior_section_id = $this->options_form->add_section( array( 'tab' 
 			'name'		=> 'target_blank',
 			'label'		=> '&laquo;target=blank&raquo; attribute',
 			'type'		=> 'checkbox',
-			'after'		=> 'Check if you want to automatically add <code>target="nofollow"</code> to attachment links'
+			'after'		=> 'Check if you want to automatically add <code>target="_blank"</code> to attachment links'
 		)
 	);
 

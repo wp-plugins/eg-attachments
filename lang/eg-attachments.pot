@@ -448,7 +448,7 @@ msgid "&laquo;Nofollow&raquo; attribute"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
-msgid "Check if you want to automatically add rel=\"nofollow\" to attachment links"
+msgid "Check if you want to automatically add <code>rel=\"nofollow\"</code> to attachment links"
 msgstr ""
 
 #: eg-attachments-admin.inc.php:
@@ -890,6 +890,9 @@ msgid "Menu Order"
 msgstr ""
 
 msgid "&laquo;target=blank&raquo; attribute"
+msgstr ""
+
+msgid "Check if you want to automatically add <code>target=\"_blank\"</code> to attachment links"
 msgstr ""
 
 msgid "Icons paths"
