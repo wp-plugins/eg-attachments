@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments extends EG_Plugin_126 {
+	Class EG_Attachments extends EG_Plugin_127 {
 
 		var $icon_height = array( 'large' => 48, 'medium' => 32, 'small' => 16);
 		var $icon_width  = array( 'large' => 48, 'medium' => 32, 'small' => 16);
@@ -92,22 +92,36 @@ if (! class_exists('EG_Attachments')) {
 			global $wpdb;
 			global $post;
 
+			//$this->set_debug_mode(FALSE, 'debug.log');
+			//$this->display_debug_info('Starting manage_link');
+
 			// Be sure that the link is coming from EG-Attachments
 			if ( isset($_GET['aid']) && is_numeric($_GET['aid']) &&
 				 isset($_GET['sa']) && is_numeric($_GET['sa']) ) {
+
+				//$this->display_debug_info('aid='.(isset($_GET['aid'])?$_GET['aid']:'Not defined'));
+				//$this->display_debug_info('sa='.(isset($_GET['aid'])?$_GET['sa']:'Not defined'));
 
 				// First security check. If post not defined, potential hack tentative.
 				if (! isset($post))
 					wp_die(__('Something is going wrong. Bad address, or perhaps you try to access to a private document.', $this->textdomain));
 
+				//$this->display_debug_info('Post defined, go ahead');
+
 				$attach = get_post($_GET['aid']);
 				if (isset($attach) && $attach && $attach->post_type=='attachment')
 					$attach_id = $attach->ID;
 
+				//$this->display_debug_info($attach, 'Attachment: ');
+
 				if ( isset($attach_id) ) {
 
+					//$this->display_debug_info($attach_id, 'Attachment id: ');
+				
 					$parent_id = reset(get_post_ancestors($attach_id));
 
+					//$this->display_debug_info($parent_id, 'Parent id: ');					
+					
 					// Second security check: private posts / pages
 					if ('private' == get_post_field('post_status', $parent_id) && !is_user_logged_in()) {
 						wp_die(__('This post is private. You must be a user of the site, and logged in, to display this file.', $this->textdomain));
@@ -118,21 +132,28 @@ if (! class_exists('EG_Attachments')) {
 						wp_die(__('This post is password protected. Please go to the site, and enter the password required to display the document', $this->textdomain));
 					}
 
+					//$this->display_debug_info('Security ok, go ahead');
+					
 					$stats_enable = ($this->options['stats_enable'] && $this->options['clicks_table']);
 					if ($stats_enable && $this->options['stats_ip_exclude'] != '') {
 						$stat_ip = (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : FALSE);
 						if ($stat_ip !== FALSE ) {
 							if (EGA_DEBUG_MODE)
-								$this->display_debug_info('IP: '.$stat_ip.', exclusion list: '.$this->options['stats_ip_exclude']);
+								//$this->display_debug_info('IP: '.$stat_ip.', exclusion list: '.$this->options['stats_ip_exclude']);
 							$stats_enable = (! in_array($stat_ip, explode(',', $this->options['stats_ip_exclude'])) );
 						}
 					}
-
+				//	$this->display_debug_info(($stat_enable?'TRUE':'FALSE'),'Statistics');
+					
 					if ($stats_enable) {
 						/* Get some details from post parent */
 						$post = get_post($parent_id);
-						if (! $post || ! in_array($post->post_type, array('post', 'page')))
+						
+						//$this->display_debug_info($post,'Post parent:');
+						
+						if (! $post /*|| ! in_array($post->post_type, array('post', 'page'))*/)
 							return;
+
 						// Count click
 						$sql = $wpdb->prepare('SELECT click_id '.
 											'FROM '.$wpdb->prefix.'eg_attachments_clicks '.
@@ -194,6 +215,9 @@ if (! class_exists('EG_Attachments')) {
 				} // End of $attach_id exists
 
 			} // End of parameters exist (aid, and sa)
+			else {
+				$this->set_debug_mode(FALSE);
+			}
 		} // End of manage_link
 
 		/**
@@ -212,12 +236,12 @@ if (! class_exists('EG_Attachments')) {
 			else {
 				// Add the icons path of the current plugin
 				//$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),$args);
-				if ($this->options['icon_path']!='' && 
+				if ($this->options['icon_path']!='' &&
 					$this->options['icon_url']!='' &&
 					file_exists(str_replace('\\','/',trailingslashit(ABSPATH).$this->options['icon_path']))) {
 					$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),
 										array(str_replace('\\','/',trailingslashit(ABSPATH).$this->options['icon_path']) => trailingslashit(get_bloginfo('home')).$this->options['icon_url']),
-										$args);				
+										$args);
 				}
 				else {
 					$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),$args);

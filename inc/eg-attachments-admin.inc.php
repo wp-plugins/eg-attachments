@@ -17,7 +17,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_126 {
+	Class EG_Attachments_Admin extends EG_Plugin_127 {
 
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
 
@@ -51,6 +51,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$previous_version = ($previous_options === FALSE ? FALSE : $previous_options['version']);
 
 			if ($previous_version !== FALSE) { // Is it a new installation
+
 				if (version_compare($previous_version, '1.4.3', '<') && isset($this->options['uninstall_del_option'])) {
 					$this->options['uninstall_del_options'] = $previous_options['uninstall_del_option'];
 					unset($this->options['uninstall_del_option']);
@@ -75,6 +76,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 				} // End of version older than 1.7.3
 
 				if (version_compare($previous_version, '1.9.2', '<')) {
+
 					if ($this->options['shortcode_auto_where'] == 'post')
 						$this->options['shortcode_auto_where'] = array( 'post', 'page');
 					else
@@ -90,8 +92,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 
 				$this->options['clicks_table'] = 0;
-				update_option($this->options_entry, $this->options);			
-			
+				update_option($this->options_entry, $this->options);
+
 				$sql = "CREATE TABLE " . $table_name . " (
 						click_id bigint(20) NOT NULL auto_increment,
 						click_date datetime NOT NULL default '0000-00-00 00:00:00',

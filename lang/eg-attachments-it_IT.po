@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: EG-Attachments 1.0\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/eg-attachments\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tags/eg-attachments\n"
 "POT-Creation-Date: 2011-09-12 12:00:00+00:00\n"
-"PO-Revision-Date: 2012-01-27 15:13+0100\n"
+"PO-Revision-Date: 2012-02-17 13:14+0100\n"
 "Last-Translator: Roberto Scano <mail@robertoscano.info>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -248,7 +248,7 @@ msgstr "EG-Attachments"
 
 #: eg-attachments-admin.inc.php:
 msgid "Auto shortcode"
-msgstr "Auto shortcode"
+msgstr "Shortcode automatico"
 
 #: eg-attachments-admin.inc.php:
 msgid "Activation"
@@ -366,7 +366,7 @@ msgstr "Impostazioni predefinite "
 
 #: eg-attachments-admin.inc.php:
 msgid "Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?"
-msgstr "Vuoi che le impostazioni dell'auto shortcode diventino le impostazioni di default di EG-Attachments per l'editor TinyMCE?"
+msgstr "Vuoi che le impostazioni dello shortcode automatico diventino le impostazioni di default di EG-Attachments per l'editor TinyMCE?"
 
 #: eg-attachments-admin.inc.php:
 msgid "Documents label: "
@@ -457,8 +457,8 @@ msgid "&laquo;Nofollow&raquo; attribute"
 msgstr "Attributo &laquo;Nofollow&raquo;"
 
 #: eg-attachments-admin.inc.php:
-msgid "Check if you want to automatically add rel=\"nofollow\" to attachment links"
-msgstr "Seleziona se desideri automaticamente aggiungere l'attributo rel=\"nofollow\" ai collegamenti"
+msgid "Check if you want to automatically add <code>rel=\"nofollow\"</code> to attachment links"
+msgstr "Seleziona se desideri automaticamente aggiungere l'attributo <code>rel=\"nofollow\"</code> ai collegamenti"
 
 #: eg-attachments-admin.inc.php:
 msgid "\"Save As\" activation"
@@ -880,6 +880,33 @@ msgstr "Filtra gli allegati utilizzando i tag"
 msgid "Menu Order"
 msgstr "Ordine menu"
 
+msgid "&laquo;target=blank&raquo; attribute"
+msgstr "Attributo &laquo;target=blank&raquo;"
+
+msgid "Check if you want to automatically add <code>target=\"_blank\"</code> to attachment links"
+msgstr "Seleziona se desideri automaticamente aggiungere l'attributo <code>target=\"_blank\"</code> ai collegamenti"
+
+msgid "Icons paths"
+msgstr "Percorsi icone"
+
+msgid "EG-Attachments provides icons, to complete the existing WordPress' list. You can add your own icons, by specifying a directory/url were these icons are stored."
+msgstr "EG-Attachments fornisce icone, per completare l'elenco esistente di WordPress. Puoi aggiungere le tue icone, specificando una directory / url in cui queste icone sono archiviate."
+
+msgid "Please enter a location outside of EG-Attachments directories. By this way, your icons won't be deleted while a plugin upgrade"
+msgstr "Inserisci una posizione esterna alla cartella di EG-Attachments. In questo modo, le tue icone non verranno rimosse con l'aggiornamento del plugin"
+
+msgid "Icon path (beta)"
+msgstr "Percorso icona (beta)"
+
+msgid "Additional path where the plugin can get icons"
+msgstr "Percorso addizionale dove il plug-in può ottenere le icone"
+
+msgid "Icon urlh (beta)"
+msgstr "URL icona (beta)"
+
+msgid "Additional url where the plugin can get icons"
+msgstr "URL addizionale dove il plug-in può ottenere le icone"
+
 #~ msgid "Activate"
 #~ msgstr "Attiva"
 
@@ -917,3 +944,4 @@ msgstr "Ordine menu"
 
 #~ msgid "Available keywords:<br /><table"
 #~ msgstr "Parole chiave disponibili:<br /><table"
+

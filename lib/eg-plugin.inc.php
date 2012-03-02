@@ -3,7 +3,7 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.2.6
+Version: 1.2.7
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -34,7 +34,7 @@ if (!function_exists('eg_detect_page')) {
 	}
 }
 
-if (!class_exists('EG_Plugin_126')) {
+if (!class_exists('EG_Plugin_127')) {
 
 	/**
 	  * Class EG_Plugin
@@ -42,7 +42,7 @@ if (!class_exists('EG_Plugin_126')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_126 {
+	Class EG_Plugin_127 {
 
 		var $name;
 		var $version;
@@ -74,11 +74,11 @@ if (!class_exists('EG_Plugin_126')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_126($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_127($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options);
-		} // End of EG_Plugin_126
+		} // End of EG_Plugin_127
 
 		/**
 		  * Class contructor
@@ -195,27 +195,29 @@ if (!class_exists('EG_Plugin_126')) {
 				$this->options['version'] = $this->version;
 				add_option($this->options_entry, $this->options);
 			} // End of options empty (first install)
-			elseif (version_compare($this->options['version'], $this->version, '<')) {
+			else {
 				$previous_options = $this->options;
-				//$current_version = (isset($this->options['version'])? $this->options['version']: '0.0.0');
+				if (version_compare($this->options['version'], $this->version, '<')) {
+					//$current_version = (isset($this->options['version'])? $this->options['version']: '0.0.0');
 
-				// Plugin previously installed. Check the version and update options
-				//if (version_compare($current_version, $this->version, '<')) {
-					if ($this->default_options === FALSE) {
-						$new_options = $this->options;
-					}
-					else {
-						$new_options = array();
-						foreach ($this->default_options as $key => $value) {
-							if (isset($this->options[$key])) $new_options[$key] = $this->options[$key];
-							else $new_options[$key] = $value;
+					// Plugin previously installed. Check the version and update options
+					//if (version_compare($current_version, $this->version, '<')) {
+						if ($this->default_options === FALSE) {
+							$new_options = $this->options;
 						}
-					}
-					$new_options['version'] = $this->version;
-					update_option($this->options_entry, $new_options);
-					$this->options = $new_options;
-				// } // End of version compare
-			} // End of options not empty (update)
+						else {
+							$new_options = array();
+							foreach ($this->default_options as $key => $value) {
+								if (isset($this->options[$key])) $new_options[$key] = $this->options[$key];
+								else $new_options[$key] = $value;
+							}
+						}
+						$new_options['version'] = $this->version;
+						update_option($this->options_entry, $new_options);
+						$this->options = $new_options;
+					// } // End of version compare
+				} // End of options not empty (update)
+			}
 			return ($previous_options);
 
 		} // End of install_upgrade
