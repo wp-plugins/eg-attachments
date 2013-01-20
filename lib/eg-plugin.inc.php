@@ -34,7 +34,7 @@ if (!function_exists('eg_detect_page')) {
 	}
 }
 
-if (!class_exists('EG_Plugin_127')) {
+if (!class_exists('EG_Plugin_128')) {
 
 	/**
 	  * Class EG_Plugin
@@ -42,7 +42,7 @@ if (!class_exists('EG_Plugin_127')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_127 {
+	Class EG_Plugin_128 {
 
 		var $name;
 		var $version;
@@ -74,11 +74,11 @@ if (!class_exists('EG_Plugin_127')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_127($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_128($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($plugin_name, $version, $core_file, $textdomain, $options_entry, $default_options);
-		} // End of EG_Plugin_127
+		} // End of EG_Plugin_128
 
 		/**
 		  * Class contructor
@@ -801,6 +801,8 @@ if (!class_exists('EG_Plugin_127')) {
 		 */
 		function add_tinyMCE_button($button_name, $tinymce_plugin_path, $js_file_name='editor_plugin.js') {
 			$index = sizeof($this->tinyMCE_buttons);
+			
+			$this->tinyMCE_buttons[$index] = new stdClass();
 			$this->tinyMCE_buttons[$index]->name 	= $button_name;
 			$this->tinyMCE_buttons[$index]->js_file = $js_file_name;
 			$this->tinyMCE_buttons[$index]->path 	= $tinymce_plugin_path;

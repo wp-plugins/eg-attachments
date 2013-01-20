@@ -2,9 +2,9 @@
 Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode, widgets
-Requires at least: 3.1
-Tested up to: 3.3.1
-Stable tag: 1.9.4.3
+Requires at least: 3.3
+Tested up to: 3.5
+Stable tag: 1.9.4.4
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -201,6 +201,9 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 8. Detailed statistics page.
 
 == Changelog == 
+
+= Version 1.9.4.4 - January 20th, 2013 =
+* Bug fix: message during activation *Warning: Creating default object from empty value in eg-plugin.inc.php on line 804*
 
 = Version 1.9.4.3 - March 2nd, 2011 =
 * Bug fix: option *where* for the auto shortcode didn't work properly,
