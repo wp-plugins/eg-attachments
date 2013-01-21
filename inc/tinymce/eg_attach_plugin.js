@@ -1,6 +1,6 @@
 (function() {
 
-	tinymce.PluginManager.requireLangPack('egattachments');
+//	tinymce.PluginManager.requireLangPack('egattachments');
 
 	tinymce.create('tinymce.plugins.EGAttachments', {
 

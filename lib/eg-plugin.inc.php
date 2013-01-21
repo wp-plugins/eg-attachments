@@ -3,7 +3,7 @@
 Package Name: EG-Plugin
 Package URI:
 Description: Class for WordPress plugins
-Version: 1.2.7
+Version: 1.2.8
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -801,8 +801,7 @@ if (!class_exists('EG_Plugin_128')) {
 		 */
 		function add_tinyMCE_button($button_name, $tinymce_plugin_path, $js_file_name='editor_plugin.js') {
 			$index = sizeof($this->tinyMCE_buttons);
-			
-			$this->tinyMCE_buttons[$index] = new stdClass();
+			$this->tinyMCE_buttons[$index] 			= new stdClass();
 			$this->tinyMCE_buttons[$index]->name 	= $button_name;
 			$this->tinyMCE_buttons[$index]->js_file = $js_file_name;
 			$this->tinyMCE_buttons[$index]->path 	= $tinymce_plugin_path;

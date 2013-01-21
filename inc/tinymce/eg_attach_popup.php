@@ -226,6 +226,21 @@ function get_select($html_id, $key, $current_values, $default_values) {
 
 			<div style="float: left; margin:0; width:49%; border-right:1px solid black;">
 				<p>
+					<label for="orderby"><strong><?php _e('Order by: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('orderby', 'orderby', $current_values, $default_values); ?> <?php echo get_select('sortorder', 'sortorder', $current_values, $default_values); ?>
+				</p>
+				<p>
+					<label for="listsize"><strong><?php _e('List size: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('size', 'size', $current_values, $default_values); ?>
+				</p>
+				<p>
+					<label for="doclabel"><strong><?php _e('Document label: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('label', 'label', $current_values, $default_values); ?>
+				</p>
+				<p>
+					<label for="doctype"><strong><?php _e('Document type: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('doctype', 'doctype', $current_values, $default_values); ?>
+				</p>
 				<p>
 					<label for="fields"><strong><?php _e('Fields: ',EGA_TEXTDOMAIN); ?></strong></label><br />
 					<input type="checkbox" id="default_fields" value="default" checked /><?php _e('Display default fields?', EGA_TEXTDOMAIN); ?><br />
@@ -236,8 +251,41 @@ function get_select($html_id, $key, $current_values, $default_values) {
 						}
 					?>
 				</p>
+				<p>
+					<label for="title"><strong><?php _e('Title: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<input id="title" name="title" type="text" value="<?php echo $default_values['title']; ?>" />
+					<input type="hidden" name="title_def" id="title_def" value="<?php echo $default_values['title']; ?>" />
+				</p>
+				<p>
+					<label for="titletag"><strong><?php _e('HTML Tag for title: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<input id="titletag" name="titletag" type="text" value="<?php echo $default_values['titletag']; ?>" />
+					<input type="hidden" name="titletag_def" id="titletag_def" value="<?php echo $default_values['titletag']; ?>" />
+				</p>
 			</div>
 			<div style="float: left; margin:0 0 0 1%; width:49%">
+				<p>
+					<label for="force_saveas"><strong><?php _e('Force "saveas": ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('force_saveas', 'force_saveas', $current_values, $default_values); ?>
+				</p>
+				<p>
+					<label for="logged_users"><strong><?php _e('Attachments access: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('logged_users', 'logged_users', $current_values, $default_values); ?>
+				</p>
+				<p>
+					<label for="limit"><strong><?php _e('Number of documents to display: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<input type="text" id="limit" value="<?php echo $default_values['limit']; ?>" />
+					<input type="hidden" name="limit_def" id="limit_def" value="<?php echo $default_values['limit']; ?>" />
+				</p>
+				<p>
+					<label for="nofollow"><strong><?php _e('Nofollow: ',EGA_TEXTDOMAIN); ?></strong></label>
+					<input type="checkbox" id="nofollow" <?php echo ($default_values['nofollow']>0?'checked':''); ?> />
+					<input type="hidden" name="nofollow_def" id="nofollow_def" value="<?php echo $default_values['nofollow']; ?>" />
+				</p>
+				<p>
+					<label for="target"><strong><?php _e('Target="blank" : ',EGA_TEXTDOMAIN); ?></strong></label>
+					<input type="checkbox" id="target" <?php echo ($default_values['target']>0?'checked':''); ?> />
+					<input type="hidden" name="target_def" id="target_def" value="<?php echo $default_values['target']; ?>" />
+				</p>
 <?php /*
 				<p>
 					<label for="display_label"><strong><?php _e('Display label of fields: ',EGA_TEXTDOMAIN); ?></strong></label>
