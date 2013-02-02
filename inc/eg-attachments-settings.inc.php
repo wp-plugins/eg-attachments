@@ -1,446 +1,551 @@
 <?php
 
-global $EG_ATTACH_FIELDS_TITLE, 
-		$EG_ATTACH_FIELDS_ORDER_LABEL, 
-		$EG_ATTACH_DEFAULT_FIELDS,
-		$EG_ATTACH_DEFAULT_OPTIONS;
+global $EGA_FIELDS_ORDER_LABEL;
+global $post;
 
 // Build the list of post_types
-$post_type_list = array();
+$ega_post_type_list = array();
 if (function_exists('get_post_types')) {
-	$custom_post_types = get_post_types(array(), 'object');
-	$exclusion_list    = array('post', 'page', 'attachment', 'nav_menu_item', 'revision');
+	$custom_post_types = get_post_types(array(), 'objects');
+	$exclusion_list    = array('post', 'page', 'attachment', 'nav_menu_item', 'revision', EGA_TEMPLATE_POST_TYPE, 'wpcf7_contact_form');
 
 	foreach ($custom_post_types as $post_type_id => $post_type_value) {
 		if (! in_array($post_type_id, $exclusion_list)) {
-			$post_type_list[$post_type_id] = $post_type_value->label;
+			$ega_post_type_list[$post_type_id] = $post_type_value->label;
 		}
 	} // End of foreach
 } // End of function get_post_types exists
 
+$standard_templates = EG_Attachments_Common::get_templates($this->options, 'standard');
+$custom_templates = EG_Attachments_Common::get_templates($this->options, 'custom', FALSE);
+if (sizeof($custom_templates)>0)
+	$standard_templates = array_merge($standard_templates, array( 'custom' => __('Custom templates', $this->textdomain)));
 
-
-$this->options_form = new EG_Form_212('ega_options', 'EG-Attachements Settings', $this->options_entry, $this->textdomain, '', '',
-										array(&$this, 'display_sidebar'));
-//$this->options_form->set_debug_mode(TRUE, dirname(EGA_COREFILE).'/debug.log');
-
-$shortcode_behavior_section_id = $this->options_form->add_section( array( 'tab' => 'behavior', 'title' => 'General behavior of shortcodes'));
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'link',
-			'label'		=> 'Links to attachments',
-			'type'		=> 'radio',
-			'options'	=> array(
-				'link' => '<strong>Permalink</strong>. <br /><em>The URL of the attachment is using defined permalink structure. For example: <code>http://blog url/post url/attachment slug/</code>, or <code>http://blog url/?p=xx</code>.<br/>The attachment will be displayed inside your blog, as a post.</em>',
-				'file' => '<strong>File</strong>. <br /><em>The URL is the document\'s address. For example: <code>http://blog url/wp-content/upload/2011/09/file name.file extension/</code>.<br />When you click on the attachment, it is displayed directly, as a document, and not as a page of blog. WordPress mechanisms are not used</em>',
-				'direct'    => '<strong>Direct</strong>. <br /><em>It\'s the default behavior of the plugin. The URL is pointing to the file, but in this case, the link is encoded. When you click on the attachment, it is displayed as a document, and not as a page of blog. WordPress mechanisms are used</em>'),
-			'after' => '<br />All features cannot be implemented with all of these modes.<br /><table class="eg-attach-help"><tr><th>Link type</th><th>Statistics</th><th>Force "Save as"</th><th>Security</th></tr><tr><th class="row">Permalink</th><td>x</td><td>x</td><td>x</td></tr><tr><th class="row">File</th><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><th class="row">Direct</th><td>x</td><td>x</td><td>x</td></tr></table>'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'display_label',
-			'label'		=> 'Display label of fields',
-			'type'		=> 'checkbox',
-			'after'		=> 'For Small size only, check the box if you want display labels',
-			'desc'		=> '(For the other sizes, labels are always displayed)'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'date_format',
-			'label'		=> 'Date format',
-			'type'		=> 'text',
-			'size'		=> 'small',
-			'after'		=> __('Default value: ', $this->textdomain).get_option('date_format').' ('.date_i18n(get_option('date_format')).')',
-			'desc'		=> 'Use PHP <strong>date()</strong> parameters to configure the date:<br />d&nbsp;&nbsp;&nbsp;&nbsp;Day of the month, 2 digits with leading zeros<br />D&nbsp;&nbsp;&nbsp;&nbsp;A textual representation of a day, three letters<br />j&nbsp;&nbsp;&nbsp;&nbsp;Day of the month without leading zeros<br />S&nbsp;&nbsp;&nbsp;&nbsp;English ordinal suffix for the day of the month, 2 characters<br />F&nbsp;&nbsp;&nbsp;&nbsp;A full textual representation of a month, such as January or March<br />m&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, with leading zeros<br />M&nbsp;&nbsp;&nbsp;&nbsp;A short textual representation of a month, three letters<br />n&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, without leading zeros<br />Y&nbsp;&nbsp;&nbsp;&nbsp;A full numeric representation of a year, 4 digits<br />y&nbsp;&nbsp;&nbsp;&nbsp;A two digit representation of a year'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'nofollow',
-			'label'		=> '&laquo;Nofollow&raquo; attribute',
-			'type'		=> 'checkbox',
-			'after'		=> 'Check if you want to automatically add <code>rel="nofollow"</code> to attachment links'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'target_blank',
-			'label'		=> '&laquo;target=blank&raquo; attribute',
-			'type'		=> 'checkbox',
-			'after'		=> 'Check if you want to automatically add <code>target="_blank"</code> to attachment links'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'force_saveas',
-			'label'		=> '"Save As" activation',
-			'type'		=> 'checkbox',
-			'after'		=> 'Force "Save As" when users click on the attachments',
-			'desc'		=> 'In normal mode, when you click on the attachments\' links, according their mime type, documents are displayed, or a dialog box appears to choose \'run with\' or \'Save As\'. By activating the following option, the dialog box will appear for all cases.'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'logged_users_only',
-			'label'		=> 'Attachments access',
-			'type'		=> 'checkbox',
-			'after'		=> 'Restrict access to the attachments to logged users only!',
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'login_url',
-			'label'		=> 'Url to login or register page:',
-			'type'		=> 'text'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'stats_enable',
-			'label'		=> 'Click counter',
-			'type'		=> 'checkbox',
-			'after'		=> 'Activate statistics',
-			'desc'		=> 'Record all clicks occuring in the listed attachements.',
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $shortcode_behavior_section_id,
-			'name'		=> 'stats_ip_exclude',
-			'label'		=> 'Statistics, IP to exclude',
-			'type'		=> 'text',
-			'desc'		=> 'List of IP address you want to exclude',
-		)
-	);
-
-$icon_section_id = $this->options_form->add_section( array( 
-			'tab'    => 'behavior', 
-			'title'  => 'Icons Management', 
-			'header' => 'EG-Attachments provides icons, to complete the existing WordPress\' list. You can add your own icons, by specifying a directory/url were these icons are stored.',
-			'footer' => 'Please enter a location outside of EG-Attachments directories. By this way, your icons won\'t be deleted while a plugin upgrade'
-		));
-
-	$this->options_form->add_field( array(
-			'section'	=> $icon_section_id,
-			'name'		=> 'icon_path',
-			'label'		=> 'Icon path (beta)',
-			'type'		=> 'text',
-			'size'		=> 'medium',
-			'desc'		=> 'Additional path where the plugin can get icons',
-			'before'	=> trailingslashit(str_replace('\\', '/', ABSPATH))
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $icon_section_id,
-			'name'		=> 'icon_url',
-			'label'		=> 'Icon urlh (beta)',
-			'type'		=> 'text',
-			'size'		=> 'medium',
-			'desc'		=> 'Additional url where the plugin can get icons',
-			'before'	=> trailingslashit(get_bloginfo('url'))
-		)
-	);
-
-$custom_format_section_id = $this->options_form->add_section( array(
-	'tab' 		=> 'behavior',
-	'title' 	=> 'Custom format',
-	'header'	=> 'You can define your own display format, using <strong>custom</strong>. Parameters of this section will be applied only if you use <em>Custom</em> as display format for auto-shortcode (fifth option of this page), or if you specify <em>size=custom</em> in the shortcodes in your post.<br />Keywords you can use are listed below.',
-	'footer'	=> 'Available keywords:<br /><table class="eg-attach-custom-format"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as &lt;a href="..."&gt;...), </td></tr><tr><td><strong>%URL%</strong></td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</strong></td><td>direct link to document as stored in the WP database,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</strong></td><td>ID of the attachment.</td></tr><tr><td><strong>%TYPE%</strong></td><td>Type of the documents</td></tr><tr><td><strong>%DATE%</strong></td><td>Date of last modification</td></tr></table>'
-	)
+$tabs = array(
+	1	=> array( 'label' => 'Shortcodes behavior',	'header' => ''),
+	2 	=> array( 'label' => 'Auto shortcode',		'header' => ''),
+	3 	=> array( 'label' => 'Admin interface', 	'header' => '')
 );
 
-	$this->options_form->add_field( array(
-			'section'	=> $custom_format_section_id,
-			'name'		=> 'custom_format_pre',
-			'label'		=> 'Custom format, before list: ',
-			'type'		=> 'textarea',
+$sections = array(
+	'link'		=> array( 'label' => 'Link', 'tab' => 1, 'header' => '', 'footer' => ''),
+	'behavior'	=> array( 'label' => 'Behavior',
+						'tab' => 1,
+						'header' => 'CAUTION: the parameters of this section are impacting the default behavior of the shortcode. For example: if you activate &laquo; Nofollow &raquo; here, this attribut will be automatically add to the shortcode, evenif you don\'t specify it. If you don\'t check the option &laquo; Nofollow &raquo;, the attribut will appear only if you put the parameter nofollow=1 in the shortcode.',
+						'footer' => ''
+					),
+	'stat' 		=> array( 'label' => 'Statistics', 			'tab' => 1, 	'header' => '', 'footer' => ''),
+	'security'	=> array( 'label' => 'Security',
+						'tab' => 1,
+						'header' => 'CAUTION: the parameter <strong>Attachments access</strong> is impacting the default behavior of the shortcode.',
+						'footer' => ''
+					),
+	'sformat'	=> array( 'label' => 'Format', 	 			'tab' => 1, 	'header' => '', 'footer' => ''),
+	'cformat'	=> array( 'label' => 'Custom format',		'tab' => 1, 	'header' => '', 'footer' => ''),
+	'auto' 		=> array( 'label' => 'Activation', 			'tab' => 2,		'header' => '', 'footer' => ''),
+	'asformat' 	=> array( 'label' => 'Format', 				'tab' => 2,		'header' => '', 'footer' => ''),
+	'asbehavior'=> array( 'label' => 'Behavior', 			'tab' => 2,		'header' => '', 'footer' => ''),
+	'admin_bar'	=> array( 'label' => 'Administration bar', 	'tab' => 3, 	'header' => '', 'footer' => ''),
+	'editor'	=> array( 'label' => 'Post editor page', 	'tab' => 3,		'header' => '', 'footer' => ''),
+	'paths' 	=> array( 'label' => 'Paths', 				'tab' => 3, 	'header' => '', 'footer' => ''),
+	'styles' 	=> array( 'label' => 'Styles', 				'tab' => 3, 	'header' => '', 'footer' => ''),
+	'uninstall' => array( 'label' => 'Uninstallation', 		'tab' => 3, 	'header' => '', 'footer' => '')
+);
+
+$fields = array(
+	'link' => array(
+		'name'		=> 'link',
+		'label'		=> 'Links to attachments',
+		'type'		=> 'radio',
+		'section'	=> 'link',
+		'group'		=> 0,
+		'before'	=> '',
+		'after' => '<br />All features cannot be implemented with all of these modes.<br />'.
+					'<table class="eg-attach-help">'.
+					'<tr>'.
+						'<th>Link type</th><th>Statistics</th>'.
+						'<th>Force "Save as"</th>'.
+						'<th>Security</th>'.
+					'</tr>'.
+					'<tr>'.
+						'<th class="row">Permalink</th>'.
+						'<td>x</td>'.
+						'<td>x</td>'.
+						'<td>x</td>'.
+					'</tr>'.
+					'<tr>'.
+						'<th class="row">File</th>'.
+						'<td>&nbsp;</td>'.
+						'<td>&nbsp;</td>'.
+						'<td>&nbsp;</td>'.
+					'</tr>'.
+					'<tr>'.
+						'<th class="row">Direct</th>'.
+						'<td>x</td>'.
+						'<td>x</td>'.
+						'<td>x</td>'.
+					'</tr>'.
+					'</table><br />'.
+					'<p>Recommended version:'.
+					'<ul>'.
+						'<li>Method &laquo; Direct &raquo;: url of the document is hidden,</li>'.
+						'<li>Method &laquo; Permalink &raquo;: </li>'.
+						'<li>Method &laquo; File &raquo;: </li>'.
+					'</ul>'.
+					'</p><p>'.
+					'The recommended version is the method &laquo; Direct &raquo;.',
+					'</p>',
+		'desc'		=> '',
+		'options'	=> array(
+			'direct'    => '<strong>Direct</strong>.<br /><em>It\'s the default behavior of the plugin. The URL is pointing to the file, but in this case, the link is encoded. When you click on the attachment, it is displayed as a document, and not as a page of blog. WordPress mechanisms are used</em>',
+			'link' => '<strong>Permalink</strong>.<br /><em>The URL of the attachment is using defined permalink structure. For example: <code>http://blog url/post url/attachment slug/</code>, or <code>http://blog url/?p=xx</code>.<br/>The attachment will be displayed inside your blog, as a post.</em>',
+			'file' => '<strong>File</strong>.<br /><em>The URL is the document\'s address. For example: <code>http://blog url/wp-content/upload/2011/09/file name.file extension/</code>.<br />When you click on the attachment, it is displayed directly, as a document, and not as a page of blog. WordPress mechanisms are not used</em>'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'force_saveas' => array(
+		'name'		=> 'force_saveas',
+		'label'		=> '"Save As" activation',
+		'type'		=> 'checkbox',
+		'section'	=> 'behavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> 'In normal mode, when you click on the attachments\' links, according their mime type, documents are displayed, or a dialog box appears to choose \'run with\' or \'Save As\'. By activating the following option, the dialog box will appear for all cases.',
+		'options'	=> array('Force "Save As" when users click on the attachments'),
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'nofollow' => array(
+		'name'		=> 'nofollow',
+		'label'		=> '&laquo;Nofollow&raquo; attribute',
+		'type'		=> 'checkbox',
+		'section'	=> 'behavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array( 'Check if you want to automatically add <code>rel="nofollow"</code> to attachment links' ),
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'target_blank' => array(
+		'name'		=> 'target_blank',
+		'label'		=> '&laquo;target=blank&raquo; attribute',
+		'type'		=> 'checkbox',
+		'section'	=> 'behavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array( 'Check if you want to automatically add <code>target="_blank"</code> to attachment links' ),
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'exclude_thumbnail' => array(
+		'name'		=> 'exclude_thumbnail',
+		'label'		=> 'Featured image',
+		'type'		=> 'checkbox',
+		'section'	=> 'behavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array( 'Check if you want to exclude featured image (thumbnail) from the list of attachments' ),
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'stats_enable' => array(
+		'name'		=> 'stats_enable',
+		'label'		=> 'Click counter',
+		'type'		=> 'checkbox',
+		'section'	=> 'stat',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> 'Record all clicks occuring in the listed attachements.',
+		'options'	=> array('Activate statistics'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'stats_ip_exclude' => array(
+		'name'		=> 'stats_ip_exclude',
+		'label'		=> 'Statistics, IP to exclude',
+		'type'		=> 'text',
+		'section'	=> 'stat',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> 'List of IP address you want to exclude',
+		'options'	=> FALSE,
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'purge_stats' => array(
+		'name'		=> 'purge_stats',
+		'label'		=> 'Purge statistics after',
+		'type'		=> 'text',
+		'section'	=> 'stat',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> 'months',
+		'desc'		=> 'Enter 0 (zero), to disable the purge',
+		'options'	=> FALSE,
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+
+	'logged_users_only' => array(
+		'name'		=> 'logged_users_only',
+		'label'		=> 'Attachments access',
+		'type'		=> 'checkbox',
+		'section'	=> 'security',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array( 'Restrict access to the attachments to logged users only!' ),
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'login_url' => array(
+		'name'		=> 'login_url',
+		'label'		=> 'Url to login or register page',
+		'type'		=> 'text',
+		'section'	=> 'security',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> sprintf(__('If you leave the field empty, the usual WordPress login form will be used (<code>%s</code>).', $this->textdomain), wp_login_url() ),
+		'options'	=> FALSE,
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'date_format' => array(
+		'name'		=> 'date_format',
+		'label'		=> 'Date format',
+		'type'		=> 'text',
+		'section'	=> 'sformat',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> sprintf('Default value: %s (%s)', get_option('date_format'), date_i18n(get_option('date_format'))),
+		'desc'		=> 'Use PHP <strong>date()</strong> parameters to configure the date:<br />d&nbsp;&nbsp;&nbsp;&nbsp;Day of the month, 2 digits with leading zeros<br />D&nbsp;&nbsp;&nbsp;&nbsp;A textual representation of a day, three letters<br />j&nbsp;&nbsp;&nbsp;&nbsp;Day of the month without leading zeros<br />S&nbsp;&nbsp;&nbsp;&nbsp;English ordinal suffix for the day of the month, 2 characters<br />F&nbsp;&nbsp;&nbsp;&nbsp;A full textual representation of a month, such as January or March<br />m&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, with leading zeros<br />M&nbsp;&nbsp;&nbsp;&nbsp;A short textual representation of a month, three letters<br />n&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, without leading zeros<br />Y&nbsp;&nbsp;&nbsp;&nbsp;A full numeric representation of a year, 4 digits<br />y&nbsp;&nbsp;&nbsp;&nbsp;A two digit representation of a year',
+		'options'	=> FALSE,
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'custom_format_obsolete' => array(
+		'name'		=> 'custom_format_obsolete',
+		'label'		=> 'Custom format',
+		'type'		=> 'comment',
+		'section'	=> 'cformat',
+		'group'		=> 0,
+		'before'	=> '<strong>Custom format has been changed</strong>.<br />'.
+						'To make the custom formats more flexible, they are now manage in a specific menu. You can go to the menu <strong>Tools &gt; EGA Templates</strong> to discover the new way of managing them. During the update, your custom format were saved into a template.',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> FALSE,
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+
+	'shortcode_auto' => array(
+		'name'		=> 'shortcode_auto',
+		'label'		=> 'Activation',
+		'type'		=> 'select',
+		'section'	=> 'auto',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> 'With this option, you can automaticaly add the list of attachments in your blog, without using shortcode',
+		'options'	=> array( 0 => 'Not activated', 2 => 'At the end', 3 => 'Before the excerpt', 4 => 'Between excerpt and content'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'shortcode_auto_exclusive' => array(
+		'name'		=> 'shortcode_auto_exclusive',
+		'label'		=> 'Auto / Manual',
+		'type'		=> 'checkbox',
+		'section'	=> 'auto',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> 'If this option is activated, auto shortcode won\'t be generated if a manual shortcode is detected in the post being displayed',
+		'options'	=> array('Disable auto-shortcode when a manual shortcode is detected'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'shortcode_auto_where' => array(
+		'name'		=> 'shortcode_auto_where',
+		'label'		=> 'Where',
+		'type'		=> 'checkbox',
+		'section'	=> 'auto',
+		'group'		=> 0,
+		'before'	=> 'Activate automatic shortcode only on the following cases',
+		'after'		=> '',
+		'desc'		=> 'If this option is activated, auto shortcode won\'t be generated if a manual shortcode is detected in the post being displayed',
+		'options'	=> array_merge(array( 'home' => 'Homepage,', 'post' => 'Posts,', 'page' => 'Pages,', 'index' => 'Lists of posts (archives, categories, ...).'),$ega_post_type_list),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'shortcode_auto_title' => array(
+		'name'		=> 'shortcode_auto_title',
+		'label'		=> 'Title of the list',
+		'type'		=> 'text',
+		'section'	=> 'asformat',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> FALSE,
+		'size'		=> 'medium',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'shortcode_auto_title_tag' => array(
+		'name'		=> 'shortcode_auto_title_tag',
+		'label'		=> 'HTML Tag for title',
+		'type'		=> 'text',
+		'section'	=> 'asformat',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '(tag like h2, or h3, ...)',
+		'desc'		=> '',
+		'options'	=> FALSE,
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'shortcode_auto_size' => array(
+		'name'		=> 'shortcode_auto_size',
+		'label'		=> 'List format',
+		'type'		=> 'radio',
+		'section'	=> 'asformat',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> $standard_templates,
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'shortcode_auto_template' => array(
+		'name'		=> 'shortcode_auto_template',
+		'label'		=> 'Custom format',
+		'type'		=> 'radio_table',
+		'section'	=> 'asformat',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> $custom_templates,
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE,
+		'list_options'=> array(
+			'no_option'	=> 'No template available',
+			'titles'	=> array( 'Title', 'Slug', 'Description'),
+			'fields'	=> array( 'post_title', 'post_name', 'post_excerpt')
 		)
-	);
+	),
+	'shortcode_auto_doc_type' => array(
+		'name'		=> 'shortcode_auto_doc_type',
+		'label'		=> 'Document type',
+		'type'		=> 'radio',
+		'section'	=> 'asbehavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array( 'all' => 'All', 'document' => 'Documents', 'image' => 'Images'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-	$this->options_form->add_field( array(
-			'section'	=> $custom_format_section_id,
-			'name'		=> 'custom_format',
-			'label'		=> 'Custom list format: ',
-			'type'		=> 'textarea'
-		)
-	);
+	'shortcode_auto_orderby' => array(
+		'name'		=> 'shortcode_auto_orderby',
+		'label'		=> 'Order by',
+		'type'		=> 'select',
+		'section'	=> 'asbehavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> $EGA_FIELDS_ORDER_LABEL,
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-	$this->options_form->add_field( array(
-			'section'	=> $custom_format_section_id,
-			'name'		=> 'custom_format_post',
-			'label'		=> 'Custom format, after list: ',
-			'type'		=> 'textarea'
-		)
-	);
+	'shortcode_auto_order' => array(
+		'name'		=> 'shortcode_auto_order',
+		'label'		=> 'Sort Order',
+		'type'		=> 'radio',
+		'section'	=> 'asbehavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array('ASC' => 'Ascending', 'DESC' => 'Descending'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-	$this->options_form->add_field( array(
-			'section'	=> $custom_format_section_id,
-			'name'		=> 'custom_format_icon_height',
-			'label'		=> 'Icon height: ',
-			'type'		=> 'text',
-			'size'		=> 'small'
-		)
-	);
+	'shortcode_auto_limit' => array(
+		'name'		=> 'shortcode_auto_limit',
+		'label'		=> 'Number of documents to display',
+		'type'		=> 'text',
+		'section'	=> 'asbehavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '(Default: -1, for all document are listed)',
+		'desc'		=> '',
+		'options'	=> FALSE,
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-	$this->options_form->add_field( array(
-			'section'	=> $custom_format_section_id,
-			'name'		=> 'custom_format_icon_width',
-			'label'		=> 'Icon width: ',
-			'type'		=> 'text',
-			'size'		=> 'small'
-		)
-	);
+	'shortcode_auto_default_opts' => array(
+		'name'		=> 'shortcode_auto_default_opts',
+		'label'		=> 'Default options?',
+		'type'		=> 'checkbox',
+		'section'	=> 'asbehavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array('Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-$auto_shortcode_section_id = $this->options_form->add_section( array( 'tab' => 'auto_shortcode', 'title' => 'Auto shortcode'));
+	'display_admin_bar' => array(
+		'name'		=> 'display_admin_bar',
+		'label'		=> 'Administration bar',
+		'type'		=> 'checkbox',
+		'section'	=> 'admin_bar',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array( 'Display a <strong>EG-Attachments</strong> menu in the administration bar'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto',
-			'label'		=> 'Activation',
-			'desc'		=> 'With this option, you can automaticaly add the list of attachments in your blog, without using shortcode',
-			'type'		=> 'select',
-			'options'	=> array( 0 => 'Not activated', 2 => 'At the end', 3 => 'Before the excerpt', 4 => 'Between excerpt and content')
-		)
-	);
+	'use_metabox' => array(
+		'name'		=> 'use_metabox',
+		'label'		=> 'Metaboxes',
+		'type'		=> 'checkbox',
+		'section'	=> 'editor',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array( 'Show metabox to display list of attachments of the current post/page'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_exclusive',
-			'label'		=> 'Auto / Manual',
-			'after'		=>  'Disable auto-shortcode when a manual shortcode is detected',
-			'desc'		=> 'If this option is activated, auto shortcode won\'t be generated if a manual shortcode is detected in the post being displayed',
-			'type'		=> 'checkbox',
-		)
-	);
+	'tinymce_button' => array(
+		'name'		=> 'tinymce_button',
+		'label'		=> 'EG-Attachments button',
+		'type'		=> 'checkbox',
+		'section'	=> 'editor',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array( 'Show EG-Attachments button in post text editor ?'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_where',
-			'label'		=> 'Where',
-			'before'	=> 'Activate automatic shortcode only on the following cases',
-			'type'		=> 'checkbox',
-			'options'	=> array_merge(array( 'home' => 'Homepage,', 'post' => 'Posts,', 'page' => 'Pages,', 'index' => 'Lists of posts (archives, categories, ...).'),
-										$post_type_list)
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_title',
-			'label'		=> 'Title of the list: ',
-			'type'		=> 'text',
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_title_tag',
-			'label'		=> 'HTML Tag for title: ',
-			'type'		=> 'text',
-			'size'		=> 'small',
-			'after'		=> '(tag like h2, or h3, ...)'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_size',
-			'label'		=> 'List format: ',
-			'type'		=> 'radio',
-			'options'	=> array( 'small' => 'Small', 'medium' => 'Medium', 'large' => 'Large', 'custom' => 'Custom')
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_orderby',
-			'label'		=> 'Order by: ',
-			'type'		=> 'select',
-			'options'	=> $EG_ATTACH_FIELDS_ORDER_LABEL)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_order',
-			'label'		=> 'Sort Order: ',
-			'type'		=> 'select',
-			'options'	=> array( 'ASC' => 'Ascending', 'DESC' => 'Descending')
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_icon',
-			'label'		=> 'Display icons: ',
-			'after'		=> 'Check the box to display icons',
-			'type'		=> 'checkbox'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_limit',
-			'label'		=> 'Number of documents to display: ',
-			'after'		=> '(Default: -1, for all document are listed)',
-			'type'		=> 'text',
-			'size'		=> 'small'
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_doc_type',
-			'label'		=> 'Document type: ',
-			'type'		=> 'radio',
-			'options'	=> array( 'all' => 'All', 'document' => 'Documents', 'image' => 'Images')
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_label',
-			'label'		=> 'Documents label: ',
-			'before'	=> 'Choose the field that will be displayed as title of documents',
-			'type'		=> 'radio',
-			'options'	=> array( 'filename' => 'File name', 'doctitle' => 'Document title')
-		)
-	);
-
-	$default_fields = __('The default list is: ', $this->textdomain).'<br />';
-	foreach ($EG_ATTACH_DEFAULT_FIELDS as $list_size => $fields_list) {
-		$default_fields .= '<strong>'.__(ucfirst(strtolower($list_size)).' list:',$this->textdomain).'</strong> ';
-		foreach ($fields_list as $value) {
-			$default_fields .= __($EG_ATTACH_FIELDS_TITLE[$value], $this->textdomain).', ';
-		}
-		$default_fields .= '<br />';
-	} // End of foreach
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_fields_def',
-			'label'		=> 'Fields: ',
-			'type'		=> 'checkbox',
-			'after'		=> 'Do you want to display default fields?',
-			'desc'		=> $default_fields
-		)
-	);
-
-	$field_values = $this->options['shortcode_auto_fields'];
-	if (! is_array($field_values)) $field_values = explode(',', $field_values);
-	for ($i=sizeof($field_values)+1; $i<=sizeof($EG_ATTACH_FIELDS_TITLE); $i++) {
-		$field_values[$i]= '0';
-	}
-	// Cannot use array_pad, wants to start key at 1
-
-	$fields_grid = array( 'header' => array('Position', 'Field') );
-	for ($i=1; $i<=sizeof($field_values); $i++) {
-		$fields_grid['list'][] = array( 'value' => $i, 'select' => array_merge(array( ' '),$EG_ATTACH_FIELDS_TITLE));
-	}
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_fields',
-			'label'		=> 'Custom fields:',
-			'before'	=> 'or display the following fields',
-			'type'		=> 'grid_select',
-			'options'	=> $fields_grid
-		)
-	);
-
-	$this->options_form->add_field( array(
-			'section'	=> $auto_shortcode_section_id,
-			'name'		=> 'shortcode_auto_default_opts',
-			'label'		=> 'Default options? ',
-			'after'		=> 'Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?',
-			'type'		=> 'checkbox'
-		)
-	);
-
-$styles_section_id = $this->options_form->add_section( array( 'tab' => 'admin', 'title' => 'Styles'));
-
-	$this->options_form->add_field( array(
-			'section'	=> $styles_section_id,
-			'name'		=> 'load_css',
-			'label'		=> 'Styles',
-			'type'		=> 'checkbox',
-			'after'		=> 'Check if you want to use the plugin stylesheet file, uncheck if you want to use your own styles, or include styles on the theme stylesheet.'
-		)
-	);
-
-$admin_section_id = $this->options_form->add_section( array( 'tab' => 'admin', 'title' => 'Administration interface'));
-
-	$this->options_form->add_field( array(
-			'section'	=> $admin_section_id,
-			'name'		=> 'use_metabox',
-			'label'		=> 'Post editor page',
-			'type'		=> 'checkbox',
-			'after'		=> 'Show metabox to display list of attachments of the current post/page'
-		)
-	);
-	$this->options_form->add_field( array(
-			'section'	=> $admin_section_id,
-			'name'		=> 'display_admin_bar',
-			'label'		=> 'Administration bar',
-			'after'		=> 'Display a <strong>EG-Attachments</strong> menu in the administration bar',
-			'type'		=> 'checkbox')
-	);
-
-	if (post_type_supports('attachment', 'comments')) {
-		$this->options_form->add_field( array(
-			'section'	=> $admin_section_id,
-			'name'		=> 'comment_status',
-			'label'		=> 'Comments',
-			'type'		=> 'select',
-			'options'	=> array( 'default' => 'Keep default', 'open' => 'Allow the comments', 'closed' => 'Closed the comments'),
-			'before'	=> 'When you upload an attachment file, which behavior do you want for comments'
-			)
-		);
-	}
-
-	if (post_type_supports('attachment', 'trackbacks')) {
-		$this->options_form->add_field( array(
-			'section'	=> $admin_section_id,
-			'name'		=> 'ping_status',
-			'label'		=> 'Pingbacks/Trackbacks',
-			'type'		=> 'select',
-			'options'	=> array( 'default' => 'Keep default', 'open' => 'Allow the pings', 'closed' => 'Closed the pings'),
-			'before'	=> 'When you upload an attachment file, which behavior do you want for pingbacks / trackbacks'
-			)
-		);
-	}
-
-	$this->options_form->add_field( array(
-		'section'	=> $admin_section_id,
+	'tags_assignment' => array(
 		'name'		=> 'tags_assignment',
 		'label'		=> 'Tags assigments',
 		'type'		=> 'checkbox',
-		'after'		=> 'Do you want to assign tags to attachments?',
-		'description' => 'If you select this option, you will be able to select attachments by using the <strong>tags</strong> parameter in the shortcode.'
-		)
-	);
+		'section'	=> 'editor',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> 'If you select this option, you will be able to select attachments by using the <strong>tags</strong> parameter in the shortcode.',
+		'options'	=> array( 'Do you want to assign tags to attachments?'),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-$uninstall_section_id = $this->options_form->add_section( array( 'tab' => 'admin', 'title' => 'Uninstall options'));
+	'icon_path' => array(
+		'name'		=> 'icon_path',
+		'label'		=> 'Icon path',
+		'type'		=> 'text',
+		'section'	=> 'paths',
+		'group'		=> 0,
+		'before'	=> trailingslashit(str_replace('\\', '/', ABSPATH)),
+		'after'		=> '',
+		'desc'		=> 'Additional path where the plugin can get icons',
+		'options'	=> FALSE,
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
-	$this->options_form->add_field( array(
-			'section'	=> $uninstall_section_id,
-			'name'		=> 'uninstall_del_options',
-			'label'		=> 'Options',
-			'type'		=> 'checkbox',
-			'after'		=> 'Delete options during uninstallation.',
-			'desc'		=> 'Be careful: these actions cannot be cancelled. All plugin\'s options will be deleted while plugin uninstallation.'
-		)
-	);
+	'icon_url' => array(
+		'name'		=> 'icon_url',
+		'label'		=> 'icon_url',
+		'type'		=> 'text',
+		'section'	=> 'paths',
+		'group'		=> 0,
+		'before'	=> trailingslashit(get_bloginfo('url')),
+		'after'		=> '',
+		'desc'		=> 'Additional url where the plugin can get icons',
+		'options'	=> FALSE,
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
 
+	'load_css' => array(
+		'name'		=> 'load_css',
+		'label'		=> 'Stylesheet',
+		'type'		=> 'checkbox',
+		'section'	=> 'styles',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> 'Check if you want to use the plugin stylesheet file, uncheck if you want to use your own styles, or include styles on the theme stylesheet.',
+		'options'	=> array('Automatically load plugins\' stylesheet'),
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'uninstall_del_options' => array(
+		'name'		=> 'uninstall_del_options',
+		'label'		=> 'Options',
+		'type'		=> 'checkbox',
+		'section'	=> 'uninstall',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> 'Be careful: these actions cannot be cancelled. All plugin\'s options will be deleted while plugin uninstallation.',
+		'options'	=> array('Delete options during uninstallation.'),
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE)
+);
+$option_form->set_form($tabs, $sections, $fields);
 
 ?>

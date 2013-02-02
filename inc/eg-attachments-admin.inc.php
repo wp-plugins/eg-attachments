@@ -1,178 +1,105 @@
 <?php
 
-if (eg_detect_page( 'ega_options')) {
-	require(dirname(EGA_COREFILE).'/lib/eg-forms.inc.php');
-}
-
-//if (! class_exists('EG_Cache_100')) {
-//	require_once('lib/eg-tools.inc.php');
-//}
-
 if (! class_exists('EG_Attachments_Admin')) {
 
 	/**
-	 * Class EG_Attachments
+	 * Class EG_Attachments_Admin
 	 *
 	 * Implement a shortcode to display the list of attachments in a post.
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_128 {
+	Class EG_Attachments_Admin extends EG_Plugin_130 {
 
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
+		/* Q: what about other post type ? */
 
-		function init() {
-
-			parent::init();
-
-			global $wp_version;
-			if (isset($this->options['display_admin_bar']) && $this->options['display_admin_bar']) {
-				if (version_compare($wp_version, '3.2.99', '>') )
-					add_action( 'admin_bar_menu',  'eg_attachments_custom_admin_bar', 99 );
-				else if (version_compare($wp_version, '3.1.99', '>'))
-					add_action( 'wp_before_admin_bar_render', 'eg_eg_attachment_custom_admin_bar' );
-			}
-		} // End of init
+		var $post_id 	= FALSE;
+		var $stats_hook = FALSE;
 
 		/**
-		 * install_upgrade
+		 * init
 		 *
-		 * Install or upgrade options and database
+		 *
 		 *
 		 * @package EG-Attachments
+		 * @since 	1.0
 		 *
-		 * @param none
+		 * @param 	none
 		 * @return none
-		 */
-		function install_upgrade() {
-			global $wpdb;
-
-			$previous_options = parent::install_upgrade();
-			$previous_version = ($previous_options === FALSE ? FALSE : $previous_options['version']);
-
-			if ($previous_version !== FALSE) { // Is it a new installation
-
-				if (version_compare($previous_version, '1.4.3', '<') && isset($this->options['uninstall_del_option'])) {
-					$this->options['uninstall_del_options'] = $previous_options['uninstall_del_option'];
-					unset($this->options['uninstall_del_option']);
-
-					update_option($this->options_entry, $this->options);
-				} // End of version older than 1.4.3
-
-				if ( isset($this->options['shortcode_auto_format'])) {
-
-					$changed_options = array(
-									'shortcode_auto_format_pre'  => 'custom_format_pre',
-									'shortcode_auto_format'      => 'custom_format',
-									'shortcode_auto_format_post' => 'custom_format_post');
-
-					foreach ($changed_options as $old_option => $new_option) {
-						if (isset($this->options[$old_option])) {
-							$this->options[$new_option] = $this->options[$old_option];
-							unset($this->options[$old_option]);
-						}
-					}
-					update_option($this->options_entry, $this->options);
-				} // End of version older than 1.7.3
-
-				if (version_compare($previous_version, '1.9.2', '<')) {
-
-					if ($this->options['shortcode_auto_where'] == 'post')
-						$this->options['shortcode_auto_where'] = array( 'post', 'page');
-					else
-						$this->options['shortcode_auto_where'] = array( 'home', 'post', 'page', 'index');
-
-					update_option($this->options_entry, $this->options);
-
-				} // End of version older than 1.9.2
-
-			} // End of not a new installation
-
-			$table_name = $wpdb->prefix . "eg_attachments_clicks";
-			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-
-				$this->options['clicks_table'] = 0;
-				update_option($this->options_entry, $this->options);
-
-				$sql = "CREATE TABLE " . $table_name . " (
-						click_id bigint(20) NOT NULL auto_increment,
-						click_date datetime NOT NULL default '0000-00-00 00:00:00',
-						attach_id bigint(20) unsigned,
-						attach_title text NOT NULL,
-						post_id bigint(20) unsigned,
-						post_title text NOT NULL,
-						clicks_number int(10) NOT NULL,
-						UNIQUE KEY click_id (click_id),
-						KEY date_attach_post (click_date, attach_id, post_id),
-						KEY attach_date (attach_id, click_date),
-						KEY click_date (click_date)
-				);";
-
-				require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-				dbDelta($sql);
-
-				if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
-					// Table created successfully => save a flag.
-					$this->options['clicks_table'] = 1;
-					update_option($this->options_entry, $this->options);
-				} // End of table check
-			} // End of table not exist
-
-		} // End of install_upgrade
-
-		/**
-		 * admin_init
 		 *
-		 * Add post_tag as taxonomy of attachments
-		 *
-		 * @param	none
-		 * @return 	none
 		 */
-		function admin_init() {
-			parent::admin_init();
+		function init() {
 
+			// Add a new post type
+			register_post_type( EGA_TEMPLATE_POST_TYPE, array(
+					'labels' => array(
+						'name' 		    => __( 'EG-Attachment templates', $this->textdomain ),
+						'singular_name' => __( 'EG-Attachment template', $this->textdomain )
+					),
+					'rewrite' 	=> false,
+					'query_var' => false
+				)
+			);
+
+			// If user requests button for TinyMCE, record it
+			if ($this->options['tinymce_button']) {
+				$this->add_tinymce_button( 'ega_shortcode', 'inc/tinymce/eg_attach_plugin.js');
+			}
+
+			// If user requests to be able to "tag" attachments
 			if ($this->options['tags_assignment']) {
 				register_taxonomy_for_object_type('post_tag', 'attachment');
-			}
-		} // End of admin_init
+			} // End of tags_assignment
+
+		} // End of init
 
 		/**
 		 * admin_menu
 		 *
-		 * Add menus, and metabox
 		 *
-		 * @param	none
-		 * @return 	none
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	none
+		 * @return	none
+		 *
 		 */
 		function admin_menu() {
-			global $pagenow;
-
-			$this->add_page( array(
-					'id' 				=> 'ega_options',
-					'display_callback'	=> 'options_page',
-					'option_link'		=> TRUE)
-			);
-
-			if ($this->options['stats_enable']) {
-				$this->add_page( array(
-					'id' 				=> 'ega_stats',
-					'type'				=> 'tools',
-					'page_title' 		=> 'EG-Attachments Statistics',
-					'menu_title'		=> 'EG-Attachments Stats',
-					'access_level'		=> 'edit_posts',
-					'display_callback'	=> 'stats_page')
-				);
-			}
 
 			parent::admin_menu();
 
-			if (class_exists('EG_Form_212')) {
-				require($this->path.'inc/eg-attachments-settings.inc.php');
-			}
+			if ($this->options['stats_enable']) {
+				$this->stats_hook = add_submenu_page(
+					'tools.php',
+					esc_html__('EGA Stats', $this->textdomain),
+					esc_html__($this->name.' Stats', $this->textdomain),
+					EGA_VIEW_STATS,
+					'ega_stats',
+					array(&$this, 'display_stats')
+				);
+				add_action( 'load-' . $this->stats_hook, array(&$this, 'display_stats_load' ));
+				add_action('admin_enqueue_scripts', array(&$this, 'display_stats_enqueue_scripts' ));
+				add_action( 'admin_print_scripts-' . $this->stats_hook, array(&$this, 'display_stats_print_scripts' ));
+			} // End of stats_enable
 
-			// if ($this->options['use_metabox'] && function_exists( 'add_meta_box' ) &&
-			if ($this->options['use_metabox'] && function_exists( 'add_meta_box' ) &&
-				in_array($pagenow, $this->edit_posts_pages) ) {
+			// Add the page for the template edition
+			$template_editor_page = add_submenu_page(
+				'tools.php',
+				esc_html__('EGA templates', $this->textdomain),
+				esc_html__('EGA templates', $this->textdomain),
+				EGA_READ_TEMPLATES,
+				'ega_templates',
+				array(&$this, 'template_editor')
+			);
+// eg_plugin_error_log($this->name, 'Editor page Hook', $template_editor_page);
+			// Add load and print_styles for this page
+			add_action( 'load-' . $template_editor_page, array(&$this, 'template_editor_load' ));
+			add_action( 'admin_print_styles-' . $template_editor_page, array(&$this, 'template_editor_styles' ));
+
+			global $pagenow;
+			if ($this->options['use_metabox'] && in_array($pagenow, $this->edit_posts_pages) ) {
 
 				// Add metabox for posts
 				add_meta_box( 'eg-attach-metabox', __( 'EG-Attachments', $this->textdomain ),
@@ -183,9 +110,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 							array(&$this, 'display_metabox'), 'page', 'normal', 'high' );
 
 			}
-
-			add_filter( 'attachment_fields_to_edit', array(& $this, 'media_upload_custom_fields_edit'), 10, 2 );
-			add_filter( 'attachment_fields_to_save', array(& $this, 'media_upload_custom_fields_save'), 10, 2 );
 		} // End of admin_menu
 
 		/**
@@ -199,42 +123,48 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function display_metabox($post, $args) {
 			global $post;
-
 ?>
 			<div id="egattach-stuff">
 <?php
 			$attachment_list  = get_posts( array(	'post_parent' 	=> $post->ID,
 													'numberposts'	=> -1,
 													'post_type'		=> 'attachment',
+													'orderby'		=> 'excerpt',
+													'order'			=> 'ASC'
 												)
 											);
 			if ($attachment_list === FALSE && sizeof($attachment_list)==0) {
-				_e('No document attached to this post/page', $this->textdomain);
+				esc_html_e('No document attached to this post/page', $this->textdomain);
 			}
 			else {
 				$string = '<p>'.__('Attachments available for this post/page', $this->textdomain).'</p>'.
 						'<table class="eg-attach-list">'.
+						'<thead>'.
 							'<tr>'.
 								'<th>'.__('ID', $this->textdomain).'</th>'.
 								'<th>'.__('File Name', $this->textdomain).'</th>'.
 								'<th>'.__('Type', $this->textdomain).'</th>'.
 								'<th>'.__('Size', $this->textdomain).'</th>'.
 								'<th>'.__('Date', $this->textdomain).'</th>'.
-							'</tr>';
+							'</tr>'.
+							'</thead>'.
+							'<tbody>';
 				foreach ($attachment_list as $attachment) {
-					$file_path = get_attached_file($attachment->ID);
-					$file_type = wp_check_filetype($file_path);
-					$docsize = @filesize($file_path);
-					$size_value = explode(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
-					$string .= '<tr>'.
+					$file_path  = get_attached_file($attachment->ID);
+					$file_type  = wp_check_filetype($file_path);
+					$stat 		= stat($file_path);
+					// $docsize = @filesize($file_path);
+					$size_value = explode(' ',size_format($stat['size'], 0)); // WP function found in file wp-includes/functions.php
+					$string .= '<tr class="alternate">'.
 								'<td>'.$attachment->ID.'</td>'.
 								'<td>'.wp_html_excerpt($attachment->post_title, 40).'</td>'.
-								'<td>'.$file_type['ext'] /* str_replace('vnd.','',str_replace('application/','',$attachment->post_mime_type)) */.'</td>'.
+								'<td>'./*$file_type['ext'] */ str_replace('vnd.','',str_replace('application/','',$file_type['type'])).'</td>'.
 								'<td>'.(sizeof($size_value)<2?'':$size_value[0].' '.__($size_value[1], $this->textdomain)).'</td>'.
-								'<td>'.mysql2date(get_option('date_format'),$attachment->post_date, TRUE).'</td>'.
+								'<td>'.date(get_option('date_format'),$stat['mtime']).'</td>'.
 							'</tr>';
 				}
-				$string .= '</table>';
+				$string .= '</tbody>'.
+							'</table>';
 
 				echo $string;
 			}
@@ -244,436 +174,1102 @@ if (! class_exists('EG_Attachments_Admin')) {
 		} // End of display_metabox
 
 		/**
-		 * stats_page
+		 * template_editor_styles
 		 *
-		 * Display and manage statistics page
+		 * Load styles for the template editor
 		 *
 		 * @package EG-Attachments
-		 * @param none
-		 * @return none
+		 * @since 	1.0
+		 *
+		 * @param 	none
+		 * @return	none
+		 *
 		 */
-		function stats_page() {
+		function template_editor_styles() {
+			wp_register_style( $this->name.'-admin', $this->url.'css/eg-attachments-admin.css');
+			wp_enqueue_style( $this->name.'-admin' );
+		} // End of template_editor_styles
 
-			echo '<div class="wrap">';
-			screen_icon();
-			echo '<h2>'.__('EG-Attachments Statistics', $this->textdomain).'</h2>';
-
-			if (! isset($_GET['id'])) {
-				$this->stats_display_global();
-			}
-			else {
-				if (is_numeric($_GET['id'])) {
-					$this->stats_display_details($_GET['id']);
-				}
-			}
-			echo '</div>';
-		} // Stats_page
 
 		/**
-		 * stats_display_breadcrumb
+		 * template_editor_load
 		 *
-		 * Display breadcrumb on statistics page
-		 *
-		 * @package EG-Attachments
-		 * @param none
-		 * @return none
-		 */
-		function stats_display_breadcrumb($level2 = FALSE) {
-
-			if (! $level2)
-				$list[] = '<strong>'.__('Global', $this->textdomain).'</strong>';
-			else {
-				$list[] = '<a href="'.admin_url('tools.php?page=ega_stats').'">'.__('Global', $this->textdomain).'</a>';
-				$list[] = '<strong>'.sprintf(__('Details of %s', $this->textdomain),current($level2)).'</strong>';
-			}
-			echo '<ul class="subsubsub"><li>'.
-				implode('</li> &gt; <li>', $list).
-				'</li></ul><div class="clear"/>';
-		} // End of stats_display_breadcrumb
-
-		/**
-		 * stats_display_top_numbers
-		 *
-		 * Display top clicked attached files (main page)
+		 * Get forms parameters, and execute requested actions
 		 *
 		 * @package EG-Attachments
-		 * @param int	$Limit	number of attachments to display
-		 * @return none
-		 */
-		function stats_display_top_numbers($all) {
-
-			$top_numbers_list = array(
-					'10'  => __('Top 10', $this->textdomain),
-					'25'  => __('Top 25', $this->textdomain),
-					'all' => __('All',    $this->textdomain)
-			);
-
-			$limit = 10;
-			if (isset($_GET['limit']) && array_key_exists($_GET['limit'], $top_numbers_list)) {
-				$limit = $_GET['limit'];
-			}
-
-			$top_numbers_filter = array();
-			foreach ($top_numbers_list as $key => $value) {
-				if ($key == $limit)
-					$top_numbers_filter[] = '<li>'.$value.'</li>';
-				else
-					$top_numbers_filter[] = '<li><a href="'.admin_url('tools.php?page=ega_stats&limit='.$key).'">'.__($value, $this->textdomain).'</a><li>';
-			}
-			echo '<ul class="subsubsub">'.implode(' | ', $top_numbers_filter).'</ul>';
-
-			if ($limit == 'all' ) return ($all);
-			else return ($limit);
-
-		} // End of stats_display_top_numbers
-
-		/**
-		 * stats_display_details
+		 * @since 	1.0
 		 *
-		 * Display detailed statistic of a specific attachment
+		 * @param 	none
+		 * @return	none
 		 *
-		 * @package EG-Attachments
-		 * @param int	$id		id of the attachment
-		 * @return none
 		 */
-		function stats_display_details($id) {
-			global $wpdb;
+		function template_editor_load() {
 
-			$month_str = array( 1 => 'Jan', 2 => 'Feb', 3 => 'Mar',  4 => 'Apr',  5 => 'May',  6 => 'Jun',
-								7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec');
+			global $current_user;
 
-			$quarter_list = array(
-				 1 => 'Q1',  2 => 'Q1',  3 => 'Q1',
-				 4 => 'Q2',  5 => 'Q2',  6 => 'Q2',
-				 7 => 'Q3',  8 => 'Q3',  9 => 'Q3',
-				10 => 'Q4', 11 => 'Q4', 12 => 'Q4'
-			);
-			$max_height = 200;
+			$cache_list_entry = strtolower($this->name).'-templates';
+			$cache_shortcode_entry = strtolower($this->name).'-shortcode-tmpl';
 
-			$attachment = get_post($id);
-			if (! $attachment) {
-				_e('Cannot get attachments details', $this->textdomain);
+			// Filetering the parameters
+			extract(wp_parse_args($_REQUEST,
+				array(
+					'id' 			=> FALSE,
+					'title'			=> '',
+					'description'	=> '',
+					'before'		=> '',
+					'loop'			=> '',
+					'after'			=> '',
+					'action'		=> '',
+					'action2'		=> '',
+					'templates'		=> FALSE
+				)
+			));
+
+			// Specifique cas for bulk delete
+			if ( 'delete' == $action2 && -1 == $action && FALSE !== $templates) {
+				$action = 'bulk-del';
 			}
-			else {
-				$this->stats_display_breadcrumb(array( $id => $attachment->post_title));
 
-				$sql = 'SELECT YEAR(click_date) as year, MONTH(click_date) as month, SUM(clicks_number) as clicks_total'.
-					' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
-					' WHERE attach_id='.$id.
-					' GROUP BY DATE_FORMAT(click_date,\'%Y-%m\')';
-
-				$current_year = date('Y');
-				$fields = array( ($current_year-1) => 0, $current_year => 0, 'Q1' => 0, 'Q2' => 0, 'Q3' => 0, 'Q4' => 0,
-						1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0, 11 => 0, 12 => 0);
-
-				$results = $wpdb->get_results($sql);
-
-				$max_number = 0;
-				foreach ($results as $result) {
-
-					if (isset($fields[$result->year])) $fields[$result->year] += $result->clicks_total;
-					if ($result->year == $current_year) {
-						$fields[$result->month] += $result->clicks_total;
-						$fields[$quarter_list[$result->month]] += $result->clicks_total;
-					}
-				}
-				$max_number = max($fields);
-
-				echo '<h3>'.sprintf(__('History of "%s" ', $this->textdomain), $attachment->post_title).'</h3>'.
-					'<table class="eg-attach-stats-details">'.
-					'<tr>'.
-					'<td colspan="18">'.__('Clicks', $this->textdomain).'</td>'.
-					'</tr>';
-
-				echo '<tr>';
-				foreach ($fields as $key => $field) {
-					if (is_numeric($key) && $key < 13) echo '<td>'.__( $month_str[$key], $this->textdomain).'</td>';
-					else echo '<td>'.$key.'</td>';
-				}
-				echo '</tr>'.
-					'<tr class="histogram">';
-				foreach ($fields as $key => $field) {
-					echo '<td><div title="'.$field.'" style="height: '.intval($field*$max_height/$max_number).'px;">&nbsp;</div></td>';
-				}
-
-				echo '</tr><tr>';
-				foreach ($fields as $key => $field) {
-					if (is_numeric($key) && $key < 13) echo '<td>'.__( $month_str[$key], $this->textdomain).'</td>';
-					else echo '<td>'.$key.'</td>';
-				}
-				echo '</table>';
-
-				$sql = 'SELECT post_id,post_title, SUM(clicks_number) as clicks_total'.
-					' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
-					' WHERE attach_id='.$id.
-					' GROUP BY post_id'.
-					' ORDER BY clicks_total DESC';
-
-				echo '<h3>'.__('Posts', $this->textdomain).'</h3>'.
-					'<table class="wide widefat eg-attach-stats">'.
-					'<thead>'.
-					'<tr>'.
-					'<th>'.__('Posts', $this->textdomain).'</th>'.
-					'<th>'.__('Clicks', $this->textdomain).'</th>'.
-					'<th>'.__('%', $this->textdomain).'</th>'.
-					'</tr>'.
-					'</thead>'.
-					'<tbody>';
-				$results = $wpdb->get_results($sql);
-				$total   = 0;
-				foreach ($results as $result) {
-					$total += $result->clicks_total;
-				}
-				foreach ($results as $result) {
-					echo '<tr>'.
-						'<th>'.$result->post_title.'</th>'.
-						'<td>'.$result->clicks_total.'</td>'.
-						'<td>'.intval( (100 * $result->clicks_total) / $total ).'</td>'.
-						'</tr>';
-				}
-				echo '<tr>'.
-					'<th>'.__('Total', $this->textdomain).'</th>'.
-					'<td>'.$total.'</td>'.
-					'<td>&nbsp;</td>'.
-					'</tr>'.
-					'</tbody>'.
-					'</table>';
-			}
-		} // End of stats_display_details
-
-		/**
-		 * stats_display_global
-		 *
-		 * Display global statistics for all attachments
-		 * @package EG-Attachments
-		 * @param int	$id		id of the attachment
-		 * @return none
-		 */
-		function stats_display_global($limit=10) {
-			global $wpdb;
-
-			// Purge statistics table (2 years of retention)
-			$sql = 'DELETE FROM '.$wpdb->prefix.'eg_attachments_clicks '.
-					'WHERE click_date<"'.date('Y-m-d H:i:s', mktime(0, 0, 0, 1, 1, date('Y')-1)).'"';
-			$status = $wpdb->query($sql);
-
-			//$global_stats = $this->cache->get('eg_attachment_clicks_total');
-			//if (! $global_stats) {
-
-				$sql = 'SELECT attach_id, attach_title as title, SUM(clicks_number) as total,'.
-					' 0 as last_month, 0 as current_month, 0 as last_week, 0 as current_week, 0 as yesterday, 0 as today'.
-					' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
-					' GROUP BY attach_id'.
-					' ORDER BY total DESC';
-
-				$global_stats = $wpdb->get_results($sql, 'OBJECT_K');
-				if ($global_stats) {
-
-					list($current_day, $current_week, $current_month, $current_year) = explode(' ',date('dmY WY mY Y'));
-					$yesterday = date('dmY', strtotime('-1 day'));
-					$previous_week = date('WY', strtotime('-1 week'));
-					$previous_month = date('WY', strtotime('-1 month'));
-					$date_limit = date('Y-m-d 00:00:00', mktime(0, 0, 0, 1, 1, $current_year-1));
-
-					$sql = 'SELECT attach_id,YEAR(click_date) as year, MONTH(click_date) as month, DAY(click_date) as day, SUM(clicks_number) as clicks_total'.
-						' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
-						' WHERE click_date >= "'.$date_limit.'"'.
-						' GROUP BY attach_id, click_date';
-
-					$results = $wpdb->get_results($sql);
-					if ($results) {
-						foreach ($results as $result) {
-							$id    = $result->attach_id;
-							if (isset($global_stats[$id])) {
-
-								$week  = date('WY', mktime(0,0,0, $result->month, $result->day, $result->year));
-								$month = date('mY', mktime(0,0,0, $result->month, 1, $result->year));
-								$day   = date('dmY', mktime(0,0,0, $result->month, $result->day, $result->year));
-
-								if ($current_month == $month)
-									$global_stats[$id]->current_month += $result->clicks_total;
-								elseif ($previous_month == $month)
-									$global_stats[$id]->last_month += $result->clicks_total;
-
-								if ($current_week == $week)
-									$global_stats[$id]->current_week += $result->clicks_total;
-								elseif ($previous_week == $week)
-									$global_stats[$id]->last_week += $result->clicks_total;
-
-								if ($current_day == $day)
-									$global_stats[$id]->today += $result->clicks_total;
-								elseif ($yesterday == $day)
-									$global_stats[$id]->yesterday += $result->clicks_total;
-							} // isset $global_stats[$id]
-						} // foreach
-					} // if $results
-					unset($results);
-					//$this->cache->set('eg_attachment_clicks_total', $global_stats);
-				//} // if $results (general query)
-				}
-			$this->stats_display_breadcrumb();
-
-			if ($global_stats) $limit = $this->stats_display_top_numbers(sizeof($global_stats));
-			echo '<table class="wide widefat eg-attach-stats">'.
-				 '<thead>'.
-				 '<tr>'.
-				 '<th>'.__('Attachments', 		 $this->textdomain).'</th>'.
-				 '<th>'.__('All<br />time', 	 $this->textdomain).'</th>'.
-				 '<th>'.__('Last<br />month', 	 $this->textdomain).'</th>'.
-				 '<th>'.__('Current<br />month', $this->textdomain).'</th>'.
-				 '<th>'.__('Last<br />week', 	 $this->textdomain).'</th>'.
-				 '<th>'.__('Current<br />week',  $this->textdomain).'</th>'.
-				 '<th>'.__('Yesterday', 		 $this->textdomain).'</th>'.
-				 '<th>'.__('Today', 			 $this->textdomain).'</th>'.
-				 '</tr>'.
-				 '</thead>'.
-				 '<tbody>';
-
-			if (! $global_stats) {
-				echo '<tr><td colspan="8">'.__('No statistics available yet', $this->textdomain).'</td></tr>';
-			}
-			else {
-				$index = 0;
-				foreach ($global_stats as $id => $values) {
-					echo '<tr>'.
-						'<th><a href="'.admin_url('tools.php?page=ega_stats&id='.$id).'">'.$values->title.'</a></th>'.
-						'<td>'.$values->total.'</td>'.
-						'<td>'.$values->last_month.'</td>'.
-						'<td>'.$values->current_month.'</td>'.
-						'<td>'.$values->last_week.'</td>'.
-						'<td>'.$values->current_week.'</td>'.
-						'<td>'.$values->yesterday.'</td>'.
-						'<td>'.$values->today.'</td>'.
-						'</tr>';
-					if ($index++ > $limit) break;
-				}
-			} // global_stats exists
-			echo '</tbody></table>';
-		} // End of stats_display_globals
-
-		function get_comment_trackback_default($mode='comment') {
-			switch ($this->options[$mode.'_status']) {
-				case 'default':
-					$value = ( get_option('default_'.$mode.'_status') == 'open' ? ' checked="checked"' : '' );
+			switch (strtolower($action)) {
+				case 'view':
+				case 'edit':
+					$this->post_id = $id;
 				break;
 
-				case 'open':
-					$value = ' checked="checked"';
+				case 'save':
+					if (check_admin_referer( 'ega_shortcodes_edit_nonce_field-'.$id )) {
+
+						if (! current_user_can(EGA_DELETE_TEMPLATES)) {
+							wp_die( __( 'You are not allowed to create/edit templates.', $this->textdomain ) );
+						}
+
+						$error = TRUE;
+						$post = array(
+						  'post_title'     => trim($title),
+						  'post_name'	   => '', /* Regenerate the slug */
+						  'post_excerpt'   => trim($description),
+						  'post_content'   => '[before]'.trim($before).'[/before]'.
+											  '[loop]'.trim($loop).'[/loop]'.
+											  '[after]'.trim($after).'[/after]',
+						  'post_status'    => 'publish',
+						  'post_type'      => EGA_TEMPLATE_POST_TYPE
+						);
+
+						if ('' == trim($title) )
+							$query = array( 'action' => 'edit', 'id' => $id, 'msg' => 'errorsave', 'msg2' => 'titlenotdefined');
+						elseif (__('New_template', $this->textdomain) == $title)
+							$query = array( 'action' => 'edit', 'id' => $id, 'msg' => 'errorsave', 'msg2' => 'titlenotchanged');
+						elseif ('' == trim($loop) )
+							$query = array( 'action' => 'edit', 'id' => $id, 'msg' => 'errorsave', 'msg2' => 'loopnotdefined');
+						else {
+							if ('new' == $id)
+								$result = wp_insert_post($post);
+							else {
+								$post['ID'] = (int)$id;
+								$result = wp_update_post($post);
+							}
+
+							if (is_numeric($result) && $result > 0) {
+								$query = array( 'action' => 'edit', 'msg' => ('new' == $id ? 'created' : 'saved'), 'id' => $result);
+								$error = FALSE;
+								delete_transient($cache_entry);
+								delete_transient($cache_shortcode_entry);
+							}
+							else {
+								$query = array( 'action' => 'edit', 'id' => $id, 'msg' => 'errorsave' );
+							}
+						} // End of if ok
+
+						if (TRUE === $error) {
+							$post = array_merge(
+								array(
+									'ID' 		=> $id,
+									'before'	=> $before,
+									'after'		=> $after,
+									'loop'		=> $loop
+								),
+								$post);
+							set_transient($this->name.'-'.absint($current_user->ID).'-tpl_edit', $post, 10);
+						}
+						wp_safe_redirect(
+							add_query_arg(
+								$query,
+								menu_page_url( 'ega_templates', false )
+							)
+						);
+					} // End of referrer ok
+				break;
+
+				case 'copy':
+					if (check_admin_referer( 'ega_shortcodes_edit_nonce_field-'.$id )) {
+						if (! current_user_can(EGA_CREATE_TEMPLATES)) {
+							wp_die( __( 'You are not allowed to copy templates.', $this->textdomain ) );
+						}
+
+						$post = get_post(absint($id));
+						if ($post) {
+							$args = array(
+								'post_title'	=> $post->post_title.'-copy',
+								'post_name'		=> '',
+								'post_excerpt'	=> __('Copy of ', $this->textdomain).$post->post_excerpt,
+								'post_content'	=> $post->post_content,
+								'post_author'	=> $current_user->ID,
+								'post_status'	=> 'publish',
+								'post_type'  	=> EGA_TEMPLATE_POST_TYPE
+							);
+							$result = wp_insert_post($args);
+							if (is_numeric($result) && $result > 0) {
+								$query = array ('msg' => 'copied', 'id' => $result, 'action' => 'edit');
+								delete_transient($cache_entry);
+								delete_transient($cache_shortcode_entry);
+							}
+							else
+								$query = array ('msg' => 'errorcopy', 'msg2' => 'errorcopy');
+						} // End of post exist
+						else {
+							$query = array ('msg' => 'errorcopy', 'msg2' => 'unknownpost');
+						}
+						wp_safe_redirect(
+							add_query_arg(
+								$query,
+								menu_page_url( 'ega_templates', false )
+							)
+						);
+					} // End of check referrer
+				break;
+
+				case 'del':
+					if (check_admin_referer( 'ega_shortcodes_edit_nonce_field-'.$id )) {
+						if (! current_user_can(EGA_DELETE_TEMPLATES)) {
+							wp_die( __( 'You are not allowed to delete templates.', $this->textdomain ) );
+						}
+						$result = wp_delete_post((int)$id);
+						if (FALSE !== $result) {
+							$query = array('msg' => 'deleted');
+							delete_transient($cache_entry);
+							delete_transient($cache_shortcode_entry);
+						}
+						else {
+							$query = array('msg' => 'errordelete');
+						}
+						wp_safe_redirect(
+							add_query_arg(
+								$query,
+								menu_page_url( 'ega_templates', false )
+							)
+						);
+					} // End of check referrer
+				break;
+
+				case 'bulk-del':
+					if (check_admin_referer( 'bulk-'.__('Templates', $this->textdomain))) {
+
+						if (! current_user_can(EGA_DELETE_TEMPLATES)) {
+							wp_die( __( 'You are not allowed to delete templates.', $this->textdomain ) );
+						}
+
+						$del_count = 0;
+						foreach ($templates as $id_to_del) {
+							$del_count += (FALSE === wp_delete_post((int)$id) ? 0 : 1);
+						} // End of foreach
+						delete_transient($cache_entry);
+						delete_transient($cache_shortcode_entry);
+
+						wp_safe_redirect(
+							add_query_arg(
+								array( 'msg' => 'bulkdeleted', 'itemdel' => $del_count, 'requested' => sizeof($templates)),
+								menu_page_url( 'ega_templates', false )
+							)
+						);
+					} // End of check referrer
+				break;
+			} // End of switch
+
+			if (FALSE !== $id) {
+				add_meta_box( 'template_form', __('Template', $this->textdomain), array(&$this, 'template_form_mt'), null, 'normal', 'core');
+			}
+
+		} // End of template_editor_load
+
+		/**
+		 * template_editor
+		 *
+		 * Display the template editor page
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	none
+		 * @return	none
+		 *
+		 */
+		function template_editor() {
+?>
+			<div class="wrap">
+				<?php screen_icon(); ?>
+				<h2>
+					<?php esc_html_e($this->name.' templates', $this->textdomain); ?>
+					<?php if ('new' != $this->post_id && current_user_can(EGA_CREATE_TEMPLATES)) { ?>
+					<a href="<?php echo add_query_arg( array( 'id' => 'new', 'action' => 'edit' )); ?>" class="add-new-h2"><?php esc_html_e( 'Add New', 'post'); ?></a>
+					<?php } ?>
+				</h2>
+				<?php $this->admin_notices(); ?>
+				<br />
+<?php
+			// If ID is not defined, we go to the list of templates
+			if (FALSE == $this->post_id) {
+				$this->template_list();
+			}
+			else { // if ID is defined we go to the editor
+				$this->template_edit();
+			}
+?>
+			</div>
+<?php
+		} // End of template_editor
+
+		/**
+		 * template_list
+		 *
+		 * Display the template list
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	none
+		 * @return	none
+		 *
+		 */
+		function template_list() {
+			// Get the class to manage the table
+			if ( ! class_exists( 'EG_Attachments_Form_List_Table' ) )
+				require_once ($this->path.'inc/eg-attachments-tools-form.inc.php');
+
+			// Create the table
+			$list_table = new EG_Attachments_Form_List_Table();
+			$list_table->prepare_items();
+
+			// Display it
+?>
+			<form method="get" action="">
+				<input type="hidden" name="page" value="<?php esc_attr_e( $_REQUEST['page'] ); ?>" />
+				<?php $list_table->display(); ?>
+			</form>
+<?php
+		} // End of template_list
+
+		/**
+		 * template_edit
+		 *
+		 * Display the template editor
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	none
+		 * @return	none
+		 *
+		 */
+		function template_edit() {
+
+			global $current_user;
+
+			// An error occured. The fields edited in the previous form are stored in a transient
+			$edited_fields = get_transient('eg-attachments-'.absint($current_user->ID).'-tpl_edit');
+			if (FALSE !== $edited_fields) {
+				$template = array(
+					'id'			=> $edited_fields['ID'],
+					'title'			=> $edited_fields['post_title'],
+					'slug'			=> $edited_fields['post_name'],
+					'description'	=> $edited_fields['post_excerpt'],
+					'before'		=> $edited_fields['before'],
+					'loop'			=> $edited_fields['loop'],
+					'after'			=> $edited_fields['after']
+				);
+				delete_transient('eg-attachments-'.absint($current_user->ID).'-tpl_edit');
+			} // End of cached fields
+			else {
+				// User is requesting a new template
+				if ('new' == $this->post_id) {
+					$template = array(
+						'id'			=> 'new',
+						'title'			=> __('New_template', $this->textdomain),
+						'slug'			=> '',
+						'description'	=> __('Description of the new template', $this->textdomain),
+						'before'	    => '',
+						'after'		    => '',
+						'loop'			=> ''
+					);
+				} // End of new template
+				else {
+					// Request a template.
+					$tmp = get_post($this->post_id);
+
+					// Read post content, and extract before, loop, after
+					$template = EG_Attachments_Common::parse_template($tmp->post_content);
+
+					if (FALSE !== $template) {
+						$template = array_merge($template, array(
+							'id'			=> $tmp->ID,
+							'title'			=> $tmp->post_title,
+							'slug'			=> $tmp->post_name,
+							'description'	=> $tmp->post_excerpt)
+						);
+					}
+				} // End of edit template
+			} // End of no cache
+?>
+			<div id="poststuff" class="metabox-holder">
+				<?php do_meta_boxes( null, 'normal', $template); ?>
+			</div>
+<?php
+		} // End of template_edit
+
+
+		/**
+		 * submit_buttons
+		 *
+		 * Display the submit buttons panel
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	string	disabled	disable the save button or not
+		 * @return	none
+		 *
+		 */
+		function submit_buttons($disabled) {
+?>
+			<p class="submit clear">
+<?php		if ('' == $disabled) { ?>
+				<input type="submit" value="<?php esc_attr_e('Save',   $this->textdomain); ?>" class="button button-primary button-large" id="ega_save" name="ega_save">
+<?php		} ?>
+				<a href="<?php echo menu_page_url( 'ega_templates', false ); ?>" title="<?php esc_html_e('', $this->textdomain); ?>" class="button button-large"><?php esc_html_e('Go back to the list', $this->textdomain); ?></a>
+			</p>
+<?php
+		} // End of submit_buttons
+
+		/**
+		 * template_form_mt
+		 *
+		 * Display the template form itself
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	array	template	list of fields to edit
+		 * @return	none
+		 *
+		 */
+		function template_form_mt($template) {
+
+			// Extract fields
+			extract($template);
+
+			// check the user right
+			$disabled = ( current_user_can(EGA_EDIT_TEMPLATES, $id) ? '' : 'disabled');
+?>
+			<form method="post" action="<?php echo menu_page_url( 'ega_templates', false ); ?>">
+			<input type="hidden" name="id" value="<?php echo $id; ?>" />
+			<input type="hidden" name="action" value="save" />
+			<?php wp_nonce_field( 'ega_shortcodes_edit_nonce_field-'.$id ); ?>
+			<?php $this->submit_buttons($disabled); ?>
+			<div class="ega-col-left">
+			<p>
+				<label for="title"><?php esc_html_e('Name of the template', $this->textdomain); ?></label><br />
+				<input type="text" class="regular-text mandatory" name="title" value="<?php echo esc_attr($title); ?>" <?php echo $disabled; ?> />
+				<?php if ($slug == '') { ?>
+					<p class="description">
+						<?php esc_html__('Choose a shortname, with standard characters (like a-z, 0-9, -_)', $this->textdomain); ?>
+					</p>
+				<?php } ?>
+			</p>
+			<p>
+				<label for="description"><?php _e('Description', $this->textdomain); ?></label><br />
+				<input type="text" class="large-text" name="description" value="<?php echo esc_attr(trim($description)); ?>" <?php echo $disabled; ?> />
+			</p>
+			<p>
+				<label for="slug"><?php _e('Slug', $this->textdomain); ?></label><br />
+				<input type="text" class="large-text" name="slug" value="<?php echo esc_attr(trim($slug)); ?>" disabled />
+			</p>
+			<p>
+				<label for="before"><?php _e('Before', $this->textdomain); ?></label><br />
+				<textarea cols="100" rows="5" class="large-text" name="before" <?php echo $disabled; ?>><?php echo esc_textarea( $before); ?></textarea>
+			</p>
+			<p>
+				<label for="loop"><?php _e('Loop', $this->textdomain); ?></label><br />
+				<textarea cols="100" rows="20" class="large-text mandatory" name="loop" <?php echo $disabled; ?>><?php echo esc_textarea( $loop); ?></textarea>
+			</p>
+			<p>
+				<label for="after"><?php _e('After', $this->textdomain); ?></label><br />
+				<textarea cols="100" rows="5" class="large-text" name="after" <?php echo $disabled; ?>><?php echo esc_textarea( $after); ?></textarea>
+			</p>
+			</div>
+			<div class="ega-col-right" id="template-keywords">
+				<?php require(dirname(__FILE__).'/eg-attachment-keywords-help.inc.php'); ?>
+			</div>
+			<?php $this->submit_buttons($disabled); ?>
+			<br class="clear" />
+			</form>
+<?php
+		} // End of template_form_mt
+
+		/**
+		 * admin_notices
+		 *
+		 * Display messages on top of the page (error or not)
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	none
+		 * @return	none
+		 *
+		 */
+		function admin_notices() {
+
+			// Get messages ids
+			$msg    	= isset( $_REQUEST['msg'] )			? $_REQUEST['msg'] 		: '';
+			$msg2   	= isset( $_REQUEST['msg2'] ) 		? $_REQUEST['msg2']		: '';
+			$itemdel 	= isset( $_REQUEST['itemdel'] )		? $_REQUEST['itemdel']	: 'unknown';
+			$requested  = isset( $_REQUEST['requested'] ) 	? $_REQUEST['requested']: 'unknown';
+
+			// If the id is containing error, then the message is an error
+			$class = (FALSE !== strpos($msg, 'error') ? 'error' : 'updated');
+
+			// List of messages
+			$msg_list = array(
+				'errorsave'			=> esc_html__('Error during template saving', $this->textdomain),
+				'errorcopy'			=> esc_html__('Error during template copy', $this->textdomain),
+				'saved'				=> esc_html__('Template successfully saved.', $this->textdomain),
+				'created'			=> esc_html__('Template successfully created', $this->textdomain),
+				'deleted'			=> esc_html__('Template sucessfully deleted', $this->textdomain),
+				'errordelete'		=> esc_html__('Error during template deletion', $this->textdomain),
+				'bulkdeleted'		=> sprintf(esc_html__('Bulk deletion done: %s on %s template(s) were deleted', $this->textdomain), $itemdel, $requested),
+				'titlenotdefined'	=> esc_html__('Title is empty', $this->textdomain),
+				'titlenotchanged'	=> sprintf(esc_html__('Title is still "%s"', $this->textdomain), __('New_template', $this->textdomain)),
+				'loopnotdefined'	=> esc_html__('The field "loop" cannot be empty.', $this->textdomain),
+				'errorcopy'			=> esc_html__( 'Error during the copy operation', $this->textdomain),
+				'unknownpost'		=> esc_html__('The initial post is unknown or doesn\'t exist', $this->textdomain),
+				'statdeleted'		=> sprintf(__('Purge of statustucs: %d lines deleted (Retention: %d months).', $this->textdomain),$itemdel, $this->options['purge_stats'])
+
+			);
+
+			// Display message
+			if (isset($msg_list[$msg])) {
+			?>
+				<div id="message" class="<?php echo $class; ?>">
+					<p><?php echo $msg_list[$msg]; ?></p>
+					<?php if (isset($msg_list[$msg2])) { ?>
+					<p><?php echo $msg_list[$msg2]; ?></p>
+					<?php } ?>
+				</div>
+			<?php
+			}
+		} // End of admin_notices
+
+
+		/**
+		 * install_upgrade
+		 *
+		 * Create or update options, DB table, ...
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	none
+		 * @return	none
+		 *
+		 */
+		function install_upgrade() {
+			global $wpdb;
+
+			$previous_options = parent::install_upgrade();
+			$previous_version = ($previous_options === FALSE ? '0.0.0' : $previous_options['version']);
+//eg_plugin_error_log($this->name, 'Previous version: ', $previous_options);
+//eg_plugin_error_log($this->name, 'Previous version: ', $previous_version);
+			if (version_compare($this->version, $previous_version)>0) {
+
+				/**
+				 * From version 1.4.3 to 2.0.0
+				 */
+				if (isset($this->options['uninstall_del_option'])) {
+					$this->options['uninstall_del_options'] = $previous_options['uninstall_del_option'];
+					unset($this->options['uninstall_del_option']);
+					update_option($this->options_entry, $this->options);
+				} // End of version older than 1.4.3
+
+				/**
+				 * From version 1.7.3 to 1.9.x
+				 */
+				if ( isset($previous_options['shortcode_auto_format_pre'])) {
+
+					$changed_options = array(
+									'shortcode_auto_format_pre'  => 'custom_format_pre',
+									'shortcode_auto_format'      => 'custom_format',
+									'shortcode_auto_format_post' => 'custom_format_post');
+
+					foreach ($changed_options as $old_option => $new_option) {
+						if (isset($previous_options[$old_option])) {
+							$previous_options[$new_option] = $previous_options[$old_option];
+							unset($previous_options[$old_option]);
+						}
+					} // End of foreach
+				} // End of version older than 1.7.3
+
+				/**
+				 * From version 1.x.x to 1.9.2
+				 */
+				if (version_compare('1.9.2', $previous_version)>1) {
+
+					if ($this->options['shortcode_auto_where'] == 'post')
+						$this->options['shortcode_auto_where'] = array( 'post', 'page');
+					else
+						$this->options['shortcode_auto_where'] = array( 'home', 'post', 'page', 'index');
+
+					update_option($this->options_entry, $this->options);
+				} // End of version older than 1.9.2
+
+
+
+				/**
+				 * From 1.9.2 to 2.0.0
+				 */
+				if (version_compare($this->version, $previous_version)>0) {
+//eg_plugin_error_log($this->name,'To 2.0.0');
+					/* ---- Create default templates --- */
+					// Get the number of templates installed
+					//$templates_count = (array)wp_count_posts( EGA_TEMPLATE_POST_TYPE );
+					$templates = get_posts(array(
+								'post_status' 	=> 'publish',
+								'post_type'		=> EGA_TEMPLATE_POST_TYPE,
+								'numberposts' 	=> -1
+							)
+						);
+					if (FALSE === $templates || 0 == sizeof($templates)) {
+//eg_plugin_error_log($this->name,'template count', $templates);
+						// No templates installed. Creating standard templates.
+						$path = $this->path.'inc/templates';
+						if ($handle = opendir($path)) {
+//eg_plugin_error_log($this->name,'Directory exists', $path);
+							while (($file = readdir($handle)) !== false) {
+								if ($file != '..' && $file != '.') {
+//eg_plugin_error_log($this->name,'file: ', $path.'/'.$file);
+									$string = file_get_contents($path.'/'.$file);
+//	eg_plugin_error_log($this->name, 'File content', $string);
+//									preg_match_all('/\[title\](.*)\[\/title\]\[description\](.*)\[\/description\]\[before\](.*)\[\/before\]\[loop\](.+)\[\/loop\]\[after\](.*)\[\/after\]/is', $string, $matches);
+									preg_match_all('/\[title\](.*)\[\/title\](.*)\[description\](.*)\[\/description\](.*)/is', $string, $matches);
+// eg_plugin_error_log($this->name, 'Standard template Matches', $matches);
+									if (sizeof($matches)>4) {
+										$template = array(
+											'post_title'   => trim($matches[1][0]),
+//											'post_name'	   => '',
+											'post_excerpt' => trim($matches[3][0]),
+											'post_content' => trim($matches[4][0]),
+//											'post_content'   => '[before]'.trim($matches[3][0]).'[/before]'.
+//														  '[loop]'.trim($matches[4][0]).'[/loop]'.
+//														  '[after]'.trim($matches[5][0]).'[/after]',
+											'post_status'    => 'publish',
+											'post_type'      => EGA_TEMPLATE_POST_TYPE
+										);
+//eg_plugin_error_log($this->name, 'Template:', $template['post_title']);
+										$new_id = wp_insert_post($template);
+//eg_plugin_error_log($this->name, 'New id:', $new_id);
+										if (is_numeric($new_id) && $new_id > 0) {
+//eg_plugin_error_log($this->name, 'Options:', $this->options['standard_templates']);
+											$this->options['standard_templates'] .= ('' == $this->options['standard_templates'] ? '' : ',').$new_id;
+											update_option($this->options_entry, $this->options);
+										} // End of insert post succeed
+									} // End of preg_match_all matching
+								} // End file != .. and .
+							} // End of while
+							closedir($handle);
+						} // End of if opendir
+					} // End of no template defined
+
+					/* --- Convert custom format --- */
+					if ( (isset($previous_options['custom_format_pre'])  && $previous_options['custom_format_pre']  != '') ||
+						 (isset($previous_options['custom_format']) 	 && $previous_options['custom_format']      != '') ||
+						 (isset($previous_options['custom_format_post']) && $previous_options['custom_format_post'] != '')) {
+
+						$args = array(
+							'post_title'   => __('Custom format', $this->textdomain),
+							'post_excerpt' => sprintf(__('Custom format from previous version %s', $this->textdomain),$previous_version),
+							'post_content' => '[before]'.trim(isset($previous_options['custom_format_pre']) ? $previous_options['custom_format_pre'] : '').'[/before]'.
+									  '[loop]'.trim(isset($previous_options['custom_format']) ? $previous_options['custom_format'] : '').'[/loop]'.
+									  '[after]'.trim(isset($previous_options['custom_format_post']) ? $previous_options['custom_format_post'] : '').'[/after]',
+							'post_status'  => 'publish',
+							'post_type'    => EGA_TEMPLATE_POST_TYPE
+						);
+						$new_id = wp_insert_post($args);
+						if (is_numeric($new_id) && $new_id > 0 && 'custom' == $previous_options['shortcode_auto_size']) {
+							$post = get_post($new_id);
+							$this->options['shortcode_auto_template'] = $post->post_name;
+							update_option($this->options_entry, $this->options);
+						}
+					} // End of shortcodea_auto_format
+
+//eg_plugin_error_log($this->name, 'Previous auto size and icon', '-'.$previous_options['shortcode_auto_size'].'-'.$previous_options['shortcode_auto_icon'].'-');
+//eg_plugin_error_log($this->name, 'Current auto size and icon', '-'.$this->options['shortcode_auto_size'].'-');
+
+					if ('custom' != $previous_options['shortcode_auto_size'] && 0 == $previous_options['shortcode_auto_icon']) {
+						$this->options['shortcode_auto_size'] = $previous_options['shortcode_auto_size'].'-list';
+// eg_plugin_error_log($this->name, 'new auto size', '-'.$this->options['shortcode_auto_size'].'-');
+						update_option($this->options_entry, $this->options);
+					}
+				} // End of version 2.0.0
+			} // End of update
+
+			$table_name = $wpdb->prefix . 'eg_attachments_clicks';
+			$sql = '';
+			if (0 == $this->options['clicks_table']) {
+
+				$sql = "CREATE TABLE " . $table_name . " (
+						click_id bigint(20) NOT NULL auto_increment,
+						click_date datetime NOT NULL default '0000-00-00 00:00:00',
+						attach_id bigint(20) unsigned,
+						attach_title text NOT NULL,
+						post_id bigint(20) unsigned,
+						post_title text NOT NULL,
+						clicks_number int(10) NOT NULL,
+						PRIMARY KEY (click_date,post_id, attach_id),
+						KEY click_date (click_date),
+						KEY click_id (click_id)
+					);";
+			} // End of first install
+			else {
+			/*
+				'SHOW KEYS FROM ' . $table_name . ' WHERE KEY_NAME = "date_attach_post"';
+			*/
+				if (FALSE !== $previous_version && version_compare($this->version, $previous_version)>1) {
+					$sql = 'ALTER TABLE '.$table_name.' DROP PRIMARY KEY;'."\n".
+							'ALTER TABLE '.$table_name.' ADD PRIMARY KEY (click_date,post_id, attach_id);';
+				}
+			} // End of update to 2.0.0
+
+			if ($sql != '') {
+				require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+				dbDelta($sql);
+// eg_plugin_error_log($this->name, 'dbDelta Error', $wpdb->last_error);
+				$this->options['clicks_table'] = '1.1';
+				update_option($this->options_entry, $this->options);
+			} // End of table check
+		} // End of install_upgrade
+
+		function display_stats_enqueue_scripts($hook) {
+
+			if ($hook == $this->stats_hook) {
+					wp_enqueue_script('jquery-ui-datepicker');
+					add_action('admin_footer', array(&$this, 'display_stats_footer') );
+/*
+					wp_enqueue_script(
+					'field-date-js',
+					'Field_Date.js',
+					array('jquery', 'jquery-ui-core', 'jquery-ui-datepicker'),
+					time(),
+					true
+				);
+*/
+				wp_register_style( $this->name.'-datepicker', $this->url.'css/eg-attachments-datepicker.css' );
+				wp_enqueue_style($this->name.'-datepicker');
+
+			} // End if stat page
+		} // End of displat_stats_enqueue_scripts
+
+		function display_stats_print_scripts() {
+	?>
+			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<?php
+		} // End of display_stats_scripts
+
+		function display_stats_load() {
+			global $wpdb;
+
+			if (absint($this->options['purge_stats']) != 0) {
+				// Purge date: number of months * 30 (average number of days per month) * 24 * 60 * 60
+				$purge_date = time() - $this->options['purge_stats'] * 30 * 24 * 60 * 60;
+
+				// Purge statistics table
+				$sql = $wpdb->prepare('DELETE FROM '.$wpdb->prefix.'eg_attachments_clicks '.
+						'WHERE click_date<%s', date('Y-m-d H:i:s', $purge_date));
+				$status = $wpdb->query($sql);
+				if ($status > 0) {
+					wp_safe_redirect(
+						add_query_arg(
+							array( 'msg' => 'statdeleted', 'itemdel' => $status),
+							menu_page_url( 'ega_stats', false )
+						)
+					);
+				} // End of line deleted
+			} // End of purge_stats activated
+		} // End of display_stats_load
+
+		function display_stats() {
+?>
+			<div class="wrap">
+				<?php screen_icon(); ?>
+				<h2><?php esc_html_e($this->name.' Stats', $this->textdomain); ?></h2>
+				<?php $this->admin_notices(); ?>
+				<br />
+<?php
+			if ( isset($_REQUEST['aid']) && is_numeric($_REQUEST['aid']) )
+				$this->display_stats_details(absint($_REQUEST['aid']));
+			else
+				$this->display_stats_global();
+?>
+			</div>
+<?php
+		} // End of display_stats
+
+		function display_stat_groupby_where($begin_date, $end_date, $step_date, $attach_id=FALSE) {
+
+			switch ($step_date) {
+				case 'month':
+					$group_by 			= 'YEAR(click_date),MONTH(click_date)';
+					$mysql2date_format	= 'M Y';
+					$axis_title		  	= __('Month', $this->textdomain);
+				break;
+
+				case 'week' :
+					$group_by			= 'YEAR(click_date),WEEKOFYEAR(click_date)';
+					$mysql2date_format	= __('\W', $this->textdomain).'W Y';
+					$axis_title		  	= __('Week', $this->textdomain);
 				break;
 
 				default:
-					$value = '';
+					$group_by			= 'click_date';
+					$mysql2date_format	= 'd-M-Y';
+					$axis_title		  	= __('Day', $this->textdomain);
+				break;
 			} // End of switch
-			return ($value);
-		} // End of get_comment_trackback_default
 
-		/**
-		 * media_upload_custom_fields_edit
-		 *
-		 * Check fields of the media upload form, and proceed with required actions
-		 *
-		 * @package EG-Attachments
-		 * @param 	object		$post			the edit attachment
-		 * @param	array		$attachment		the fields of the form
-		 * @return the modified attachment
-		 */
-		// Tips from http://www.billerickson.net/wordpress-add-custom-fields-media-gallery/ (Bill Erickson)
-		// http://wordpress.stackexchange.com/questions/496/can-i-add-a-category-metabox-to-attachment (Rick Curran)
-		function media_upload_custom_fields_edit( $form_fields, $post ) {
+			return array(
+				'where' 			=> ($attach_id ? 'attach_id = '.$attach_id. ' AND ' : '').
+										'click_date>=FROM_UNIXTIME('.strtotime($begin_date).') '.
+										'AND click_date<=FROM_UNIXTIME('.strtotime($end_date).')',
+				'group_by' 			=> $group_by,
+				'mysql2date_format'	=> $mysql2date_format,
+				'axis'				=> $axis_title
+			);
+		} // End of display_stat_groupby_where
 
-			if (post_type_supports('attachment', 'comments')) {
-				$form_fields['comment_status'] = array(
-						'label' => 'Allow comments',
-						'input' => 'html',
-						'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][comment_status]" id="attachments['.$post->ID.'][comment_status]" value="1" '.$this->get_comment_trackback_default().' />'.'<label for="attachments['.$post->ID.'][comment_status]">'.__('Allow comments on this attachments', $this->textdomain).'</label>');
-			} // End of support comments
+		function display_stats_history_graph($begin_date, $end_date, $step_date, $sql_params, $attach_id=FALSE) {
+			global $wpdb;
+			$total_download = 0;
 
-			if (post_type_supports('attachment', 'trackbacks')) {
-				$form_fields['ping_status'] = array(
-						'label' => 'Allow comments',
-						'input' => 'html',
-						'html'	=> '<input type="checkbox" name="attachments['.$post->ID.'][ping_status]" id="attachments['.$post->ID.'][ping_status]" value="1" '.$this->get_comment_trackback_default('ping').'/>'.'<label for="attachments['.$post->ID.'][ping_status]">'.sprintf(__('Allow <a target="_blank" href="%s">trackbacks and pingbacks</a> on this attachment', $this->textdomain), 'http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments').'</label>'	);
-			} // End of support comments
+			if ($attach_id)
+				$link = add_query_arg(array('aid' => $attach_id), menu_page_url( 'ega_stats', false ));
+			else
+				$link = menu_page_url( 'ega_stats', false );
+?>
+			<form method="post" action="<?php echo $link; ?>">
+				<p class="search-box">
+				<label for="begin_date"><?php esc_html_e('Start date: ', $this->textdomain); ?></label>
+				<input type="text" id="begin_date" name="begin_date" value="<?php echo $begin_date; ?>" class="begin-end-datepicker small" />
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<label for="end_date"><?php esc_html_e('End date: ', $this->textdomain); ?></label>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="end_date" name="end_date" value="<?php echo $end_date; ?>" class="begin-end-datepicker small" />
+				<label for="step_date"><?php esc_html_e('by ', $this->textdomain); ?></label>
+				<select id="step_date" name="step_date">
+					<option value="day" <?php echo ('day' == $step_date ? 'selected' : ''); ?> ><?php _e('Day'); ?></option>
+					<option value="week" <?php echo ('week' == $step_date ? 'selected' : ''); ?> ><?php _e('Week'); ?></option>
+					<option value="month" <?php echo ('month' == $step_date ? 'selected' : ''); ?> ><?php _e('Month'); ?></option>
+				</select>
+				<input type="submit" id="submit_date" name="submit_date" value="<?php esc_html_e('Display chart', $this->textdomain); ?>" class="button" />
+				</p>
+			</form>
+			<br style="clear: both;" />
+<?php
 
-			if ($this->options['tags_assignment']) {
+			$sql = 'SELECT click_date, SUM(clicks_number) as total'.
+				' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
+				' WHERE '.$sql_params['where'].
+				' GROUP BY '.$sql_params['group_by'].
+				' ORDER BY click_date ASC';
 
-				// Get tags linked to the attachments
-				$terms = get_the_terms($post->ID, 'post_tag');
-				$default_tags = array();
-				if (is_array($terms) && sizeof($terms)>0) {
-					foreach ($terms as $term) {
-						$default_tags[$term->term_id] = $term->slug;
-					}
+			$results = $wpdb->get_results($sql);
+			$data[] = array($sql_params['axis'], esc_html__('Clicks', $this->textdomain));
+			if ($results) {
+				foreach ($results as $result) {
+					$data[] = array(mysql2date($sql_params['mysql2date_format'], $result->click_date, TRUE),absint($result->total));
+					$total_download += absint($result->total);
 				}
-				// Get all terms (tags)
-				$tags_list = get_terms('post_tag', 'hide_empty=0');
+			}
+?>
+			<script type="text/javascript">
+				google.load("visualization", "1", {packages:["corechart"]});
+				google.setOnLoadCallback(drawChart);
 
-				$string = '';
-				foreach ($tags_list as $tag) {
-					if (isset($default_tags[$tag->term_id])) $checked = 'checked="checked"'; else $checked = '';
-					$string .= '<li style="width:32%;float:left;">'.
-							'<input type="checkbox" value="'.$tag->slug.'" name="attachments['.$post->ID.'][tags][]" id="tags-'.$post->ID.'" '. $checked .' /> '.
-							'<label for="tags-'.$post->ID.'">'.htmlspecialchars($tag->name).'</label>'.
-							'</li>';
-				} // End of foreach
-				if ($string != '') $string = '<ul style="width:100%;">'.$string.'</ul>';
+				function drawChart() {
+					var data = google.visualization.arrayToDataTable(
+						<?php echo json_encode($data); ?>
+					);
 
-				$form_fields['post_tag'] = array_merge($form_fields['post_tag'], array(	'input' => 'html', 'html' => $string));
-			} // End of tags_assignments
+					var options = {
+						title: "<?php esc_html_e('Number of downloads', $this->textdomain); ?>"
+					};
 
-			return $form_fields;
+					var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+					chart.draw(data, options);
+				}
+			</script>
+			<div id="chart_div" style="width: 98%; height: 350px;"></div>
+<?php
+			return ($total_download);
+		} // End of display_stats_history_graph
 
-		} // End of media_upload_custom_fields_edit
+		function display_stats_sheet($results, $total_download, $type='attachment') {
+?>
+			<table class="wp-list-table widefat fixed posts" cellspacing="0">
+				<thead>
+					<tr>
+						<th scope="col" class="column-cb check-column">&nbsp;</th>
+						<th scope="col"><?php esc_html_e('Title', $this->textdomain); ?></th>
+						<th scope="col"><?php esc_html_e('Visites', $this->textdomain); ?></th>
+						<th scope="col"><?php esc_html_e('% visites', $this->textdomain); ?></th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<th scope="col" class="column-cb check-column">&nbsp;</th>
+						<th scope="col"><?php esc_html_e('Title', $this->textdomain); ?></th>
+						<th scope="col"><?php esc_html_e('Visites', $this->textdomain); ?></th>
+						<th scope="col"><?php esc_html_e('% visites', $this->textdomain); ?></th>
+					</tr>
+				</tfoot>
+				<tbody>
+<?php
+			$i = 1;
+			$alternate = 'alternate';
+			reset($results);
+			foreach ($results as $result) {
+				$percent = round(($result->total / $total_download) * 100, 2);
+				if ('attachment' == $type)
+					$link = add_query_arg(array('aid' => $result->id), menu_page_url( 'ega_stats', false ));
+				else
+					$link = get_permalink($result->id);
+
+				echo '<tr '.('' == $alternate ? $alternate = 'class="alternate"' : $alternate = '').'">'."\n".
+					'<th class="check-column" scope="row">'.$i++.'</th>'."\n".
+					'<td><a href="'.$link.'">'.esc_html__($result->title).'</a></td>'."\n".
+					'<td>'.$result->total.'</td>'."\n".
+					'<td class="percent"><div style="width: '.$percent.'%;"></div>'.$percent.'%</td>'."\n".
+					'</tr>'."\n";
+			} // End of foreach
+?>
+				</tbody>
+			</table>
+<?php
+		} // End of display_stats_sheet
+
+		function display_stats_global() {
+			global $wpdb;
+
+			$end_date	= (isset($_POST['end_date']) ? $_POST['end_date'] : date_i18n('d-M-Y'));
+			$begin_date = (isset($_POST['begin_date']) ? $_POST['begin_date'] : date_i18n('d-M-Y', strtotime('-1 year') ) );
+			$step_date	= (isset($_POST['step_date']) ? $_POST['step_date'] : 'month' );
+			$sql_params = $this->display_stat_groupby_where($begin_date, $end_date, $step_date);
+
+			$total_download = $this->display_stats_history_graph($begin_date, $end_date, $step_date, $sql_params);
+
+			$per_page = 25;
+			$paged = (isset($_GET['paged']) ? $_GET['paged'] : 1);
+
+			$sql = 'SELECT COUNT(DISTINCT(attach_id))'.
+					' FROM '.$wpdb->prefix.'eg_attachments_clicks ';
+			$attachments_number = $wpdb->get_var($sql);
+			$page_number = ceil($attachments_number / $per_page);
+
+			$sql = 'SELECT attach_id as id, attach_title as title, SUM(clicks_number) as total'.
+				' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
+				' WHERE '.$sql_params['where'].
+				' GROUP BY attach_id'.
+				' ORDER BY total DESC'.
+
+				' LIMIT '.($paged-1)*$per_page.','.$per_page;
+			$results = $wpdb->get_results($sql);
+
+			$first_link     = menu_page_url( 'ega_stats', false );
+			$last_link		= add_query_arg(array('paged' => $page_number), menu_page_url( 'ega_stats', false ));
+			$previous_link 	= add_query_arg(array('paged' => max(1, $paged-1)), menu_page_url( 'ega_stats', false ) );
+			$next_link		= add_query_arg(array('paged' => min($page_number, $paged+1)), menu_page_url( 'ega_stats', false ) );
+?>
+			<div class="tablenav top">
+				<div class="tablenav-pages">
+					<span class="displaying-num <?php echo (1==$paged?'disabled':''); ?>"><?php sprintf( _n( '1 item', '%s items', $attachments_number ), number_format_i18n( $attachments_number ) ); ?></span>
+					<span class="pagination-links">
+						<a href="<?php echo $first_link; ?>" title="<?php esc_attr_e( 'Go to the first page' ); ?>" class="first-page <?php echo ($page_number==$paged?'disabled':''); ?>">&laquo;</a>
+						<a href="<?php echo $previous_link; ?>" title="<?php esc_attr_e( 'Go to the previous page' ); ?>" class="prev-page <?php echo ($page_number==$paged?'disabled':''); ?>">&lsaquo;</a>
+						<span class="paging-input">
+						<?php echo $paged; ?> <?php esc_html_e('of'); ?> <span class="total-pages"><?php echo $page_number; ?></span>
+						</span>
+						<a href="<?php echo $next_link; ?>" title="<?php esc_attr_e( 'Go to the next page' ); ?>" class="next-page">&rsaquo;</a>
+						<a href="<?php echo $last_link; ?>" title="<?php esc_attr_e( 'Go to the last page' ); ?>" class="last-page">&raquo;</a>
+					</span>
+				</div>
+			</div>
+<?php
+			$this->display_stats_sheet($results, $total_download);
+		} // End of stats_display_global
+
+		/* TODO: détection du nombre d'enregistrements pour alerter de la taille de la table */
+		function display_stats_details($attach_id) {
+			global $wpdb;
+
+			$attach_title = $wpdb->get_var('SELECT attach_title FROM '.$wpdb->prefix.'eg_attachments_clicks WHERE attach_id='.$attach_id);
+?>
+			<ul class="subsubsub">
+				<li><a href="<?php echo menu_page_url( 'ega_stats', false ); ?>"><?php esc_html_e('Global'); ?></a> &gt;</li>
+				<li><?php echo esc_html($attach_title); ?></li>
+			</ul>
+<?php
+			$end_date	= (isset($_POST['end_date']) ? $_POST['end_date'] : date_i18n('d-M-Y'));
+			$begin_date = (isset($_POST['begin_date']) ? $_POST['begin_date'] : date_i18n('d-M-Y', strtotime('-1 year') ) );
+			$step_date	= (isset($_POST['step_date']) ? $_POST['step_date'] : 'month' );
+			$sql_params = $this->display_stat_groupby_where($begin_date, $end_date, $step_date, $attach_id );
+
+			$total_download = $this->display_stats_history_graph($begin_date, $end_date, $step_date, $sql_params, $attach_id);
+
+			$sql = 'SELECT post_id as id, post_title as title, SUM(clicks_number) as total'.
+				' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
+				' WHERE '.$sql_params['where'].
+				' GROUP BY attach_title'.
+				' ORDER BY total DESC';
+			$results = $wpdb->get_results($sql);
+			$this->display_stats_sheet($results, $total_download, 'post');
+
+		} // End of stats_display_details
+
+		function display_stats_footer() {
+?>
+			<script type="text/javascript">
+				jQuery(document).ready(function(){
+					jQuery('.begin-end-datepicker').datepicker(	{ dateFormat: 'dd-M-yy' } );
+				});
+			</script>
+<?php
+		} // End of admin_footer
+
+
+		function add_menu_to_admin_bar($wp_admin_bar) {
+
+			parent::add_menu_to_admin_bar($wp_admin_bar);
+
+			$user_cap = current_user_can(EGA_READ_TEMPLATES);
+			if ($user_cap) {
+				$wp_admin_bar->add_menu( array(
+					'parent' => 'egplugins',
+					'id' 	 => $this->name.'-templates',
+					'title'  => __($this->name.' Templates', $this->textdomain),
+					'href' 	 => admin_url('tools.php?page=ega_templates')
+					));
+			}
+
+			$user_cap = current_user_can(EGA_VIEW_STATS);
+			if ($user_cap) {
+				$wp_admin_bar->add_menu( array(
+					'parent' => 'egplugins',
+					'id' 	 => $this->name.'-stats',
+					'title'  => __($this->name.' Stats', $this->textdomain),
+					'href' 	 => admin_url('tools.php?page=ega_stats')
+					));
+			}
+
+		} // End of add_menu_to_admin_bar
+
+		function pointer_ega_templates() {
+			$content  = '<h3>' . $this->name.'<br />'. __( 'Multiple custom formats', $this->textdomain ) . '</h3>';
+			$content .= '<p>' .  __( 'EG-Attachments can now manage multiple custome formats. A new menu allows you to edit &laquo;templates&raquo;', $this->textdomain ) . '</p>';
+
+			$this->footer_pointers_scripts( 'ega_templates', '#menu-tools', array(
+				'content'  => $content,
+				'position' => array( 'edge' => 'left', 'align' => 'middle' )
+			) );
+		} // End of pointer_ega_templates
+
+		function pointer_ega_stats() {
+			$content  = '<h3>' . $this->name.'<br />'.__( 'New statistics', $this->textdomain ) . '</h3>';
+			$content .= '<p>' .  __( 'The statistics module is using <strong>Google Chart Tools</strong> for better graphes.', $this->textdomain ) . '</p>';
+
+			$this->footer_pointers_scripts( 'ega_stats', '#menu-tools', array(
+				'content'  => $content,
+				'position' => array( 'edge' => 'left', 'align' => 'middle' )
+			) );
+		} // End of pointer_ega_stats
+
+		function pointer_ega_tinymce_button() {
+			$content  = '<h3>' . $this->name.'<br />'.__( 'Show or hide TinyMCE button', $this->textdomain ) . '</h3>';
+			$content .= '<p>' .  __( 'You can now show or hide TinyMCE button in the new/edit post/page ', $this->textdomain ) . '</p>';
+
+			$this->footer_pointers_scripts( 'ega_tinymce_button', '#tinymce_button', array(
+				'content'  => $content,
+				'position' => array( 'edge' => 'top', 'align' => 'center' ),
+			) );
+		} // End of pointer_ega_tinymce_button
+
+		function pointer_ega_exclude_featured() {
+			$content  = '<h3>' . $this->name.'<br />'.__( 'Exclude thumbnail', $this->textdomain ) . '</h3>';
+			$content .= '<p>' .  __( 'You can now, automatically exclude the featured image from the list of attachments to be displated.', $this->textdomain ) . '</p>';
+
+			$this->footer_pointers_scripts( 'ega_exclude_featured', '#exclude_featured', array(
+				'content'  => $content,
+				'position' => array( 'edge' => 'top', 'align' => 'center' ),
+			) );
+		} // End of pointer_ega_exclude_featured
+
+		function pointer_ega_template_keywords() {
+			$content  = '<h3>' . $this->name.'<br />'.__( 'Keywords', $this->textdomain ) . '</h3>';
+			$content .= '<p>' .  __( 'Use these keywords to build you own template.', $this->textdomain ) . '</p>';
+
+			$this->footer_pointers_scripts( 'ega_template_keywords', '#template-keywords', array(
+				'content'  => $content,
+				'position' => array( 'edge' => 'right', 'align' => 'top' ),
+			) );
+		} // End of pointer_ega_template_keywords
 
 		/**
-		 * media_upload_custom_fields_save
+		 * load
 		 *
-		 * Check fields of the media upload form, and proceed with required actions
+		 * Load the plugin
 		 *
 		 * @package EG-Attachments
-		 * @param 	object		$post			the edit attachment
-		 * @param	array		$attachment		the fields of the form
-		 * @return the modified attachment
+		 * @since 	1.0
+		 *
+		 * @param 	none
+		 * @return	none
+		 *
 		 */
-		function media_upload_custom_fields_save( $post, $attachment ) {
+		function load() {
+			parent::load();
+			add_action('init', array(&$this, 'init'));
+		} // End of load
 
-			$this->display_debug_info($post);
-			$this->display_debug_info($attachment);
+	} // End of Class
 
-			if (isset($attachment['comment_status'])) $post['comment_status'] = 'open';
-			else $post['comment_status'] = 'closed';
+} // End of if class_exists
 
-			if (isset($attachment['ping_status'])) $post['ping_status'] = 'open';
-			else $post['ping_status'] = 'closed';
+$eg_attach_admin = new EG_Attachments_Admin(
+							'EG-Attachments',
+							EGA_VERSION,
+							EGA_OPTIONS_ENTRY,
+							EGA_TEXTDOMAIN,
+							EGA_COREFILE,
+							$EGA_DEFAULT_OPTIONS);
 
-			if ($this->options['tags_assignment']) {
-				if (! isset($attachment['tags'])) $selected_tags = array();
-				else if (is_array($attachment['tags'])) $selected_tags = $attachment['tags'];
-				else $selected_tags = array($attachment['tags']);
-
-				if (sizeof($selected_tags)== 0) wp_delete_object_term_relationships( $post['ID'], 'post_tag' ) ;
-				else wp_set_object_terms($post['ID'], $selected_tags, 'post_tag');
-			} // End of tags_assignments
-
-			return ($post);
-		} // End of media_upload_custom_fields_save
-
-	} /* End of Class */
-} /* End of if class_exists */
-
-$eg_attach_admin = new EG_Attachments_Admin('EG-Attachments',
-											EGA_VERSION ,
-											EGA_COREFILE,
-											EGA_TEXTDOMAIN,
-											EGA_OPTIONS_ENTRY,
-											$EG_ATTACH_DEFAULT_OPTIONS);
-
-$eg_attach_admin->set_wp_versions('3.1', '3.3.1');
-$eg_attach_admin->add_tinymce_button( 'EGAttachments', 'inc/tinymce', 'eg_attach_plugin.js');
-$eg_attach_admin->set_stylesheets('css/eg-attachments-admin.css');
-if (EGA_DEBUG_MODE)
-	$eg_attach_admin->set_debug_mode(TRUE, 'debug.log');
-
+$eg_attach_admin->add_options_page(EGA_OPTIONS_PAGE_ID, 'EG-Attachments Settings', 'eg-attachments-settings.inc.php');
+$eg_attach_admin->add_pointers(
+		array('index.php' 				=> array('ega_stats', 'ega_templates'),
+			'settings_page_ega_options' => array('ega_tinymce_button', 'ega_exclude_featured'),
+			'tools_page_ega_templates'	=> 'ega_template_keywords'
+		),
+		array('ega_templates' 			=> array(EGA_READ_TEMPLATES, EGA_EDIT_TEMPLATES),
+			'ega_tinymce_button' 		=> array('manage_options'),
+			'ega_exclude_featured' 		=> array('manage_options'),
+			'ega_stats'					=> array(EGA_VIEW_STATS),
+			'ega_template_keywords'		=> array(EGA_EDIT_TEMPLATES)
+		)
+	);
 $eg_attach_admin->load();
 
 ?>

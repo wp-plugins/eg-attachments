@@ -1,7 +1,6 @@
-tinyMCE.addI18n( { 
-	en: {
-		egattachments: {
-			desc : "Add a EG-Attachments shortcode"
-		}
-	}
+tinyMCE.addI18n("en.ega_shortcode", {
+	insert : 'Insert',
+	cancel: 'Cancel',
+	title: 'EG-Attachments shortcode',
+	desc: 'EG-Attachments shortcode'
 });

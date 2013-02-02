@@ -1,10 +1,12 @@
 === EG-Attachments ===
-Contributors: Emmanuel Georjon
+Contributors: EmmanuelG
 Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
-Tags: posts, attachments, shortcode, widgets
-Requires at least: 3.1
-Tested up to: 3.3.1
+Tags: posts, attachments, shortcode
+Requires at least: 3.3
+Tested up to: 3.5.1
 Stable tag: 1.9.4.5
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin add a shortcode to display the list of attachments of a post, with icon and details. EG-Attachments is "TinyMCE integrated".
 
@@ -39,15 +41,6 @@ Options are
 * Type of link to attachments: permalink, or direct link to the file,
 * Force "Save as" (rather than display document),
 
-Since the version 1.5.0, **EG-Attachments** plugin counts the number of clicks occuring on each attached document.
-
-= Plugin's Official Site =
-
-* [Overview](http://www.emmanuelgeorjon.com/eg-attachments-1233/)
-* [Docs](http://www.emmanuelgeorjon.com/eg-attachments-documentation-4733/)
-* [Support & FAQ](http://www.emmanuelgeorjon.com/eg-attachments-support-4735/)
-* [Changelog](http://www.emmanuelgeorjon.com/eg-attachments-changelog-4737/)
-
 = Contributions =
 
 Thanks to
@@ -80,7 +73,6 @@ If you have created your own language pack, or have an update of an existing one
 
 == Installation ==
 
-= Installation =
 * The plugin is available for download on the WordPress repository,
 * Once downloaded, uncompress the file eg-attachments.zip,
 * Copy or upload the uncompressed files in the directory wp-content/plugins in your WordPress platform
@@ -91,13 +83,6 @@ You can also install the plugin directly from the WordPress interface.
 
 Then you can go to menu **Settings / EG-Attachments** to set plugin parameters
 
-This plugin was tested on WordPress 3.1, and up to 3.3.1.
-
-= Update =
-
-When a new version is available, options of the plugins are updated during the activation.
-So during the upgrade procedure, please desactivate / reactivate the plugin, in order to ensure that options are properly modified.
-
 = Usage =
 
 Four ways to include the list of attachments into a post:
@@ -106,33 +91,36 @@ Four ways to include the list of attachments into a post:
 * With the automatic shortcode: go to the **Settings / EG-Attachments**, and choose to activate the auto-shortcode. The list of attachments will be added to your post automatically.
 * In a template file, add the following code: `<?php do_shortcode('[attachments *options*]'); ?>`
 
-Since 1.7.4, the plugin can display, in the admin interface, the list of attachments of the post being edited. Go to **Settings / EG-Attachments**, chapter *Administration Interface* for further details.
-
 The shortcode options are:
 
 * **size**: size of the icon. Values: large, medium, small or custom. Default: large,
+* **template**: if the parameter **size** is set to *custom*, the template is designing the template to be used to display attachments
 * **doctype**: type of documents to display. Values: image or document. Defaults: document,
-* **docid** list of attachments' id (comma separated) you want to display. Default: nothing to display all attachments,
-* **id**: id of the post we want to display attachments
+* **id**: id of the post we want to display attachments. Possible values: id of a post, 0 for the current post, -1 to display attachments that are not attached to the current post. Default value: 0,
+* **include**: list of attachments' id (comma separated) you want to display. Default: nothing, to display all attachments. This option is not supporting the value *first*, and *end* supported previously by **docid**,
+* **exclude**: list of attachments's id to exclude from the list,
 * **orderby**: sort option. Values: title, caption, description, file name, size, date, type, menu_order and ASC or DESC. `ASC`is the default sort order. Default: `title ASC`.
 * **title**: title to display before the list. Default: '',
 * **titletag**: tag to add before and after the title. Default: h2
-* **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
-* **fields**, list of fields to display. Values: Document label, Title, Caption, Description, File name, Size, Small size, Date, Type, or a set of values such as "caption,description" (comma separated).
 * **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
-* **icon** specify if icons will be displayed or not. Default value: 1 or TRUE. If value is 0 or FALSE, list displayed will be ul/li (html simple list) rather than dl/dt/dd (definition list).
-Two specific keywords can be used with **docid** option: **first** and **last** allow to display the first and the last attachment of list. Be careful, **first** or **last** can change according the sort option ! These keywords must be used alone. You can have syntax such as: first,10,11.
 * **limit**: choose the number of attachements you want to display. Default: all attachments are displayed
 * **nofollow**: add the attribut "nofollow" to the link, if value is set to 1 or TRUE. Default nofollow=0
-* **display_label**: for size=small only. Allow to display label of fields, when value is set to 1. Default display_label=0
 * **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: the default value is defined in the **Settings page** in administration interface.
-* **tags** allows you to select attachments according tags (post tags). Syntax: tags=tag1,tag2.
+* **tags** allows you to select attachments according tags (post tags). Syntax: tags=tag1,tag2. The shortcode will display attachments with either tag1 or tag2,
+* **tags_and** allows to select attachments linked to all tags specified. Syntax: tags_and=tag3,tag4. The attachments displayed are linked to tag3 AND tag4.
 
-**Example 1:** `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
+Depredicated options
+* **docid** list of attachments' id (comma separated) you want to display. Default: empty value, if you want to display all attachments,
+* **fields**, list of fields to display. Values: Document label, Title, Caption, Description, File name, Size, Small size, Date, Type, or a set of values such as "caption,description" (comma separated).
+* **icon** specify if icons will be displayed or not. Default value: 1 or TRUE. If value is 0 or FALSE, list displayed will be ul/li (html simple list) rather than dl/dt/dd (definition list).
+* **display_label**: for size=small only. Allow to display label of fields, when value is set to 1. Default display_label=0
+* **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
 
-**Example 2:** `[attachments size=large title="Documents" titletag=h3 orderby="mime DESC"]`
+** Examples :**
 
-**Example 3:** `[attachments title="Books and DVD Reviews" orderby="date DESC" tags="books,dvd"]`
+*1: `[attachments size=medium doctype=document title="Attachments" titletag=h2 orderby="title"]`
+*2: `[attachments size=large title="Documents" titletag=h3 orderby="mime DESC"]`
+*3: `[attachments title="Books and DVD Reviews" orderby="date DESC" tags="books,dvd"]`
 
 = Some explanations about *General behavior of shortcodes =
 
@@ -147,15 +135,17 @@ The options in the section are
 
 The defaults parameters of auto-shortcode are:
 
-* Small size: label, size,
-* Medium size: label, caption, size,
+* Small size: title, size,
+* Medium size: title, caption, size,
 * Large size: title, file name, caption, size.
 
-Where **label** is: title or file name according selected option.
+Small-list, Medium-list, Large-list are similar, but without icon
 
 = Statistics =
 
-Just activate the **clicks counter** in the menu *Settings/EG-Attachments*, and then go to the menu **Tools / EG-Attachments statistics** to see how many clicks you have, for each document.
+Just activate the **clicks counter** in the menu *Settings / EG-Attachments*, and then go to the menu **Tools / EGA statistics** to see how many clicks you have, for each document.
+
+The graphs are using [Google chart tools](https://developers.google.com/chart). If you are using internet through a proxy or a firewall, you may encountered some issues to display graphes properly.
 
 == Frequently Asked Questions ==
 
@@ -200,21 +190,41 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 7. Global statistics page,
 8. Detailed statistics page.
 
-== Changelog == 
+== Changelog ==
 
-= Version 1.9.4.5 - January 20th, 2013 =
-* Bug fix: Error during display of the TinyMCE popup window
+= Version 2.0.0-beta - Feb 2nd, 2013 =
 
-= Version 1.9.4.4 - January 19th, 2013 =
+* New: Can now manage several custom format (go to **Tools / EGA Templates** to edit templates),
+* New: New keywords for customizing format: %SHOWLOCK%, %COUNTER%, ... 
+* New: able to display attachments by tags, independent of post ID,
+* New: New shortcode parameter: **tags_and** (by default the option **tags** is *tags_or*,
+* New: Can hide EG-Attachments button in text editor,
+* New: Include/Exclude by ID (**include** will replace the parameter docid),
+* New: can exclude automatically the featured attachment (thumbnail) from the list,
+* Change: the date displayed is now the date of the last modification of the file (not the date of attachment upload),
+* Change: The pop-up warning for not registered users is suppressed,
+* Bug fix: Cannot use multiple shortcodes in a post
+
+= Version 1.9.4.4 - January 14th, 2013 =
+
 * Bug fix: message during activation *Warning: Creating default object from empty value in eg-plugin.inc.php on line 804*
 
 = Version 1.9.4.3 - March 2nd, 2011 =
+
+* Bug fix: option *where* for the auto shortcode didn't work properly,
+* Bug fix: conflict with custom post type
+* Change: updated translations for Czech, and Italian languages,
+* Change: internal librairies updates.
+
+= Version 1.9.4.3 - March 2nd, 2011 =
+
 * Bug fix: option *where* for the auto shortcode didn't work properly,
 * Bug fix: conflict with custom post type
 * Change: updated translations for Czech, and Italian languages,
 * Change: internal librairies updates.
 
 = Version 1.9.4.2 - Feb 9th, 2011 =
+
 * Bug fix: option *Target=_blank*, and shortcode parameter *target*,  didn't work
 * Bug fix: parameter *nofollow* in shortcode didn't work properly
  
@@ -526,6 +536,7 @@ List of changes and bug fixes:
 
 * New: First release
 
-== Licence ==
+== Upgrade Notice ==
 
-This plugin is released under the GPL, you can use it free of charge on your personal or commercial blog.
+= From 1.9.x to 2.x =
+The custom format defined in the options page with the version 1.9.x, is automatically converted to a template in the version 2.0 during the plugin update

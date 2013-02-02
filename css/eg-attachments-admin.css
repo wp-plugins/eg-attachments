@@ -1,38 +1,39 @@
-
-table.eg-attach-stats thead th,
-table.eg-attach-stats td {
-	text-align: center;
+.ega-col-left,
+.ega-col-right {
+	float: left;
+	width: 48%;
+	*width: 47.4%;
 }
 
-table.eg-attach-stats-details {
-	border-collapse: collapse;
-	margin: 0 auto;
-	border: 1px solid #ccc;
+.ega-col-left {
+	margin-right: 2%;
 }
 
-table.eg-attach-stats-details td {
+@media only screen and (max-width: 768px) {
 
-	background-color: white;
-	text-align: center;
-	vertical-align: bottom;
-	width: 50px;
+	.ega-col-left,
+	.ega-col-right {
+		width: 100%;
+		margin-right: 0;
+	}
 }
 
-table.eg-attach-stats-details tr.histogram  td{
-	height: 220px;
+@media only screen and (min-width: 769px) {
+
+	.ega-col-left,
+	.ega-col-right {
+		width: 48%;
+		*width: 47.4%;
+	}
+	.ega-col-left {
+		margin-right: 2%;
+	}
 }
 
-table.eg-attach-stats-details tr.histogram  td div{
-	width: 14px;
-	background-color: red;
-	margin: 0 auto;
+.mandatory {
+	border-color: red !important;
 }
 
-textarea.regular-text {
-	width: 100%;
-}
-
-table.eg-attach-custom-format td { padding:0 2em 0 0; margin: 0;}
 
 table.eg-attach-list {
 	border: 1px solid #CCC;
@@ -50,27 +51,11 @@ table.eg-attach-list th {
 	background-color: #EEE;
 }
 
-table.eg-attach-help th {
-	text-align: center;
-	background-color: #EEE;
-}
-table.eg-attach-help th.row {
-	text-align: left;
-}
-table.eg-attach-help th, table.eg-attach-help td {
-    padding: 4px 6px;
-	border: 1px solid #DDDDDD;
-	/* border-collapse: collapse;*/
+.eg-form-table td, .eg-form-table th {
+	border: 1px solid black;
 }
 
-table.eg-attach-help {
-    text-align: center;
-    vertical-align: text-top;
-	border-collapse: collapse;	
-}
-
-table.eg-forms td {
-	padding: 0;
-	border:0;
+.eg-forms-check-column {
+	width: 3em;
 }
 

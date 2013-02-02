@@ -4,22 +4,24 @@
  * This is requried when a plugin requires access not via the admin screen.
  *
  * If the wp-load.php file is not found, then an error will be displayed
+ *
  */
 
-/* Define the server path to the file wp-config here, if you moved the directory WP-CONTENT  */
-$path  = '';
+$path  = ''; // It should be end with a trailing slash    
 
 if (!defined('WP_LOAD_PATH')) {
-	$root = dirname(dirname(dirname(dirname(__FILE__)))).'/';
-	if (file_exists($root.'wp-load.php') ) {
-		define('WP_LOAD_PATH', $root);
+	$classic_root = dirname(dirname(dirname(dirname(__FILE__)))).'/';
+	if (file_exists($classic_root.'wp-load.php') ) {
+		define('WP_LOAD_PATH', $classic_root);
 	} else {
-		if (file_exists($path.'wp-load.php'))
+		if (file_exists($path.'wp-load.php')) {
 			define('WP_LOAD_PATH', $path);
+		} else {
+			exit("Could not find wp-load.php");
+		}
 	}
 }
 
 //Load wp-load.php
-if (defined('WP_LOAD_PATH'))
-	require_once(WP_LOAD_PATH.'wp-load.php');
+require_once(WP_LOAD_PATH.'wp-load.php');
 ?>

@@ -3,13 +3,13 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class for WordPress plugins
-Version: 2.1.2
+Version: 2.2.0
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
 /*
-    Copyright 2009-2011 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
+    Copyright 2009-2012 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,20 +26,22 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Form_212')) {
+if (!class_exists('EG_Form_220')) {
 
 	/**
-	  * Class EG_Form_212
+	  * Class EG_Form_220
 	  *
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Form_212 {
+	Class EG_Form_220 {
 
+		var $page_id;
 		var $options_entry;
 		var $options_group;
 		var $textdomain;
 		var $sidebar_callback;
+		var $sidebar_action;
 		var $title;
 		var $header;
 		var $footer;
@@ -48,13 +50,10 @@ if (!class_exists('EG_Form_212')) {
 		var $sections = array();
 		var $fields	  = array();
 
-		var $debug_mode, $debug_file;
+		function EG_Form_220($page_id, $options_group, $title, $options_entry, $textdomain=FALSE, $header='', $footer='', $sidebar_callback=FALSE) {
 
-		function EG_Form_212($page_id, $title, $options_entry, $textdomain=FALSE, $header='', $footer='', $sidebar_callback=FALSE) {
-
-			register_shutdown_function(array(&$this, '__destruct'));
-			$this->__construct($page_id, $title, $options_entry, $textdomain, $header, $footer, $sidebar_callback);
-		} // End of EG_Form_212
+			$this->__construct($page_id, $options_group, $title, $options_entry, $textdomain, $header, $footer, $sidebar_callback);
+		} // End of EG_Form_220
 
 		/**
 		  * Class contructor
@@ -63,398 +62,489 @@ if (!class_exists('EG_Form_212')) {
 		  * @package EG-Forms
 		  * @return object
 		  */
-		function __construct($page_id, $title, $options_entry, $textdomain=FALSE, $header='', $footer='', $sidebar_callback=FALSE) {
+		function __construct($page_id, $options_group, $title, $options_entry, $textdomain=FALSE, $header='', $footer='', $sidebar_callback=FALSE) {
 
+			$this->page_id 			 = $page_id;
 			$this->title 			 = $title;
 			$this->header 			 = $header;
 			$this->footer			 = $footer;
 			$this->options_entry     = $options_entry;
-			$this->options_group	 = $page_id.'_group';
+			$this->options_group     = $options_group;
 			$this->textdomain		 = $textdomain;
 			$this->sidebar_action    = 'eg_form_sidebar_'.$page_id;
 
-			if ($sidebar_callback !== FALSE)
+			if ($sidebar_callback !== FALSE) {
 				add_action($this->sidebar_action, $sidebar_callback);
-
-			add_action('admin_init',array( &$this, 'admin_init'));
-
+			}
 		} // End of __construct
 
-		/**
-		 * Class destructor
-		 *
-		 * @package EG-Forms
-		 *
-		 * @return boolean true
-		 */
-		function __destruct() {
-			// Nothing
-		} // End of __destruct
+		function set_form($tabs, $sections, $fields) {
+			$this->tabs 	= $tabs;
+			$this->sections = $sections;
+			$this->fields	= $fields;
+		} // End of set_form
 
-		function add_tab($id, $title, $header='', $footer='') {
-			$this->tabs[$id] = array('id' => $id, 'title' =>$title, 'header' => $header, 'footer' => $footer);
+		function add_tab($label, $header='') {
+			$this->tabs[] = array(
+					'label' => $label,
+					'header' => $header
+				);
+			return (sizeof($this->tabs)-1);
 		} // End of add_tab
 
-		function add_section($args) {
-			$section_defaults = array(
-					'tab'		=> '',
-					'title' 	=> 'General',
-					'header'	=> '',
-					'footer'	=> ''
-			);
-			$this->sections[] = wp_parse_args($args, $section_defaults);
-
+		function add_section($label, $tab=1, $header='', $footer='') {
+			$this->sections[] = array(
+					'label' => $label,
+					'tab' => $tab,
+					'header' => $header,
+					'footer' => $footer
+				);
 			return (sizeof($this->sections)-1);
 		} // End of add_section
 
-		function add_field($args) {
-			$field_defaults = array(
-					'section'	=> 0,
-					'name'		=> '',
-					'label'		=> '',
-					'before'	=> '',
-					'after'		=> '',
-					'desc'		=> '',
-					'type'		=> '',
-					'options'	=> '',
-					'size'		=> 'regular',
-					'status'	=> ''
+		function add_field($name, $label, $type, $section=0, $group=0,
+						$before='', $after='', $desc='', $options='',
+						$size='regular', $status='', $multiple=FALSE) {
+			$this->fields[] = array(
+					'name'		=> $name,
+					'label'		=> $label,
+					'type'		=> $type,
+					'section'	=> $section,
+					'group'		=> $group,
+					'before'	=> $before,
+					'after'		=> $after,
+					'desc'		=> $desc,
+					'options'	=> $options,
+					'size'		=> $size,
+					'status'	=> $status,
+					'multiple'	=> $multiple
 				);
-			$this->fields[] = wp_parse_args($args, $field_defaults);
-
 			return (sizeof($this->fields)-1);
 		} // End of add_field
 
-		function set_debug_mode($debug_mode = FALSE, $debug_file='') {
-			$this->debug_mode = $debug_mode;
-			if ($debug_file != '')
-				$this->debug_file = $debug_file;
-		}
-
-		function admin_init() {
-			wp_enqueue_style('dashboard');
-			wp_enqueue_script( 'dashboard' );
-			register_setting($this->options_group, $this->options_entry, array(&$this, 'options_validation'));
-		} // End of admin_init
-
-		function options_validation($inputs) {
-
-			$this->display_debug_info('EG-Forms: Starting sanitizing options');
-
-			$all_options = get_option($this->options_entry);
-
-			$validated_inputs = array();
-			foreach ($this->fields as $field) {
-
-				// If field exist in plugin options
-				$key = $field['name'];
-				if ( isset($all_options[$key])) {
-					switch ($field['type']) {
-						case 'checkbox':
-							if (! isset($inputs[$key])) $validated_inputs[$key] = 0;
-							else $validated_inputs[$key] = $inputs[$key];
-						break;
-
-						case 'grid_select':
-						$this->display_debug_info($inputs[$key], 'inputs');
-							$validated_inputs[$key] = array();
-							if (isset($inputs[$key]) && is_array($inputs[$key])) {
-								foreach ($inputs[$key] as $id => $input_value) {
-									if ($input_value != '0') {
-										if (is_int($input_valu)) $validated_inputs[$key][$id] = intval($input_value);
-										elseif (is_numeric($input_valu)) $validated_inputs[$key][$id] = floatval($input_value);
-										else $validated_inputs[$key][$id] = $input_value;
-									} // End of input_value!=0
-								} // End of foreach
-							} // End of isset($inputs[$key]
-						break;
-
-						default:
-							if (isset($inputs[$key])) {
-								if (is_array($inputs[$key])) {
-									$validated_inputs[$key] = (array)$inputs[$key];
-								}
-								else {
-									if (is_float($inputs[$key])) $validated_inputs[$key] = floatval($inputs[$key]);
-									elseif (is_int($inputs[$key])) $validated_inputs[$key] = intval($inputs[$key]);
-									else $validated_inputs[$key] = trim(stripslashes($inputs[$key]));
-								}
-							} // End of isset($inputs[$key]
-					} // End of switch
-				} // End of field exists in plugin options
-			} // End of foreach
-			$this->display_debug_info('EG-Forms: Sanitize options done');
-
-			return (wp_parse_args($validated_inputs, $all_options));
-		} // End of options_validation
-
+		/**
+		 * display_comment
+		 *
+		 * Display a hidden field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param	array	field		all parameters of the field to display
+		 * @param	string	entry_name	name of the html input tag
+		 * @param 	array	default		current values of options
+		 *
+		 * @return	string				output html form
+		 */
 		function display_comment($field, $entry_name, $default_value) {
-			echo '<p name="'.$field['name'].'">'.__($field['label'], $this->textdomain).'</p>';
+			return '';
 		} // End of display_comment
 
-		function display_radio($field, $entry_name, $default_value) {
-			return ($this->display_checkbox($field, $entry_name, $default_value));
-		}
-
-		function display_checkbox($field, $entry_name, $default_value) {
-
-			if (! is_array($field['options'])) {
-				$string = '<fieldset>'.
-					'<legend class="screen-reader-text">'.
-					'<span>'.$field['label'].'</span>'.
-					'</legend>'.
-					'<label for="'.$field['name'].'">'.
-					($field['before']==''?'':__($field['before'], $this->textdomain).' ').
-					'<input type="'.$field['type'].'" id="'.$field['name'].'" name="'.$entry_name.'" value="1" '.checked(1, $default_value, FALSE).' '.$field['status'].' />'.
-					($field['after']==''?'':' '.__($field['after'], $this->textdomain)).
-					'</label>'.
-					'</fieldset>';
-			}
-			else {
-				$string = '<fieldset>'.
-						'<legend class="screen-reader-text">'.
-						'<span>'.$field['label'].'</span>'.
-						'</legend><table class="eg-forms">';
-				foreach ($field['options'] as $key => $value) {
-					if ($field['type'] == 'radio') $input_name = $entry_name;
-					else $input_name = $entry_name.'['.$key.']';
-					if (!is_array($default_value)) $checked = ($key == $default_value?'checked':'');
-					else $checked = (in_array($key, $default_value)===FALSE?'':'checked');
-
-					$string .= '<tr><td valign="top">'.
-						'<input type="'.$field['type'].'" name="'.$input_name.'" value="'.$key.'" '.$checked.' '.$field['status'].' /></td>'.
-						'<td><label for="'.$key.'">'.__($value, $this->textdomain).'</label></td>'.
-						'</tr>';
-				}
-				$string .= '</table></fieldset>';
-			}
-			return ($string);
-		} // End of display_checkbox
-
+		/**
+		 * display_hidden
+		 *
+		 * Display a hidden field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param	array	field		all parameters of the field to display
+		 * @param	string	entry_name	name of the html input tag
+		 * @param 	array	default		current values of options
+		 *
+		 * @return	string				output html form
+		 *
+		 */
 		function display_hidden($field, $entry_name, $default_value) {
-			$string = '<input type="'.$field['type'].'" name="'.$entry_name.'" id="'.$field['name'].'" value="'.$default_value.'" /> ';
-			return ($string);
+			return ($this->display_text($field, $entry_name, $default_value));
 		} // End of display_hidden
 
+		/**
+		 * display_password
+		 *
+		 * Display a password field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param	array	field		all parameters of the field to display
+		 * @param	string	entry_name	name of the html input tag
+		 * @param 	array	default		current values of options
+		 *
+		 * @return	string				output html form
+		 *
+		 */
 		function display_password($field, $entry_name, $default_value) {
 			return ($this->display_text($field, $entry_name, $default_value));
 		} // End of display_password
 
-		function display_text($field, $entry_name, $default_value) {
-			$string = '<input type="'.$field['type'].'" class="'.$field['size'].'-text" name="'.$entry_name.'" id="'.$field['name'].'" value="'.htmlspecialchars($default_value).'" '.$field['status'].'/> ';
-			return ($string);
-		} // End of display_text
-
+		/**
+		 * display_textarea
+		 *
+		 * Display a textarea field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param	array	field		all parameters of the field to display
+		 * @param	string	entry_name	name of the html input tag
+		 * @param 	array	default		current values of options
+		 *
+		 * @return	string				output html form
+		 *
+		 */
 		function display_textarea($field, $entry_name, $default_value) {
 			$string = '<textarea class="'.$field['size'].'-text" name="'.$entry_name.'" id="'.$field['name'].'" '.$field['status'].'>'.htmlspecialchars($default_value).'</textarea>';
 			return ($string);
 		} // End of display_textarea
 
-		function display_select($field, $entry_name, $default_value) {
-			$string = '<select name="'.$entry_name.'" id="'.$field['name'].'" >';
-			foreach ($field['options'] as $key => $value) {
-				$selected = ($default_value==$key?'selected':'');
-				$string .= '<option value="'.$key.'" '.$selected.'>'.($value==''?'':__($value, $this->textdomain)).'</option>';
-			}
-			$string .= '</select>';
-			return ($string);
-		} // End of display_textarea
+		/**
+		 * display_radio_table
+		 *
+		 * Display a list of radio field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param	array	field		all parameters of the field to display
+		 * @param	string	entry_name	name of the html input tag
+		 * @param 	array	default		current values of options
+		 *
+		 * @return	string				output html form
+		 *
+		 */
+		function display_radio_table($field, $entry_name, $default) {
 
-		function display_grid_select($field, $entry_name, $default_value) {
-			if (! isset($field['options']['header']) || sizeof($field['options']['header']) == 0 ||
-				! isset($field['options']['list'])   || sizeof($field['options']['list'])   == 0) {
-				$string = '<p>'.__('No data available', $this->textdomain).'</p>';
+			$output = '<fieldset>'.
+						'<legend class="screen-reader-text">'.
+						'<span>'.__($field['label'], $this->textdomain).'</span>'.
+						'</legend>'.
+						'<div style="width: 90%; height: 200px; overflow:auto">'.
+						'<table class="wp-list-table widefat">'.
+						'<thead>'.
+						'<tr>'.
+							'<th class="check-column" scope="col">&nbsp;</th>';
+			foreach ($field['list_options']['titles'] as $title) {
+				$output .=	'<th scope="col" class="manage-column">'.__($title, $this->textdomain).'</th>';
+			}
+			$output .=	'</tr>'.
+						'</thead>'.
+						'<tbody>';
+			$num = 0;
+			$alternate = '';
+			if ($field['options'] && sizeof($field['options'])>0) {
+				foreach ($field['options'] as $value => $item) {
+					$checked = ($value == $default ? ' checked' : '');
+					$output .= '<tr '.('' == $alternate ? $alternate = 'class="alternate"' : $alternate = '').'>'.
+									'<th class="check-column" scope="row">'.
+										'<label for="'.$entry_name.'">'.
+										'<input type="radio" value="'.esc_attr($value).'" name="'.$entry_name.'"'.$checked.'/> '.
+										'</label>'.
+									'</th>';
+					foreach ($field['list_options']['fields'] as $value) {
+						$output .= '<td>'.esc_html__($item->$value, $this->textdomain).'</td>';
+					}
+					$output .= '</tr>';
+				} // End foreach
+			} // End of options available
+			else {
+				$output .= '<tr>'.
+							'<td colspan="'.(sizeof($field['list_options']['titles'])+1).'">'.__($field['list_options']['no_option'], $this->textdomain).'</td>'.
+							'</tr>';
+			}
+			$output .= '</tbody>'.
+						'</table>'.
+						'</div>'.
+						'</fieldset>';
+			return ($output);
+		} // End of display_radio
+
+		/**
+		 * display_radio
+		 *
+		 * Display a radio field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param	array	field		all parameters of the field to display
+		 * @param	string	entry_name	name of the html input tag
+		 * @param 	array	default		current values of options
+		 *
+		 * @return	string				output html form
+		 *
+		 */
+		function display_radio($field, $entry_name, $default) {
+
+			$output = '<fieldset>'.
+						'<legend class="screen-reader-text">'.
+						'<span>'.__($field['label'], $this->textdomain).'</span>'.
+						'</legend>';
+			$num = 0;
+			foreach ($field['options'] as $value => $text) {
+				$checked = ($value == $default ? ' checked' : '');
+				$output .= '<label for="'.$entry_name.'">'.
+							'<input type="radio" value="'.esc_attr($value).'" name="'.$entry_name.'"'.$checked.'/> '.
+							__($text, $this->textdomain).
+							'</label>'.
+							(++$num != sizeof($field['options']) ? '<br />' : '');
+			} // End foreach
+			$output .= '</fieldset>';
+			return ($output);
+		} // End of display_radio
+
+		/**
+		 * display_checkbox
+		 *
+		 * Display a checkbox field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param	array	field		all parameters of the field to display
+		 * @param	string	entry_name	name of the html input tag
+		 * @param 	array	default		current values of options
+		 *
+		 * @return	string				output html form
+		 *
+		 */
+		function display_checkbox($field, $entry_name, $default) {
+
+			$output = '<fieldset>'.
+						'<legend class="screen-reader-text">'.
+						'<span>'.esc_html__($field['label'], $this->textdomain).'</span>'.
+						'</legend>';
+			if (sizeof($field['options']) == 1 && !$field['multiple']) {
+				$output .= '<label for="'.$entry_name.'">'.
+							'<input type="hidden" value="0" name="'.$entry_name.'" /> '.
+							'<input type="checkbox" value="1" id="'.$field['name'].'" name="'.$entry_name.'"'.($default ? ' checked' : '').' /> '.
+							__(current($field['options']), $this->textdomain).
+							'</label>';
 			}
 			else {
-				$string = '<fieldset><legend class="screen-reader-text">'.__($field['label'], $this->textdomain).'</legend><table class="eg-forms"><thead><tr>';
-				foreach ($field['options']['header'] as $item) {
-					$string .= '<th>'.__($item, $this->textdomain).'</th>';
-				}
-				$string .= '</tr></thead><tbody>';
-				foreach ($field['options']['list'] as $item) {
-					$string .= '<tr><td>'.
-						'<input type="text" value="'.$item['value'].'" disabled /></td><td>'.
-						'<label for="'.$entry_name.'['.$item['value'].']">'.
-						'<select name="'.$entry_name.'['.$item['value'].']" id="'.$field['name'].'['.$item['value'].']" >';
-					foreach ($item['select'] as $key => $value) {
-						if (sizeof($default_value)>0 && isset($default_value[$item['value']]) &&
-							$key == $default_value[$item['value']])
-							$selected = 'selected';
-						else
-							$selected = '';
-						$string .= '<option value="'.$key.'" '.$selected.'>'.__($value, $this->textdomain).'</option>';
-					}
-					$string .=	'</select></label></td></tr>';
-				}
-				$string .= '</tbody></table></fieldset>';
+				$num = 0;
+				$output .= '<input type="hidden" value="0" name="'.$entry_name.'" /> ';
+				foreach ($field['options'] as $value => $text) {
+					$checked = (in_array($value, $default) ? ' checked' : '');
+					$output .= '<label for="'.$entry_name.'[]">'.
+								'<input type="checkbox" value="'.esc_attr($value).'" name="'.$entry_name.'[]"'.$checked.'/> '.
+								__($text, $this->textdomain).
+								'</label>'.
+								(++$num != sizeof($field['options']) ? '<br />' : '');
+				} // End foreach
 			}
-			return ($string);
-		} // End of display_grid_select
+			$output .= '</fieldset>';
+			return ($output);
+		} // End of display_checkbox
 
-		function display_field($field_id, $defaults) {
-			$field = $this->fields[$field_id];
+		/**
+		 * display_text
+		 *
+		 * Display a text field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param	array	field		all parameters of the field to display
+		 * @param	string	entry_name	name of the html input tag
+		 * @param 	array	default		current values of options
+		 *
+		 * @return	string				output html form
+		 *
+		 */
+		function display_text($field, $entry_name, $default) {
+			if ($field['type'] != 'hidden') $class = 'class="'.$field['size'].'-text" ';
+			else $class = '';
 
-			$entry_name = $this->options_entry.'['.$field['name'].']';
-			$default_value = $defaults[$field['name']];
-			$single_chk = ( in_array($field['type'], array('checkbox', 'radio')) && !is_array($field['options']));
+			return '<input '.$class.'type="'.$field['type'].'" value="'.esc_attr($default).'" name="'.$entry_name.'" id="'.$field['name'].'" />';
+		} // End of display_text
 
-			$string= '<tr valign="top">'.
-					'<th scope="row">'.
-					($single_chk?__($field['label'], $this->textdomain):'<label for="'.$field['name'].'">'.__($field['label'], $this->textdomain).'</label>').
-					'</th>'.
-					'<td>'.
-					($single_chk || $field['before']==''?'':__($field['before'], $this->textdomain)).
-					call_user_func(array(&$this, 'display_'.$field['type']), $field, $entry_name, $default_value).
-					($single_chk || $field['after']==''?'':__($field['after'], $this->textdomain)).
-					($single_chk || $field['desc']==''?'':'<br />').
-					($field['desc']==''?'':'<span class="description">'.__($field['desc'], $this->textdomain)).'</span>';
-			$string.='</td></tr>';
-			return ($string);
+		/**
+		 * display_select
+		 *
+		 * Display a select field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param	array	field		all parameters of the field to display
+		 * @param	string	entry_name	name of the html input tag
+		 * @param 	array	default		current values of options
+		 *
+		 * @return	string				output html form
+		 *
+		 */
+		function display_select($field, $entry_name, $default) {
+
+			$output = '<select id="'.$field['name'].'" name="'. $entry_name.'" '.($field['multiple'] ? 'multiple' : '').'>';
+			foreach ($field['options'] as $id => $value) {
+				$selected = ( $default == $id ) ? ' selected' : '';
+				$output .= '<option value="'.esc_attr($id).'" '.$selected.'>'.esc_html__($value, $this->textdomain).'</option>';
+			}
+			$output .= '</select>';
+			return ($output);
+		} // End of display_select
+
+		/**
+		 * display_field
+		 *
+		 * Display a field
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param 	array	default_options	current values of options
+		 * @param	array	field			all parameters of the field to display
+		 *
+		 * @return	string				output html form
+		 *
+		 */
+		function display_field($field, $default_options) {
+
+// eg_plugin_error_log('EG-Form', "default options", $default_options);
+
+
+			$entry_name 	= $this->options_entry.'['.$field['name'].']';
+			$default_value  = (isset($default_options[$field['name']]) ? $default_options[$field['name']] : '');
+			$th_label 		= ! in_array($field['type'], array('checkbox', 'radio'));
+
+			$output = '<tr valign="top">'.
+						'<th scope="row">'.
+						($th_label ? '<label for="'.$entry_name.'">' : '').
+						esc_html__($field['label'], $this->textdomain).
+						($th_label ? '</label>' : '').
+						'</th><td>'.
+						($field['before']=='' ? '' : '<p>'.__($field['before'], $this->textdomain).'</p>').
+						call_user_func(array(&$this, 'display_'.$field['type']), $field, $entry_name, $default_value).
+						($field['after']=='' ? '' : ' <span>'.__($field['after'], $this->textdomain).'</span>').
+						($field['desc']=='' ? '' : '<p class="description">'.__($field['desc'], $this->textdomain).'</p>').
+						'</td>'.
+						'</tr>';
+			return ($output);
 		} // End of display_field
 
-		function display_section($section_id, $defaults) {
+		/**
+		 * display_section
+		 *
+		 * Display a section
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param 	array	default_options	current values of options
+		 * @param	string	section_id		id of the section to display
+		 *
+		 * @return	string				output html form
+		 *
+		 */
+		function display_section($default_options, $box) {
+			$section_id	= substr($box['id'], strlen('eg-form-section-'));
+			$section    = $this->sections[$section_id];
 
-			$section = $this->sections[$section_id];
-		?>
-			<div class="postbox">
-				<div class="handlediv" title="Click to toggle"><br /></div>
-					<h3 class="hndle"><?php _e($section['title'], $this->textdomain); ?></h3>
+			$output = ('' == $section['header'] ? '' : '<p>'.__($section['header'], $this->textdomain).'</p>'."\n");
+			$output .= '<table class="form-table">'."\n".
+					'<tbody>'."\n";
+			foreach ($this->fields as $id => $field) {
+				if ($field['section'] == $section_id) {
+					$output .= $this->display_field($field, $default_options);
+				} // Endif
+			} // End Foreach
+			$output .= '</tbody>'."\n".
+						'</table>'."\n".
+						('' == $section['footer'] ? '' : '<p>'.__($section['footer'], $this->textdomain).'</p>'."\n").
+						get_submit_button()."\n".
+						'<br class="clear" />';
 
-				<div class="inside">
-				<?php echo ($section['header']==''?'':'<p>'.__($section['header'], $this->textdomain).'</p>'); ?>
-				<table class="form-table">
-		<?php
-				foreach ($this->fields as $field_id => $field) {
-					if ($field['section'] == $section_id)
-						echo $this->display_field($field_id, $defaults);
-				}
-		?>
-				</table>
-				<?php echo ($section['footer']==''?'':'<p>'.__($section['footer'], $this->textdomain).'</p>'); ?>
-				<?php submit_button(); ?>
-				<div class="clear"></div>
-				</div>
-			</div>
-		<?php
+			echo $output;
 		} // End of display_section
 
 
-		function display_page($defaults) {
-			$current_page = (isset($_REQUEST['page'])?$_REQUEST['page']:'');
-			$current_tab  = (isset($_REQUEST['tab'])?$_REQUEST['tab']:'');
-
-			$nav_links='';
-			if (sizeof($this->tabs)>0) {
-
-				foreach ($this->tabs as $id => $tab) {
-					if ($current_tab=='') $current_tab = $id;
-					$class = ( $current_tab == $id ) ? ' nav-tab-active' : '';
-					$nav_links .= '<a class="nav-tab '.$class.'" href="?page='.$current_page.'&tab='.$id.'">'.__($tab['title'], $this->textdomain).'</a>';
-				}
-			}
-			if ($nav_links != '')
-				$nav_links = '<h2 class="nav-tab-wrapper">'.$nav_links.'</h2>';
-
-			$display_sidebar = has_action($this->sidebar_action);
-		?>
-			<div class="wrap">
-				<?php screen_icon(); ?>
-				<h2><?php _e($this->title, $this->textdomain); ?></h2>
-				<?php echo $nav_links; ?>
-				<div id="poststuff" class="<?php echo (sizeof($this->tabs)>0?'eg-form-border':''); ?> metabox-holder <?php echo ($display_sidebar?'has-right-sidebar':''); ?>">
-		<?php
-			if ($display_sidebar) {
-		?>
-					<div id="side-info-column" class="inner-sidebar">
-						<div id="side-sortables" class="meta-box-sortables ui-sortable">
-							<?php do_action($this->sidebar_action); ?>
-						</div>
-					</div>
-		<?php
-			} // End of sidebar_callback
-		?>
-					<div id="post-body" <?php echo ($display_sidebar ?'class="has-sidebar"':'');?>>
-						<div id="post-body-content" <?php echo ($display_sidebar ?'class="has-sidebar-content"':'');?>>
-							<div id="normal-sortables" class="meta-box-sortables ui-sortable">
-
-		<?php
-			$this->display_form($defaults, $current_tab);
-		?>
-							</div>
-						</div>
-					</div>
-					<br class="clear" />
-				</div>
-			</div>
-		<?php
-		} // End of display_page
-
-		function display_form($defaults, $current_tab=NULL) {
-			if ( sizeof($this->tabs)==0) $current_tab='';
-			else {
-				$first_tab    = reset($this->tabs);
-				$current_tab  = (isset($current_tab)?$current_tab:(isset($_REQUEST['tab'])?$_REQUEST['tab']:$first_tab['id']));
-			}
-		?>
-							<form method="post"action="<?php echo admin_url('options.php'); ?>" >
-								<?php settings_fields($this->options_group); ?>
-								<?php echo ($this->header==''?'':'<p>'.__($this->header, $this->textdomain).'</p>'); ?>
-					<?php
-								if (isset($this->tabs[$current_tab]) && $this->tabs[$current_tab]['header']!='')
-									echo '<p>'.__($this->tabs[$current_tab]['header'], $this->textdomain).'</p>';
-
-								foreach ($this->sections as $section_id => $section) {
-									if (sizeof($this->tabs)==0 || $section['tab'] == $current_tab) {
-										$this->display_section($section_id, $defaults);
-									}
-								} // End of foreach section
-								if (isset($this->tabs[$current_tab]) && $this->tabs[$current_tab]['footer']!='')
-									echo '<p>'.__($this->tabs[$current_tab]['footer'], $this->textdomain).'</p>';
-
-								echo ($this->footer==''?'':'<p>'.__($this->footer, $this->textdomain).'</p>');
-					?>
-							</form>
-		<?php
-		} // End of display_form
+		/**
+		 * display_sections
+		 *
+		 * Display all sections of the page
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param 	array	default_options	current values of options
+		 * @param	string	current_tab		current displated tab
+		 *
+		 * @return	string				output html form
+		 *
+		 */
+		function display_sections($default_options, $current_tab='') {
+			foreach ($this->sections as $id => $section) {
+				if ($current_tab == $section['tab'] ) {
+					// Creating metaboxes
+					add_meta_box( 'eg-form-section-'.$id,
+								esc_html__($section['label'], $this->textdomain),
+								array(&$this, 'display_section'),
+								null,
+								'normal'
+							);
+				} // End of if
+			} // End of foreach
+			do_meta_boxes( null, 'normal', $default_options);
+		} // End of display_sections
 
 		/**
-		 * display_debug_info
+		 * display_tabs
 		 *
-		 * @package EG-Form
+		 * Display tabs on the top of the page
 		 *
-		 * @param	string	$msg	message to display
-		 * @param	mixed	$mixed	variable to display
-		 * @return 	none
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param 	string	current_page	current displayed page
+		 * @param	string	current_tab		current displated tab
+		 *
+		 * @return	string				output html form
+		 *
 		 */
-		 function display_debug_info($mixed, $msg='') {
+		function display_tabs($current_page, $current_tab=0) {
+			$output = '';
+			if (sizeof($this->tabs)>1) {
 
-			if ($this->debug_mode) {
-				$debug_info = debug_backtrace(FALSE);
-				$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - '.$debug_info[2]['function'].($msg!=''?' - '.$msg:'').': ';
-				if (! isset($mixed)) $output .= 'Not set';
-				else {
-					switch (gettype($mixed)) {
-						case 'boolean':
-							$output .= ($mixed === TRUE ? 'TRUE' : 'FALSE');
-						break;
-
-						case 'array':
-						case 'object':
-						case 'resource':
-							$output .= var_export($mixed, TRUE);
-						break;
-
-						case 'NULL':
-							$output .= 'NULL';
-						break;
-
-						default: $output .= $mixed;
-					}
+				$output = '<h2 class="nav-tab-wrapper">';
+				foreach( $this->tabs as $id => $tab ){
+					$class = ( $id == $current_tab ) ? ' nav-tab-active' : '';
+					$output .= '<a class="nav-tab'.$class.'" href="?page='.$current_page.'&tab='.$id.'"> '.
+						esc_html__($tab['label'], $this->textdomain).
+						'</a>';
 				}
-				if ($this->debug_file == '') echo $output.'<br />';
-				else file_put_contents($this->debug_file, $output."\n", FILE_APPEND);
-			} // End of debug_mode
-		} // End of display_debug_info
+				$output .= '</h2>';
+				$output .= '<p>'.esc_html__($this->tabs[$current_tab]['header'], $this->textdomain).'</p>';
+			}
+			return ($output);
+		} // End of display_tabs
+
+		/**
+		 * display
+		 *
+		 * display the whole page
+		 *
+		 * @package EG-Forms
+		 * @since 	1.0
+		 * @param 	array	current values of options
+		 *
+		 */
+		function display($default_options) {
+
+			$current_page = (isset($_REQUEST['page'])?$_REQUEST['page']:'');
+			$current_tab  = (isset($_REQUEST['tab'])?$_REQUEST['tab']:1);
+
+			$display_sidebar = has_action($this->sidebar_action);
+?>
+			<div class="wrap">
+				<?php screen_icon(); ?>
+				<h2><?php esc_html_e($this->title, $this->textdomain); ?></h2>
+				<?php echo $this->display_tabs($current_page, $current_tab); ?>
+				<form method="post" action="<?php echo esc_url( add_query_arg( array( 'tab' => $current_tab ), 'options.php' ) ); ?>">
+				<?php settings_fields($this->options_group); ?>
+				<div class="metabox-holder <?php echo ($display_sidebar ? 'has-right-sidebar' : ''); ?>">
+					<?php  if ($display_sidebar) { ?>
+					<div class="inner-sidebar">
+						<?php do_action($this->sidebar_action); ?>
+					</div><!-- .inner-sidebar -->
+					<?php } ?>
+					<div id="post-body">
+						<div id="post-body-content">
+							<?php $this->display_sections($default_options, $current_tab); ?>
+						</div> <!-- #post-body-content -->
+					</div> <!-- #post-body -->
+				</div> <!-- .metabox-holder -->
+				</form>
+			</div>
+<?php
+		} // End of display_options_page
 
 	} // End of class
 } // End of class_exists

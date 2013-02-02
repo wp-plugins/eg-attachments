@@ -1,8 +1,7 @@
 (function() {
+	tinymce.PluginManager.requireLangPack('ega_shortcode');
 
-//	tinymce.PluginManager.requireLangPack('egattachments');
-
-	tinymce.create('tinymce.plugins.EGAttachments', {
+	tinymce.create('tinymce.plugins.ega_shortcode', {
 
 		init : function(ed, url) {
 
@@ -10,31 +9,36 @@
 				var post_id = tinymce.DOM.get('post_ID').value;
 				ed.windowManager.open({
 					file : url + '/eg_attach_popup.php?post_id=' + post_id,
-					width : 500, /*+ ed.getLang('EGAttachments.delta_width', 0), */
-					height : 550,  /* + ed.getLang('EGAttachments.delta_height', 0), */
+					width : 600 + parseInt(ed.getLang('ega_shortcode.delta_width', 0)),
+					height : 500 + parseInt(ed.getLang('ega_shortcode.delta_height', 0)),
 					inline : 1
-				})
+				}, {
+					plugin_url : url, // Plugin absolute URL
+				});
 			});
-            ed.addButton('EGAttachments', {
-                title: 'egattachments.desc',
-                image: url + '/egattachments.png',
-                cmd: 'mceEGAttachments'
-            });
+
+			ed.addButton('ega_shortcode', {
+				title : 'ega_shortcode.desc',
+				cmd : 'mceEGAttachments',
+				image : url + '/img/egattachments.png',
+			});
 		},
-        createControl : function(n, cm){
-            return null;
-        },
+
+		createControl : function(n, cm) {
+			return null;
+		},
+
 		getInfo : function() {
 			return {
-					longname  : 'EGAttachments',
-					author 	  : 'Emmanuel GEORJON',
-					authorurl : 'http://www.emmanuelgeorjon.com',
-					infourl   : 'http://www.emmanuelgeorjon.com',
-					version   : '1.8.2'
+				longname  : 'EG-Attachments',
+				author 	  : 'Emmanuel GEORJON',
+				authorurl : 'http://www.emmanuelgeorjon.com/',
+				infourl   : 'http://wordpress.org/extend/plugins/eg-attachments/',
+				version   : '2.0.0'
 			};
 		}
 	});
 
 	// Register plugin
-	tinymce.PluginManager.add('EGAttachments', tinymce.plugins.EGAttachments);
+	tinymce.PluginManager.add('ega_shortcode', tinymce.plugins.ega_shortcode);
 })();

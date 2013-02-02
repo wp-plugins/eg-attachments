@@ -1,106 +1,113 @@
 <?php
 
-if (!class_exists('EG_Attach_Widget')) {
+if (! class_exists('EG_Attachments_Widget')) {
 
-	class EG_Attach_Widget extends EG_Widget_203 {
+	define('EGA_WIDGET_ID', 'eg-attach' );
 
-		function EG_Attach_Widget() {
-			global $EG_ATTACHMENT_SHORTCODE_DEFAULTS;
-			global $EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY, $EG_ATTACH_DEFAULT_FIELDS;
+	Class EG_Attachments_Widget extends EG_Widget_210 {
 
-			$widget_ops = array('classname' => 'widget_attachments', 'description' => 'Display attachments of the current post' );
-			$this->WP_Widget('eg_attach', 'EG-Attachment Widget', $widget_ops);
+		function __construct() {
+			global $EGA_SHORTCODE_DEFAULTS;
+			global $EGA_FIELDS_ORDER_LABEL;
 
 			$plugin_options = get_option(EGA_OPTIONS_ENTRY);
 
-			$fields = array(
-					'title'			=> array( 'type'  => 'text',	'label'  => 'Title'),
-					'size'			=> array( 'type'  => 'select',	'label'  => 'Size',
-						'list' 		=> array( 'small' => 'Small',	'medium' => 'Medium', 'large' => 'Large', 'custom' => 'Custom')),
-					'doctype'		=> array( 'type'  => 'select',	'label'  => 'Document type',
-						'list' 		=> array( 'all'   => 'All', 	'document' => 'Documents', 'image' => 'Images')),
-					'label'			=> array( 'type'  => 'select',	'label' => 'Document label',
-						'list' 		=> array( 'filename' => 'File name', 'doctitle' => 'Document title')),
-					'fields'		=> array( 'type'  => 'checkbox', 'label' => 'Custom fields:',
-						'list' 		=> $EG_ATTACH_FIELDS_TITLE),
-					'orderby'		=> array( 'type'  => 'select',   'label' => 'Order by',
-						'list' 		=> array_intersect_key($EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY)),
-					'order'			=> array( 'type'  => 'select',   'label'  => 'Order',
-						'list'		=> array( 'ASC'   => 'Ascending', 'DESC'  => 'Descending')),
-					'sep1'			=> array( 'type'  => 'separator'),
-					'icon'			=> array( 'type'  => 'checkbox', 'label'  => 'Display icon'),
-					'force_saveas'	=> array( 'type'  => 'checkbox', 'label'  => '"Save As" activation'),
-					'limit'			=> array( 'type'  => 'text', 'label'      => 'Number of documents to display'),
-					'nofollow'	    => array( 'type'  => 'checkbox', 'label'  => '&laquo;Nofollow&raquo; attribute'),
-					'target'	    => array( 'type'  => 'checkbox', 'label'  => '&laquo;Target&raquo; attribute'),
-					'logged_users'  => array( 'type'  => 'select', 'label' => 'Attachments access',
-						'list' => array( -1 => 'Use default parameter', 0 => 'All users', 1 => 'Only logged users')),
-					'sep2'			=> array( 'type'  => 'separator'),
-					'format_pre'	=> array( 'type'  => 'textarea',	'label' => 'Custom format, before list'),
-					'format'		=> array( 'type'  => 'textarea',	'label' => 'Custom list format'),
-					'format_post'	=> array( 'type'  => 'textarea',	'label' => 'Custom format, after list')
+			// widget settings
+			$widget_ops = array('classname' => 'widget_attachments', 
+								'description' => __('Display attachments of the current post', EGA_TEXTDOMAIN )
+							);
+
+			// create the widget
+			parent::__construct(EGA_WIDGET_ID, 'EG-Attachment Widget', $widget_ops);
+
+			$standard_templates = EG_Attachments_Common::get_templates($plugin_options, 'standard');
+			$custom_templates = EG_Attachments_Common::get_templates($plugin_options, 'custom', FALSE);
+			if (sizeof($custom_templates)>0)
+				$standard_templates = array_merge($standard_templates, array( 'custom' => __('Custom templates', $this->textdomain)));
+
+			
+			$this->fields = array(
+				'title'				=> array( 'type'  => 'text',	'label'  => 'Title'),
+				'size'				=> array( 'type'  => 'select',	'label'  => 'Size',
+					'list' => $standard_templates),
+				'template'			=> array( 'type'  => 'select',	'label'  => 'Template',
+					'list' => $custom_templates),
+				'doctype'			=> array( 'type'  => 'select',	'label'  => 'Document type',
+					'list' => array( 'all'   => 'All', 	'document' => 'Documents', 'image' => 'Images')),
+				'exclude_thumbnail'	=> array( 'type'  => 'checkbox', 'label'  => 'Exclude thumbnail',
+					'list' => array( 'Check to exclude the feature image from the attachments list')),
+				'orderby'			=> array( 'type'  => 'select',   'label' => 'Order by',
+					'list' => $EGA_FIELDS_ORDER_LABEL), /*array_intersect_key($EG_ATTACH_FIELDS_TITLE, $EG_ATTACH_FIELDS_ORDER_KEY)) */
+				'order'				=> array( 'type'  => 'select',   'label'  => 'Order',
+					'list' => array( 'ASC'   => 'Ascending', 'DESC'  => 'Descending')),
+				'force_saveas'		=> array( 'type'  => 'checkbox', 'label'  => '"Save As" activation',
+					'list' => array('Force "Save As" when users click on the attachments')),
+				'limit'				=> array( 'type'  => 'text', 'label'      => 'Number of documents to display'),
+				'nofollow'	  		=> array( 'type'  => 'checkbox', 'label'  => '&laquo;Nofollow&raquo; attribute',
+					'list' => array( 'Check if you want to automatically add <code>rel="nofollow"</code> to attachment links' )),
+				'target'	  		=> array( 'type'  => 'checkbox', 'label'  => '&laquo;Target&raquo; attribute',
+					'list'	=> array( 'Check if you want to automatically add <code>target="_blank"</code> to attachment links' )),
+				'logged_users' 		 => array( 'type'  => 'select', 'label' => 'Attachments access',
+					'list' => array( -1 => 'Use default parameter', 0 => 'All users', 1 => 'Only logged users'))
 			);
-
+/*
 			if ($plugin_options['tags_assignment']) {
-				$fields['sep3']	= array( 'type'  => 'separator');
-				$fields['tags'] = array( 'type'  => 'select',		'label' => 'Tags', 'list' => eg_attach_get_tags_select('array'));
+				$fields['tags'] = array( 'type'  => 'select', 'label' => 'Tags', 'list' => eg_attach_get_tags_select('array'));
 			}
-			$default_values = array_intersect_key($EG_ATTACHMENT_SHORTCODE_DEFAULTS, $fields);
-			$default_values['format_pre']   = isset($plugin_options['custom_format_pre'])  ? $plugin_options['custom_format_pre']  : '' ;
-			$default_values['format']       = isset($plugin_options['custom_format'])      ? $plugin_options['custom_format']      :'' ;
-			$default_values['format_post']  = isset($plugin_options['custom_format_post']) ? $plugin_options['custom_format_post'] : '' ;
+*/
+			$this->default_options = EG_Attachments_Common::get_shortcode_defaults($plugin_options);
+			list($this->default_options['orderby'], $this->default_options['order']) = explode(' ', $this->default_options['orderby']);
+			$this->default_options['title'] = 'Attachments';
 
-			list($default_values['orderby'], $default_values['order']) = explode(' ', $EG_ATTACHMENT_SHORTCODE_DEFAULTS['orderby']);
-			$default_values['title'] = 'Attachments';
-
-			$this->set_options(EGA_TEXTDOMAIN, EGA_COREFILE, 0 );
-			$this->set_form($fields, $default_values, FALSE );
-
+			$this->textdomain = EGA_TEXTDOMAIN;
 		} // End of constructor
 
+
 		function widget($args, $instance) {
-			global $eg_attach;
-
-			extract($args, EXTR_SKIP);
-			$values = wp_parse_args( (array) $instance, $this->default_values );
-
-			$widget_title 		= $values['title'];
-			$values['title']    = '';
-			$values['orderby'] .= ' '.$values['order'];
-			if (isset($values['fields'])) $values['fields'] = implode(',', $values['fields']);
-			else $values['fields'] = '';
+			global $eg_attach_public;
+			global $EGA_SHORTCODE_DEFAULTS;
 
 			$output = '';
-			if (is_singular() && isset($eg_attach)) {
-				global $post;
-				if ('private' == get_post_field('post_status', $post->ID) && !is_user_logged_in()) {
-					$output = __('This post is private. You must be a user of the site, and logged in, to display this file.', $this->textdomain);
-				}
-				else if (post_password_required($post->ID)) {
-					$output = __('This post is password protected. Please go to the site, and enter the password required to display the document', $this->textdomain);
-				}
-				else {
-					$output = $eg_attach->get_attachments($values);
-				}
+			if (is_singular() && isset($eg_attach_public)) {			
+				/* --- Extract parameters --- */
+				extract($args);
+
+				$values = wp_parse_args( (array) $instance, $this->default_options );
+
+				// Put title to '', before calling the shortcode
+				$widget_title 		= $values['title']; 
+				$values['title']    = '';
+				$values['orderby'] .= ' '.$values['order'];
+				unset($values['order']);
+
+				$shortcode = '[attachments';
+				foreach ($values as $key => $value) {
+					if ($value != $EGA_SHORTCODE_DEFAULTS[$key]) 
+						$shortcode .= ' '.$key.'='.(is_numeric($value) ? $value : '"'.$value.'"');
+				} // End of foreach
+				$shortcode .= ']';
+// eg_plugin_error_log('EG-Attachments Widgets', 'do shortcode', $shortcode);	
+				$output = do_shortcode($shortcode);
+
+				if ($output != '') {
+					$title = apply_filters('widget_title', $widget_title, $values, $this->id_base);
+
+					echo $before_widget.
+						('' != $title ? $before_title.__($title, $this->textdomain).$after_title:'').
+						$output.
+						$after_widget;
+				} // End of $output != ''
+
 			} // End of (is_singular && $eg_attach)
-			if ($output != '') {
-				echo $before_widget.
-					($widget_title!= ''?$before_title.__($widget_title, $this->textdomain).$after_title:'').
-					$output.
-					$after_widget;
-			}
+		} // End of widget
 
-		} // End of function widget
-
-	} // End of EG_Attach_Widget
+	} // End of class
 
 } // End of class_exists EG_Attach_Widget
 
 function eg_attachments_widgets_init() {
-
-	register_widget('EG_Attach_Widget');
+	register_widget('EG_Attachments_Widget');
 }
 add_action('init', 'eg_attachments_widgets_init', 1);
-
 
 ?>

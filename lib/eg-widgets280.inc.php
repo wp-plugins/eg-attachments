@@ -3,12 +3,12 @@
 Package Name: EG-Widgets
 Plugin URI:
 Description:  Abstract class to create and manage widget
-Version: 2.0.3
+Version: 2.1.0
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
-/*  Copyright 2009-2011  Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
+/*  Copyright 2009-2012  Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,321 +25,121 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Widget_203')) {
 
-	/**
-	  *  EG_Widget - Class
-	  *
-	  * {@internal Missing Long Description}
-	  *
-	  * @package EG-Widgets
-	  *
-	  */
-	class EG_Widget_203 extends WP_Widget {
+if (!class_exists('EG_Widget_210')) {
+
+	class EG_Widget_210 extends WP_Widget {
 
 		var $textdomain;
-		var $plugin_corefile;
-		var $cexpiration;
-		var $display_conditions;
 		var $fields;
-		var $default_values;
+		var $default_options;
 
-		var $language_list = array(
-			'fr_FR' => 'Fran&ccedil;ais',
-			'en_US' => 'English',
-			'es_ES' => 'Espa&ntilde;ol',
-			'de_DE' => 'Deutsch',
-			'it_IT' => 'Italiano'
-		);
+		function display_comment($instance, $id, $form_field_id, $form_field_name) {
+			return ( "\n".'<p><strong>'.__($this->fields[$id]['label'], $this->textdomain).'</strong></p>' );
+		} // End of display_comment
 
-		/**
-		 * set_options
-		 *
-		 * Define options
-		 *
-		 * @package EG-Widgets
-		 *
-		 * @param	string	$textdomain			textdomain for i18n features,
-		 * @param	string	$plugin_corefile	path and name of plugin core file,
-		 * @param	integer	$cache_expiration	duration of cache (seconds),
-		 * @return	none
-		 */
-		function set_options($textdomain, $plugin_corefile, $cache_expiration=0 ) {
-			$this->textdomain 		  = $textdomain;
-			$this->plugin_corefile	  = $plugin_corefile;
-			$this->cache_expiration   = $cache_expiration;
-		}
+		function display_separator($instance, $id, $form_field_id, $form_field_name) {
+			return ( "\n".'<hr />' );
+		} // End of display_separator
 
-		/**
-		 * set_form
-		 *
-		 * Define forms and default values
-		 *
-		 * @package EG-Widgets
-		 *
-		 * @param	array	$fields					fields for the control form,
-		 * @param	array	$default_values			default values,
-		 * @param	boolean	$display_conditions		TRUE or FALSE to add display conditions
-		 * @return	none
-		 */
-		function set_form($fields, $default_values, $display_conditions=FALSE ) {
-			$this->fields             = $fields;
-			$this->default_values     = $default_values;
-			$this->display_conditions = $display_conditions;
+		function display_textarea($instance, $id, $form_field_id, $form_field_name) {
+			$output .= "\n".'<p><label for="'.$form_field_name.'">'.__($this->fields[$id]['label'], $this->textdomain).': <br />'.
+					 "\n".'<textarea cols="30" rows="3" id="'.$form_field_id.'" name="'.$form_field_name.'">'.format_to_edit($instance[$id]).'</textarea>'.
+					 "\n".'</label></p>';
+			return ($output);
+		} // End of display_textarea
 
-			if ($this->display_conditions) {
+		function display_numeric($instance, $id, $form_field_id, $form_field_name) {
+			$this->fields[$id]['type'] = 'text';
+			return ($this->display_text($instance, $id, $form_field_id, $form_field_name));
+		} // End of display_numeric
 
-				$this->fields['separator'] = array(
-					'type'    => 'separator'
-				);
-				$this->fields['show_when'] = array(
-						'type'    => 'select',
-						'label'   => 'Show widget on pages',
-						'list'  => array( 'all'        => 'All',
-										  'home'	   => 'Home',
-										  'categories' => 'Categories',
-										  'posts'      => 'Posts',
-										  'tags'       => 'Tags')
-					);
-				$this->fields['show_id'] = array(
-						'type'    => 'ftext',
-						'label'   => 'Show widget, for'
-					);
-				$this->fields['show_lang'] = array(
-						'type'    => 'select',
-						'label'   => 'Show widget, when',
-						'list'    => array_merge( array('all' => ' '), $this->language_list)
-					);
-				$this->fields['hide_lang'] = array(
-						'type'    => 'select',
-						'label'   => 'Hide widget, when',
-						'list'    => array_merge( array('none' => ' '), $this->language_list)
-				);
+		function display_text($instance, $id, $form_field_id, $form_field_name) {
+			$output = "\n".'<p>'.
+					"\n".'<label for="'.$form_field_name.'">'.__($this->fields[$id]['label'], $this->textdomain).': </label><br />'.
+					"\n".'<input type="'.$this->fields[$id]['type'].'" name="'.$form_field_name.'" value="'.$instance[$id].'"/>'.
+					"\n".'</p>';
+			return ($output);
+		} // End of display_text
 
-				$this->default_values = array_merge($default_values, array(
-										'show_when' => 'all',
-										'show_id' 	=> '',
-										'show_lang' => '',
-										'hide_lang' => ''));
+		function display_radio($instance, $id, $form_field_id, $form_field_name) {
+			$output = "\n".'<p>'.
+					"\n".__($this->fields[$id]['label'], $this->textdomain).':<br />';
+			$num = 0;
+			foreach ($this->fields[$id]['list'] as $value => $label) {
+				$output .= "\n".'<input type="radio" name="'.$form_field_name.'" value="'.$value.'"'.($value==$instance[$id] ? ' checked' : '').'/> '.
+							"\n".'<label for="'.$form_field_name.'">'.__($label, $this->textdomain).'</label>'.
+							"\n".(++$num == sizeof($this->fields[$id]['list']) ? '' : '<br />');
 			}
-		}
+			$output .= '</p>';
+			return ($output);
+		} // End of display_radio
 
-		/**
-		 * is_visible - Return flag to know if the widget can be displayed or not
-		 *
-		 * {@internal Missing Long Description}
-		 *
-		 * @package EG-Widgets
-		 *
- 		 * @param	$number	int		id of the widget (in case of multi-widget only)
-		 */
-		function is_visible($values) {
-			global $locale;
-
-			// By default: the widget is visible
-			$value = TRUE;
-			if (isset($values['show_when']) && $values['show_when'] != 'all') {
-
-				// Id or list of id specifided?
-				$id_list = '';
-				if ($values['show_id'] != '') {
-					$id_list = explode(',', $values['show_id']);
-				}
-				switch ($values['show_when']) {
-				
-					case 'home':
-						$value = is_home();
-					break;
-					
-					case 'categories':
-						$value = is_category($id_list);
-					break;
-
-					case 'posts':
-						$value = is_single($id_list);
-					break;
-
-					case 'tags':
-						$value = is_tag($id_list);
-					break;
-				}
-			}
-			if (isset($values['show_lang']) && $values['show_lang'] != 'all') {
-				$value = ($locale == $values['show_lang']);
-			}
-			if (isset($values['hide_lang']) && $values['hide_lang'] != 'none') {
-				$value = ($locale != $values['hide_lang']);
-			}
-			return ($value);
-		} /* End of function is_visible */
-
-		/**
-		 * get_form_values - Get the form values registered by user
-		 *
-		 * {@internal Missing Long Description}
-		 *
-		 * @package EG-Widgets
-		 *
- 		 * @param	$number	int		id of the widget (in case of multi-widget only)
-		 */
-		function update($new_instance, $old_instance) {
-
-			$instance = $old_instance;
-
-			foreach( $this->fields as $field_name => $field_value) {
-
-				switch ($field_value['type']) {
-					case 'text':
-					case 'textarea':
-					case 'ftext':
-					case 'select':
-					case 'radio':
-						$instance[$field_name] = stripslashes($new_instance[$field_name]);
-					break;
-
-					case 'numeric':
-						$value = $new_instance[$field_name];
-						if (is_numeric($value)) $instance[$field_name] = intval($value);
-						else $instance[$field_name] = '';
-					break;
-
-					case 'checkbox':
-						if (! isset($field_value['list'])) {
-							if (isset($new_instance["$field_name"])) $instance[$field_name] = 1;
-							else $instance[$field_name] = 0;
-						}
-						else {
-							$instance[$field_name] = $new_instance["$field_name"];
-						}
-					break;
-				} // End of switch
-			} // End of foreach field
-			return ($instance);
-		} // End of update
-
-		/**
-		 * generate_select_form - Generate HTML <select> <option> ...</option></select> code
-		 *
-		 * {@internal Missing Long Description}
-		 *
-		 * @package EG-Widgets
-		 *
-		 * @param	$id		string	id/name of the field
-		 * @param	$values	array		list of values
-		 * @param	$default	array		default value
-		 */
-		function generate_select_form($id, $name, $values, $default) {
-			$select_string = '<select id="'.$id.'" name="'.$name.'">';
-			foreach( $values as $key => $value) {
-				if (trim($value) == '') $value = '';
-				else $value = __($value, $this->textdomain);
-				if ($key == $default) $string = 'selected'; else $string = '';
-				$select_string .= '<option '.$string.' value="'.$key.'">'.$value.'</option>';
-			}
-			$select_string .= '</select>';
-			return ($select_string);
-		}
-
-
-		/**
-		 * generate_form - Display the widget control panel form
-		 *
-		 * {@internal Missing Long Description}
-		 *
-		 * @package EG-Widgets
-		 *
- 		 * @param	object	$instance		widget options
-		 */
-		function form($instance) {
-
-			$default_values = wp_parse_args( (array) $instance, $this->default_values );
-
-			$form = '';
-			foreach ($this->fields as $field_name => $field_value) {
-
-				$form_field_id   = $this->get_field_id($field_name);
-				$form_field_name = $this->get_field_name($field_name);
-
-				if (! isset($default_values[$field_name])) {
-					$def_value = '';
+		function display_checkbox($instance, $id, $form_field_id, $form_field_name) {
+			$output = "\n".'<p>'.
+					"\n".__($this->fields[$id]['label'], $this->textdomain).':<br />';
+// eg_plugin_error_log('Widget', 'Field: ', $this->fields[$id]);
+			if (isset($this->fields[$id]['list'])) {
+				if (1 == sizeof($this->fields[$id]['list']) ) {
+					$output .= 	"\n".'<input type="hidden" name="'.$form_field_name.'" value="0" />'.
+								"\n".'<input type="'.$this->fields[$id]['type'].'" name="'.$form_field_name.'" value="1"'.($instance[$id] ? ' checked' : '').' /> '.
+								"\n".'<label for="'.$form_field_name.'">'.__(current($this->fields[$id]['list']), $this->textdomain).'</label>';
 				}
 				else {
-					if (! is_array($default_values[$field_name])) {
-						$def_value = esc_attr($default_values[$field_name]);
-					}
-					else {
-						$def_value = $default_values[$field_name];
+					$num = 0;
+					$output .= '<input type="hidden" value="0" name="'.$form_field_name.'" /> ';
+					foreach ($this->fields[$id]['list'] as $value => $label) {
+						// eg_plugin_error_log('EG-Widget', $value.' => '.$label);
+						$output .= 	/*"\n".'<input type="hidden" name="'.$form_field_name.'[]" value="0" />'.*/
+									"\n".'<input type="'.$this->fields[$id]['type'].'" name="'.$form_field_name.'[]" value="'.$value.'"'.(in_array($value, (array)$instance[$id]) ? ' checked' : '').'/> '.
+									"\n".'<label for="'.$form_field_name.'[]">'.__($label, $this->textdomain).'</label>'.
+									"\n".(++$num == sizeof($this->fields[$id]['list']) ? '' : '<br />');
 					}
 				}
-				
-				switch ($field_value['type']) {
+			}
+			$output .= '</p>';
+			return ($output);
+		} // End of display_checkbox
 
-					case 'comment':
-						if (is_string($def_value)) $def_value = __($def_value, $this->textdomain);
-						$form .= '<p><strong>'.__($field_value['label'], $this->textdomain).'</strong></p>';
-					break;
+		function display_select($instance, $id, $form_field_id, $form_field_name) {
+			$output = "\n".'<p>'.
+					"\n".'<label for="'.$form_field_name.'">'.__($this->fields[$id]['label'], $this->textdomain).':</label><br />'.
+					"\n".'<select name="'.$form_field_name.'">';
 
-					case 'separator':
-						$form .= '<hr />';
-					break;
+			foreach ($this->fields[$id]['list'] as $value => $label) {
+				$output .= "\n".'<option value="'.$value.'" '.($value==$instance[$id] ? ' selected' : '').'>'.__($label, $this->textdomain).'</option>';
+			}
+			$output .= "\n".'</select>'.
+						"\n".'</p>';
+			return ($output);
+		} // End of display_select
 
-					case 'numeric':
-						$form .= "\n".'<p><label for="'.$form_field_name.'">'.__($field_value['label'], $this->textdomain).': '.
-						         "\n".'<input type="text" id="'.$form_field_id.'" name="'.$form_field_name.'" value="'.$def_value.'" size="10" />'.
-								 "\n".'</label></p>';
-					break;
-
-					case 'text':
-					case 'ftext':
-						if (is_string($def_value)) $def_value = __($def_value, $this->textdomain);
-						$form .= "\n".'<p><label for="'.$form_field_name.'">'.__($field_value['label'], $this->textdomain).': '.
-						         "\n".'<input type="text" id="'.$form_field_id.'" name="'.$form_field_name.'" value="'.format_to_edit($def_value).'" size="10" />'.
-								 "\n".'</label></p>';
-					break;
-
-					case 'textarea':
-						if (is_string($def_value)) $def_value = __($def_value, $this->textdomain);
-						$form .= "\n".'<p><label for="'.$form_field_name.'">'.__($field_value['label'], $this->textdomain).': '.
-						         "\n".'<textarea cols="30" rows="3" id="'.$form_field_id.'" name="'.$form_field_name.'">'.format_to_edit($def_value).'</textarea>'.
-								 "\n".'</label></p>';
-					break;
-
-					case 'select':
-						$form .= "\n".'<p><label for="'.$form_field_name.'">'.__($field_value['label'], $this->textdomain).': '.
-						         "\n".$this->generate_select_form($form_field_id, $form_field_name, $field_value['list'], $def_value).
-								 "\n".'</label></p>';
-					break;
-
-					case 'radio':
-						$form .= "\n".'<p><label for="'.$form_field_name.'">'.__($field_value['label'], $this->textdomain).'</label><br />';
-						foreach ($field_value['list'] as $key => $value) {
-							if ($def_value == $key) $string = 'checked'; else $string = '';
-							$form .= "\n".'<input type="radio" id="'.$form_field_id.'" name="'.$form_field_name.'" value="'.$key.'" '.$string.' />'.__($value, $this->textdomain).'<br />';
-						}
-						$form .= "\n".'</p>';
-					break;
-
-					case 'checkbox':
-						if (! isset($field_value['list'])) {
-							$form .= "\n".'<p><input type="checkbox" id="'.$form_field_id.'" name="'.$form_field_name.'" value="1" '.($def_value==0?'':'checked').' /> <label for="'.$form_field_name.'">'.__($field_value['label'], $this->textdomain).'</label></p>';
-						}
-						else {
-							$index = 0;
-							if (! is_array($def_value)) $def_value = array($def_value);
-							$form .= "\n".'<p><label for="'.$form_field_name.'">'.__($field_value['label'], $this->textdomain).'</label><br />';
-							foreach ($field_value['list'] as $key => $value) {
-								if (in_array($key, $def_value)) $string = 'checked'; else $string = '';
-								$form .= "\n".'<input type="checkbox" id="'.$form_field_id.'['.$index.']" name="'.$form_field_name.'['.$index.']" value="'.$key.'" '.$string.' />'.__($value, $this->textdomain).'<br />';
-								$index++;
-							}
-							$form .= "\n".'</p>';
-						}
-					break;
-				} // End of switch
+		public function form( $instance ) {
+// 			eg_plugin_error_log('EG-Archives', 'Display form');
+			$instance = wp_parse_args( (array) $instance, $this->default_options);
+			$output = '';
+			foreach ($this->fields as $id => $field) {
+				$form_field_id   = $this->get_field_id($id);
+				$form_field_name = $this->get_field_name($id);
+				$output .= call_user_func(array(&$this, 'display_'.$field['type']), $instance, $id, $form_field_id, $form_field_name);
 			} // End of foreach
-			echo $form;
+			echo $output;
 		} // End of form
+
+		public function update( $new_instance, $old_instance ) {
+//			eg_plugin_error_log('EG-Archives', 'Update');
+			foreach ($new_instance as $key => $value) {
+				if (isset($this->fields[$key])) {
+					if ($this->fields[$key]['type'] == 'text') {
+						$new_instance[$key] = strip_tags($new_instance[$key]);
+					} // End of type text
+				} // End of isset $key
+			} // End of foreach
+			return ($new_instance);
+		} // End of update
 
 	} // End of class
 
-} // End of if exist class
+} // End of class_exists
+
+?>
