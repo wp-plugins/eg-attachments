@@ -20,18 +20,12 @@ if (! class_exists('EG_Attachments_Widget')) {
 			// create the widget
 			parent::__construct(EGA_WIDGET_ID, 'EG-Attachment Widget', $widget_ops);
 
-			$standard_templates = EG_Attachments_Common::get_templates($plugin_options, 'standard');
-			$custom_templates = EG_Attachments_Common::get_templates($plugin_options, 'custom', FALSE);
-			if (sizeof($custom_templates)>0)
-				$standard_templates = array_merge($standard_templates, array( 'custom' => __('Custom templates', $this->textdomain)));
-
+			$templates_list = EG_Attachments_Common::get_templates($plugin_options, 'all');
 			
 			$this->fields = array(
 				'title'				=> array( 'type'  => 'text',	'label'  => 'Title'),
-				'size'				=> array( 'type'  => 'select',	'label'  => 'Size',
-					'list' => $standard_templates),
 				'template'			=> array( 'type'  => 'select',	'label'  => 'Template',
-					'list' => $custom_templates),
+					'list' => $templates_list),
 				'doctype'			=> array( 'type'  => 'select',	'label'  => 'Document type',
 					'list' => array( 'all'   => 'All', 	'document' => 'Documents', 'image' => 'Images')),
 				'exclude_thumbnail'	=> array( 'type'  => 'checkbox', 'label'  => 'Exclude thumbnail',
@@ -50,14 +44,14 @@ if (! class_exists('EG_Attachments_Widget')) {
 				'logged_users' 		 => array( 'type'  => 'select', 'label' => 'Attachments access',
 					'list' => array( -1 => 'Use default parameter', 0 => 'All users', 1 => 'Only logged users'))
 			);
-/*
+
 			if ($plugin_options['tags_assignment']) {
 				$fields['tags'] = array( 'type'  => 'select', 'label' => 'Tags', 'list' => eg_attach_get_tags_select('array'));
 			}
-*/
+
 			$this->default_options = EG_Attachments_Common::get_shortcode_defaults($plugin_options);
 			list($this->default_options['orderby'], $this->default_options['order']) = explode(' ', $this->default_options['orderby']);
-			$this->default_options['title'] = 'Attachments';
+			$this->default_options['title'] = __('Attachments', EGA_TEXTDOMAIN);
 
 			$this->textdomain = EGA_TEXTDOMAIN;
 		} // End of constructor

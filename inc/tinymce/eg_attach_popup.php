@@ -18,7 +18,8 @@ if ($ega_options['shortcode_auto_default_opts']) {
 	$current_values = array_merge($current_values, array(
 		'orderby'  		=> $ega_options['shortcode_auto_orderby'],
 		'order'			=> $ega_options['shortcode_auto_order'],
-		'size'     		=> $ega_options['shortcode_auto_size'],
+//		'size'     		=> $ega_options['shortcode_auto_size'],
+		'template' 		=> $ega_options['shortcode_auto_template'],
 		'doctype'  		=> $ega_options['shortcode_auto_doc_type'],
 		'title'    		=> $ega_options['shortcode_auto_title'],
 		'titletag' 		=> $ega_options['shortcode_auto_title_tag'],
@@ -27,8 +28,8 @@ if ($ega_options['shortcode_auto_default_opts']) {
 }
 
 $select_fields = array(
-	'size'	   => EG_Attachments_Common::get_templates($ega_options, 'standard'),
-	'template' => EG_Attachments_Common::get_templates($ega_options, 'custom'),
+//	'size'	   => EG_Attachments_Common::get_templates($ega_options, 'standard'),
+	'template' => EG_Attachments_Common::get_templates($ega_options, 'all'),
 	'orderby'  => $EGA_FIELDS_ORDER_LABEL,
 	'doctype'	   => array(
 		'all'	   => __('All',       EGA_TEXTDOMAIN),
@@ -102,8 +103,6 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			var title_def 		 = document.getElementById('title_def').value;
 			var titletag 		 = document.getElementById('titletag').value;
 			var titletag_def 	 = document.getElementById('titletag_def').value;
-			var listsize 		 = document.getElementById('size').value;
-			var listsize_def	 = document.getElementById('size_def').value;
 			var template 		 = document.getElementById('template').value;
 			var template_def	 = document.getElementById('template_def').value;
 			var doctype 		 = document.getElementById('doctype').value;
@@ -114,24 +113,24 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			var nofollow_def	 = parseInt(document.getElementById('nofollow_def').value)
 			var target		 	 = document.getElementById('target');
 			var target_def	 	 = parseInt(document.getElementById('target_def').value)
-			var force_saveas	 = parseInt(document.getElementById('force_saveas').value);
-			var force_saveas_def = parseInt(document.getElementById('force_saveas_def').value);
+			var force_saveas	 = document.getElementById('force_saveas').value;
+			var force_saveas_def = document.getElementById('force_saveas_def').value;
 			var logged_users	 = parseInt(document.getElementById('logged_users').value);
 			var logged_users_def = parseInt(document.getElementById('logged_users_def').value);
-			var tags			 = document.getElementById('tags').value;
-			var tags_and		 = document.getElementById('tags_and');
+			
+			if (document.getElementById('tags')) {
+				var tags		 = document.getElementById('tags').value;
+				var tags_and	 = document.getElementById('tags_and');
+			}
 			var default_doclist	 = document.getElementById('default_doclist');
 			var doclist 		 = getCheckedValue(document.getElementsByName('doclist'));
 
 			var tagtext = "[attachments";
 			if (title != title_def )
 				tagtext = tagtext + " title=\"" + title + "\"";
-
+	
 			if (titletag != titletag_def )
 				tagtext = tagtext + " titletag=\"" + titletag + "\"";
-
-			if (listsize != listsize_def )
-				tagtext = tagtext + " size=" + listsize;
 
 			if (template != template_def )
 				tagtext = tagtext + " template=" + template;
@@ -142,18 +141,17 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			if (limit != limit_def )
 				tagtext = tagtext + " limit=" + limit;
 
-			if (nofollow.checked)
-				nofollow_val=1
-			else
-				nofollow_val=0
+			if (nofollow.checked) nofollow_val=1;
+			else nofollow_val=0;
 
 			if (nofollow_val != nofollow_def)
 				tagtext = tagtext + " nofollow=" + nofollow_val;
 
-			if (target.checked)
-				target_val=1
-			else
-				target_val=0
+			if (target.checked) target_val=1;
+			else target_val=0;
+
+			if (target_val != target_def)
+				tagtext = tagtext + " nofollow=" + target_val;
 
 			if (force_saveas > force_saveas_def )
 				tagtext = tagtext + " force_saveas=1";
@@ -161,16 +159,15 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			if (logged_users > logged_users_def )
 				tagtext = tagtext + " logged_users=1";
 
-			if (target_val != target_def)
-				tagtext = tagtext + " target=" + target_val;
-
-			if (tags_and.checked) {
-				tags_option="tags";
-			} else {
-				tags_option="tags_and";
-			} 
-			if ( tags != "" )
-				tagtext = tagtext + tags_option + "=" + tags;
+			if (typeof tags_and != "undefined" && typeof tags != "undefined" ) {
+				if (tags_and.checked) {
+					tags_option=" tags";
+				} else {
+					tags_option=" tags_and";
+				} 
+				if ( tags != "" )
+					tagtext = tagtext + tags_option + "=" + tags;
+			}
 
 			if ( default_doclist && !default_doclist.checked) {
 				if (doclist!="")
@@ -189,6 +186,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 
   </head>
   <body onload="tinyMCEPopup.executeOnLoad('init();');">
+  	<div class="mceActionPanel">
 		<form action="" method="post" name="ega-mcebox">
 			<div style="float: left; margin:0; width:49%;">
 				<p>
@@ -202,12 +200,8 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 					<input type="hidden" name="titletag_def" id="titletag_def" value="<?php echo $default_values['titletag']; ?>" />
 				</p>
 				<p>
-					<label for="size"><strong><?php _e('List size: ',EGA_TEXTDOMAIN); ?></strong></label><br />
-					<?php echo get_select('size', 'size', $current_values, $default_values); ?>
-				</p>
-				<p>
-					<label for="template"><strong><?php _e('Template (for custom size): ',EGA_TEXTDOMAIN); ?></strong></label><br />
-					<?php echo get_select('template', 'template', $current_values, $default_values, TRUE); ?>
+					<label for="template"><strong><?php _e('Template: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('template', 'template', $current_values, $default_values, FALSE); ?>
 				</p>
 				<p>
 					<label for="doctype"><strong><?php _e('Document type: ',EGA_TEXTDOMAIN); ?></strong></label><br />
@@ -270,5 +264,6 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 				<input id="cancel" type="button" onclick="tinyMCEPopup.close();" value="<?php esc_html_e('Cancel', EGA_TEXTDOMAIN); ?>" name="cancel">
 			</div>
 		</form>
+	</div>
   </body>
 </html>

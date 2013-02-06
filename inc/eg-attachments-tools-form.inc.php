@@ -59,7 +59,7 @@ if ( ! class_exists( 'EG_Attachments_Form_List_Table' ) ) {
 				'offset' 			=> ( $this->get_pagenum() - 1 ) * $per_page 
 			);
 
-			if (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array('title', 'author', 'date'))) {
+			if (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array('title'/*, 'author'*/, 'date'))) {
 				$args['orderby'] = $_REQUEST['orderby'];
 			}
 			if (isset($_REQUEST['order']) && in_array(strtoupper($_REQUEST['order']), array('ASC', 'DESC'))) {

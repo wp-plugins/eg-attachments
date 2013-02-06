@@ -25,7 +25,7 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('EGA_VERSION', 	'2.0.0-beta');
+define('EGA_VERSION', 	'2.0.0-beta2');
 define('EGA_COREFILE',	__FILE__);
 //define('EG_PLUGIN_ENABLE_CACHE', FALSE);
 

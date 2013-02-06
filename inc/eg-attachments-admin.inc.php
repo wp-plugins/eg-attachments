@@ -88,12 +88,12 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$template_editor_page = add_submenu_page(
 				'tools.php',
 				esc_html__('EGA templates', $this->textdomain),
-				esc_html__('EGA templates', $this->textdomain),
+				esc_html__($this->name.' templates', $this->textdomain),
 				EGA_READ_TEMPLATES,
 				'ega_templates',
 				array(&$this, 'template_editor')
 			);
-// eg_plugin_error_log($this->name, 'Editor page Hook', $template_editor_page);
+
 			// Add load and print_styles for this page
 			add_action( 'load-' . $template_editor_page, array(&$this, 'template_editor_load' ));
 			add_action( 'admin_print_styles-' . $template_editor_page, array(&$this, 'template_editor_styles' ));
@@ -544,7 +544,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 <?php		if ('' == $disabled) { ?>
 				<input type="submit" value="<?php esc_attr_e('Save',   $this->textdomain); ?>" class="button button-primary button-large" id="ega_save" name="ega_save">
 <?php		} ?>
-				<a href="<?php echo menu_page_url( 'ega_templates', false ); ?>" title="<?php esc_html_e('', $this->textdomain); ?>" class="button button-large"><?php esc_html_e('Go back to the list', $this->textdomain); ?></a>
+				<a href="<?php echo menu_page_url( 'ega_templates', false ); ?>" title="<?php esc_html_e('Go back to the list', $this->textdomain); ?>" class="button button-large"><?php esc_html_e('Go back to the list', $this->textdomain); ?></a>
 			</p>
 <?php
 		} // End of submit_buttons
@@ -651,7 +651,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 				'loopnotdefined'	=> esc_html__('The field "loop" cannot be empty.', $this->textdomain),
 				'errorcopy'			=> esc_html__( 'Error during the copy operation', $this->textdomain),
 				'unknownpost'		=> esc_html__('The initial post is unknown or doesn\'t exist', $this->textdomain),
-				'statdeleted'		=> sprintf(__('Purge of statustucs: %d lines deleted (Retention: %d months).', $this->textdomain),$itemdel, $this->options['purge_stats'])
+				'statdeleted'		=> sprintf(__('Purge of statistics: %d lines deleted (Retention: %d months).', $this->textdomain),$itemdel, $this->options['purge_stats'])
 
 			);
 
@@ -686,8 +686,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			$previous_options = parent::install_upgrade();
 			$previous_version = ($previous_options === FALSE ? '0.0.0' : $previous_options['version']);
-//eg_plugin_error_log($this->name, 'Previous version: ', $previous_options);
-//eg_plugin_error_log($this->name, 'Previous version: ', $previous_version);
 			if (version_compare($this->version, $previous_version)>0) {
 
 				/**
@@ -736,7 +734,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 				 * From 1.9.2 to 2.0.0
 				 */
 				if (version_compare($this->version, $previous_version)>0) {
-//eg_plugin_error_log($this->name,'To 2.0.0');
 					/* ---- Create default templates --- */
 					// Get the number of templates installed
 					//$templates_count = (array)wp_count_posts( EGA_TEMPLATE_POST_TYPE );
@@ -747,36 +744,27 @@ if (! class_exists('EG_Attachments_Admin')) {
 							)
 						);
 					if (FALSE === $templates || 0 == sizeof($templates)) {
-//eg_plugin_error_log($this->name,'template count', $templates);
+
 						// No templates installed. Creating standard templates.
 						$path = $this->path.'inc/templates';
 						if ($handle = opendir($path)) {
-//eg_plugin_error_log($this->name,'Directory exists', $path);
+
 							while (($file = readdir($handle)) !== false) {
 								if ($file != '..' && $file != '.') {
-//eg_plugin_error_log($this->name,'file: ', $path.'/'.$file);
-									$string = file_get_contents($path.'/'.$file);
-//	eg_plugin_error_log($this->name, 'File content', $string);
-//									preg_match_all('/\[title\](.*)\[\/title\]\[description\](.*)\[\/description\]\[before\](.*)\[\/before\]\[loop\](.+)\[\/loop\]\[after\](.*)\[\/after\]/is', $string, $matches);
+
+									$string = file_get_contents($path.'/'.$file);;
 									preg_match_all('/\[title\](.*)\[\/title\](.*)\[description\](.*)\[\/description\](.*)/is', $string, $matches);
-// eg_plugin_error_log($this->name, 'Standard template Matches', $matches);
 									if (sizeof($matches)>4) {
 										$template = array(
 											'post_title'   => trim($matches[1][0]),
-//											'post_name'	   => '',
+
 											'post_excerpt' => trim($matches[3][0]),
 											'post_content' => trim($matches[4][0]),
-//											'post_content'   => '[before]'.trim($matches[3][0]).'[/before]'.
-//														  '[loop]'.trim($matches[4][0]).'[/loop]'.
-//														  '[after]'.trim($matches[5][0]).'[/after]',
 											'post_status'    => 'publish',
 											'post_type'      => EGA_TEMPLATE_POST_TYPE
 										);
-//eg_plugin_error_log($this->name, 'Template:', $template['post_title']);
 										$new_id = wp_insert_post($template);
-//eg_plugin_error_log($this->name, 'New id:', $new_id);
 										if (is_numeric($new_id) && $new_id > 0) {
-//eg_plugin_error_log($this->name, 'Options:', $this->options['standard_templates']);
 											$this->options['standard_templates'] .= ('' == $this->options['standard_templates'] ? '' : ',').$new_id;
 											update_option($this->options_entry, $this->options);
 										} // End of insert post succeed
@@ -805,16 +793,15 @@ if (! class_exists('EG_Attachments_Admin')) {
 						if (is_numeric($new_id) && $new_id > 0 && 'custom' == $previous_options['shortcode_auto_size']) {
 							$post = get_post($new_id);
 							$this->options['shortcode_auto_template'] = $post->post_name;
-							update_option($this->options_entry, $this->options);
 						}
+						$this->options['legacy_custom_format'] = $post->post_name;
+						update_option($this->options_entry, $this->options);
 					} // End of shortcodea_auto_format
 
-//eg_plugin_error_log($this->name, 'Previous auto size and icon', '-'.$previous_options['shortcode_auto_size'].'-'.$previous_options['shortcode_auto_icon'].'-');
-//eg_plugin_error_log($this->name, 'Current auto size and icon', '-'.$this->options['shortcode_auto_size'].'-');
-
-					if ('custom' != $previous_options['shortcode_auto_size'] && 0 == $previous_options['shortcode_auto_icon']) {
-						$this->options['shortcode_auto_size'] = $previous_options['shortcode_auto_size'].'-list';
-// eg_plugin_error_log($this->name, 'new auto size', '-'.$this->options['shortcode_auto_size'].'-');
+					if ('custom' != $previous_options['shortcode_auto_size'] && (! isset($previous_options['shortcode_auto_icon']) || 0 == $previous_options['shortcode_auto_icon'])) {
+						// Size is becoming depredicated.
+						// $this->options['shortcode_auto_size'] = $previous_options['shortcode_auto_size'].'-list';
+						$this->options['shortcode_auto_template'] = $previous_options['shortcode_auto_size'].'-list';
 						update_option($this->options_entry, $this->options);
 					}
 				} // End of version 2.0.0
@@ -850,7 +837,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 			if ($sql != '') {
 				require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 				dbDelta($sql);
-// eg_plugin_error_log($this->name, 'dbDelta Error', $wpdb->last_error);
 				$this->options['clicks_table'] = '1.1';
 				update_option($this->options_entry, $this->options);
 			} // End of table check
@@ -1026,16 +1012,16 @@ if (! class_exists('EG_Attachments_Admin')) {
 					<tr>
 						<th scope="col" class="column-cb check-column">&nbsp;</th>
 						<th scope="col"><?php esc_html_e('Title', $this->textdomain); ?></th>
-						<th scope="col"><?php esc_html_e('Visites', $this->textdomain); ?></th>
-						<th scope="col"><?php esc_html_e('% visites', $this->textdomain); ?></th>
+						<th scope="col"><?php esc_html_e('Clicks', $this->textdomain); ?></th>
+						<th scope="col"><?php esc_html_e('% clicks', $this->textdomain); ?></th>
 					</tr>
 				</thead>
 				<tfoot>
 					<tr>
 						<th scope="col" class="column-cb check-column">&nbsp;</th>
 						<th scope="col"><?php esc_html_e('Title', $this->textdomain); ?></th>
-						<th scope="col"><?php esc_html_e('Visites', $this->textdomain); ?></th>
-						<th scope="col"><?php esc_html_e('% visites', $this->textdomain); ?></th>
+						<th scope="col"><?php esc_html_e('Clicks', $this->textdomain); ?></th>
+						<th scope="col"><?php esc_html_e('% clicks', $this->textdomain); ?></th>
 					</tr>
 				</tfoot>
 				<tbody>
@@ -1052,7 +1038,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 				echo '<tr '.('' == $alternate ? $alternate = 'class="alternate"' : $alternate = '').'">'."\n".
 					'<th class="check-column" scope="row">'.$i++.'</th>'."\n".
-					'<td><a href="'.$link.'">'.esc_html__($result->title).'</a></td>'."\n".
+					'<td><a href="'.$link.'">'.esc_html($result->title).'</a></td>'."\n".
 					'<td>'.$result->total.'</td>'."\n".
 					'<td class="percent"><div style="width: '.$percent.'%;"></div>'.$percent.'%</td>'."\n".
 					'</tr>'."\n";
@@ -1161,7 +1147,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 				$wp_admin_bar->add_menu( array(
 					'parent' => 'egplugins',
 					'id' 	 => $this->name.'-templates',
-					'title'  => __($this->name.' Templates', $this->textdomain),
+					'title'  => __($this->name.' templates', $this->textdomain),
 					'href' 	 => admin_url('tools.php?page=ega_templates')
 					));
 			}
@@ -1180,7 +1166,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 		function pointer_ega_templates() {
 			$content  = '<h3>' . $this->name.'<br />'. __( 'Multiple custom formats', $this->textdomain ) . '</h3>';
-			$content .= '<p>' .  __( 'EG-Attachments can now manage multiple custome formats. A new menu allows you to edit &laquo;templates&raquo;', $this->textdomain ) . '</p>';
+			$content .= '<p>' .  __( 'EG-Attachments can now manage multiple custom formats. A new menu allows you to edit &laquo;templates&raquo;', $this->textdomain ) . '</p>';
 
 			$this->footer_pointers_scripts( 'ega_templates', '#menu-tools', array(
 				'content'  => $content,
@@ -1210,7 +1196,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 		function pointer_ega_exclude_featured() {
 			$content  = '<h3>' . $this->name.'<br />'.__( 'Exclude thumbnail', $this->textdomain ) . '</h3>';
-			$content .= '<p>' .  __( 'You can now, automatically exclude the featured image from the list of attachments to be displated.', $this->textdomain ) . '</p>';
+			$content .= '<p>' .  __( 'You can now, automatically exclude the featured image from the list of attachments to be displayed.', $this->textdomain ) . '</p>';
 
 			$this->footer_pointers_scripts( 'ega_exclude_featured', '#exclude_featured', array(
 				'content'  => $content,

@@ -30,7 +30,7 @@
 	</tr>
 	<tr>
 		<td><strong>%FILESIZE_LABEL%</strong></td>
-		<td><?php esc_html_e('Label for the size of the file (<strong>size</strong> in english', $this->textdomain); ?>,</td>
+		<td><?php esc_html_e('Label for the size of the file (<strong>size</strong> in english)', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
 		<td><strong>%TYPE_LABEL%</strong></td>
@@ -42,7 +42,7 @@
 	</tr>
 	<tr>
 		<td><strong>%COUNTER_LABEL%</strong></td>
-		<td><?php esc_html_e('Label of the count (number of download of the document', $this->textdomain); ?>,</td>
+		<td><?php esc_html_e('Label of the counter (number of downloads of the document', $this->textdomain); ?>,</td>
 	</tr>
 </tbody>
 </table>

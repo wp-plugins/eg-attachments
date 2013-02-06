@@ -26,9 +26,8 @@ $EGA_DEFAULT_OPTIONS = array(
 		'shortcode_auto_where'		  => array('post', 'page'),
 		'shortcode_auto_title'  	  => '', 		/* tested */
 		'shortcode_auto_title_tag'	  => 'h2', 		/* tested */
-		'shortcode_auto_template'	  => '', 		/* tested */
-		'shortcode_auto_size'		  => 'large', 	/* tested */
-		'shortcode_auto_doc_type'	  => 'document', 	/* tested */
+		'shortcode_auto_template'	  => 'large', 	/* tested */
+		'shortcode_auto_doc_type'	  => 'document', /* tested */
 		'shortcode_auto_orderby'	  => 'title', 	/* tested */
 		'shortcode_auto_order'		  => 'ASC', 	/* tested */
 		'shortcode_auto_limit'		  => -1, 		/* tested */
@@ -48,20 +47,8 @@ $EGA_DEFAULT_OPTIONS = array(
 		'link'						  => 'direct',	/* tested */
 		'nofollow'				  	  => 0,			/* tested */
 		'target_blank'				  => 0,			/* tested */
-		'exclude_thumbnail'			  => 0			/* tested */
-//		'shortcode_auto_label'		  => 'filename',
-//		'shortcode_auto_fields_def'	  => 1,
-//		'shortcode_auto_fields'		  => array_values($EG_ATTACH_FIELDS_TITLE),
-//		'shortcode_auto_icon'		  => 1,
-//		'shortcode_auto_default_opts' => 0,
-//		'custom_format_pre'	  	  	  => '<ul>',
-//		'custom_format'		  		  => '<li><a href="%URL%" title="%TITLE%">%TITLE%</a></li>',
-//		'custom_format_post'  		  => '</ul>',
-//		'custom_format_icon_width'	  => 48,
-//		'custom_format_icon_height'	  => 48,
-//		'display_label'				  => 0,
-//		'comment_status'			  => 'default',
-//		'ping_status'				  => 'default'
+		'exclude_thumbnail'			  => 0,			/* tested */
+		'legacy_custom_format'		  => ''
 	);
 
 $EGA_SHORTCODE_DEFAULTS = array(
@@ -84,11 +71,6 @@ $EGA_SHORTCODE_DEFAULTS = array(
 	'nofollow'		=>  0,			/* Tested for standard size*/
 	'target'		=>  0,			/* Tested */
 	'exclude_thumbnail' => 1
-//	'label'    		=> 'filename',	/* no meaning to keep it with template */
-//	'fields'		=> '',			/* no meaning to keep it with template */
-//	'format_pre'	=> '',			/* kept for compatibility */
-//	'format'		=> '',			/* kept for compatibility */
-//	'format_post'	=> '',			/* kept for compatibility */
 );
 
  $EGA_FIELDS_ORDER_LABEL = array(
@@ -134,18 +116,9 @@ if (! class_exists('EG_Attachments_Common')) {
 		} // End of parse_template
 
 		static function get_templates($options, $type='all', $title_only=TRUE) {
-//eg_plugin_error_log('EG-Attachment-Common', 'get_templates, parameters Type: ', $type);
-//eg_plugin_error_log('EG-Attachment-Common', 'get_templates, parameters Title_only: ', $title_only);
 
 			$template_list = (EG_PLUGIN_ENABLE_CACHE ? get_transient('eg-attachments-templates') : FALSE);
-//eg_plugin_error_log('EG-Attachment-Common', 'Get template from cache: ', ( (is_bool($template_list)||is_string($template_list)) ? $template_list : sizeof($template_list)));
 			if (FALSE === $template_list) {
-//				$include_exclude = '';
-//				if ('custom' == $type)
-//					$include_exclude = 'exclude';
-//				elseif ('standard' == $type)
-//					$include_exclude = 'include';
-
 				$results = get_posts(array(
 							'post_status' 	=> 'publish',
 							'post_type'		=> EGA_TEMPLATE_POST_TYPE,
@@ -158,15 +131,12 @@ if (! class_exists('EG_Attachments_Common')) {
 				$template_list = array( 'standard' => array(), 'custom' => array() );
 				$std_tmpl = explode(',', $options['standard_templates']);
 				if ($results) {
-//eg_plugin_error_log('EG-Attachment-Common', 'Std templates', $std_tmpl);
 					foreach ($results as $template) {
 						if (in_array($template->ID, $std_tmpl)) {
 							$template_list['standard'][$template->post_name] = $template;
-//eg_plugin_error_log('EG-Attachment-Common', 'Std template', $template->ID.'-'.$template->post_name);
 						}
 						else {
 							$template_list['custom'][$template->post_name] = $template;
-//eg_plugin_error_log('EG-Attachment-Common', 'Custom template', $template->post_name);
 						}
 					}
 				}

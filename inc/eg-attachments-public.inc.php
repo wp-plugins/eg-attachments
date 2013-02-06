@@ -14,6 +14,16 @@ if (! class_exists('EG_Attachments_Public')) {
 		var $order_by 	= 'title';
 		var $order 		= 'ASC';
 
+		/**
+		  *  init
+		  *
+		  * Declare shortcode, and auto-shortcode
+		  *
+		  * @package EG-Attachments
+		  *
+		  * @param  none
+		  * @return	none
+		  */
 		function init() {
 
 			add_action('template_redirect', array(&$this, 'manage_link'));
@@ -39,6 +49,16 @@ if (! class_exists('EG_Attachments_Public')) {
 //			);
 //		} // End of enqueue_scripts
 
+		/**
+		  *  manage_link
+		  *
+		  * Manage the file download
+		  *
+		  * @package EG-Attachments
+		  *
+		  * @param  none
+		  * @return	none
+		  */
 		function manage_link() {
 			global $post;
 
@@ -52,15 +72,15 @@ if (! class_exists('EG_Attachments_Public')) {
 
 				// Are we in an attachment? or a post?
 				if (is_attachment()) {
-//eg_plugin_error_log($this->name, 'Attachment: ');
+
 					$attach_id    = $post->ID;
 					$attach_title = $post->post_title;
 					$parent_id    = (isset($_GET['pid']) ? $_GET['pid'] : reset(get_post_ancestors($attach_id)));
 					$parent_title = get_post_field('post_title', $parent_id);
-//eg_plugin_error_log($this->name, '-'.$attach_id.'-'.$attach_title.'-'.$parent_id.'-'.$parent_title);
+
 				}
 				else {
-//eg_plugin_error_log($this->name, 'Post: ', $post->post_title);
+
 					$parent_id    = $post->ID;
 					$parent_title = $post->post_title;
 					$attach       = get_post($_GET['aid']);
@@ -69,7 +89,6 @@ if (! class_exists('EG_Attachments_Public')) {
 						$attach_title = get_post_field('post_title',$attach_id) ;
 					}
 				}
-//eg_plugin_error_log($this->name, 'attach id: '.$attach_id.', parent id: '.$parent_id);
 				if ( isset($attach_id) ) {
 
 					$this->record_click($parent_id, $parent_title, $attach_id, $attach_title);
@@ -87,21 +106,17 @@ if (! class_exists('EG_Attachments_Public')) {
 					}
 
 					if ($_GET['sa'] < 1) {
-//eg_plugin_error_log($this->name, 'Force Save as');
 						if (!is_attachment()) {
-//eg_plugin_error_log($this->name, 'Force Save as: OFF, redirect');
 							wp_redirect(esc_url(wp_get_attachment_url($attach_id)));
 							exit;
 						}
 					}
 					else { // Force "Save as"
-//eg_plugin_error_log($this->name, 'Force Save as: ON, try to download');
 						$chunksize = 2*(1024*1024);
 
 						$file_path = get_attached_file($attach_id);
 						$stat = @stat($file_path);
 						$etag = sprintf('%x-%x-%x', $stat['ino'], $stat['size'], $stat['mtime'] * 1000000);
-//eg_plugin_error_log($this->name, 'File stat: ', $stat);
 						global $is_IE;
 						$path = pathinfo($file_path);
 
@@ -132,7 +147,6 @@ if (! class_exists('EG_Attachments_Public')) {
 						else {
 							$handle = fopen($file_path, 'rb');
 							while (!feof($handle)) {
-// eg_plugin_error_log($this->name, 'Read loop to download');
 								echo fread($handle, $chunksize);
 								ob_flush();
 								flush();
@@ -147,6 +161,19 @@ if (! class_exists('EG_Attachments_Public')) {
 
 		} // End of manage_link
 
+		/**
+		  *  record_click
+		  *
+		  * Record the click (download) in the statistics table
+		  *
+		  * @package EG-Attachments
+		  *
+		  * @param  int		$parent_id		the post from where the user click 
+		  * @param	string	$parent_title	Title of this post
+		  * @param	int		$attach_id		id of the attachment to download
+		  * @param	strong	$attach_title	Title of the attachment
+		  * @return	none
+		  */
 		function record_click($parent_id, $parent_title, $attach_id, $attach_title) {
 			global $wpdb;
 
@@ -197,7 +224,6 @@ if (! class_exists('EG_Attachments_Public')) {
 		  *
 		  * @package EG-Attachments
 		  *
-		  * @package EG-Attachments
 		  * @param  int     $attachment_id		id of attachment to get size
 		  * @return	float 						size of the attachment
 		  */
@@ -336,7 +362,7 @@ if (! class_exists('EG_Attachments_Public')) {
 
 
 		function where_post_mime_type($args) {
-/// eg_plugin_error_log($this->name, 'Where clause', $args);
+
 			if ($args != '') {
 				global $wpdb;
 				return (str_replace($wpdb->prefix.'posts.post_mime_type LIKE \'notimage/%\'', $wpdb->prefix.'posts.post_mime_type NOT LIKE \'image/%\'',$args));
@@ -372,13 +398,10 @@ if (! class_exists('EG_Attachments_Public')) {
 			$EGA_SHORTCODE_DEFAULTS['nofollow'] 		= $this->options['nofollow'];
 			$EGA_SHORTCODE_DEFAULTS['target'] 			= $this->options['target_blank'];
 			$EGA_SHORTCODE_DEFAULTS['exclude_thumbnail'] = $this->options['exclude_thumbnail'];
-			$EGA_SHORTCODE_DEFAULTS['id'] 				= $post->ID;
 
-			$args 	  = shortcode_atts( $EGA_SHORTCODE_DEFAULTS, $atts );
-			if (0 == $args['id']) 
-				$args['id'] = $post->ID;
-
-			extract( $args );
+			extract( shortcode_atts( $EGA_SHORTCODE_DEFAULTS, $atts ) );
+			if (0 == $id) 
+				$id = $post->ID;
 
 			/**
 			  * Managing compatibility
@@ -396,10 +419,16 @@ if (! class_exists('EG_Attachments_Public')) {
 			$this->order_by = (isset($EGA_FIELDS_ORDER_KEY[$this->order_by]) ? $EGA_FIELDS_ORDER_KEY[$this->order_by] : $orderby_default);
 			$this->order    = strtoupper(in_array($this->order, array('asc', 'desc')) ? $this->order : $order_default);
 
-			if ( 'custom' != $size ) {
-				$template = $size;
-				if (FALSE === strpos($size, '-list') && ! $icon) $template .= '-list';
-			}
+			if ('' == $template) {
+				if ( 'custom' == $size ) {
+					if ('' != $this->options['legacy_custom_format'])
+						$template = $this->options['legacy_custom_format'];
+				}
+				else {
+					$template = $size;
+					if (FALSE === strpos($size, '-list') && ! $icon) $template .= '-list';
+				}
+			} // No template defined
 
 			/**
 			  * Getting the template
@@ -409,16 +438,14 @@ if (! class_exists('EG_Attachments_Public')) {
 			$cache_entry = strtolower($this->name).'-shortcode-tmpl';
 			$templates = (EG_PLUGIN_ENABLE_CACHE ? get_transient($cache_entry) : FALSE);
 			if (FALSE !== $templates && isset($templates[$template])) {
-// eg_plugin_error_log($this->name, 'Get template from Cache');
 				$template_content = $templates[$template];
 			}
 			else {
-// eg_plugin_error_log($this->name, 'Get template from DB');
 				// Query
 				$tmpl = get_posts( array('post_type' => EGA_TEMPLATE_POST_TYPE, 'name' => $template));
 				if (! $tmpl) {
 					$error_msg = esc_html__('Template doesn\'t exists. Use default', $this->textdomain);
-					$tmpl = get_posts( array('post_type' => EGA_TEMPLATE_POST_TYPE, 'name' => $EGA_SHORTCODE_DEFAULTS['size']));
+					$tmpl = get_posts( array('post_type' => EGA_TEMPLATE_POST_TYPE, 'name' => $EGA_SHORTCODE_DEFAULTS['shortcode_auto_size']));
 				}
 
 				// Parse the result
@@ -487,11 +514,9 @@ if (! class_exists('EG_Attachments_Public')) {
 			$cache_id    = md5(implode('-', $params));
 			$cache = (EG_PLUGIN_ENABLE_CACHE ? get_transient($cache_entry) : FALSE);
 			if (FALSE !== $cache && isset($cache[$cache_id])) {
-// eg_plugin_error_log($this->name, 'Get attachments from Cache');
 				$attachments = $cache[$cache_id];
 			}
 			else {
-// eg_plugin_error_log($this->name, 'Get attachments from DB');
 				/**
 				  * Query DB
 				  */
@@ -584,9 +609,7 @@ if (! class_exists('EG_Attachments_Public')) {
 							'WHERE attach_id=%d '.
 							'AND post_id=%d ',
 							array($attachment->ID,$post->ID));
-// eg_plugin_error_log($this->name, 'Count', $sql);
 					$click_count = $wpdb->get_var($sql);
-// eg_plugin_error_log($this->name, 'Count', $click_count);
 					if (!is_numeric($click_count))
 						$click_count = 0;
 				}
@@ -597,7 +620,7 @@ if (! class_exists('EG_Attachments_Public')) {
 					if ($file_date !== FALSE) $file_date = date($date_format, $file_date);
 					else $file_date = mysql2date($date_format, $attachment->post_date, TRUE);
 				}
-//				$item = html_entity_decode($template_content['loop']);
+
 				$item = html_entity_decode(stripslashes($template_content['loop']));
 				$item = preg_replace("/%LINK_URL%/",		$attach_url,											$item);
 				$item = preg_replace("/%URL%/",				$url,													$item); // Compatibility with previous version
@@ -623,10 +646,10 @@ if (! class_exists('EG_Attachments_Public')) {
 				$item = preg_replace("/%DATE_LABEL%/",  	esc_html__('Date', $this->textdomain), 					$item);
 				$item = preg_replace("/%SHOWLOCK%/",  		$lock_icon, 											$item);
 				$item = preg_replace("/%COUNTER%/",  		esc_html($click_count), 								$item);
-				if ('' === $click_count)
+				if ('' === $click_count || 0 == $click_count)
 					$item = preg_replace("/%COUNTER_LABEL%/",	'', 												$item);
 				else
-					$item = preg_replace("/%COUNTER_LABEL%/",	esc_html__('click(s)', $this->textdomain), 			$item);
+					$item = preg_replace("/%COUNTER_LABEL%/",	esc_html__((1==$click_count?'click':'click(s)'), $this->textdomain), 			$item);
 
 				if ($nofollow /*|| 'custom' == $size*/)
 					$item = preg_replace("/%NOFOLLOW%/",	'rel="nofollow"', 										$item);
@@ -645,7 +668,7 @@ if (! class_exists('EG_Attachments_Public')) {
 
 			} // End foreach attachment
 			remove_filter('icon_dirs', array(&$this, 'icon_dirs'));
-//eg_plugin_error_log('EG-Attachments', 'Output', $output);
+
 			if ($output != '') {
 				//if ( $this->options['stats_enable'] > 0 ) {
 				//	$output = $this->add_click_counter($output);
@@ -659,7 +682,7 @@ if (! class_exists('EG_Attachments_Public')) {
 				}
 				$output = '<div class="attachments">'.$output.'<p>'.$error_msg.'</p></div>';
 			} // End of $output
-// eg_plugin_error_log('EG-Attachments', 'End of shortcode');
+
 
 			if ( FALSE === $cache || !isset($cache[$cache_id]) ) {
 				if ( FALSE === $cache )
@@ -691,7 +714,7 @@ if (! class_exists('EG_Attachments_Public')) {
 			elseif (is_feed())					$current_page = 'feed';
 			elseif (is_archive() || is_category() || is_tag() || is_date() || is_day() || is_month() || is_year()) $current_page = 'index';
 			else $current_page='unknown';
-// eg_plugin_error_log($this->name, 'shortcode_is_visible return value', in_array($current_page, $list));
+
 			return ( in_array($current_page, $list) );
 
 		} // End of shortcode_is_visible
@@ -744,12 +767,11 @@ if (! class_exists('EG_Attachments_Public')) {
 		 */
 		function shortcode_auto_content($content = '') {
 			global $post;
-// eg_plugin_error_log($this->name, 'shortcode_auto_content');
+
 
 			if ($this->options['shortcode_auto']  > 0 	&&
 			 	$this->shortcode_is_visible() 			&&
 				$this->shortcode_auto_check_manual_shortcode()) {
-// eg_plugin_error_log($this->name, 'shortcode_auto_content, Fire shortcode');
 
 				$attrs = array(
 						'size'		=> $this->options['shortcode_auto_size'],
@@ -790,10 +812,17 @@ if (! class_exists('EG_Attachments_Public')) {
 			return ($content);
 		} // End of shortcode_auto_content
 
+		/**
+		 * load
+		 *
+		 * Add "init" hook to the plugin
+		 *
+		 * @param 	none
+		 * @return 	none
+		 */
 		function load() {
 			parent::load();
 			add_action('init', array( &$this, 'init'));
-//			add_action('wp_enqueue_scripts', 	array( &$this, 'enqueue_scripts')  );
 		} // End of load
 
 	} /* End of Class */

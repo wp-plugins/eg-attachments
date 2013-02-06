@@ -16,10 +16,13 @@ if (function_exists('get_post_types')) {
 	} // End of foreach
 } // End of function get_post_types exists
 
+/* --- Beta 2 ---
 $standard_templates = EG_Attachments_Common::get_templates($this->options, 'standard');
 $custom_templates = EG_Attachments_Common::get_templates($this->options, 'custom', FALSE);
 if (sizeof($custom_templates)>0)
 	$standard_templates = array_merge($standard_templates, array( 'custom' => __('Custom templates', $this->textdomain)));
+*/
+$templates_list = EG_Attachments_Common::get_templates($this->options, 'all');
 
 $tabs = array(
 	1	=> array( 'label' => 'Shortcodes behavior',	'header' => ''),
@@ -330,7 +333,7 @@ $fields = array(
 		'size'		=> 'small',
 		'status'	=> 'active',
 		'multiple'	=> FALSE),
-
+/*
 	'shortcode_auto_size' => array(
 		'name'		=> 'shortcode_auto_size',
 		'label'		=> 'List format',
@@ -344,7 +347,7 @@ $fields = array(
 		'size'		=> 'small',
 		'status'	=> 'active',
 		'multiple'	=> FALSE),
-
+*/
 	'shortcode_auto_template' => array(
 		'name'		=> 'shortcode_auto_template',
 		'label'		=> 'Custom format',
@@ -354,7 +357,7 @@ $fields = array(
 		'before'	=> '',
 		'after'		=> '',
 		'desc'		=> '',
-		'options'	=> $custom_templates,
+		'options'	=> $templates_list,
 		'size'		=> 'small',
 		'status'	=> 'active',
 		'multiple'	=> FALSE,
@@ -506,7 +509,7 @@ $fields = array(
 
 	'icon_url' => array(
 		'name'		=> 'icon_url',
-		'label'		=> 'icon_url',
+		'label'		=> 'Icon_url',
 		'type'		=> 'text',
 		'section'	=> 'paths',
 		'group'		=> 0,

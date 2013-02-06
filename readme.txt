@@ -93,7 +93,6 @@ Four ways to include the list of attachments into a post:
 
 The shortcode options are:
 
-* **size**: size of the icon. Values: large, medium, small or custom. Default: large,
 * **template**: if the parameter **size** is set to *custom*, the template is designing the template to be used to display attachments
 * **doctype**: type of documents to display. Values: image or document. Defaults: document,
 * **id**: id of the post we want to display attachments. Possible values: id of a post, 0 for the current post, -1 to display attachments that are not attached to the current post. Default value: 0,
@@ -110,6 +109,7 @@ The shortcode options are:
 * **tags_and** allows to select attachments linked to all tags specified. Syntax: tags_and=tag3,tag4. The attachments displayed are linked to tag3 AND tag4.
 
 Depredicated options
+* **size**: size of the icon. Values: large, medium, small or custom. Default: large,
 * **docid** list of attachments' id (comma separated) you want to display. Default: empty value, if you want to display all attachments,
 * **fields**, list of fields to display. Values: Document label, Title, Caption, Description, File name, Size, Small size, Date, Type, or a set of values such as "caption,description" (comma separated).
 * **icon** specify if icons will be displayed or not. Default value: 1 or TRUE. If value is 0 or FALSE, list displayed will be ul/li (html simple list) rather than dl/dt/dd (definition list).
@@ -192,6 +192,15 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 
 == Changelog ==
 
+= Version 2.0.0-beta 2 - Feb 6th, 2013 =
+
+* Change: Translation file updated,
+* Change: Improve the display of the number of clicks,
+* Change: Readme file updated,
+* Change: code cleanup,
+* Bug Fix: EG-Attachments Popup window in TinyMCE editor doesn't close when click on insert button,
+* Bug fix: manage the case where size="custom", and template="".
+
 = Version 2.0.0-beta - Feb 2nd, 2013 =
 
 * New: Can now manage several custom format (go to **Tools / EGA Templates** to edit templates),
@@ -201,6 +210,7 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 * New: Can hide EG-Attachments button in text editor,
 * New: Include/Exclude by ID (**include** will replace the parameter docid),
 * New: can exclude automatically the featured attachment (thumbnail) from the list,
+* Change: Improve statistics performances (Database query optimisation)
 * Change: the date displayed is now the date of the last modification of the file (not the date of attachment upload),
 * Change: The pop-up warning for not registered users is suppressed,
 * Bug fix: Cannot use multiple shortcodes in a post
