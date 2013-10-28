@@ -60,7 +60,7 @@
 		<td><?php esc_html_e('caption of the document', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
-		<td><strong>%COUNTER%</strong></td>
+		<td><strong>%COUNTER%</strong>(1)</td>
 		<td><?php esc_html_e('Number of downloads recorded on the document.', $this->textdomain); ?></td>
 	</tr>
 	<tr>
@@ -104,7 +104,7 @@
 		<td><?php _e('The URL of the attachment, as defined by the permalink structure chosen. For example: <code>http://blog url/post url/attachment slug/</code>, or <code>http://blog url/?p=xx</code>.', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
-		<td><strong>%NOFOLLOEW%</strong></td>
+		<td><strong>%NOFOLLOW%</strong>(2)</td>
 		<td><?php _e('HTML attribut <code>rel="nofollow"</code>', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
@@ -112,11 +112,11 @@
 		<td><?php esc_html_e('Show the lock icon for documents that require login or password', $this->textdomain); ?></td>
 	</tr>
 	<tr>
-		<td><strong>%TARGET%</strong></td>
+		<td><strong>%TARGET%</strong>(3)</td>
 		<td><?php _e('HTML attribut <code>target="_blank"</code>', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
-		<td><strong>%TARGET= ...%</strong></td>
+		<td><strong>%TARGET= ...%</strong>(3)</td>
 		<td><?php _e('HTML attribut <code>target="value"</code>', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
@@ -133,3 +133,8 @@
 	</tr>
 </tbody>
 </table>
+<ol>
+	<li><?php esc_html_e('The number of downloads is displayed only when if the attachment was downloaded at least 1 time', $this->textdomain); ?>,</li>
+	<li><?php echo sprintf(__('The &laquo; nofollow &raquo; attribut is displayed only if the option &laquo; nofollow &raquo; is checked in the <a href="%s">Settings / EG-Attachments</a> menu', $this->textdomain), admin_url('options-general.php?page='.EGA_OPTIONS_PAGE_ID)); ?>,</li>
+	<li><?php echo sprintf(__('The &laquo; target &raquo; attributs are displayed only if the option &laquo; target &raquo; is checked in the <a href="%s">Settings / EG-Attachments</a> menu', $this->textdomain), admin_url('options-general.php?page='.EGA_OPTIONS_PAGE_ID)); ?>,</li>
+</ol>

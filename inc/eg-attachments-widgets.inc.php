@@ -4,8 +4,20 @@ if (! class_exists('EG_Attachments_Widget')) {
 
 	define('EGA_WIDGET_ID', 'eg-attach' );
 
-	Class EG_Attachments_Widget extends EG_Widget_210 {
+	Class EG_Attachments_Widget extends EG_Widget_211 {
 
+		/**
+		 * __construct
+		 *
+		 * Constructor of the widget. Define parameters
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	none
+		 * @return	none
+		 *
+		 */
 		function __construct() {
 			global $EGA_SHORTCODE_DEFAULTS;
 			global $EGA_FIELDS_ORDER_LABEL;
@@ -13,7 +25,7 @@ if (! class_exists('EG_Attachments_Widget')) {
 			$plugin_options = get_option(EGA_OPTIONS_ENTRY);
 
 			// widget settings
-			$widget_ops = array('classname' => 'widget_attachments', 
+			$widget_ops = array('classname' => 'widget_attachments',
 								'description' => __('Display attachments of the current post', EGA_TEXTDOMAIN )
 							);
 
@@ -21,7 +33,7 @@ if (! class_exists('EG_Attachments_Widget')) {
 			parent::__construct(EGA_WIDGET_ID, 'EG-Attachment Widget', $widget_ops);
 
 			$templates_list = EG_Attachments_Common::get_templates($plugin_options, 'all');
-			
+
 			$this->fields = array(
 				'title'				=> array( 'type'  => 'text',	'label'  => 'Title'),
 				'template'			=> array( 'type'  => 'select',	'label'  => 'Template',
@@ -42,11 +54,15 @@ if (! class_exists('EG_Attachments_Widget')) {
 				'target'	  		=> array( 'type'  => 'checkbox', 'label'  => '&laquo;Target&raquo; attribute',
 					'list'	=> array( 'Check if you want to automatically add <code>target="_blank"</code> to attachment links' )),
 				'logged_users' 		 => array( 'type'  => 'select', 'label' => 'Attachments access',
-					'list' => array( -1 => 'Use default parameter', 0 => 'All users', 1 => 'Only logged users'))
+					'list' => array( -1 => 'Use default parameter', 
+							  0 => 'Display attachments for all users', 
+							  1 => 'Show attachments for everyone, but the url, for logged users only',
+							  2 => 'Display attachments for logged users only'))
 			);
 
 			if ($plugin_options['tags_assignment']) {
-				$fields['tags'] = array( 'type'  => 'select', 'label' => 'Tags', 'list' => eg_attach_get_tags_select('array'));
+//				$fields['tags'] = array( 'type'  => 'select', 'label' => 'Tags', 'list' => eg_attach_get_tags_select('array'));
+				$this->fields['tags'] = array( 'type'  => 'text',	'label'  => 'Tags:');
 			}
 
 			$this->default_options = EG_Attachments_Common::get_shortcode_defaults($plugin_options);
@@ -56,38 +72,49 @@ if (! class_exists('EG_Attachments_Widget')) {
 			$this->textdomain = EGA_TEXTDOMAIN;
 		} // End of constructor
 
-
+		/**
+		 * widget
+		 *
+		 * Display the widget
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 *
+		 * @param 	array	$args		sidebar parameters
+		 * @param	array	$instance	widget parameters
+		 * @return	none
+		 *
+		 */
 		function widget($args, $instance) {
 			global $eg_attach_public;
 			global $EGA_SHORTCODE_DEFAULTS;
 
 			$output = '';
-			if (is_singular() && isset($eg_attach_public)) {			
+			if (is_singular() && isset($eg_attach_public)) {
 				/* --- Extract parameters --- */
 				extract($args);
 
 				$values = wp_parse_args( (array) $instance, $this->default_options );
 
 				// Put title to '', before calling the shortcode
-				$widget_title 		= $values['title']; 
+				$widget_title 		= $values['title'];
 				$values['title']    = '';
 				$values['orderby'] .= ' '.$values['order'];
 				unset($values['order']);
 
 				$shortcode = '[attachments';
 				foreach ($values as $key => $value) {
-					if ($value != $EGA_SHORTCODE_DEFAULTS[$key]) 
+					if ($value != $EGA_SHORTCODE_DEFAULTS[$key])
 						$shortcode .= ' '.$key.'='.(is_numeric($value) ? $value : '"'.$value.'"');
 				} // End of foreach
 				$shortcode .= ']';
-// eg_plugin_error_log('EG-Attachments Widgets', 'do shortcode', $shortcode);	
 				$output = do_shortcode($shortcode);
 
 				if ($output != '') {
 					$title = apply_filters('widget_title', $widget_title, $values, $this->id_base);
 
 					echo $before_widget.
-						('' != $title ? $before_title.__($title, $this->textdomain).$after_title:'').
+						('' != $title ? $before_title.esc_html($title, $this->textdomain).$after_title:'').
 						$output.
 						$after_widget;
 				} // End of $output != ''

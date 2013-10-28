@@ -18,9 +18,9 @@
 			});
 
 			ed.addButton('ega_shortcode', {
-				title : 'ega_shortcode.desc',
+				title :  ed.getLang('ega_shortcode.title'),
 				cmd : 'mceEGAttachments',
-				image : url + '/img/egattachments.png',
+				image : url + '/img/egattachments.png'
 			});
 		},
 

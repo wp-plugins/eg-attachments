@@ -22,7 +22,7 @@ $custom_templates = EG_Attachments_Common::get_templates($this->options, 'custom
 if (sizeof($custom_templates)>0)
 	$standard_templates = array_merge($standard_templates, array( 'custom' => __('Custom templates', $this->textdomain)));
 */
-$templates_list = EG_Attachments_Common::get_templates($this->options, 'all');
+$templates_list = EG_Attachments_Common::get_templates($this->options, 'all', FALSE);
 
 $tabs = array(
 	1	=> array( 'label' => 'Shortcodes behavior',	'header' => ''),
@@ -40,8 +40,14 @@ $sections = array(
 	'stat' 		=> array( 'label' => 'Statistics', 			'tab' => 1, 	'header' => '', 'footer' => ''),
 	'security'	=> array( 'label' => 'Security',
 						'tab' => 1,
-						'header' => 'CAUTION: the parameter <strong>Attachments access</strong> is impacting the default behavior of the shortcode.',
-						'footer' => ''
+						'header' => 'Some comments about security:'.
+									'<ul>'.
+										'<li>- &laquo;Private&raquo; Attachments, or documents attached to a &laquo;Private&raquo; post, are not displayed, if the user is not logged,</li>'.
+										'<li>- &laquo;Protected&raquo; Attachments, or documents attached to a &laquo;Protected&raquo; post, are not displayed, if users don\'t give the right password,</li>'.
+										'<li>- For non private, and non protected posts, you can choose with the following options, to display attachments, to display without link, or hide attachments.</li>'.
+									'</ul>'
+						,
+						'footer' => 'CAUTION: the parameter <strong>Attachments access</strong> is impacting the default behavior of the shortcode.'
 					),
 	'sformat'	=> array( 'label' => 'Format', 	 			'tab' => 1, 	'header' => '', 'footer' => ''),
 	'cformat'	=> array( 'label' => 'Custom format',		'tab' => 1, 	'header' => '', 'footer' => ''),
@@ -88,16 +94,7 @@ $fields = array(
 						'<td>x</td>'.
 						'<td>x</td>'.
 					'</tr>'.
-					'</table><br />'.
-					'<p>Recommended version:'.
-					'<ul>'.
-						'<li>Method &laquo; Direct &raquo;: url of the document is hidden,</li>'.
-						'<li>Method &laquo; Permalink &raquo;: </li>'.
-						'<li>Method &laquo; File &raquo;: </li>'.
-					'</ul>'.
-					'</p><p>'.
-					'The recommended version is the method &laquo; Direct &raquo;.',
-					'</p>',
+					'</table>',
 		'desc'		=> '',
 		'options'	=> array(
 			'direct'    => '<strong>Direct</strong>.<br /><em>It\'s the default behavior of the plugin. The URL is pointing to the file, but in this case, the link is encoded. When you click on the attachment, it is displayed as a document, and not as a page of blog. WordPress mechanisms are used</em>',
@@ -193,15 +190,15 @@ $fields = array(
 
 	'purge_stats' => array(
 		'name'		=> 'purge_stats',
-		'label'		=> 'Purge statistics after',
+		'label'		=> 'Maintenance',
 		'type'		=> 'text',
 		'section'	=> 'stat',
 		'group'		=> 0,
-		'before'	=> '',
+		'before'	=> 'Delete records after',
 		'after'		=> 'months',
-		'desc'		=> 'Enter 0 (zero), to disable the purge',
+		'desc'		=> 'Enter 0 (zero), if you wand to disable the maintenance',
 		'options'	=> FALSE,
-		'size'		=> 'regular',
+		'size'		=> 'small',
 		'status'	=> 'active',
 		'multiple'	=> FALSE),
 
@@ -209,13 +206,16 @@ $fields = array(
 	'logged_users_only' => array(
 		'name'		=> 'logged_users_only',
 		'label'		=> 'Attachments access',
-		'type'		=> 'checkbox',
+		'type'		=> 'radio',
 		'section'	=> 'security',
 		'group'		=> 0,
 		'before'	=> '',
 		'after'		=> '',
 		'desc'		=> '',
-		'options'	=> array( 'Restrict access to the attachments to logged users only!' ),
+		'options'	=> array( 0 => 'Display attachments for all users', 
+							  1 => 'Show attachments for everyone, but the url, for logged users only',
+							  2 => 'Display attachments for logged users only'
+					),
 		'size'		=> 'regular',
 		'status'	=> 'active',
 		'multiple'	=> FALSE),
@@ -241,7 +241,7 @@ $fields = array(
 		'section'	=> 'sformat',
 		'group'		=> 0,
 		'before'	=> '',
-		'after'		=> sprintf('Default value: %s (%s)', get_option('date_format'), date_i18n(get_option('date_format'))),
+		'after'		=> sprintf(__('Default value: %s (%s)', $this->textdomain), get_option('date_format'), date_i18n(get_option('date_format'))),
 		'desc'		=> 'Use PHP <strong>date()</strong> parameters to configure the date:<br />d&nbsp;&nbsp;&nbsp;&nbsp;Day of the month, 2 digits with leading zeros<br />D&nbsp;&nbsp;&nbsp;&nbsp;A textual representation of a day, three letters<br />j&nbsp;&nbsp;&nbsp;&nbsp;Day of the month without leading zeros<br />S&nbsp;&nbsp;&nbsp;&nbsp;English ordinal suffix for the day of the month, 2 characters<br />F&nbsp;&nbsp;&nbsp;&nbsp;A full textual representation of a month, such as January or March<br />m&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, with leading zeros<br />M&nbsp;&nbsp;&nbsp;&nbsp;A short textual representation of a month, three letters<br />n&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, without leading zeros<br />Y&nbsp;&nbsp;&nbsp;&nbsp;A full numeric representation of a year, 4 digits<br />y&nbsp;&nbsp;&nbsp;&nbsp;A two digit representation of a year',
 		'options'	=> FALSE,
 		'size'		=> 'small',
@@ -254,8 +254,7 @@ $fields = array(
 		'type'		=> 'comment',
 		'section'	=> 'cformat',
 		'group'		=> 0,
-		'before'	=> '<strong>Custom format has been changed</strong>.<br />'.
-						'To make the custom formats more flexible, they are now manage in a specific menu. You can go to the menu <strong>Tools &gt; EGA Templates</strong> to discover the new way of managing them. During the update, your custom format were saved into a template.',
+		'before'	=> '<strong>Custom format has been changed</strong>.<br />To make the custom formats more flexible, they are now manage in a specific menu. You can go to the menu <strong>Tools &gt; EGA Templates</strong> to discover the new way of managing them. During the update, your custom format were saved into a template.',
 		'after'		=> '',
 		'desc'		=> '',
 		'options'	=> FALSE,
@@ -333,21 +332,6 @@ $fields = array(
 		'size'		=> 'small',
 		'status'	=> 'active',
 		'multiple'	=> FALSE),
-/*
-	'shortcode_auto_size' => array(
-		'name'		=> 'shortcode_auto_size',
-		'label'		=> 'List format',
-		'type'		=> 'radio',
-		'section'	=> 'asformat',
-		'group'		=> 0,
-		'before'	=> '',
-		'after'		=> '',
-		'desc'		=> '',
-		'options'	=> $standard_templates,
-		'size'		=> 'small',
-		'status'	=> 'active',
-		'multiple'	=> FALSE),
-*/
 	'shortcode_auto_template' => array(
 		'name'		=> 'shortcode_auto_template',
 		'label'		=> 'Custom format',
@@ -361,7 +345,7 @@ $fields = array(
 		'size'		=> 'small',
 		'status'	=> 'active',
 		'multiple'	=> FALSE,
-		'list_options'=> array(
+		'list_options'  => array(
 			'no_option'	=> 'No template available',
 			'titles'	=> array( 'Title', 'Slug', 'Description'),
 			'fields'	=> array( 'post_title', 'post_name', 'post_excerpt')
@@ -492,7 +476,25 @@ $fields = array(
 		'size'		=> 'small',
 		'status'	=> 'active',
 		'multiple'	=> FALSE),
-
+/*
+	'icon_set'	=> array(
+		'name'		=> 'icon_set',
+		'label'		=> 'Icon set',
+		'type'		=> 'radio',
+		'section'	=> 'paths',
+		'group'		=> 0,
+		'before'	=> '',
+		'after' 	=> '',
+		'desc'		=> '',
+		'options'	=> array(
+			0    	=> '<strong>Default</strong>. Set of icons based on Crystal package',
+			1 		=> '<strong>Flat</strong>. Set of icons "Flat style" ',
+			2		=> '<strong>Custom</strong>. Enter the path, and url '),
+		'size'		=> 'small',
+		'status'	=> 'active',
+		'multiple'	=> FALSE
+	),
+	*/	
 	'icon_path' => array(
 		'name'		=> 'icon_path',
 		'label'		=> 'Icon path',
@@ -537,14 +539,14 @@ $fields = array(
 
 	'uninstall_del_options' => array(
 		'name'		=> 'uninstall_del_options',
-		'label'		=> 'Options',
+		'label'		=> 'Data',
 		'type'		=> 'checkbox',
 		'section'	=> 'uninstall',
 		'group'		=> 0,
 		'before'	=> '',
 		'after'		=> '',
-		'desc'		=> 'Be careful: these actions cannot be cancelled. All plugin\'s options will be deleted while plugin uninstallation.',
-		'options'	=> array('Delete options during uninstallation.'),
+		'desc'		=> 'Be careful: these actions cannot be cancelled. All plugin\'s datas, including options, templates, and statistics will be deleted while plugin uninstallation.',
+		'options'	=> array('Delete data during uninstallation.'),
 		'size'		=> 'regular',
 		'status'	=> 'active',
 		'multiple'	=> FALSE)
