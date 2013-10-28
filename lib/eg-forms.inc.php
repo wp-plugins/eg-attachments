@@ -3,13 +3,13 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class for WordPress plugins
-Version: 2.2.0
+Version: 2.2.1
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
 
 /*
-    Copyright 2009-2012 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
+    Copyright 2009-2013 Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,15 +26,15 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Form_220')) {
+if (!class_exists('EG_Form_221')) {
 
 	/**
-	  * Class EG_Form_220
+	  * Class EG_Form_221
 	  *
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Form_220 {
+	Class EG_Form_221 {
 
 		var $page_id;
 		var $options_entry;
@@ -49,11 +49,6 @@ if (!class_exists('EG_Form_220')) {
 		var $tabs	  = array();
 		var $sections = array();
 		var $fields	  = array();
-
-		function EG_Form_220($page_id, $options_group, $title, $options_entry, $textdomain=FALSE, $header='', $footer='', $sidebar_callback=FALSE) {
-
-			$this->__construct($page_id, $options_group, $title, $options_entry, $textdomain, $header, $footer, $sidebar_callback);
-		} // End of EG_Form_220
 
 		/**
 		  * Class contructor
@@ -302,7 +297,7 @@ if (!class_exists('EG_Form_220')) {
 		 *
 		 */
 		function display_checkbox($field, $entry_name, $default) {
-
+	
 			$output = '<fieldset>'.
 						'<legend class="screen-reader-text">'.
 						'<span>'.esc_html__($field['label'], $this->textdomain).'</span>'.
@@ -316,11 +311,13 @@ if (!class_exists('EG_Form_220')) {
 			}
 			else {
 				$num = 0;
-				$output .= '<input type="hidden" value="0" name="'.$entry_name.'" /> ';
 				foreach ($field['options'] as $value => $text) {
 					$checked = (in_array($value, $default) ? ' checked' : '');
-					$output .= '<label for="'.$entry_name.'[]">'.
-								'<input type="checkbox" value="'.esc_attr($value).'" name="'.$entry_name.'[]"'.$checked.'/> '.
+					$options = (isset($field['list_options']) && isset($field['list_options'][$value]) ? $field['list_options'][$value] : '');
+					$output .=  ('disabled' == $options ? '' : '<input type="hidden" value="" name="'.$entry_name.'['.$num.']" />').
+								'<label for="'.$entry_name.'['.$num.']">'.
+								'<input type="checkbox" value="'.esc_attr($value).'" name="'.$entry_name.'['.$num.']"'.$checked.' '.$options.' /> '.
+								('disabled' == $options && '' != $checked ? '<input type="hidden" value="'.esc_attr($value).'" name="'.$entry_name.'['.$num.']" />' : '').
 								__($text, $this->textdomain).
 								'</label>'.
 								(++$num != sizeof($field['options']) ? '<br />' : '');

@@ -1,15 +1,17 @@
 <?php
 /*
-Plugin Name: EG-Attachments-v2
+Plugin Name: EG-Attachments
 Plugin URI: http://www.emmanuelgeorjon.com/eg-attachments-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 2.0.0-beta
+Version: 2.0.0
 Author: Emmanuel GEORJON
 Author http://www.emmanuelgeorjon.com/
 License: GPL2
+Text Domain: eg-attachments
+Domain Path: /lang/
 */
 
-/*  Copyright 2008-2012  Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
+/*  Copyright 2008-2013  Emmanuel GEORJON  (email : blog@emmanuelgeorjon.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as
@@ -25,12 +27,16 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('EGA_VERSION', 	'2.0.0-beta2');
+define('EGA_VERSION', 	'2.0.0');
 define('EGA_COREFILE',	__FILE__);
 //define('EG_PLUGIN_ENABLE_CACHE', FALSE);
 
 if (! class_exists('EG_Plugin_130')) {
 	require('lib/eg-plugin.inc.php');
+}
+
+if (! class_exists('EG_Widget_211')) {
+	require_once('lib/eg-widgets.inc.php');
 }
 
 if (! class_exists('EG_Attachments_Common')) {
@@ -43,8 +49,8 @@ if (is_admin()) {
 else {
 	require_once('inc/eg-attachments-public.inc.php');
 }
-
-require_once('lib/eg-widgets280.inc.php');
 require_once('inc/eg-attachments-widgets.inc.php');
+
+// eg_plugin_error_log('EG-Attachments', 'plugin loaded');
 
 ?>

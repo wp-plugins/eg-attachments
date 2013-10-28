@@ -1,11 +1,11 @@
-# Copyright (C) 2011 EG-Attachments
+# Copyright (C) 2013 EG-Attachments
 # This file is distributed under the same license as the EG-Attachments package.
 msgid ""
 msgstr ""
-"Project-Id-Version: EG-Attachments 1.9.4.2\n"
+"Project-Id-Version: EG-Attachments 2.0.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/eg-attachments\n"
-"POT-Creation-Date: 2013-02-02 23:52:03+00:00\n"
-"PO-Revision-Date: 2013-02-03 23:12+0100\n"
+"POT-Creation-Date: 2013-02-10 23:52:03+00:00\n"
+"PO-Revision-Date: 2013-10-28 13:13+0100\n"
 "Last-Translator: Emmanuel Georjon <blog@emmanuelgeorjon.com>\n"
 "Language-Team: Emmanuel GEORJON <blog@emmanuelgeorjon.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,19 +22,19 @@ msgstr "Les champs avec une bordure <font color=\"red\">rouge</font> sont obliga
 
 #: inc/eg-attachment-keywords-help.inc.php:8
 msgid "Available keywords"
-msgstr "Mots-clés disponibles"
+msgstr "Mots-cl&eacute;s disponibles"
 
 #: inc/eg-attachment-keywords-help.inc.php:11
 msgid "Labels:"
-msgstr "Libellés"
+msgstr "Libell&eacute;s"
 
 #: inc/eg-attachment-keywords-help.inc.php:17
 msgid "Label for title (title in english, titre in french, Titolo in italian, ..."
-msgstr "Label pour le titre (title en anglais, titre en français, Titolo en italien, ..."
+msgstr "Label pour le titre (title en anglais, titre en fran&ccedil;ais, Titolo en italien, ..."
 
 #: inc/eg-attachment-keywords-help.inc.php:21
 msgid "Label for caption (caption in english)"
-msgstr "Label pour la légende (caption en anglais)"
+msgstr "Label pour la l&eacute;gende (caption en anglais)"
 
 #: inc/eg-attachment-keywords-help.inc.php:25
 msgid "Label for description (description in english)"
@@ -46,7 +46,7 @@ msgstr "Label pour le nom du fichier (filename en anglais)"
 
 #: inc/eg-attachment-keywords-help.inc.php:33
 msgid "Label for the size of the file (<strong>size</strong> in english)"
-msgstr "Libellé pour la taille du fichier (<strong>size</strong> en anglais)"
+msgstr "Libell&eacute; pour la taille du fichier (<strong>size</strong> en anglais)"
 
 #: inc/eg-attachment-keywords-help.inc.php:37
 msgid "Label for the type of the file"
@@ -58,7 +58,7 @@ msgstr "Label pour la date"
 
 #: inc/eg-attachment-keywords-help.inc.php:45
 msgid "Label of the counter (number of downloads of the document"
-msgstr "Libellé  pour le compteur de téléchargement (nombre de téléchargements du document)"
+msgstr "Libell&eacute;  pour le compteur de t&eacute;l&eacute;chargement (nombre de t&eacute;l&eacute;chargements du document)"
 
 #: inc/eg-attachment-keywords-help.inc.php:50
 msgid "Values:"
@@ -66,19 +66,19 @@ msgstr "Valeurs : "
 
 #: inc/eg-attachment-keywords-help.inc.php:56
 msgid "ID of the attachment"
-msgstr "Identifiant de la plièce jointe"
+msgstr "Identifiant de la pli&egrave;ce jointe"
 
 #: inc/eg-attachment-keywords-help.inc.php:60
 msgid "caption of the document"
-msgstr "légende du document"
+msgstr "l&eacute;gende du document"
 
 #: inc/eg-attachment-keywords-help.inc.php:64
 msgid "Number of downloads recorded on the document."
-msgstr "Nombre de téléchargement enregistré sur ce document."
+msgstr "Nombre de t&eacute;l&eacute;chargement enregistr&eacute; sur ce document."
 
 #: inc/eg-attachment-keywords-help.inc.php:68
 msgid "Date of last modification"
-msgstr "Date de dernière modification du document"
+msgstr "Date de derni&egrave;re modification du document"
 
 #: inc/eg-attachment-keywords-help.inc.php:72
 msgid "description of the document"
@@ -86,15 +86,15 @@ msgstr "description du document"
 
 #: inc/eg-attachment-keywords-help.inc.php:76
 msgid "Specific URL, pointing directly to the file, but without showing the file name and path (recommended)"
-msgstr ""
+msgstr "Lien particulier, pointant directement vers le fichier, mais sans montrer le chemin vers ce fichier (recommand&eacute;)"
 
 #: inc/eg-attachment-keywords-help.inc.php:80
 msgid "Name of the attached file"
-msgstr "Nom de la pièce jointe"
+msgstr "Nom de la pi&egrave;ce jointe"
 
 #: inc/eg-attachment-keywords-help.inc.php:84
 msgid "Size of the attached document"
-msgstr "Taille de la pièce jointe"
+msgstr "Taille de la pi&egrave;ce jointe"
 
 #: inc/eg-attachment-keywords-help.inc.php:88
 msgid "Direct link (url) to the document (media file).The URL is the document's address. For example: <code>http://blog url/wp-content/upload/2011/09/file name.file extension/</code>"
@@ -102,20 +102,19 @@ msgstr "Lien direct (url) vers le document (le fichier). L'URL est l'adresse du 
 
 #: inc/eg-attachment-keywords-help.inc.php:92
 msgid "Link (url) to document as stored in the WordPress database"
-msgstr "Lien (url) vers le document, tel que sauvegardé dans la base de données de WordPress"
+msgstr "Lien (url) vers le document, tel que sauvegard&eacute; dans la base de donn&eacute;es de WordPress"
 
 #: inc/eg-attachment-keywords-help.inc.php:96
 msgid "Full icon tags (including A and IMG tag. <code>WW</code> is the width of the icon, and <code>HH</code> is the heigth."
-msgstr "Balise HTML complète pour l'icône (incluant la balise A, IMG. <code>WW</code> représente la largeur de l'icône, et <code>HH</code> représente la hauteur."
+msgstr "Balise HTML compl&egrave;te pour l'ic&ocirc;ne (incluant la balise A, IMG. <code>WW</code> repr&eacute;sente la largeur de l'ic&ocirc;ne, et <code>HH</code> repr&eacute;sente la hauteur."
 
 #: inc/eg-attachment-keywords-help.inc.php:100
 msgid "URL of icon"
-msgstr "L'URL de l'icône"
+msgstr "L'URL de l'ic&ocirc;ne"
 
 #: inc/eg-attachment-keywords-help.inc.php:104
-#, fuzzy
 msgid "The URL of the attachment, as defined by the permalink structure chosen. For example: <code>http://blog url/post url/attachment slug/</code>, or <code>http://blog url/?p=xx</code>."
-msgstr "<strong>Permalien</strong>. <br /><em>L'URL vers la pi&egrave;ces jointe utilise la structure de permaliens choisie au niveau de WordPress. Par exemple: <code>http://adresse du blog/article/pi&egrave;ce jointe/</code>, ou <code>http:/adresse du blog/?p=xx</code>.<br/></em>La pi&egrave;ces jointe est affich&eacute;e de la m&ecirc;me fa&ccedil;on qu'un article standard.</em>"
+msgstr "L'URL vers la pi&egrave;ces jointe utilise la structure de permaliens choisie au niveau de WordPress. Par exemple: <code>http://adresse du blog/article/pi&egrave;ce jointe/</code>, ou <code>http:/adresse du blog/?p=xx</code>.<br/></em>La pi&egrave;ces jointe est affich&eacute;e de la m&ecirc;me fa&ccedil;on qu'un article standard.</em>"
 
 #: inc/eg-attachment-keywords-help.inc.php:108
 msgid "HTML attribut <code>rel=\"nofollow\"</code>"
@@ -123,7 +122,7 @@ msgstr "Attribut HTML <code>rel=\"nofollow\"</code>"
 
 #: inc/eg-attachment-keywords-help.inc.php:112
 msgid "Show the lock icon for documents that require login or password"
-msgstr "Afficher l'icône verrou, pour les documents nécessitant une connexion, ou un mot de passe"
+msgstr "Afficher l'ic&ocirc;ne verrou, pour les documents n&eacute;cessitant une connexion, ou un mot de passe"
 
 #: inc/eg-attachment-keywords-help.inc.php:116
 msgid "HTML attribut <code>target=\"_blank\"</code>"
@@ -143,15 +142,15 @@ msgstr "Type de documents"
 
 #: inc/eg-attachment-keywords-help.inc.php:132
 msgid "Same than %LINK_URL%, %FILE_URL%, or %DIRECT_URL%, according the option choosen in the Settings/Options menu."
-msgstr "Valeur similaire à %LINK_URL%, %FILE_URL%, ou %DIRECT_URL%, selon l'option choisie dans le menu Réglages"
+msgstr "Valeur similaire &agrave; %LINK_URL%, %FILE_URL%, ou %DIRECT_URL%, selon l'option choisie dans le menu R&eacute;glages"
 
 #: inc/eg-attachments-admin.inc.php:37
 msgid "EG-Attachment templates"
-msgstr "Modèles EG-Attachments"
+msgstr "Mod&egrave;les EG-Attachments"
 
 #: inc/eg-attachments-admin.inc.php:38
 msgid "EG-Attachment template"
-msgstr "Modèle EG-Attachments"
+msgstr "Mod&egrave;le EG-Attachments"
 
 #: inc/eg-attachments-admin.inc.php:76
 msgid "EGA Stats"
@@ -163,11 +162,11 @@ msgstr "Statistiques EG-Attachments"
 
 #: inc/eg-attachments-admin.inc.php:90
 msgid "EGA templates"
-msgstr "Modèles  EGA"
+msgstr "Mod&egrave;les EGA"
 
 #: inc/eg-attachments-admin.inc.php:91
 msgid "EG-Attachments templates"
-msgstr "Modèles EG-Attachments"
+msgstr "Mod&egrave;les EG-Attachments"
 
 #: inc/eg-attachments-admin.inc.php:105
 #: inc/eg-attachments-admin.inc.php:109
@@ -208,7 +207,7 @@ msgstr "Date"
 
 #: inc/eg-attachments-admin.inc.php:243
 msgid "You are not allowed to create/edit templates."
-msgstr "Vous n'êtes pas autorisé à créer ou éditer les modèles"
+msgstr "Vous n'&ecirc;tes pas autoris&eacute; &agrave; cr&eacute;er ou &eacute;diter les mod&egrave;les"
 
 #: inc/eg-attachments-admin.inc.php:260
 #: inc/eg-attachments-admin.inc.php:496
@@ -218,7 +217,7 @@ msgstr "Nouveau_modele"
 
 #: inc/eg-attachments-admin.inc.php:306
 msgid "You are not allowed to copy templates."
-msgstr "Vous n'êtes pas autorisé à copier ce modèle"
+msgstr "Vous n'&ecirc;tes pas autoris&eacute; &agrave; copier ce mod&egrave;le"
 
 #: inc/eg-attachments-admin.inc.php:314
 msgid "Copy of "
@@ -227,17 +226,17 @@ msgstr "Copie de"
 #: inc/eg-attachments-admin.inc.php:344
 #: inc/eg-attachments-admin.inc.php:368
 msgid "You are not allowed to delete templates."
-msgstr "Vous n'êtes pas autorisé à effacer ce modèle"
+msgstr "Vous n'&ecirc;tes pas autoris&eacute; &agrave; effacer ce mod&egrave;le"
 
 #: inc/eg-attachments-admin.inc.php:365
 #: inc/eg-attachments-tools-form.inc.php:19
 msgid "Templates"
-msgstr "Modèles"
+msgstr "Mod&egrave;les"
 
 #: inc/eg-attachments-admin.inc.php:389
 #: inc/eg-attachments-tools-form.inc.php:18
 msgid "Template"
-msgstr "Modèle"
+msgstr "Mod&egrave;le"
 
 #: inc/eg-attachments-admin.inc.php:413
 msgid "Add New"
@@ -245,7 +244,7 @@ msgstr "Ajouter"
 
 #: inc/eg-attachments-admin.inc.php:498
 msgid "Description of the new template"
-msgstr "Description du nouveau modèle"
+msgstr "Description du nouveau mod&egrave;le"
 
 #: inc/eg-attachments-admin.inc.php:545
 msgid "Save"
@@ -253,15 +252,15 @@ msgstr "Sauvegarder"
 
 #: inc/eg-attachments-admin.inc.php:547
 msgid "Go back to the list"
-msgstr "Retourner à la liste"
+msgstr "Retourner &agrave; la liste"
 
 #: inc/eg-attachments-admin.inc.php:579
 msgid "Name of the template"
-msgstr "Nom du modèle"
+msgstr "Nom du mod&egrave;le"
 
 #: inc/eg-attachments-admin.inc.php:583
 msgid "Choose a shortname, with standard characters (like a-z, 0-9, -_)"
-msgstr "Choisissez un nom court, avec des caractères standards (de 0 à 9, et de A à Z)"
+msgstr "Choisissez un nom court, avec des caract&egrave;res standards (de 0 &agrave; 9, et de A &agrave; Z)"
 
 #: inc/eg-attachments-admin.inc.php:588
 #: inc/eg-attachments-public.inc.php:614
@@ -272,7 +271,7 @@ msgstr "Description"
 #: inc/eg-attachments-admin.inc.php:592
 #: inc/eg-attachments-tools-form.inc.php:27
 msgid "Slug"
-msgstr ""
+msgstr "Nom court"
 
 #: inc/eg-attachments-admin.inc.php:596
 msgid "Before"
@@ -284,35 +283,35 @@ msgstr "Boucle"
 
 #: inc/eg-attachments-admin.inc.php:604
 msgid "After"
-msgstr "Après"
+msgstr "Apr&egrave;s"
 
 #: inc/eg-attachments-admin.inc.php:642
 msgid "Error during template saving"
-msgstr "Erreur pendant la sauvegarde du modèle"
+msgstr "Erreur pendant la sauvegarde du mod&egrave;le"
 
 #: inc/eg-attachments-admin.inc.php:643
 msgid "Error during template copy"
-msgstr "Erreur durant la copie du modèle"
+msgstr "Erreur durant la copie du mod&egrave;le"
 
 #: inc/eg-attachments-admin.inc.php:644
 msgid "Template successfully saved."
-msgstr "Modèle sauvegardé"
+msgstr "Mod&egrave;le sauvegard&eacute;"
 
 #: inc/eg-attachments-admin.inc.php:645
 msgid "Template successfully created"
-msgstr "Modèle crée"
+msgstr "Mod&egrave;le cr&eacute;e"
 
 #: inc/eg-attachments-admin.inc.php:646
 msgid "Template sucessfully deleted"
-msgstr "Modèle effacé"
+msgstr "Mod&egrave;le effac&eacute;"
 
 #: inc/eg-attachments-admin.inc.php:647
 msgid "Error during template deletion"
-msgstr "Erreur durant la suppression du modèle"
+msgstr "Erreur durant la suppression du mod&egrave;le"
 
 #: inc/eg-attachments-admin.inc.php:648
 msgid "Bulk deletion done: %s on %s template(s) were deleted"
-msgstr ""
+msgstr "Suppression effectu&eacute;e. %s sur %s template(s) ont &eacute;t&eacute; supprim&eacute;es."
 
 #: inc/eg-attachments-admin.inc.php:649
 msgid "Title is empty"
@@ -324,7 +323,7 @@ msgstr "Le titre est toujours \"%s\""
 
 #: inc/eg-attachments-admin.inc.php:651
 msgid "The field \"loop\" cannot be empty."
-msgstr "Le champ \"boucle\" ne peut pas être vide"
+msgstr "Le champ \"boucle\" ne peut pas &ecirc;tre vide"
 
 #: inc/eg-attachments-admin.inc.php:652
 msgid "Error during the copy operation"
@@ -332,11 +331,11 @@ msgstr "Erreur pendant la copie"
 
 #: inc/eg-attachments-admin.inc.php:653
 msgid "The initial post is unknown or doesn't exist"
-msgstr "Le modèle initial est inconuu ou n'existe pas"
+msgstr "Le mod&egrave;le initial est inconuu ou n'existe pas"
 
 #: inc/eg-attachments-admin.inc.php:654
 msgid "Purge of statistics: %d lines deleted (Retention: %d months)."
-msgstr ""
+msgstr "Maintenance de la table des statistiques. %d lignes effac&eacute;es (retention de %d mois)."
 
 #: inc/eg-attachments-admin.inc.php:796
 #: inc/eg-attachments-settings.inc.php:44
@@ -346,7 +345,7 @@ msgstr "Format personnalis&eacute;"
 
 #: inc/eg-attachments-admin.inc.php:797
 msgid "Custom format from previous version %s"
-msgstr "Format personnalisé de la version précédente du plugin"
+msgstr "Format personnalis&eacute; de la version pr&eacute;c&eacute;dente du plugin"
 
 #: inc/eg-attachments-admin.inc.php:930
 #: inc/eg-attachments-admin.inc.php:977
@@ -369,7 +368,7 @@ msgstr "Jour"
 
 #: inc/eg-attachments-admin.inc.php:967
 msgid "Start date: "
-msgstr "Date de début : "
+msgstr "Date de d&eacute;but : "
 
 #: inc/eg-attachments-admin.inc.php:970
 msgid "End date: "
@@ -383,43 +382,40 @@ msgstr "par "
 msgid "Display chart"
 msgstr "Afficher le graphique"
 
-#: inc/eg-attachments-admin.inc.php:992
+#: inc/eg-attachments-public.inc.php
+msgid "click"
+msgstr "clic"
+
+#: inc/eg-attachments-public.inc.php inc/eg-attachments-admin.inc.php:992
 #: inc/eg-attachments-admin.inc.php:1029
 #: inc/eg-attachments-admin.inc.php:1037
-msgid "Clicks"
-msgstr "Clics"
+msgid "click(s)"
+msgstr "clic(s)"
 
 #: inc/eg-attachments-admin.inc.php:1010
 msgid "Number of downloads"
-msgstr "Nombre de téléchargements"
-
-#: inc/eg-attachments-admin.inc.php:1028
-#: inc/eg-attachments-admin.inc.php:1036
-#: inc/eg-attachments-public.inc.php:610
-#: inc/eg-attachments-tools-form.inc.php:26
-msgid "Title"
-msgstr "Titre"
+msgstr "Nombre de t&eacute;l&eacute;chargements"
 
 #: inc/eg-attachments-admin.inc.php:1030
 #: inc/eg-attachments-admin.inc.php:1038
-msgid "% clicks"
-msgstr "% Clicks"
+msgid "% Clicks"
+msgstr "% Clics"
 
 #: inc/eg-attachments-admin.inc.php:1100
 msgid "1 item"
-msgstr "1 élément"
+msgstr "1 &eacute;l&eacute;ment"
 
 #: inc/eg-attachments-admin.inc.php:1100
 msgid "%s items"
-msgstr "%s éléments"
+msgstr "%s &eacute;l&eacute;ments"
 
 #: inc/eg-attachments-admin.inc.php:1102
 msgid "Go to the first page"
-msgstr "Aller à la première page"
+msgstr "Aller &agrave; la premi&egrave;re page"
 
 #: inc/eg-attachments-admin.inc.php:1103
 msgid "Go to the previous page"
-msgstr "Aller à la page précédente"
+msgstr "Aller &agrave; la page pr&eacute;c&eacute;dente"
 
 #: inc/eg-attachments-admin.inc.php:1105
 msgid "of"
@@ -427,11 +423,11 @@ msgstr "sur"
 
 #: inc/eg-attachments-admin.inc.php:1107
 msgid "Go to the next page"
-msgstr "Aller à la suivante page"
+msgstr "Aller &agrave; la suivante page"
 
 #: inc/eg-attachments-admin.inc.php:1108
 msgid "Go to the last page"
-msgstr "Aller à la dernière page"
+msgstr "Aller &agrave; la derni&egrave;re page"
 
 #: inc/eg-attachments-admin.inc.php:1123
 msgid "Global"
@@ -439,15 +435,15 @@ msgstr "Global"
 
 #: inc/eg-attachments-admin.inc.php:1182
 msgid "Multiple custom formats"
-msgstr "Mutiple format personnalisés"
+msgstr "Mutiple format personnalis&eacute;s"
 
 #: inc/eg-attachments-admin.inc.php:1183
-msgid "EG-Attachments can now manage multiple custome formats. A new menu allows you to edit &laquo;templates&raquo;"
-msgstr "EG-Attachments peut maintenant gérer plusieurs formats personnalisés. Un nouveau menu vous permet d'éditer ces formats appelés \"Modèles\""
+msgid "EG-Attachments can now manage multiple custom formats. A new menu allows you to edit &laquo;templates&raquo;"
+msgstr "EG-Attachments peut maintenant g&eacute;rer plusieurs formats personnalis&eacute;s. Un nouveau menu vous permet d'&eacute;diter ces formats appel&eacute;s \"Mod&egrave;les\"."
 
 #: inc/eg-attachments-admin.inc.php:1192
 msgid "New statistics"
-msgstr "Nouvelle présentation des statistiques"
+msgstr "Nouvelle pr&eacute;sentation des statistiques"
 
 #: inc/eg-attachments-admin.inc.php:1193
 msgid "The statistics module is using <strong>Google Chart Tools</strong> for better graphes."
@@ -459,7 +455,7 @@ msgstr "Afficher ou cacher le bouton TinyMCE"
 
 #: inc/eg-attachments-admin.inc.php:1203
 msgid "You can now show or hide TinyMCE button in the new/edit post/page "
-msgstr "Vous pouvez maintenant afficher ou cacher le bouton de EG-Attachments, dans l'éditeur TinyMCE, dans la page Nouveau/editer un article"
+msgstr "Vous pouvez maintenant afficher ou cacher le bouton de EG-Attachments, dans l'&eacute;diteur TinyMCE, dans la page Nouveau/editer un article"
 
 #: inc/eg-attachments-admin.inc.php:1212
 msgid "Exclude thumbnail"
@@ -467,27 +463,27 @@ msgstr "Exclure la vignette"
 
 #: inc/eg-attachments-admin.inc.php:1213
 msgid "You can now, automatically exclude the featured image from the list of attachments to be displayed."
-msgstr "Vous pouvez maintenance, automatiquement exclure la vignette d'un article, de la liste des pièces jointes à aficher"
+msgstr "Vous pouvez maintenance, automatiquement exclure la vignette d'un article, de la liste des pi&egrave;ces jointes &agrave; aficher"
 
 #: inc/eg-attachments-admin.inc.php:1222
 msgid "Keywords"
-msgstr "Mots-clés"
+msgstr "Mots-cl&eacute;s"
 
 #: inc/eg-attachments-admin.inc.php:1223
 msgid "Use these keywords to build you own template."
-msgstr "Utilisez ces mots-clés pour construire votre propre modèle"
+msgstr "Utilisez ces mots-cl&eacute;s pour construire votre propre mod&egrave;le"
 
 #: inc/eg-attachments-public.inc.php:50
 msgid "Something is going wrong. Bad address, or perhaps you try to access to a private document."
-msgstr "Quelque chose ne va pas. L'adresse n'est pas bonne, ou vous essayez peut-être d'accéder à un document privé."
+msgstr "Quelque chose ne va pas. L'adresse n'est pas bonne, ou vous essayez peut-&ecirc;tre d'acc&eacute;der &agrave; un document priv&eacute;."
 
 #: inc/eg-attachments-public.inc.php:81
 msgid "This post is private. You must be a user of the site, and logged in, to display this file."
-msgstr "Cet article est privé. Vous devez être un utilisateur enregistré du site, et  être connecté pour l'afficher."
+msgstr "Cet article est priv&eacute;. Vous devez &ecirc;tre un utilisateur enregistr&eacute; du site, et  &ecirc;tre connect&eacute; pour l'afficher."
 
 #: inc/eg-attachments-public.inc.php:86
 msgid "This post is password protected. Please go to the site, and enter the password required to display the document"
-msgstr "Cet article est protégé par un mot de passe. Merci de saisir le mot de passe requis pour afficher le document."
+msgstr "Cet article est prot&eacute;g&eacute; par un mot de passe. Merci de saisir le mot de passe requis pour afficher le document."
 
 #: inc/eg-attachments-public.inc.php:217
 msgid "unknown"
@@ -495,23 +491,23 @@ msgstr "inconnue"
 
 #: inc/eg-attachments-public.inc.php:420
 msgid "Template doesn't exists. Use default"
-msgstr "Le modèle indiqué n'existe pas. Utilisation du modèle par défaut."
+msgstr "Le mod&egrave;le indiqu&eacute; n'existe pas. Utilisation du mod&egrave;le par d&eacute;faut."
 
 #: inc/eg-attachments-public.inc.php:430
 msgid "Error during processing shortcode template"
-msgstr "Erreur pendant l'analyse du modèle"
+msgstr "Erreur pendant l'analyse du mod&egrave;le"
 
 #: inc/eg-attachments-public.inc.php:539
 msgid "You need to login to access to the attachments"
-msgstr "Vous devez être coonecté pour accéder aux pièces jointes"
+msgstr "Vous devez &ecirc;tre coonect&eacute; pour acc&eacute;der aux pi&egrave;ces jointes"
 
 #: inc/eg-attachments-public.inc.php:546
 msgid "Private document: please login to access"
-msgstr "Document privé: merci de vous connecter pour y accéder"
+msgstr "Document priv&eacute;: merci de vous connecter pour y acc&eacute;der"
 
 #: inc/eg-attachments-public.inc.php:555
 msgid "Document protected: please enter the password to access"
-msgstr "Document protégé: merci de saisir le mot de passe pour y accéder"
+msgstr "Document prot&eacute;g&eacute;: merci de saisir le mot de passe pour y acc&eacute;der"
 
 #: inc/eg-attachments-public.inc.php:612
 msgid "Caption"
@@ -521,10 +517,6 @@ msgstr "L&eacute;gende"
 msgid "Filename"
 msgstr "Nom du fichier"
 
-#: inc/eg-attachments-public.inc.php:629
-msgid "click(s)"
-msgstr "Click(s)"
-
 #: inc/eg-attachments-settings.inc.php:22
 #: inc/eg-attachments-widgets.inc.php:26
 msgid "Custom templates"
@@ -532,7 +524,7 @@ msgstr "Format personnalis&eacute;"
 
 #: inc/eg-attachments-settings.inc.php:228
 msgid "If you leave the field empty, the usual WordPress login form will be used (<code>%s</code>)."
-msgstr "Si vous laissez ce champ vide, le formulaire de connexion de WordPress sera utilisé (<code>%s</code>)."
+msgstr "Si vous laissez ce champ vide, le formulaire de connexion de WordPress sera utilis&eacute; (<code>%s</code>)."
 
 #: inc/eg-attachments-tools-form.inc.php:83
 #: inc/eg-attachments-tools-form.inc.php:128
@@ -541,7 +533,7 @@ msgstr "Effacer"
 
 #: inc/eg-attachments-tools-form.inc.php:116
 msgid "Edit template"
-msgstr "Editer le modèle"
+msgstr "Editer le mod&egrave;le"
 
 #: inc/eg-attachments-tools-form.inc.php:116
 msgid "Edit"
@@ -549,7 +541,7 @@ msgstr "Editer"
 
 #: inc/eg-attachments-tools-form.inc.php:117
 msgid "Copy template"
-msgstr "Copier le modèle"
+msgstr "Copier le mod&egrave;le"
 
 #: inc/eg-attachments-tools-form.inc.php:117
 msgid "Copy"
@@ -557,7 +549,7 @@ msgstr "Copier"
 
 #: inc/eg-attachments-tools-form.inc.php:123
 msgid "View template"
-msgstr "Afficher le modèle"
+msgstr "Afficher le mod&egrave;le"
 
 #: inc/eg-attachments-tools-form.inc.php:123
 msgid "View"
@@ -565,25 +557,23 @@ msgstr "Afficher"
 
 #: inc/eg-attachments-tools-form.inc.php:128
 msgid "Delete template"
-msgstr "Effacer le modèle"
+msgstr "Effacer le mod&egrave;le"
 
 #: inc/eg-attachments-tools-form.inc.php:133
 msgid "Edit &#8220;%s&#8221;"
 msgstr "Editer &#8220;%s&#8221;"
 
 #: inc/eg-attachments-widgets.inc.php:17
-#, fuzzy
 msgid "Display attachments of the current post"
-msgstr "Faire appara&icirc;tre la m&eacute;tabox affichant la liste des documents attach&eacute;s a l'article en cours d'&eacute;dition"
+msgstr "Faire appara&icirc;tre la m&eacute;tabox affichant la liste des documents attach&eacute;s a l'article en cours d'&eacute;dition."
 
 #: inc/eg-attachments-widgets.inc.php:35
-#, fuzzy
 msgid "Document type"
-msgstr "Type de document : "
+msgstr "Type de document"
 
 #: inc/eg-attachments-widgets.inc.php:38
 msgid "Check to exclude the feature image from the attachments list"
-msgstr "Cocher pour exclure la vignette de la liste des pièces jointes"
+msgstr "Cocher pour exclure la vignette de la liste des pi&egrave;ces jointes"
 
 #: inc/eg-attachments-widgets.inc.php:39
 msgid "Order by"
@@ -618,17 +608,14 @@ msgid "&laquo;Nofollow&raquo; attribute"
 msgstr "Attribut &laquo;Nofollow&raquo;"
 
 #: inc/eg-attachments-widgets.inc.php:47
-#, fuzzy
 msgid "Check if you want to automatically add <code>rel=\"nofollow\"</code> to attachment links"
-msgstr "Cocher cette option si vous souhaitez ajouter automatiquement l'attribut rel=\"nofollow\" au lien vers les pi&egrave;ces jointes"
+msgstr "Cocher cette option si vous souhaitez ajouter automatiquement l'attribut rel=\"nofollow\" au lien vers les pi&egrave;ces jointes."
 
 #: inc/eg-attachments-widgets.inc.php:48
-#, fuzzy
 msgid "&laquo;Target&raquo; attribute"
 msgstr "Attribut &laquo;target=blank&raquo;"
 
 #: inc/eg-attachments-widgets.inc.php:49
-#, fuzzy
 msgid "Check if you want to automatically add <code>target=\"_blank\"</code> to attachment links"
 msgstr "Cocher cette option si vous souhaitez ajouter automatiquement l'attribut target=\"_blank\" au lien vers les pi&egrave;ces jointes"
 
@@ -642,7 +629,7 @@ msgstr "Pi&egrave;ces jointes"
 
 #: inc/tinymce/eg_attach_popup.php:12
 msgid "You are not allowed to access this file."
-msgstr "Vous n'êtes pas autorisé à accéder à ce fichier"
+msgstr "Vous n'&ecirc;tes pas autoris&eacute; &agrave; acc&eacute;der &agrave; ce fichier"
 
 #: inc/tinymce/eg_attach_popup.php:34
 #: inc/tinymce/eg_attach_popup.php:253
@@ -693,7 +680,7 @@ msgstr "Taille : "
 
 #: inc/tinymce/eg_attach_popup.php:209
 msgid "Template (for custom size): "
-msgstr "Modèle (si Taille=personnalisé)"
+msgstr "Mod&egrave;le (si Taille=personnalis&eacute;)"
 
 #: inc/tinymce/eg_attach_popup.php:213
 msgid "Document type: "
@@ -704,12 +691,12 @@ msgid "Number of documents to display: "
 msgstr "Nombre de documents &agrave; afficher : "
 
 #: inc/tinymce/eg_attach_popup.php:224
-msgid "Nofollow: "
-msgstr "Nofollow : "
+msgid "Add &laquo;Nofollow&raquo; attribut"
+msgstr "Ajouter l'attribut &laquo;Nofollow&raquo;"
 
 #: inc/tinymce/eg_attach_popup.php:229
-msgid "Target=\"blank\" : "
-msgstr "Target=\"blank\" : "
+msgid "Add target=\"blank\" attribut"
+msgstr "Ajouter l'attribut &laquo;target=blank&raquo;"
 
 #: inc/tinymce/eg_attach_popup.php:232
 msgid "Force \"saveas\": "
@@ -724,8 +711,9 @@ msgid "Filter attachments using tags"
 msgstr "S&eacute;lectionner les pi&egrave;ces jointes avec les mots-cl&eacute;s"
 
 #: inc/tinymce/eg_attach_popup.php:245
-msgid "Check if you want posts linked to all tags"
-msgstr "Cocher si vous souhaitez pourvoir associer les pièces jointes aux mots-clés"
+#, fuzzy
+msgid "Check if you want posts linked to ALL tags"
+msgstr "Cocher si vous souhaitez uniquement les pi&egrave;ces jointes appartenant &agrave; tous les mots-cl&eacute;s"
 
 #: inc/tinymce/eg_attach_popup.php:250
 msgid "No attachment available for this post"
@@ -745,7 +733,7 @@ msgstr "Annuler"
 
 #: lib/eg-plugin.inc.php:238
 msgid "Settings"
-msgstr "Param&agrave;tres"
+msgstr "Param&egrave;tres"
 
 #: lib/eg-plugin.inc.php:300
 msgid "EG-Plugins"
@@ -784,7 +772,6 @@ msgid "Donate"
 msgstr "Faites un don"
 
 #: inc/eg-attachments-settings.inc.php:24
-#, fuzzy
 msgid "Shortcodes behavior"
 msgstr "Param&egrave;tres g&eacute;n&eacute;raux du shortcode"
 
@@ -793,12 +780,10 @@ msgid "Auto shortcode"
 msgstr "Shortcode automatique"
 
 #: inc/eg-attachments-settings.inc.php:26
-#, fuzzy
 msgid "Admin interface"
 msgstr "Interface d'administration"
 
 #: inc/eg-attachments-settings.inc.php:31
-#, fuzzy
 msgid "Link"
 msgstr "Liens"
 
@@ -808,20 +793,19 @@ msgstr "Comportement"
 
 #: inc/eg-attachments-settings.inc.php:34
 msgid "CAUTION: the parameters of this section are impacting the default behavior of the shortcode. For example: if you activate &laquo; Nofollow &raquo; here, this attribut will be automatically add to the shortcode, evenif you don't specify it. If you don't check the option &laquo; Nofollow &raquo;, the attribut will appear only if you put the parameter nofollow=1 in the shortcode."
-msgstr "ATTENTION:  les paramètres de cette section impactent le comportement par défaut du shortcode. Par exemple, si vous activez l'option &laquo; Nofollow &raquo;, cet attribut sera automatiquement ajouté au shortcode, même s'il n'est pas explicitement renseigné dans le shortcode. Si vous ne cochez pas la case &laquo; Nofollow &raquo;, l'attribut n'apparaîtra que si vous le demandez dans le shortcode."
+msgstr "ATTENTION:  les param&egrave;tres de cette section impactent le comportement par d&eacute;faut du shortcode. Par exemple, si vous activez l'option &laquo; Nofollow &raquo;, cet attribut sera automatiquement ajout&eacute; au shortcode, m&ecirc;me s'il n'est pas explicitement renseign&eacute; dans le shortcode. Si vous ne cochez pas la case &laquo; Nofollow &raquo;, l'attribut n'apparaîtra que si vous le demandez dans le shortcode."
 
 #: inc/eg-attachments-settings.inc.php:37
-#, fuzzy
 msgid "Statistics"
-msgstr "Activer les statistiques"
+msgstr "Statistiques"
 
 #: inc/eg-attachments-settings.inc.php:38
 msgid "Security"
-msgstr "Sécurité"
+msgstr "S&eacute;curit&eacute;"
 
 #: inc/eg-attachments-settings.inc.php:40
 msgid "CAUTION: the parameter <strong>Attachments access</strong> is impacting the default behavior of the shortcode."
-msgstr ""
+msgstr "ATTENTION: le param&egrave;tre <strong>Acc&egrave;s aux pi&egrave;ces jointes</strong> influe sur le comportement par d&eacute;faut du shortcode."
 
 #: inc/eg-attachments-settings.inc.php:43
 msgid "Format"
@@ -840,16 +824,14 @@ msgid "Post editor page"
 msgstr "Page d'&eacute;dition des articles"
 
 #: inc/eg-attachments-settings.inc.php:50
-#, fuzzy
 msgid "Paths"
-msgstr "Articles"
+msgstr "Chemins"
 
 #: inc/eg-attachments-settings.inc.php:51
 msgid "Styles"
 msgstr "Feuille de styles"
 
 #: inc/eg-attachments-settings.inc.php:52
-#, fuzzy
 msgid "Uninstallation"
 msgstr "Options de d&eacute;sinstallation"
 
@@ -858,22 +840,18 @@ msgid "Links to attachments"
 msgstr "Liens vers les pi&egrave;ces jointes"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
-msgid "<br />All features cannot be implemented with all of these modes.<br /><table class=\"eg-attach-help\"><tr><th>Link type</th><th>Statistics</th><th>Force \"Save as\"</th><th>Security</th></tr><tr><th class=\"row\">Permalink</th><td>x</td><td>x</td><td>x</td></tr><tr><th class=\"row\">File</th><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><th class=\"row\">Direct</th><td>x</td><td>x</td><td>x</td></tr></table><br /><p>Recommended version:<ul><li>Method &laquo; Direct &raquo;: url of the document is hidden,</li><li>Method &laquo; Permalink &raquo;: </li><li>Method &laquo; File &raquo;: </li></ul></p><p>The recommended version is the method &laquo; Direct &raquo;.</p></span>"
+msgid "<br />All features cannot be implemented with all of these modes.<br /><table class=\"eg-attach-help\"><tr><th>Link type</th><th>Statistics</th><th>Force \"Save as\"</th><th>Security</th></tr><tr><th class=\"row\">Permalink</th><td>x</td><td>x</td><td>x</td></tr><tr><th class=\"row\">File</th><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><th class=\"row\">Direct</th><td>x</td><td>x</td><td>x</td></tr></table>"
 msgstr "<br />Toutes les fonctionnalit&eacute;s ne sont pas accessibles avec tous les modes.<br /><table class=\"eg-attach-help\"><tr><th>Type de lien</th><th>Statistiques</th><th>T&eacute;l&eacute;chargement</th><th>S&eacute;curit&eacute;</th></tr><tr><th class=\"row\">Permalink</th><td>x</td><td>x</td><td>x</td></tr><tr><th class=\"row\">File</th><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><th class=\"row\">Direct</th><td>x</td><td>x</td><td>x</td></tr></table>"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "<strong>Direct</strong>.<br /><em>It's the default behavior of the plugin. The URL is pointing to the file, but in this case, the link is encoded. When you click on the attachment, it is displayed as a document, and not as a page of blog. WordPress mechanisms are used</em>"
 msgstr "<strong>Direct</strong>. <br /><em>Il s'agit du comportement par d&eacute;faut du plugin. L'URL pointe toujours vers le document, mais elle est encod&eacute;e. Lorsque vous cliquez sur le document, il s'affiche comme document, et non comme page du blog. Les m&eacute;canismes de WordPress sont utilis&eacute;s.</em>"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "<strong>Permalink</strong>.<br /><em>The URL of the attachment is using defined permalink structure. For example: <code>http://blog url/post url/attachment slug/</code>, or <code>http://blog url/?p=xx</code>.<br/>The attachment will be displayed inside your blog, as a post.</em>"
 msgstr "<strong>Permalien</strong>. <br /><em>L'URL vers la pi&egrave;ces jointe utilise la structure de permaliens choisie au niveau de WordPress. Par exemple: <code>http://adresse du blog/article/pi&egrave;ce jointe/</code>, ou <code>http:/adresse du blog/?p=xx</code>.<br/></em>La pi&egrave;ces jointe est affich&eacute;e de la m&ecirc;me fa&ccedil;on qu'un article standard.</em>"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "<strong>File</strong>.<br /><em>The URL is the document's address. For example: <code>http://blog url/wp-content/upload/2011/09/file name.file extension/</code>.<br />When you click on the attachment, it is displayed directly, as a document, and not as a page of blog. WordPress mechanisms are not used</em>"
 msgstr "<strong>Fichier</strong>. <br /><em>L'URL pointe directement sur le document. Par exemple: <code>http://adresse du blog/wp-content/upload/2011/09/nom du fichier.extension/</code>.<br />Lorsque vous cliquez sur le document, il s'affiche directement, comme document, et non comme page du blog. Les m&eacute;canismes de WordPress ne sont pas utilis&eacute;s.</em>"
 
@@ -890,9 +868,8 @@ msgid "Featured image"
 msgstr "Vignette"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Check if you want to exclude featured image (thumbnail) from the list of attachments"
-msgstr "Cocher cette option si vous souhaitez ajouter automatiquement l'attribut target=\"_blank\" au lien vers les pi&egrave;ces jointes"
+msgstr "Cocher cette option si vous souhaitez exclure les images marquées comme <strong>vignette</strong>, de la listes des pi&egrave;ces jointes"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Click counter"
@@ -915,25 +892,28 @@ msgid "List of IP address you want to exclude"
 msgstr "Liste des adresses &agrave; exclure"
 
 #: inc/eg-attachments-settings.inc.php:
-msgid "Purge statistics after"
-msgstr ""
+msgid "Maintenance"
+msgstr "Maintenance"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "Delete records after"
+msgstr "Effacer les statistiques apr&egrave;s"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "months"
 msgstr "mois"
 
 #: inc/eg-attachments-settings.inc.php:
-msgid "Enter 0 (zero), to disable the purge"
-msgstr ""
+msgid "Enter 0 (zero), if you wand to disable the maintenance"
+msgstr "Entrez 0 (z&eacute;ro) pour annuler l'effacement des lignes au del&agrave; de la p&eacute;riode saisie."
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Restrict access to the attachments to logged users only!"
 msgstr "Limiter l'acc&egrave;s des pi&egrave;ces jointes aux utilisateurs enregistr&eacute;s."
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Url to login or register page"
-msgstr "Url du formulaire de connexion ou d'enregistrement:"
+msgstr "Url du formulaire de connexion ou d'enregistrement"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Date format"
@@ -941,9 +921,8 @@ msgstr "Format de date"
 
 # eg-attachments-admin.inc.php:
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Default value: %s (%s)"
-msgstr "Valeur par d&eacute;faut: "
+msgstr "Valeur par d&eacute;faut: %s (%s)"
 
 # eg-attachments-admin.inc.php:
 #: inc/eg-attachments-settings.inc.php:
@@ -952,7 +931,7 @@ msgstr "Utiliser les param&agrave;tres de la fonction date() de PHP<br />d&nbsp;
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "<strong>Custom format has been changed</strong>.<br />To make the custom formats more flexible, they are now manage in a specific menu. You can go to the menu <strong>Tools &gt; EGA Templates</strong> to discover the new way of managing them. During the update, your custom format were saved into a template."
-msgstr "<strong>Les formats personnalisés ont changé</strong>.<br />Pour les rendre plus souples, ils sont maintenant gérés dans un menu dédié. Vous pouvez aller dans le menu <strong>Outils / EGA Templates</strong> pour découvrir la nouvelle façon les gére.Pendant la mise à jour, le format personnalisé des versions précédentes sera automatiquement sauvegardé en modèle."
+msgstr "<strong>Les formats personnalis&eacute;s ont chang&eacute;</strong>.<br />Pour les rendre plus souples, ils sont maintenant g&eacute;r&eacute;s dans un menu d&eacute;di&eacute;. Vous pouvez aller dans le menu <strong>Outils / EGA Templates</strong> pour d&eacute;couvrir la nouvelle fa&ccedil;on les g&eacute;re.Pendant la mise &agrave; jour, le format personnalis&eacute; des versions pr&eacute;c&eacute;dentes sera automatiquement sauvegard&eacute; en mod&egrave;le."
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "With this option, you can automaticaly add the list of attachments in your blog, without using shortcode"
@@ -995,9 +974,8 @@ msgid "Activate automatic shortcode only on the following cases"
 msgstr "Activer le shortcode automatique dans les cas suivants"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
-msgid "Homepage"
-msgstr "Page d'accueil"
+msgid "Homepage,"
+msgstr "Page d'accueil,"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Posts,"
@@ -1012,36 +990,36 @@ msgid "Lists of posts (archives, categories, ...)."
 msgstr "Liste d'articles ou de pages (archives, cat&eacute;gories, ...)"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Title of the list"
-msgstr "Titre de la liste : "
+msgstr "Titre de la liste"
+
+#: inc/eg-attachments-settings:
+msgid "HTML Tag for title"
+msgstr "Balise HTML pour le titre"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "(tag like h2, or h3, ...)"
 msgstr "(balise h2, ou h3, ...)"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "List format"
-msgstr "Format des listes: "
+msgstr "Format des listes"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "No template available"
-msgstr "Aucun modèle disponible"
+msgstr "Aucun mod&egrave;le disponible"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Sort Order"
-msgstr "Ordre de tri : "
+msgstr "Ordre de tri"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "(Default: -1, for all document are listed)"
 msgstr "(Valeur par d&eacute;faut: -1, tous les documents sont affich&eacute;s)"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Default options?"
-msgstr "Options par d&eacute;faut "
+msgstr "Options par d&eacute;faut"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?"
@@ -1053,7 +1031,7 @@ msgstr "Afficher un menu pour <strong>EG-Attachments</strong> dans la barre d'ad
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Metaboxes"
-msgstr ""
+msgstr "Metaboxes"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Show metabox to display list of attachments of the current post/page"
@@ -1065,7 +1043,7 @@ msgstr "Bouton de EG-Attachments"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Show EG-Attachments button in post text editor ?"
-msgstr "Afficher le bouton de EG-Attachments dans l\"'éditeur d'article?"
+msgstr "Afficher le bouton de EG-Attachments dans \"l'&eacute;diteur d'article\"?"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Tags assigments"
@@ -1080,26 +1058,22 @@ msgid "Do you want to assign tags to attachments?"
 msgstr "Souhaitez-vous pouvoir associer des mots-cl&eacute;s aux pi&egrave;ces jointes?"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Icon path"
 msgstr "R&eacute;pertoire des ic&ocirc;nes (B&ecirc;ta)"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Additional path where the plugin can get icons"
 msgstr "Chemin o&ugrave; le plugin peut r&eacute;cup&eacute;rer les ic&ocirc;nes"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "Icon_url"
-msgstr ""
+msgstr "URL des ic&ocirc;nes"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Additional url where the plugin can get icons"
 msgstr "Chemin o&ugrave; le plugin peut r&eacute;cup&eacute;rer les ic&ocirc;nes"
 
 #: inc/eg-attachments-settings.inc.php:
-#, fuzzy
 msgid "Stylesheet"
 msgstr "Feuille de styles"
 
@@ -1112,344 +1086,70 @@ msgid "Automatically load plugins' stylesheet"
 msgstr "Charger automatiquement la feuille de style du plugin"
 
 #: inc/eg-attachments-settings.inc.php:
-msgid "Options"
-msgstr "Options"
+msgid "Data"
+msgstr "Donn&eacute;es"
 
 #: inc/eg-attachments-settings.inc.php:
-msgid "Be careful: these actions cannot be cancelled. All plugin's options will be deleted while plugin uninstallation."
-msgstr "Attention: Ces actions ne peuvent pas &egrave;tre annul&eacute;es. Toutes les options du plugin seront effac&eacute;es pendant la d&eacute;sinstallation."
+msgid "Be careful: these actions cannot be cancelled. All plugin's datas, including options, templates, and statistics will be deleted while plugin uninstallation."
+msgstr "Attention: Ces actions ne peuvent pas &egrave;tre annul&eacute;es. Toutes les donn&eacute;es de l'extension seront effac&eacute;es, ce qui inclut les options, les mod&egrave;les, et les statistiques, pendant la d&eacute;sinstallation."
 
 #: inc/eg-attachments-settings.inc.php:
-msgid "Delete options during uninstallation."
-msgstr "Effacer les options pendant la d&eacute;sinstallation."
+msgid "Delete data during uninstallation."
+msgstr "Effacer les donn&eacute;es de l'extension pendant la d&eacute;sinstallation."
 
-#~ msgid "Cannot display attachments. Current post or page is protected."
-#~ msgstr ""
-#~ "Impossible d'afficher les pi&egrave;ces jointes. L'article ou la page est "
-#~ "prot&eacute;g&eacute;."
-#~ msgid "First"
-#~ msgstr "Premier"
-#~ msgid "Last"
-#~ msgstr "Dernier"
-#~ msgid "Large"
-#~ msgstr "Grande"
-#~ msgid "Medium"
-#~ msgstr "Moyenne"
-#~ msgid "Small"
-#~ msgstr "Petite"
-#~ msgid "Document title"
-#~ msgstr "Titre du document"
-#~ msgid "Order by: "
-#~ msgstr "Tri&eacute; par : "
-#~ msgid "Document label: "
-#~ msgstr "Label des documents : "
-#~ msgid "Fields: "
-#~ msgstr "Champs : "
-#~ msgid "Display default fields?"
-#~ msgstr "Afficher les champs par d&eacute;fauts?"
-#~ msgid "Attachments restricted to register users only"
-#~ msgstr ""
-#~ "L'acc&egrave;s aux pi&egrave;ces jointes est r&eacute;serv&eacute; aux "
-#~ "utilisateurs enregistr&eacute;s."
-#~ msgid "Document locked"
-#~ msgstr "Document v&eacute;rouill&eacute;e"
-#~ msgid "TB"
-#~ msgstr "To"
-#~ msgid "MB"
-#~ msgstr "Mo"
-#~ msgid "kB"
-#~ msgstr "Ko"
-#~ msgid "B"
-#~ msgstr "octets"
-#~ msgid ""
-#~ "Security problem. Try again. If this problem persist, contact <a href=\"%s"
-#~ "\">plugin author</a>."
-#~ msgstr ""
-#~ "Probl&egrave;me de s&eacute;curit&eacute;. Essayez de nouveau. Si le "
-#~ "probl&egrave;me persiste, contactez <a href=\"%s\">l'auteur du plugin</a>."
-#~ msgid ""
-#~ "You cannot access to the synchronization page. You haven't the \"%1s\" "
-#~ "capability. Please contact <a href=\"%2s\">the blog administrator</a>."
-#~ msgstr ""
-#~ "Vous n'avez pas les droits pour acc&eacute;der &agrave; la page de "
-#~ "synchronisation. Veuillez contacter <a href=\"%2s\">l'administrateur du "
-#~ "blog</a>."
-#~ msgid " cannot run with "
-#~ msgstr " ne fonctionne pas avec "
-#~ msgid " requires "
-#~ msgstr " n&eacute;cessite "
-#~ msgid " and later."
-#~ msgstr " n&eacute;cessite "
-#~ msgid " to "
-#~ msgstr " &agrave; "
-#~ msgid ""
-#~ "The plugin <strong>%1s</strong> requires the following PHP extensions: %2s"
-#~ msgstr ""
-#~ "L'extension <strong>%1s</strong> n&eacute;cessite les extensions PHP "
-#~ "suivantes: %2s"
-#~ msgid ""
-#~ "The plugin <strong>%1s</strong> requires the following PHP options: %2s."
-#~ msgstr ""
-#~ "L'extension <strong>%1s</strong> n&eacute;cessite les options PHP "
-#~ "suivantes: %2s"
-#~ msgid "Save changes"
-#~ msgstr "Sauvegarder les changements"
-#~ msgid "Cancel changes"
-#~ msgstr "Annuler les changements"
-#~ msgid "Reset to defaults"
-#~ msgstr "R&eacute;intialiser les param&egrave;tres"
-#~ msgid "Error "
-#~ msgstr "Erreur "
-#~ msgid ""
-#~ "Lists of attachments can be displayed everywhere posts are displayed, or "
-#~ "only when a single post or a single page is displayed"
-#~ msgstr ""
-#~ "Les listes de pi&egrave;ces jointes peuvent appara&icirc;tre sur toutes "
-#~ "les pages o&ugrave; les articles sont affich&eacute;s, ou seulement sur "
-#~ "les pages 'article' ou 'page'."
-#~ msgid "in all pages"
-#~ msgstr "sur toutes les pages"
-#~ msgid "Only for posts and pages"
-#~ msgstr "Seulement pour les articles ou les pages"
-#~ msgid "Auto Shortcode Options"
-#~ msgstr "Options du shortcode automatique"
-#~ msgid "Document label"
-#~ msgstr "Label"
-#~ msgid "Small size"
-#~ msgstr "Taille simplifi&eacute;e"
-#~ msgid "Display icons: "
-#~ msgstr "Afficher les ic&ocirc;nes : "
-#~ msgid "Check the box to display icons"
-#~ msgstr "Cocher l'option pour afficher les ic&ocirc;nes."
-#~ msgid "Documents label: "
-#~ msgstr "Label: "
-#~ msgid "Choose the field that will be displayed as title of documents"
-#~ msgstr ""
-#~ "Choisissez le champ qui sera affich&eacute; comme titre des documents"
-#~ msgid "The default list is: "
-#~ msgstr "La liste des champs par d&eacute;faut est: "
-#~ msgid "Do you want to display default fields?"
-#~ msgstr "Souhaitez-vous afficher les champs par d&eacute;faut?"
-#~ msgid "Fields to be displayed"
-#~ msgstr "Liste des champs &agrave; afficher"
-#~ msgid "Small list:"
-#~ msgstr "Liste petite taille:"
-#~ msgid "Medium list:"
-#~ msgstr "Liste taille moyenne:"
-#~ msgid "Position"
-#~ msgstr "Position"
-#~ msgid "Field"
-#~ msgstr "Champ"
-#~ msgid "Custom"
-#~ msgstr "Personnalis&eacute;e"
-#~ msgid ""
-#~ "You can define your own display format, using <strong>custom</strong>. "
-#~ "Parameters of this section will be applied only if you use <em>Custom</"
-#~ "em> as display format for auto-shortcode (fifth option of this page), or "
-#~ "if you specify <em>size=custom</em> in the shortcodes in your post.<br /"
-#~ ">Keywords you can use are listed below."
-#~ msgstr ""
-#~ "Vous pouvez d&eacute;finir votre propre format, en utilisant le "
-#~ "<strong>format personnalis&eacute;</strong>. Les param&egrave;tres de "
-#~ "cette section ne s'appliquent que si vous choisissez "
-#~ "<em>Personnalis&eacute;</em> comme format d'affichage pour le shortcode "
-#~ "automatique (cinqui&egrave;me option de cette page), ou si vous sp&eacute;"
-#~ "cifi&eacute; <em>size=custom</em>, comme option des shortcodes dans vos "
-#~ "articles.<br />Les mots-cl&eacute;s sont list&eacute;s ci-dessous."
-#~ msgid ""
-#~ "Available keywords:<br /><table class=\"eg-attach-custom-format"
-#~ "\"><tr><td><strong>%LINK%</strong></td><td>Full link of document (such as "
-#~ "&lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</strong></"
-#~ "td><td>url of document (permalink),</td></tr><tr><td><strong>%GUID%</"
-#~ "strong></td><td>direct link to document as stored in the WP database,</"
-#~ "td></tr><tr><td><strong>%ICONURL%</strong></td><td>URL of icon,</td></"
-#~ "tr><tr><td><strong>%TITLE%</strong></td><td>Title of the document,</td></"
-#~ "tr><tr><td><strong>%CAPTION%</strong></td><td>caption of the document,</"
-#~ "td></tr><tr><td><strong>%DESCRIPTION%</strong></td><td>description of the "
-#~ "document,</td></tr><tr><td><strong>%FILENAME%</strong></td><td>Name of "
-#~ "the attached file,</td></tr><tr><td><strong>%FILESIZE%</strong></"
-#~ "td><td>Size of the attached document,</td></tr><tr><td><strong>%ATTID%</"
-#~ "strong></td><td>ID of the attachment.</td></tr><tr><td><strong>%TYPE%</"
-#~ "strong></td><td>Type of the documents</td></tr><tr><td><strong>%DATE%</"
-#~ "strong></td><td>Date of last modification</td></tr></table>"
-#~ msgstr ""
-#~ "Mots-cl&eacute;s disponibles :<br /><table class=\"eg-attach-custom-format"
-#~ "\"><tr><td><strong>%LINK%</strong></td><td>Lien complet vers le document "
-#~ "(comme &lt;a href=\"...\"&gt;...), </td></tr><tr><td><strong>%URL%</"
-#~ "strong></td><td>L'url du document attach&eacute; (permalien),</td></"
-#~ "tr><tr><td><strong>%GUID%</strong></td><td>Le lien direct vers le "
-#~ "document, tel qu'il est stock&eacute; dans la base de donn&eacute;es de "
-#~ "WordPress,</td></tr><tr><td><strong>%ICONURL%</strong></td><td>l'URL de "
-#~ "l'ic&ocirc;ne,</td></tr><tr><td><strong>%TITLE%</strong></td><td>Titre du "
-#~ "document attach&eacute;,</td></tr><tr><td><strong>%CAPTION%</strong></"
-#~ "td><td>L&eacute;gende du fichier attach&eacute;,</td></tr><tr><td><strong>"
-#~ "%DESCRIPTION%</strong></td><td>description du fichier attach&eacute;,</"
-#~ "td></tr><tr><td><strong>%FILENAME%</strong></td><td>Nom du fichier "
-#~ "attach&eacute;,</td></tr><tr><td><strong>%FILESIZE%</strong></"
-#~ "td><td>Taille du document,</td></tr><tr><td><strong>%ATTID%</strong></"
-#~ "td><td>ID du fichier document.</td></tr><tr><td><strong>%TYPE%</strong></"
-#~ "td><td>Type des documents</td></tr></table>"
-#~ msgid "Custom format, before list: "
-#~ msgstr "Format personnalis&eacute;, pr&eacute;fixe de la liste : "
-#~ msgid "Custom list format: "
-#~ msgstr "Format personnalis&eacute;, format de la liste : "
-#~ msgid "Custom list format"
-#~ msgstr "Format personnalis&eacute;, format de la liste"
-#~ msgid "Custom format, after list: "
-#~ msgstr "Format personnalis&eacute;, suffixe de la liste : "
-#~ msgid "Custom format, after list"
-#~ msgstr "Format personnalis&eacute;, suffixe de la liste"
-#~ msgid "General behavior of shortcodes"
-#~ msgstr "Comportement du shortcode"
-#~ msgid ""
-#~ "This option sets the default behavior of all shortcodes and auto-"
-#~ "shortcode. You can change the behavior of specific shortcodes by adding "
-#~ "<code>logged_users</code> parameter."
-#~ msgstr ""
-#~ "Cette option d&eacute;finit le comportement par d&eacute;faut de tous les "
-#~ "shortcodes et de l'auto-shortcode. Vous pouvez ensuite changer ce "
-#~ "comportement shortcode par shortcode, en leur ajoutant le param&egrave;"
-#~ "tre <code>logged_users</code>."
-#~ msgid "EG-Attachments Statistics"
-#~ msgstr "Statistiques EG-Attachments"
-#~ msgid "Details of %s"
-#~ msgstr "D&eacute;tails du document %s"
-#~ msgid "Top 10"
-#~ msgstr "Top 10"
-#~ msgid "Top 25"
-#~ msgstr "Top 25"
-#~ msgid "History of \"%s\" "
-#~ msgstr "Historique du document \"%s\" "
-#~ msgid "Q1"
-#~ msgstr "T1"
-#~ msgid "Q2"
-#~ msgstr "T2"
-#~ msgid "Q3"
-#~ msgstr "T3"
-#~ msgid "Q4"
-#~ msgstr "T4"
-#~ msgid "Jan"
-#~ msgstr "Jan"
-#~ msgid "Feb"
-#~ msgstr "F&eacute;v"
-#~ msgid "Mar"
-#~ msgstr "Mar"
-#~ msgid "Apr"
-#~ msgstr "Avr"
-#~ msgid "Jun"
-#~ msgstr "Juin"
-#~ msgid "Jul"
-#~ msgstr "Juil"
-#~ msgid "Aug"
-#~ msgstr "Ao&ucirc;"
-#~ msgid "Sep"
-#~ msgstr "Sep"
-#~ msgid "Oct"
-#~ msgstr "Oct"
-#~ msgid "Nov"
-#~ msgstr "Nov"
-#~ msgid "Dec"
-#~ msgstr "D&eacute;c"
-#~ msgid "Total"
-#~ msgstr "Total"
-#~ msgid "All<br />time"
-#~ msgstr "Toute la p&eacute;riode"
-#~ msgid "Last<br />month"
-#~ msgstr "Mois<br />dernier"
-#~ msgid "Current<br />month"
-#~ msgstr "Mois<br />courant"
-#~ msgid "Last<br />week"
-#~ msgstr "Semaine<br />derni&egrave;re"
-#~ msgid "Current<br />week"
-#~ msgstr "Semaine<br />actuelle"
-#~ msgid "Yesterday"
-#~ msgstr "Hier"
-#~ msgid "Today"
-#~ msgstr "Aujourd'hui"
-#~ msgid "No statistics available yet"
-#~ msgstr "Les statistiques ne sont pas encore disponibles"
-#~ msgid "Display label of fields"
-#~ msgstr "Affichage des labels des champs"
-#~ msgid "For Small size only, check the box if you want display labels"
-#~ msgstr ""
-#~ "Pour les listes de petites tailles seulement, cocher la bo&icirc;te, si "
-#~ "vous souhaitez afficher les labels"
-#~ msgid "(For the other sizes, labels are always displayed)"
-#~ msgstr ""
-#~ "(Pour les autres tailles de liste, les labels sont toujours affich&eacute;"
-#~ "s"
-#~ msgid "Display label: "
-#~ msgstr "Afficher le label: "
-#~ msgid "(for size=small only)"
-#~ msgstr "(pour liste de petite taille seulement)"
-#~ msgid "Custom fields:"
-#~ msgstr "Personnalisation des champs:"
-#~ msgid "or display the following fields"
-#~ msgstr "ou afficher les champs suivants"
-#~ msgid "Lists of posts."
-#~ msgstr "Listes des articles."
-#~ msgid "Automatic Shortcode"
-#~ msgstr "Shortcode automatique"
-#~ msgid "Administration"
-#~ msgstr "Administration"
-#~ msgid ""
-#~ "All of the following parameters are applied on manual AND automatic "
-#~ "shortcode."
-#~ msgstr ""
-#~ "Tous les param&egrave;tres de cette page s'appliquent aux shortcodes "
-#~ "manuelles ET automatiques."
-#~ msgid "EG-Attachments settings"
-#~ msgstr "Options de EG-Attachments"
-#~ msgid "Comments"
-#~ msgstr "Commentaires"
-#~ msgid ""
-#~ "When you upload an attachment file, which behavior do you want for "
-#~ "comments"
-#~ msgstr ""
-#~ "Lorsque vous t&eacute;l&eacute;chargez une pi&egrave;ce jointe, quel "
-#~ "comportement souhaitez-vous pour les commentaires"
-#~ msgid "Keep default"
-#~ msgstr "Garder le comportement par d&eacute;faut,"
-#~ msgid "Closed the comments"
-#~ msgstr "Ne pas autoriser les commentaires."
-#~ msgid "Pingbacks/Trackbacks"
-#~ msgstr "Ping / R&eacute;troliens"
-#~ msgid "Allow the pings"
-#~ msgstr "Autoriser les pings"
-#~ msgid "Closed the pings"
-#~ msgstr "Ne pas autoriser les pings"
-#~ msgid ""
-#~ "When you upload an attachment file, which behavior do you want for "
-#~ "pingbacks / trackbacks"
-#~ msgstr ""
-#~ "Lorsque vous t&eacute;l&eacute;chargez une pi&egrave;ce jointe, quel "
-#~ "comportement souhaitez-vous pour les pings / r&eacute;troliens"
-#~ msgid "Icon height: "
-#~ msgstr "Hauteur de l'icone : "
-#~ msgid "Icon width: "
-#~ msgstr "Largeur de l'icone : "
-#~ msgid "Menu order"
-#~ msgstr "Ordre &quote;utilisateur&quote;"
-#~ msgid "Icons Management"
-#~ msgstr "Gestion des ic&ocirc;nes"
-#~ msgid ""
-#~ "EG-Attachments provides icons, to complete the existing WordPress' list. "
-#~ "You can add your own icons, by specifying a directory/url were these "
-#~ "icons are stored."
-#~ msgstr ""
-#~ "EG-Attachments fournit des ic&ocirc;nes, pour compl&eacute;ter ceux "
-#~ "fournis en standard par WordPress. Vous pouvez ajouter votre propre list, "
-#~ "en indiquant un chemin/une url o&ugrave; sont stock&eacute;s ces ic&ocirc;"
-#~ "nes."
-#~ msgid ""
-#~ "Please enter a location outside of EG-Attachments directories. By this "
-#~ "way, your icons won't be deleted while a plugin upgrade"
-#~ msgstr ""
-#~ "Saisir un r&eacute;pertoire en dehors de l'arborescence de EG-"
-#~ "Attachments. De cette fa&ccedil;on, vos ic&ocirc;nes ne seront pas "
-#~ "effac&eacute;s pendant les mises &agrave; jour du plugin."
-#~ msgid "Icon urlh (beta)"
-#~ msgstr "Url des ic&ocirc;nes (B&ecirc;ta)"
-#~ msgid "Additional url that can be used by the plugin can display icons"
-#~ msgstr "Url utilis&eacute;es par le plugins pour afficher les ic&ocirc;nes"
+#: inc/eg-attachments-settings.inc.php:
+msgid "Display attachments for all users"
+msgstr "Afficher les pi&egrave;ces jointes pour tous les utilisateurs"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "Show attachments for everyone, but the url, for logged users only"
+msgstr "Afficher les pi&egrave;ces jointes, mais ne montrer les liens que pour les utilisateurs connect&eacute;s"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "Display attachments for logged users only"
+msgstr "Limiter l'acc&egrave;s des pi&egrave;ces jointes aux utilisateurs enregistr&eacute;s."
+
+#: /inc/eg-attachments-settings.inc.php:
+msgid "Some comments about security:<ul><li>- &laquo;Private&raquo; Attachments, or documents attached to a &laquo;Private&raquo; post, are not displayed, if the user is not logged,</li><li>- &laquo;Protected&raquo; Attachments, or documents attached to a &laquo;Protected&raquo; post, are not displayed, if users don't give the right password,</li><li>- For non private, and non protected posts, you can choose with the following options, to display attachments, to display without link, or hide attachments.</li></ul>"
+msgstr "Commentaires au sujet de l'acc&egrave;s aux pi&egrave;ces jointes : <ul><li>- Les pi&egrave;ces jointes &laquo;Priv&eacute;es&raquo; ou les pi&egrave;ces jointes attach&eacute;es &agrave; un article &laquo;Priv&eacute;s&raquo;, ne sont pas affich&eacute;es, si l'utilisateur n'est pas connect&eacute;,</li><li>- Les pi&egrave;ces jointes &laquo;Prot&eacute;g&eacute;es&raquo; ou les pi&egrave;ces jointes attach&eacute;es &agrave; un article &laquo;Prot&eacute;g&eacute;&raquo;, ne sont pas affich&eacute;es, si l'utilisateur n'a pas saisi le bon mot de passe,</li><li>- Pour les articles publics, ou non prot&eacute;g&eacute;s, vous pouvez choisir l'une des options suivantes, vous permettant d'afficher les p&egrave;ces jointes, avec ou sans les liens, ou de les cacher.</li></ul>"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "List with details, and big icon"
+msgstr "Liste d&eacute;taill&eacute;e, avec ic&ocirc;ne"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "Large list of attachments without icon"
+msgstr "Liste d&eacute;taill&eacute;e, sans ic&ocirc;ne"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "List with details, and medium size icon"
+msgstr "Liste d&eacute;taill&eacute;e, avec ic&ocirc;ne de taille moyenne"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "Medium list of attachments without icon"
+msgstr "Liste de taille moyenne, sans ic&ocirc;ne"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "List with details, and small size icon"
+msgstr "Liste simplifi&eacute;e, avec ic&ocirc;ne de petite taille"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "Small list of attachments without icon"
+msgstr "Liste simplifi&eacute;e,sans ic&ocirc;ne"
+
+#: inc/eg-attachment-keywords-help.inc.php
+msgid "The number of downloads is displayed only when if the attachment was downloaded at least 1 time"
+msgstr "Le nombre de t&eacute;l&eacute;chargements est affich&eacute; uniquement lorsque la pi&egrave;ce jointe est t&eacute;l&eacute;charg&eacute;e au moins une fois"
+
+#: inc/eg-attachment-keywords-help.inc.php
+msgid "The &laquo; nofollow &raquo; attribut is displayed only if the option &laquo; nofollow &raquo; is checked in the <a href=\"%s\">Settings / EG-Attachments</a> menu"
+msgstr "L'attribut &laquo; nofollow &raquo; est affich&eacute; uniquement si l'option &laquo; nofollow &raquo; est activ&eacute;e dans le menu <a href=\"%s\">Settings / EG-Attachments</a>"
+
+#: inc/eg-attachment-keywords-help.inc.php
+msgid "The &laquo; target &raquo; attributs are displayed only if the option &laquo; target &raquo; is checked in the <a href=\"%s\">Settings / EG-Attachments</a> menu"
+msgstr "L'attribut &laquo; target &raquo; est affich&eacute; uniquement si l'option &laquo; target &raquo; est activ&eacute;e dans le menu <a href=\"%s\">Settings / EG-Attachments</a>"
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "Extension"
+msgstr "Extension"
 

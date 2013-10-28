@@ -41,21 +41,7 @@ if (! class_exists('EG_Plugin_130')) {
 		var $pointers_caps		= FALSE;
 		var $changed_options	= FALSE;
 
-		/**
-		 * EG_Plugin_130 (class constructor)
-		 *
-		 * Long Description
-		 *
-		 * @package EG-Plugin
-		 * @since 1.0
-		 * @param none
-		 * @return none
-		 *
-		 */
-		function EG_Plugin_130($name, $version, $option_entry='', $textdomain='', $core_file=__FILE__, $default_options=FALSE) {
-
-			$this->__construct($name, $version, $option_entry, $textdomain, $core_file, $default_options);
-		} // End of EG_Plugin_130
+		var $adminbar_menu		= array();
 
 		/**
 		 * __construct (class constructor)
@@ -161,7 +147,7 @@ if (! class_exists('EG_Plugin_130')) {
 		 *
 		 */
 		function load_options_page() {
-			if (!class_exists('EG_Form_220')) {
+			if (!class_exists('EG_Form_221')) {
 				require($this->path.'lib/eg-forms.inc.php');
 			}
 		} // End of load_options_page
@@ -178,7 +164,7 @@ if (! class_exists('EG_Plugin_130')) {
 		 *
 		 */
 		function options_validation($inputs) {
-		
+
 			$this->changed_options = array();
 			$all_options = get_option($this->options_entry);
 			foreach ($inputs as $key => $value) {
@@ -188,7 +174,7 @@ if (! class_exists('EG_Plugin_130')) {
 						$this->changed_options[$key] = $value;
 					}
 					if (is_array($value)) {
-						$all_options[$key] = (array)$value;
+						$all_options[$key] = array_filter($value);
 					}
 					else {
 						if (is_float($value)) $all_options[$key] = floatval($value);
@@ -197,6 +183,7 @@ if (! class_exists('EG_Plugin_130')) {
 					} // End of ! is_array
 				} // End of "input exist in options"
 			} // End of foreach
+
 			$this->options = $all_options;
 			if (0 == sizeof($this->changed_options))
 				$this->changed_options = FALSE;
@@ -217,7 +204,7 @@ if (! class_exists('EG_Plugin_130')) {
 		 */
 		function options_page() {
 
-			$option_form = new EG_Form_220($this->options_page_id, $this->options_page_id.'-group', $this->options_page_title, $this->options_entry, $this->textdomain, '', '', array(&$this, 'display_sidebar'));
+			$option_form = new EG_Form_221($this->options_page_id, $this->options_page_id.'-group', $this->options_page_title, $this->options_entry, $this->textdomain, '', '', array(&$this, 'display_sidebar'));
 			require($this->path.'inc/'.$this->options_page_file);
 			$option_form->display($this->options);
 		} // End of options_page
@@ -235,7 +222,7 @@ if (! class_exists('EG_Plugin_130')) {
 		function settings_links( $links ) {
 			if ($this->options_page_id != '') {
 				$new_link = sprintf( '<a href="'.admin_url('options-general.php').'?page=%s">%s</a>',
-											$this->options_page_id, __('Settings', $this->textdomain) );
+											$this->options_page_id, __('Settings' /* , $this->textdomain */) );
 				array_unshift( $links, $new_link );
 			}
 			return ($links);
@@ -283,34 +270,71 @@ if (! class_exists('EG_Plugin_130')) {
 
 			/* ---- Enqueue the plugin stylesheet ---- */
 			if ($this->stylesheet!='' && (!isset($this->options['load_css']) || $this->options['load_css'])) {
-				wp_register_style( $this->name, $this->get_stylesheet_url($this->stylesheet) );
+				wp_register_style( $this->name, $this->get_stylesheet_url($this->stylesheet), array(), $this->version );
 				wp_enqueue_style( $this->name );
 			}
 		} // End of enqueue_styles
 
+		/**
+		 * add_menu_to_admin_bar
+		 *
+		 *
+		 *
+		 * @package EG-Plugin
+		 * @since 1.0
+		 * @param none
+		 * @return none
+		 *
+		 */
 		function add_menu_to_admin_bar($wp_admin_bar) {
 
-			if ($this->options_page_id != '' && is_admin_bar_showing() &&
-				(isset($this->options['display_admin_bar']) && $this->options['display_admin_bar'])) {
+			if (is_admin_bar_showing() && isset($this->options['display_admin_bar']) && $this->options['display_admin_bar']) {
 
-				$user_cap = current_user_can('manage_options');
-				if ($user_cap) {
+				if ('' != $this->options_page_id) {
+					$this->adminbar_menu[] = array(
+						'menu' => array(
+							'id'		=> sanitize_title($this->name).'-settings-menubar',
+							'title'		=> __($this->name.' Settings', $this->textdomain),
+							'href' 		=> admin_url('options-general.php?page='.$this->options_page_id)
+						),
+						'cap' => 'manage_options'
+					);
+				} // End of options_page_id
+
+				// Filter menu according user capability
+				if (sizeof($this->adminbar_menu) > 0) {
+					foreach ($this->adminbar_menu as $key => $menu) {
+						if (! current_user_can($menu['cap'])) {
+							unset($this->adminbar_menu[$key]);
+						}
+					} // End of foreach
+				} // End of sizeof > 0
+
+				if (0 < sizeof($this->adminbar_menu)) {
+
 					$wp_admin_bar->add_menu( array(
 						'id' 		 => 'egplugins',
 						'title' 	 => __('EG-Plugins'))
 					);
+					$parent_menu = 'egplugins';
+					if (1 < sizeof($this->adminbar_menu)) {
+						$parent_menu = sanitize_title($this->name).'-menubar';
+						$wp_admin_bar->add_menu( array(
+							'parent'	=> 'egplugins',
+							'id' 	 	=> $parent_menu,
+							'title'  	=> __($this->name, $this->textdomain)
+							)
+						);
+					} // End of sizeof($this->adminbar_menu)>1
 
-					$wp_admin_bar->add_menu( array(
-						'parent' => 'egplugins',
-						'id' 	 => $this->name.'-settings-menubar',
-						'title'  => __($this->name.' Settings', $this->textdomain),
-						'href' 	 => admin_url('options-general.php?page='.$this->options_page_id)
-						)
-					);
-				} // End of if user_cap
+					foreach ($this->adminbar_menu as $key => $menu) {
+						$menu['menu']['parent'] = $parent_menu;
+						$wp_admin_bar->add_menu( $menu['menu'] );
+					} // End of foreach
 
+				} // End of sizeof(adminbar_menu)>0
 			} // End of  options_page exists and bar displayed
-
+			return (FALSE);
 		} // End of add_menu_to_admin_bar
 
 		/**
@@ -415,12 +439,11 @@ if (! class_exists('EG_Plugin_130')) {
 				$previous_options = $this->options;
 				if (version_compare($this->options['version'], $this->version, '<')) {
 					// Plugin already installed previously => upgrade
-
-						$new_options = array();
-						foreach ($this->default_options as $key => $value) {
-							if (isset($this->options[$key])) $new_options[$key] = $this->options[$key];
-							else $new_options[$key] = $value;
-						} // End foreach
+					$new_options = array();
+					foreach ($this->default_options as $key => $value) {
+						if (isset($this->options[$key])) $new_options[$key] = $this->options[$key];
+						else $new_options[$key] = $value;
+					} // End foreach
 				} // End of options not empty (update)
 			}
 			if (FALSE !== $new_options) {
@@ -460,6 +483,69 @@ if (! class_exists('EG_Plugin_130')) {
 			// add_filter( 'plugin_row_meta', array( &$this,'plugin_meta_links'), 10, 2 );
 		} // End of load
 
+		/**
+		 * shortcode_is_visible
+		 *
+		 * Define is auto shortcode must be displayed of not.
+		 *
+		 * @return  int		1 if a shortcode is visble, 0 if not
+		 */
+		function shortcode_is_visible() {
+			global $post;
+
+			if (! is_array($this->options['shortcode_auto_where']))
+				$list = array($this->options['shortcode_auto_where']);
+			else
+				$list = $this->options['shortcode_auto_where'];
+
+			if (is_front_page() || is_home())	$current_page = 'home';
+			elseif (is_singular()) 				$current_page = get_post_type();
+			elseif (is_feed())					$current_page = 'feed';
+			elseif (is_archive() || is_category() || is_tag() || is_date() || is_day() || is_month() || is_year()) $current_page = 'index';
+			else $current_page='unknown';
+
+			return ( in_array($current_page, $list) );
+		} // End of shortcode_is_visible
+
+		/**
+		 * shortcode_auto_check_manual_shortcode
+		 *
+		 * Detect manual shortcode
+		 *
+		 * @return  TRUE auto-shortcode can be displayed, FALSE, auto shortcode is not displayed
+		 */
+		function shortcode_auto_check_manual_shortcode($shortcode_string) {
+			global $post;
+
+			$value = TRUE;
+			if ( isset($post) && $this->options['shortcode_auto_exclusive'] > 0 ) {
+				$value = (strpos($post->post_excerpt.' '.$post->post_content, '['.$shortcode_string.' ') === FALSE);
+			}
+// eg_plugin_error_log($this->name, 'shortcode_auto_check_manual_shortcode', $value);
+			return ($value);
+		} // End of shortcode_auto_check_manual_shortcode
+
+		/**
+		 * shortcode_title
+		 *
+		 * Add title to a specified string
+		 *
+		 * @param 	string		the string to modify
+		 * @param 	string		$title
+		 * @param 	string		$titletag
+		 * @return 	string		string with added title
+		 */
+		function shortcode_title($string, $title, $titletag) {
+		
+			if ($title != '') {
+				$string = ($titletag==''?'':'<'.$titletag.'>').
+						esc_html($title).
+						($titletag==''?'':'</'.$titletag.'>').
+						$string;
+			}
+			return ($string);
+		} // End of shortcode_title
+		
 		function display_plugin_links($args, $box) {
 ?>
 			<ul>
@@ -489,23 +575,24 @@ if (! class_exists('EG_Plugin_130')) {
 
 		function display_donate($args, $box) {
 			global $locale;
+
+			$long_lang  = $locale;
+			$short_lang = substr($locale, strpos($locale, '_')+1);
 ?>
 			<p>
-			<?php esc_html__('This plugin required and requires many hours of work. If you use the plugin, and like it, feel free to show your appreciation to the author.', $this->textdomain); ?>
+			<?php esc_html_e('This plugin required and requires many hours of work. If you use the plugin, and like it, feel free to show your appreciation to the author.', $this->textdomain); ?>
 			</p>
 			<?php if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME']=='localhost') { ?>
-				<a href="#">PayPal - The safer, easier way to pay online!</a>
+				<a href="#"><?php esc_html_e('PayPal - The safer, easier way to pay online!', $this->textdomain); ?></a>
 			<?php } else { ?>
-				<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-					<input type="hidden" name="cmd" value="_donations">
-					<input type="hidden" name="business" value="CPCKAJFRB5NNA">'.
-					<input type="hidden" name="lc" value="<?php echo ($locale=='fr_FR'?'FR':'US'); ?>">
-					<input type="hidden" name="item_number" value="<?php echo $this->name; ?>">
-					<input type="hidden" name="currency_code" value="EUR">
-					<input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_LG.gif:NonHosted">
-					<input type="image" src="https://www.paypalobjects.com/<?php echo ($locale=='fr_FR'?'fr_FR':'en_US'); ?>/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="<?php esc_html__('PayPal - The safer, easier way to pay online!', $this->textdomain); ?>">
-					<img alt="" border="0" src="https://www.paypalobjects.com/<?php echo ($locale=='fr_FR'?'fr_FR':'en_US'); ?>/i/scr/pixel.gif" width="1" height="1">
-				</form>
+
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+<input type="image" src="https://www.paypalobjects.com/<?php echo $long_lang; ?>/<?php echo $short_lang; ?>/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="<?php esc_html_e('PayPal - The safer, easier way to pay online!', $this->textdomain); ?>">
+<img alt="" border="0" src="https://www.paypalobjects.com/<?php echo $long_lang; ?>/i/scr/pixel.gif" width="1" height="1">
+</form>
 			<?php }
 		} // End of display_donate
 

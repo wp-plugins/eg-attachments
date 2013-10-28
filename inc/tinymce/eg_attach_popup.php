@@ -13,7 +13,9 @@ if (!is_user_logged_in() || (!current_user_can('edit_posts') &&
 
 $ega_options 	= get_option(EGA_OPTIONS_ENTRY);
 $default_values = EG_Attachments_Common::get_shortcode_defaults($ega_options);
+list($default_values['orderby'], $default_values['order']) = explode(' ', $default_values['orderby']);
 $current_values = $default_values;
+
 if ($ega_options['shortcode_auto_default_opts']) {
 	$current_values = array_merge($current_values, array(
 		'orderby'  		=> $ega_options['shortcode_auto_orderby'],
@@ -31,6 +33,7 @@ $select_fields = array(
 //	'size'	   => EG_Attachments_Common::get_templates($ega_options, 'standard'),
 	'template' => EG_Attachments_Common::get_templates($ega_options, 'all'),
 	'orderby'  => $EGA_FIELDS_ORDER_LABEL,
+	'order'	   => array( 'ASC' => __('Ascending', EGA_TEXTDOMAIN), 'DESC' => __('Descending', EGA_TEXTDOMAIN) ),
 	'doctype'	   => array(
 		'all'	   => __('All',       EGA_TEXTDOMAIN),
 		'document' => __('Documents', EGA_TEXTDOMAIN),
@@ -43,8 +46,9 @@ $select_fields = array(
 	),
 	'logged_users' => array(
 		'-1'       => __('Use default parameter', EGA_TEXTDOMAIN),
-		'0'        => __('All users', EGA_TEXTDOMAIN),
-		'1'        => __('Only logged users', EGA_TEXTDOMAIN)
+		'0'        => __('Display attachments for all users', EGA_TEXTDOMAIN),
+		'1'        => __('Show attachments for everyone, but the url, for logged users only', EGA_TEXTDOMAIN),
+		'2'        => __('Display attachments for logged users only', EGA_TEXTDOMAIN)
 	)
 );
 
@@ -72,7 +76,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 
     <script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/tiny_mce_popup.js"></script>
 	<script language="javascript" type="text/javascript">
-	
+
 		function init() {
 			tinyMCEPopup.resizeToInnerSize();
 		}
@@ -96,7 +100,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			if (string!="") string = string + "\"";
 			return string;
 		} // End of getCheckedValue
-		
+
 		function insertEGAttachmentsShortCode() {
 
 			var title 			 = document.getElementById('title').value;
@@ -115,9 +119,13 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			var target_def	 	 = parseInt(document.getElementById('target_def').value)
 			var force_saveas	 = document.getElementById('force_saveas').value;
 			var force_saveas_def = document.getElementById('force_saveas_def').value;
-			var logged_users	 = parseInt(document.getElementById('logged_users').value);
-			var logged_users_def = parseInt(document.getElementById('logged_users_def').value);
-			
+			var logged_users	 = document.getElementById('logged_users').value;
+			var logged_users_def = document.getElementById('logged_users_def').value;
+			var orderby 		 = document.getElementById('orderby').value;
+			var orderby_def		 = document.getElementById('orderby_def').value;
+			var order			 = document.getElementById('order').value;
+			var order_def		 = document.getElementById('order_def').value;
+
 			if (document.getElementById('tags')) {
 				var tags		 = document.getElementById('tags').value;
 				var tags_and	 = document.getElementById('tags_and');
@@ -128,7 +136,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			var tagtext = "[attachments";
 			if (title != title_def )
 				tagtext = tagtext + " title=\"" + title + "\"";
-	
+
 			if (titletag != titletag_def )
 				tagtext = tagtext + " titletag=\"" + titletag + "\"";
 
@@ -151,24 +159,38 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			else target_val=0;
 
 			if (target_val != target_def)
-				tagtext = tagtext + " nofollow=" + target_val;
+				tagtext = tagtext + " target=" + target_val;
 
 			if (force_saveas > force_saveas_def )
 				tagtext = tagtext + " force_saveas=1";
 
-			if (logged_users > logged_users_def )
-				tagtext = tagtext + " logged_users=1";
+			if (logged_users != logged_users_def )
+				tagtext = tagtext + " logged_users=" + logged_users;
 
 			if (typeof tags_and != "undefined" && typeof tags != "undefined" ) {
 				if (tags_and.checked) {
-					tags_option=" tags";
-				} else {
 					tags_option=" tags_and";
-				} 
+				} else {
+					tags_option=" tags";
+				}
 				if ( tags != "" )
-					tagtext = tagtext + tags_option + "=" + tags;
+					tagtext = tagtext + tags_option + "=\"" + tags + "\"";
 			}
 
+			orderby_string = "";
+			if ( orderby != orderby_def )
+				orderby_string = orderby;
+
+			if ( order != order_def ) {
+				if ( orderby_string != "" ) 
+					orderby_string = orderby_string + " " + order;
+				else
+					orderby_string = orderby + " " + order;
+			}
+
+			if ( orderby_string != "" )
+				tagtext = tagtext + " orderby=\"" + orderby_string + "\"";
+				
 			if ( default_doclist && !default_doclist.checked) {
 				if (doclist!="")
 					tagtext = tagtext + " include=" + doclist;
@@ -186,7 +208,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 
   </head>
   <body onload="tinyMCEPopup.executeOnLoad('init();');">
-  	<div class="mceActionPanel">
+  	<div class="mceActionPanel panel_wrapper">
 		<form action="" method="post" name="ega-mcebox">
 			<div style="float: left; margin:0; width:49%;">
 				<p>
@@ -215,15 +237,15 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 				<p>
 					<input type="hidden" name="nofollow_def" id="nofollow_def" value="<?php echo $default_values['nofollow']; ?>" />
 					<input type="checkbox" id="nofollow" <?php echo ($default_values['nofollow']>0?'checked':''); ?> />
-					<label for="nofollow"><strong><?php _e('Nofollow: ',EGA_TEXTDOMAIN); ?></strong></label>
+					<label for="nofollow"><strong><?php _e('Add &laquo;Nofollow&raquo; attribut',EGA_TEXTDOMAIN); ?></strong></label>
 				</p>
 				<p>
 					<input type="hidden" name="target_def" id="target_def" value="<?php echo $default_values['target']; ?>" />
 					<input type="checkbox" id="target" <?php echo ($default_values['target']>0?'checked':''); ?> />
-					<label for="target"><strong><?php _e('Target="blank" : ',EGA_TEXTDOMAIN); ?></strong></label>
+					<label for="target"><strong><?php _e('Add target="blank" attribut',EGA_TEXTDOMAIN); ?></strong></label>
 				</p>
 				<p>
-					<label for="force_saveas"><strong><?php _e('Force "saveas": ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<label for="force_saveas"><strong><?php _e('Force "saveas": ', EGA_TEXTDOMAIN); ?></strong></label><br />
 					<?php echo get_select('force_saveas', 'force_saveas', $current_values, $default_values); ?>
 				</p>
 				<p>
@@ -232,11 +254,19 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 				</p>
 			</div>
 			<div style="float: left; margin:0 0 0 1%; width:49%;">
+				<p>
+					<label for="orderby"><strong><?php _e('Order by: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('orderby', 'orderby', $current_values, $default_values); ?>
+				</p>
+				<p>
+					<label for="order"><strong><?php _e('Order: ',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('order', 'order', $current_values, $default_values); ?>
+				</p>
 				<?php if ($ega_options['tags_assignment'])  { ?>
 				<p>
 					<label for="tags"><strong><?php esc_html_e('Filter attachments using tags', EGA_TEXTDOMAIN); ?></strong></label><br />
 					<input type="text" id="tags" name="tags" value="" /><br />
-					<input type="checkbox" id="tags_and" /><label for="tags_and"><?php esc_html_e('Check if you want posts linked to all tags', EGA_TEXTDOMAIN); ?></label>
+					<input type="checkbox" id="tags_and" /><label for="tags_and"><?php esc_html_e('Check if you want posts linked to ALL tags', EGA_TEXTDOMAIN); ?></label>
 				</p>
 				<?php }
 				$attachment_string = '';
@@ -250,7 +280,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 						}
 					}
 				}
-				
+
 				if ('' != $attachment_string) { ?>
 				<p>
 					<label for="doclist"><strong><?php _e('Document list: ',EGA_TEXTDOMAIN); ?></strong></label><br />
