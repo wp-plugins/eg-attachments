@@ -2,9 +2,9 @@
 Contributors: EmmanuelG
 Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode
-Requires at least: 3.5.0
+Requires at least: 3.6.0
 Tested up to: 3.7.0
-Stable tag: 1.9.4.5
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
