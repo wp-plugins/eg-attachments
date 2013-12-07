@@ -20,35 +20,41 @@ if ($ega_options['shortcode_auto_default_opts']) {
 	$current_values = array_merge($current_values, array(
 		'orderby'  		=> $ega_options['shortcode_auto_orderby'],
 		'order'			=> $ega_options['shortcode_auto_order'],
-//		'size'     		=> $ega_options['shortcode_auto_size'],
 		'template' 		=> $ega_options['shortcode_auto_template'],
 		'doctype'  		=> $ega_options['shortcode_auto_doc_type'],
 		'title'    		=> $ega_options['shortcode_auto_title'],
 		'titletag' 		=> $ega_options['shortcode_auto_title_tag'],
-		'limit' 	 	=> $ega_options['shortcode_auto_limit'])
+		'limit' 	 	=> $ega_options['shortcode_auto_limit'],
+		'icon_image' 	=> $ega_options['icon_image'])
 	);
 }
 
 $select_fields = array(
-//	'size'	   => EG_Attachments_Common::get_templates($ega_options, 'standard'),
 	'template' => EG_Attachments_Common::get_templates($ega_options, 'all'),
 	'orderby'  => $EGA_FIELDS_ORDER_LABEL,
-	'order'	   => array( 'ASC' => __('Ascending', EGA_TEXTDOMAIN), 'DESC' => __('Descending', EGA_TEXTDOMAIN) ),
-	'doctype'	   => array(
-		'all'	   => __('All',       EGA_TEXTDOMAIN),
-		'document' => __('Documents', EGA_TEXTDOMAIN),
-		'image'    => __('Images',    EGA_TEXTDOMAIN)
+	'force_saveas'  => array(
+		'-1'        => __('Use default parameter', EGA_TEXTDOMAIN),
+		'0'         => __('No', EGA_TEXTDOMAIN),
+		'1'         => __('Yes', EGA_TEXTDOMAIN)
 	),
-	'force_saveas' => array(
-		'-1'       => __('Use default parameter', EGA_TEXTDOMAIN),
-		'0'        => __('No', EGA_TEXTDOMAIN),
-		'1'        => __('Yes', EGA_TEXTDOMAIN)
+	'logged_users'  => array(
+		'-1'        => __('Use default parameter', EGA_TEXTDOMAIN),
+		'0'         => __('Display attachments for all users', EGA_TEXTDOMAIN),
+		'1'         => __('Show attachments for everyone, but the url, for logged users only', EGA_TEXTDOMAIN),
+		'2'         => __('Display attachments for logged users only', EGA_TEXTDOMAIN)
 	),
-	'logged_users' => array(
-		'-1'       => __('Use default parameter', EGA_TEXTDOMAIN),
-		'0'        => __('Display attachments for all users', EGA_TEXTDOMAIN),
-		'1'        => __('Show attachments for everyone, but the url, for logged users only', EGA_TEXTDOMAIN),
-		'2'        => __('Display attachments for logged users only', EGA_TEXTDOMAIN)
+	'order'	   		=> array(
+		'ASC' 		=> __('Ascending', EGA_TEXTDOMAIN),
+		'DESC' 		=> __('Descending', EGA_TEXTDOMAIN)
+	),
+	'icon_image'    => array(
+		'icon'		=> __('The icon of the file type', EGA_TEXTDOMAIN),
+		'thumbnail' => __('The Thumbnail of the image', EGA_TEXTDOMAIN),
+	),
+	'doctype'	    => array(
+		'all'	    => __('All',       EGA_TEXTDOMAIN),
+		'document'  => __('Documents', EGA_TEXTDOMAIN),
+		'image'     => __('Images',    EGA_TEXTDOMAIN)
 	)
 );
 
@@ -65,6 +71,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 	$string .= '</select><input type="hidden" name="'.$html_id.'_def" id="'.$html_id.'_def" value="'.$default_values[$key].'" />';
 	return $string;
 } // End of get_select
+
 
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -125,7 +132,10 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			var orderby_def		 = document.getElementById('orderby_def').value;
 			var order			 = document.getElementById('order').value;
 			var order_def		 = document.getElementById('order_def').value;
-
+			var icon_image		 = document.getElementById('icon_image').value;
+			var icon_image_def	 = document.getElementById('icon_image_def').value;
+			
+			
 			if (document.getElementById('tags')) {
 				var tags		 = document.getElementById('tags').value;
 				var tags_and	 = document.getElementById('tags_and');
@@ -151,10 +161,13 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 
 			if (nofollow.checked) nofollow_val=1;
 			else nofollow_val=0;
-
+			
 			if (nofollow_val != nofollow_def)
 				tagtext = tagtext + " nofollow=" + nofollow_val;
 
+			if ( icon_image_def != icon_image) 
+				tagtext = tagtext + " icon_image=" + icon_image;
+				
 			if (target.checked) target_val=1;
 			else target_val=0;
 
@@ -182,7 +195,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 				orderby_string = orderby;
 
 			if ( order != order_def ) {
-				if ( orderby_string != "" ) 
+				if ( orderby_string != "" )
 					orderby_string = orderby_string + " " + order;
 				else
 					orderby_string = orderby + " " + order;
@@ -190,7 +203,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 
 			if ( orderby_string != "" )
 				tagtext = tagtext + " orderby=\"" + orderby_string + "\"";
-				
+
 			if ( default_doclist && !default_doclist.checked) {
 				if (doclist!="")
 					tagtext = tagtext + " include=" + doclist;
@@ -245,15 +258,19 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 					<label for="target"><strong><?php _e('Add target="blank" attribut',EGA_TEXTDOMAIN); ?></strong></label>
 				</p>
 				<p>
-					<label for="force_saveas"><strong><?php _e('Force "saveas": ', EGA_TEXTDOMAIN); ?></strong></label><br />
-					<?php echo get_select('force_saveas', 'force_saveas', $current_values, $default_values); ?>
-				</p>
-				<p>
 					<label for="logged_users"><strong><?php _e('Attachments access: ',EGA_TEXTDOMAIN); ?></strong></label><br />
 					<?php echo get_select('logged_users', 'logged_users', $current_values, $default_values); ?>
 				</p>
 			</div>
 			<div style="float: left; margin:0 0 0 1%; width:49%;">
+				<p>
+					<label for="force_saveas"><strong><?php _e('Force "saveas": ', EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('force_saveas', 'force_saveas', $current_values, $default_values); ?>
+				</p>
+				<p>
+					<label for="icon_image"><strong><?php _e('Icons for the images:',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<?php echo get_select('icon_image', 'icon_image', $current_values, $default_values); ?>
+				</p>
 				<p>
 					<label for="orderby"><strong><?php _e('Order by: ',EGA_TEXTDOMAIN); ?></strong></label><br />
 					<?php echo get_select('orderby', 'orderby', $current_values, $default_values); ?>
@@ -266,7 +283,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 				<p>
 					<label for="tags"><strong><?php esc_html_e('Filter attachments using tags', EGA_TEXTDOMAIN); ?></strong></label><br />
 					<input type="text" id="tags" name="tags" value="" /><br />
-					<input type="checkbox" id="tags_and" /><label for="tags_and"><?php esc_html_e('Check if you want posts linked to ALL tags', EGA_TEXTDOMAIN); ?></label>
+					<input type="checkbox" id="tags_and" /><label for="tags_and"><?php esc_html_e('Check if you want only the posts linked to ALL tags', EGA_TEXTDOMAIN); ?></label>
 				</p>
 				<?php }
 				$attachment_string = '';

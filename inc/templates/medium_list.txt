@@ -2,7 +2,7 @@
 [description]Medium list of attachments without icon[/description]
 [before]<ul>[/before]
 [loop]<li class="attachments attachments-medium">
-	<strong>%FILENAME_LABEL%</strong> : <a title="%TITLE%" href="%LINK%" %NOFOLLOW%>%FILENAME%</a> (%FILESIZE%)
+	<strong>%FILENAME_LABEL%</strong> : <a title="%TITLE%" href="%URL%" %NOFOLLOW%>%FILENAME%</a> (%FILESIZE%)
 	<br>
 	<strong>%CAPTION_LABEL%</strong> : %CAPTION%
 </li>[/loop]

@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 2.0.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/eg-attachments\n"
 "POT-Creation-Date: 2013-02-10 23:52:03+00:00\n"
-"PO-Revision-Date: 2013-10-28 13:13+0100\n"
+"PO-Revision-Date: 2013-12-03 06:30+0100\n"
 "Last-Translator: Emmanuel Georjon <blog@emmanuelgeorjon.com>\n"
 "Language-Team: Emmanuel GEORJON <blog@emmanuelgeorjon.com>\n"
 "MIME-Version: 1.0\n"
@@ -386,7 +386,11 @@ msgstr "Afficher le graphique"
 msgid "click"
 msgstr "clic"
 
-#: inc/eg-attachments-public.inc.php inc/eg-attachments-admin.inc.php:992
+#: inc/eg-attachments-public.inc.php:654
+msgid "clicks"
+msgstr "clics"
+
+#: inc/eg-attachments-admin.inc.php:992
 #: inc/eg-attachments-admin.inc.php:1029
 #: inc/eg-attachments-admin.inc.php:1037
 msgid "click(s)"
@@ -711,8 +715,7 @@ msgid "Filter attachments using tags"
 msgstr "S&eacute;lectionner les pi&egrave;ces jointes avec les mots-cl&eacute;s"
 
 #: inc/tinymce/eg_attach_popup.php:245
-#, fuzzy
-msgid "Check if you want posts linked to ALL tags"
+msgid "Check if you want only the posts linked to ALL tags"
 msgstr "Cocher si vous souhaitez uniquement les pi&egrave;ces jointes appartenant &agrave; tous les mots-cl&eacute;s"
 
 #: inc/tinymce/eg_attach_popup.php:250
@@ -1152,4 +1155,44 @@ msgstr "L'attribut &laquo; target &raquo; est affich&eacute; uniquement si l'opt
 #: inc/eg-attachments-admin.inc.php:
 msgid "Extension"
 msgstr "Extension"
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "Cache"
+msgstr "Cache"
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "Clear plugin cache"
+msgstr "Effacer le contenu du cache de ce plugin"
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "The plugin is using cache to store the list of attachments. If the changes you make in the administration interface, are not seen in the front-end, you can use this option to clear the cache"
+msgstr "Le plugin utilise un syst&egrave;me de cache, pour stocker la liste des pi&egrave;ces jointes. Si les modifications que vous fa&icirc;tes dans l'interface d'administration, ne sont pas visibles dans la partie publique, vous pouvez utiliser cette option pour vider le cache."
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "Clear cache entries"
+msgstr "Effacer les enregistrements du cache"
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "Check the options, if you want to delete the following cache entries:"
+msgstr "Cocher les options, si vous souhaitez effacer les enregistrements suivants :"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "When a list of attachments includes images, do you want to display"
+msgstr "Quand une liste de pi&egrave;ces jointes contient des images, souhaitez-vous afficher"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "The thumbnail will be displayed with the size specified in the template"
+msgstr "La vignette sera affich&eacute;e suivant la taille spé&eacute;cifi&eacute;e dans le mod&egrave;le"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "The icon of the file type"
+msgstr "L'ic&ocirc;ne correspondant au type de fichier"
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "The Thumbnail of the image"
+msgstr "La vignette de l'image"
+
+#: inc/eg-attachments-popup.inc.php:
+msgid "Icons for the images:"
+msgstr "Ic&ocirc;ne pour les images : "
 

@@ -2,9 +2,9 @@
 Contributors: EmmanuelG
 Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode
-Requires at least: 3.6.0
-Tested up to: 3.7.0
-Stable tag: 2.0.0
+Requires at least: 3.5.0
+Tested up to: 3.8-RC1
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,7 +130,7 @@ The shortcode options are:
 Depredicated options
 
 * **size**: size of the icon. Values: large, medium, small or custom. Default: large,
-* **docid** list of attachments' id (comma separated) you want to display. Default: empty value, if you want to display all attachments.
+* **docid** list of attachments' id (comma separated) you want to display. Default: empty value, if you want to display all attachments. This parameter is replaced by **include**
 
 In the old posts, shortcodes using **size** and **docid** are still working, these two parameters are emulated using the new parameters **template** and **include**. 
 In future posts, please use **template** and **include** parameters.
@@ -213,6 +213,17 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 9. **Template editor**: Build easily your own list, using standard HTML tags, and some specific keyworkds.
 
 == Changelog ==
+
+= Version 2.0.1 - Dec 7th, 2013 =
+
+* New: ability to flush the cache (see option page),
+* New: When attachments are images, you can choose to display thumbnail of these images, rather than the icon of the file type,
+* Bug fix: issues when the path of the uploaded files contains space or specific characters (like accents),
+* Bug fix: %TARGET% tag not converted properly,
+* Bug fix: Clear cache when something is changed in the attachments list of a post, or when a post is saved/updated
+* Bug fix: Option page not displayed properly,
+* Bug fix: no counter displayed when number of clicks is 0,
+* Bug fix: Wrong keyword in template "Medium", and "small list"
 
 = Version 2.0.0 - Oct 28th, 2013 =
 

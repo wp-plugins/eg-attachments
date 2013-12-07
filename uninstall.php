@@ -17,7 +17,7 @@
 		$wpdb->query("DELETE FROM $wpdb->posts WHERE post_type = 'egatmpl'");
 
 		/*
-		 * Remove transient
+		 * Remove all entries related to EG-Attachments, including transient
 		 */
 		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name like '%eg-attachments%'");
 

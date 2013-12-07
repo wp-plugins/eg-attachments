@@ -3,7 +3,7 @@
 Plugin Name: EG-Attachments
 Plugin URI: http://www.emmanuelgeorjon.com/eg-attachments-1233
 Description: Shortcode displaying lists of attachments for a post
-Version: 2.0.0
+Version: 2.0.1
 Author: Emmanuel GEORJON
 Author http://www.emmanuelgeorjon.com/
 License: GPL2
@@ -27,11 +27,11 @@ Domain Path: /lang/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('EGA_VERSION', 	'2.0.0');
+define('EGA_VERSION', 	'2.0.1');
 define('EGA_COREFILE',	__FILE__);
 //define('EG_PLUGIN_ENABLE_CACHE', FALSE);
 
-if (! class_exists('EG_Plugin_130')) {
+if (! class_exists('EG_Plugin_132')) {
 	require('lib/eg-plugin.inc.php');
 }
 

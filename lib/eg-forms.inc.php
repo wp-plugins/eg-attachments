@@ -3,7 +3,7 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class for WordPress plugins
-Version: 2.2.1
+Version: 2.2.3
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,15 +26,15 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Form_221')) {
+if (!class_exists('EG_Form_223')) {
 
 	/**
-	  * Class EG_Form_221
+	  * Class EG_Form_223
 	  *
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Form_221 {
+	Class EG_Form_223 {
 
 		var $page_id;
 		var $options_entry;
@@ -311,18 +311,25 @@ if (!class_exists('EG_Form_221')) {
 			}
 			else {
 				$num = 0;
-				foreach ($field['options'] as $value => $text) {
-					$checked = (in_array($value, $default) ? ' checked' : '');
-					$options = (isset($field['list_options']) && isset($field['list_options'][$value]) ? $field['list_options'][$value] : '');
-					$output .=  ('disabled' == $options ? '' : '<input type="hidden" value="" name="'.$entry_name.'['.$num.']" />').
-								'<label for="'.$entry_name.'['.$num.']">'.
-								'<input type="checkbox" value="'.esc_attr($value).'" name="'.$entry_name.'['.$num.']"'.$checked.' '.$options.' /> '.
-								('disabled' == $options && '' != $checked ? '<input type="hidden" value="'.esc_attr($value).'" name="'.$entry_name.'['.$num.']" />' : '').
-								__($text, $this->textdomain).
-								'</label>'.
-								(++$num != sizeof($field['options']) ? '<br />' : '');
-				} // End foreach
-			}
+				if ( '' == $default || !$default ) 
+					$default = array();
+				elseif ( !is_array($default) )
+					$default = array($default);
+	
+				if (is_array($field['options']) && 0 < sizeof($field['options']) ) {
+					foreach ($field['options'] as $value => $text) {
+						$checked = (in_array($value, $default) ? ' checked' : '');
+						$options = (isset($field['list_options']) && isset($field['list_options'][$value]) ? $field['list_options'][$value] : '');
+						$output .=  ('disabled' == $options ? '' : '<input type="hidden" value="" name="'.$entry_name.'['.$num.']" />').
+									'<label for="'.$entry_name.'['.$num.']">'.
+									'<input type="checkbox" value="'.esc_attr($value).'" name="'.$entry_name.'['.$num.']"'.$checked.' '.$options.' /> '.
+									('disabled' == $options && '' != $checked ? '<input type="hidden" value="'.esc_attr($value).'" name="'.$entry_name.'['.$num.']" />' : '').
+									__($text, $this->textdomain).
+									'</label>'.
+									(++$num != sizeof($field['options']) ? '<br />' : '');
+					} // End foreach
+				} // End of list of options not empty
+			} // Multiple checkbox
 			$output .= '</fieldset>';
 			return ($output);
 		} // End of display_checkbox
@@ -486,9 +493,12 @@ if (!class_exists('EG_Form_221')) {
 		 * @return	string				output html form
 		 *
 		 */
-		function display_tabs($current_page, $current_tab=0) {
+		function display_tabs($current_page, &$current_tab=0) {
 			$output = '';
 			if (sizeof($this->tabs)>1) {
+
+				if ( $current_tab > sizeof($this->tabs) ) 
+					$current_tab = 1;
 
 				$output = '<h2 class="nav-tab-wrapper">';
 				foreach( $this->tabs as $id => $tab ){
@@ -498,7 +508,8 @@ if (!class_exists('EG_Form_221')) {
 						'</a>';
 				}
 				$output .= '</h2>';
-				$output .= '<p>'.esc_html__($this->tabs[$current_tab]['header'], $this->textdomain).'</p>';
+				if ( '' != $this->tabs[$current_tab]['header']) 
+					$output .= '<p>'.esc_html__($this->tabs[$current_tab]['header'], $this->textdomain).'</p>';
 			}
 			return ($output);
 		} // End of display_tabs
@@ -524,8 +535,6 @@ if (!class_exists('EG_Form_221')) {
 				<?php screen_icon(); ?>
 				<h2><?php esc_html_e($this->title, $this->textdomain); ?></h2>
 				<?php echo $this->display_tabs($current_page, $current_tab); ?>
-				<form method="post" action="<?php echo esc_url( add_query_arg( array( 'tab' => $current_tab ), 'options.php' ) ); ?>">
-				<?php settings_fields($this->options_group); ?>
 				<div class="metabox-holder <?php echo ($display_sidebar ? 'has-right-sidebar' : ''); ?>">
 					<?php  if ($display_sidebar) { ?>
 					<div class="inner-sidebar">
@@ -534,12 +543,15 @@ if (!class_exists('EG_Form_221')) {
 					<?php } ?>
 					<div id="post-body">
 						<div id="post-body-content">
-							<?php $this->display_sections($default_options, $current_tab); ?>
+							<form method="post" action="<?php echo esc_url( add_query_arg( array( 'tab' => $current_tab ), 'options.php' ) ); ?>">
+								<?php settings_fields($this->options_group); ?>
+								<?php $this->display_sections($default_options, $current_tab); ?>
+							</form>
 						</div> <!-- #post-body-content -->
 					</div> <!-- #post-body -->
 				</div> <!-- .metabox-holder -->
-				</form>
-			</div>
+				<div class="clear" /></div>
+			</div><!-- .wrap-->
 <?php
 		} // End of display_options_page
 

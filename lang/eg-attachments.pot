@@ -386,6 +386,11 @@ msgstr ""
 msgid "click"
 msgstr ""
 
+#: inc/eg-attachments-public.inc.php:654
+#: inc/eg-attachments-public.inc.php:654
+msgid "clicks"
+msgstr ""
+
 #: inc/eg-attachments-public.inc.php
 #: inc/eg-attachments-admin.inc.php:992
 #: inc/eg-attachments-admin.inc.php:1029
@@ -1149,4 +1154,44 @@ msgstr ""
 
 #: inc/eg-attachments-admin.inc.php:
 msgid "Extension"
+msgstr ""
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "Cache"
+msgstr ""
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "Clear plugin cache"
+msgstr ""
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "The plugin is using cache to store the list of attachments. If the changes you make in the administration interface, are not seen in the front-end, you can use this option to clear the cache"
+msgstr ""
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "Clear cache entries"
+msgstr ""
+
+#: inc/eg-attachments-admin.inc.php:
+msgid "Check the options, if you want to delete the following cache entries"
+msgstr ""
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "When a list of attachments includes images, do you want to display"
+msgstr ""
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "The thumbnail will be displayed with the size specified in the template"
+msgstr ""
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "The icon of the file type"
+msgstr ""
+
+#: inc/eg-attachments-settings.inc.php:
+msgid "The Thumbnail of the image"
+msgstr ""
+
+#: inc/eg-attachments-popup.inc.php:
+msgid "Icons for the images:"
 msgstr ""

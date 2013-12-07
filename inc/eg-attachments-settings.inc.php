@@ -16,12 +16,6 @@ if (function_exists('get_post_types')) {
 	} // End of foreach
 } // End of function get_post_types exists
 
-/* --- Beta 2 ---
-$standard_templates = EG_Attachments_Common::get_templates($this->options, 'standard');
-$custom_templates = EG_Attachments_Common::get_templates($this->options, 'custom', FALSE);
-if (sizeof($custom_templates)>0)
-	$standard_templates = array_merge($standard_templates, array( 'custom' => __('Custom templates', $this->textdomain)));
-*/
 $templates_list = EG_Attachments_Common::get_templates($this->options, 'all', FALSE);
 
 $tabs = array(
@@ -114,6 +108,34 @@ $fields = array(
 		'after'		=> '',
 		'desc'		=> 'In normal mode, when you click on the attachments\' links, according their mime type, documents are displayed, or a dialog box appears to choose \'run with\' or \'Save As\'. By activating the following option, the dialog box will appear for all cases.',
 		'options'	=> array('Force "Save As" when users click on the attachments'),
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'icon_image' => array(
+		'name'		=> 'icon_image',
+		'label'		=> 'Icon for image',
+		'type'		=> 'radio',
+		'section'	=> 'behavior',
+		'group'		=> 0,
+		'before'	=> 'When a list of attachments includes images, do you want to display',
+		'after'		=> '',
+		'desc'		=> 'The thumbnail will be displayed with the size specified in the template',
+		'options'	=> array( 'icon' => 'The icon of the file type', 'thumbnail' => 'The Thumbnail of the image'),
+		'size'		=> 'regular',
+		'status'	=> 'active',
+		'multiple'	=> FALSE),
+
+	'nofollow' => array(
+		'name'		=> 'nofollow',
+		'label'		=> '&laquo;Nofollow&raquo; attribute',
+		'type'		=> 'checkbox',
+		'section'	=> 'behavior',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> '',
+		'options'	=> array( 'Check if you want to automatically add <code>rel="nofollow"</code> to attachment links' ),
 		'size'		=> 'regular',
 		'status'	=> 'active',
 		'multiple'	=> FALSE),

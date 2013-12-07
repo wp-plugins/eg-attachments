@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments_Public')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Public extends EG_Plugin_130 {
+	Class EG_Attachments_Public extends EG_Plugin_132 {
 
 		var $order_by 	= 'title';
 		var $order 		= 'ASC';
@@ -299,10 +299,18 @@ if (! class_exists('EG_Attachments_Public')) {
 			return ($new_args);
 		} // End of icon_dirs
 
-		function get_icon_url($id) {
-			if (! $icon_url = wp_mime_type_icon($id) ) {
+
+		function get_icon_url($id, $doctype, $icon_image) {
+
+			// --- New in 2.0.1
+			if ( ($image = image_downsize($id, 'thumbnail')) && 'thumbnail' == $icon_image )
+				$icon_url = $image[0];
+			else
+				$icon_url = wp_mime_type_icon($id);
+
+			if ( ! $icon_url )
 				$icon_url = trailingslashit(get_bloginfo('wpurl')).WPINC.'/images/crystal/default.png';
-			}
+
 			return ($icon_url);
 		} // End of get_icon_url
 
@@ -312,15 +320,16 @@ if (! class_exists('EG_Attachments_Public')) {
 		  * @package EG-Attachments
 		  * @param int 		$id				attachment id
 		  * @param object 	$attachment 	the attachment metadata
-		  * @param string 	$size 			size of the thumbnail (small, medium or large)
 		  * @return string html entities IMG
 		  */
-		function get_icon($html, $attachment) {
+		function get_icon($html, $attachment, $doctype, $icon_image) {
 			$output = $html;
 
-			preg_match_all("/%ICON-[0-9][0-9]x[0-9][0-9]%/", $html, $matches);
+			// --- 2.0.1 -> change the Regex.
+			// preg_match_all("/%ICON-[0-9][0-9]x[0-9][0-9]%/", $html, $matches);
+			preg_match_all("/%ICON-([0-9]+)x([0-9]+)%/", $html, $matches);
 			if ($matches) {
-				$icon_url = $this->get_icon_url($attachment->ID);
+				$icon_url = $this->get_icon_url($attachment->ID, $doctype, $icon_image);
 				if ($attachment->post_content != '')
 					$description = esc_html($attachment->post_content);
 				elseif ($attachment->post_title !='')
@@ -328,12 +337,15 @@ if (! class_exists('EG_Attachments_Public')) {
 				else
 					$description = esc_html($attachment->post_name);
 
-				foreach ($matches[0] as $pattern) {
-					list($string, $size) = explode('-', $pattern);
-					list($width, $height) = explode('x', str_replace('%', '', $size));
+				foreach ($matches[0] as $key => $pattern) {
+					// list($string, $size)  = explode('-', $pattern);
+					// list($width, $height) = explode('x', str_replace('%', '', $size));
+					$width  = $matches[1][$key];
+					$height = $matches[2][$key];
+
 					$output = preg_replace('/'.$pattern.'/', '<img src="'.$icon_url.'" width="'.$width.'" height="'.$height.'" alt="'.$description.'" />', $output);
-				}
-			}
+				} // End of foreach
+			} // End of if matches
 			return ($output);
 		} /* end of get_icon */
 
@@ -381,8 +393,10 @@ if (! class_exists('EG_Attachments_Public')) {
 			$EGA_SHORTCODE_DEFAULTS['logged_users'] 	= $this->options['logged_users_only'];
 			$EGA_SHORTCODE_DEFAULTS['login_url'] 		= $this->options['login_url'];
 			$EGA_SHORTCODE_DEFAULTS['nofollow'] 		= $this->options['nofollow'];
+			$EGA_SHORTCODE_DEFAULTS['icon_image'] 		= $this->options['icon_image'];
 			$EGA_SHORTCODE_DEFAULTS['target'] 			= $this->options['target_blank'];
 			$EGA_SHORTCODE_DEFAULTS['exclude_thumbnail'] = $this->options['exclude_thumbnail'];
+
 
 			extract( shortcode_atts( $EGA_SHORTCODE_DEFAULTS, $atts ) );
 
@@ -503,15 +517,19 @@ if (! class_exists('EG_Attachments_Public')) {
 				} // End of tags_and=''
 			} // End of tags=''
 
-			$cache_entry = strtolower($this->name).'-params';
+			/**
+			  * Is there a similar query in the cache?
+			  *
+			  */
+			$cache_entry = strtolower($this->name).'-cache-'.$id;
 			$cache_id    = md5(implode('', $params));
 			$cache 		 = (EG_PLUGIN_ENABLE_CACHE ? get_transient($cache_entry) : FALSE);
 			if (FALSE !== $cache && isset($cache[$cache_id])) {
-				// eg_plugin_error_log($this->name, 'Get attachments: Use Cache', $params);
+//eg_plugin_error_log($this->name, 'Get attachments: Use Cache, post:', $id);
 				$attachments = $cache[$cache_id];
 			}
 			else {
-				// eg_plugin_error_log($this->name, 'Get attachments: No cache', $params);
+// eg_plugin_error_log($this->name, 'Get attachments: No cache, post:', $id);
 				/**
 				  * Query DB
 				  */
@@ -619,34 +637,34 @@ if (! class_exists('EG_Attachments_Public')) {
 				$file_date = mysql2date($date_format, $attachment->post_date, TRUE);
 
 				$item = html_entity_decode(stripslashes($template_content['loop']));
-				$item = preg_replace("/%LINK_URL%/",		$attach_url,											$item);
-				$item = preg_replace("/%URL%/",				$url,													$item); // Compatibility with previous version
-				$item = preg_replace("/%FILE_URL%/",		$file_url,												$item);
-				$item = preg_replace("/%DIRECT_URL%/",		$direct_url,											$item);
-				$item = preg_replace("/%GUID%/",			$attachment->guid,										$item);
-				$item = $this->get_icon($item, $attachment);
-				$item = preg_replace("/%ICONURL%/",			$this->get_icon_url($attachment->ID),					$item);
-				$item = preg_replace("/%TITLE%/",			esc_html($attachment->post_title),						$item);
-				$item = preg_replace("/%TITLE_LABEL%/",		esc_html__('Title'), 									$item);
-				$item = preg_replace("/%CAPTION%/",    		esc_html($attachment->post_excerpt),					$item);
-				$item = preg_replace("/%CAPTION_LABEL%/", 	esc_html__('Caption', $this->textdomain), 				$item);
-				$item = preg_replace("/%DESCRIPTION%/", 	esc_html($attachment->post_content),					$item);
-				$item = preg_replace("/%DESCRIPTION_LABEL%/", esc_html__('Description', $this->textdomain), 		$item);
-				$item = preg_replace("/%FILENAME%/",		esc_html(basename(get_attached_file($attachment->ID))),	$item);
-				$item = preg_replace("/%FILENAME_LABEL%/",	esc_html__('Filename', $this->textdomain), 				$item);
-				$item = preg_replace("/%FILESIZE%/",		esc_html($this->get_file_size($attachment->ID)),		$item);
-				$item = preg_replace("/%FILESIZE_LABEL%/",	esc_html__('Size', $this->textdomain), 					$item);
-				$item = preg_replace("/%ATTID%/",       	$attachment->ID,										$item); //For use with stylesheets
+				$item = preg_replace("/%LINK_URL%/",		$attach_url,													$item);
+				$item = preg_replace("/%URL%/",				$url,															$item);
+				$item = preg_replace("/%FILE_URL%/",		$file_url,														$item);
+				$item = preg_replace("/%DIRECT_URL%/",		$direct_url,													$item);
+				$item = preg_replace("/%GUID%/",			$attachment->guid,												$item);
+				$item = $this->get_icon($item, $attachment, $doctype, $icon_image);
+				$item = preg_replace("/%ICONURL%/",			$this->get_icon_url($attachment->ID, $doctype, $icon_image),	$item);
+				$item = preg_replace("/%TITLE%/",			esc_html($attachment->post_title),								$item);
+				$item = preg_replace("/%TITLE_LABEL%/",		esc_html__('Title'), 											$item);
+				$item = preg_replace("/%CAPTION%/",    		esc_html($attachment->post_excerpt),							$item);
+				$item = preg_replace("/%CAPTION_LABEL%/", 	esc_html__('Caption', $this->textdomain), 						$item);
+				$item = preg_replace("/%DESCRIPTION%/", 	esc_html($attachment->post_content),							$item);
+				$item = preg_replace("/%DESCRIPTION_LABEL%/", esc_html__('Description', $this->textdomain),			 		$item);
+				$item = preg_replace("/%FILENAME%/",		esc_html(basename(get_attached_file($attachment->ID))),			$item);
+				$item = preg_replace("/%FILENAME_LABEL%/",	esc_html__('Filename', $this->textdomain), 						$item);
+				$item = preg_replace("/%FILESIZE%/",		esc_html($this->get_file_size($attachment->ID)),				$item);
+				$item = preg_replace("/%FILESIZE_LABEL%/",	esc_html__('Size', $this->textdomain), 							$item);
+				$item = preg_replace("/%ATTID%/",       	$attachment->ID,												$item); //For use with stylesheets
 				$item = preg_replace("/%TYPE%/",		  	esc_html(strtoupper($this->get_type($attachment->post_mime_type))),	$item);
-				$item = preg_replace("/%TYPE_LABEL%/",	 	esc_html__('Type', $this->textdomain), 					$item);
-				$item = preg_replace("/%DATE%/",		   	esc_html($file_date),									$item);
-				$item = preg_replace("/%DATE_LABEL%/",  	esc_html__('Date', $this->textdomain), 					$item);
-				$item = preg_replace("/%SHOWLOCK%/",  		$lock_icon, 											$item);
-				$item = preg_replace("/%COUNTER%/",  		esc_html($click_count), 								$item);
-				if ('' === $click_count || 0 == $click_count)
-					$item = preg_replace("/%COUNTER_LABEL%/",	'', 												$item);
-				else
-					$item = preg_replace("/%COUNTER_LABEL%/",	esc_html__((1==$click_count?'click':'clicks'), $this->textdomain),		$item);
+				$item = preg_replace("/%TYPE_LABEL%/",	 	esc_html__('Type', $this->textdomain), 							$item);
+				$item = preg_replace("/%DATE%/",		   	esc_html($file_date),											$item);
+				$item = preg_replace("/%DATE_LABEL%/",  	esc_html__('Date', $this->textdomain), 							$item);
+				$item = preg_replace("/%SHOWLOCK%/",  		$lock_icon, 													$item);
+				$item = preg_replace("/%COUNTER%/",  		esc_html($click_count), 										$item);
+				//if ('' === $click_count || 0 == $click_count)
+				//	$item = preg_replace("/%COUNTER_LABEL%/",	'', 														$item);
+				//else
+					$item = preg_replace("/%COUNTER_LABEL%/",	esc_html__((2>$click_count?'click':'clicks'), $this->textdomain),		$item);
 
 				if ( $nofollow )
 					$item = preg_replace("/%NOFOLLOW%/",	'rel="nofollow"', 										$item);
@@ -654,11 +672,11 @@ if (! class_exists('EG_Attachments_Public')) {
 					$item = preg_replace("/%NOFOLLOW%/",	'', 													$item);
 
 				if ( $target ) {
-					$item = preg_replace("/%TARGET=(^ )*%/",	'target=$1', 										$item);
-					$item = preg_replace("/%TARGET%/",		'target="_blank', 										$item);
+					$item = preg_replace("/%TARGET=([^%]*)%/",	'target=$1', 									$item);
+					$item = preg_replace("/%TARGET%/",		'target="_blank"', 										$item);
 				}
 				else {
-					$item = preg_replace("/%TARGET=(^ )*%/",	'', 												$item);
+					$item = preg_replace("/%TARGET=([^%]*)%/",	'', 												$item);
 					$item = preg_replace("/%TARGET%/",		'', 													$item);
 				}
 				$output .= $item;
@@ -675,7 +693,7 @@ if (! class_exists('EG_Attachments_Public')) {
 				$output = '<div class="attachments">'.$output.'<p>'.$error_msg.'</p></div>';
 			} // End of $output
 
-
+/* --- [2.0.1] Remove this cache
 			if ( FALSE === $cache || !isset($cache[$cache_id]) ) {
 				if ( FALSE === $cache )
 					$cache = array();
@@ -683,42 +701,31 @@ if (! class_exists('EG_Attachments_Public')) {
 				$cache[$cache_id] = $output;
 				set_transient($this->name.'-lists', $cache, EGA_SHORTCODE_CACHE_EXPIRATION);
 			} // End of cache empty
-
+*/
 			return ($output);
 		} // End of get_attachments
 
-		/**
-		 * shortcode_auto_check_manual_shortcode
-		 *
-		 * Detect manual shortcode
-		 *
-		 * @return  TRUE auto-shortcode can be displayed, FALSE, auto shortcode is not displayed
-		 */
-		/*
-		function shortcode_auto_check_manual_shortcode() {
-			global $post;
-
-			$value = TRUE;
-			if ( isset($post) && $this->options['shortcode_auto_exclusive'] > 0 ) {
-				$value = (strpos($post->post_excerpt.' '.$post->post_content, '['.EGA_SHORTCODE) === FALSE);
-			}
-			return ($value);
-		} */ // End of shortcode_auto_check_manual_shortcode
-
-		function shortcode_auto_excerpt($output) {
-
-			if ($output &&
-			    $this->shortcode_is_visible() &&
-				$this->shortcode_auto_check_manual_shortcode(EGA_SHORTCODE)) {
-
-				$attrs = array(
+		function get_shortcode_parameters() {
+			return array(
 						'template' 	=> $this->options['shortcode_auto_template'],
 						'doctype'	=> $this->options['shortcode_auto_doc_type'],
 						'title'		=> $this->options['shortcode_auto_title'],
 						'titletag'  => $this->options['shortcode_auto_title_tag'],
 						'orderby'   => $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order'],
-						'limit'		=>  $this->options['shortcode_auto_limit']
-				);
+						'limit'		=> $this->options['shortcode_auto_limit']
+					);
+
+		} // End of get_shortcode_parameters
+
+		function shortcode_auto_excerpt($output) {
+
+			if ($output &&
+				3 == $this->options['shortcode_auto'] &&
+			    $this->shortcode_is_visible() &&
+				$this->shortcode_auto_check_manual_shortcode(EGA_SHORTCODE)) {
+
+				$attrs = $this->get_shortcode_parameters();
+
 				$output = $this->get_attachments($attrs).$output;
 			} // End of shortcode activated and visible
 			return ($output);
@@ -741,14 +748,8 @@ if (! class_exists('EG_Attachments_Public')) {
 			 	$this->shortcode_is_visible() 			&&
 				$this->shortcode_auto_check_manual_shortcode(EGA_SHORTCODE)) {
 
-				$attrs = array(
-						'template' 	=> $this->options['shortcode_auto_template'],
-						'doctype'	=> $this->options['shortcode_auto_doc_type'],
-						'title'		=> $this->options['shortcode_auto_title'],
-						'titletag'  => $this->options['shortcode_auto_title_tag'],
-						'orderby'	=> $this->options['shortcode_auto_orderby'].' '.$this->options['shortcode_auto_order'],
-						'limit'		=> $this->options['shortcode_auto_limit']
-				);
+				$attrs = $this->get_shortcode_parameters();
+
 				$shortcode_output = $this->get_attachments($attrs);
 
 				switch ($this->options['shortcode_auto']) {

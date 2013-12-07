@@ -45,11 +45,13 @@ $EGA_DEFAULT_OPTIONS = array(
 		/*'icon_set'					  => 0,*/
 		'icon_path'					  => '',
 		'icon_url'					  => '',
+		'icon_image'				  => 'icon',    /* icon or thumbnail */
 		'link'						  => 'direct',
 		'nofollow'				  	  => 0,
 		'target_blank'				  => 0,
 		'exclude_thumbnail'			  => 0,
-		'legacy_custom_format'		  => ''
+		'legacy_custom_format'		  => '',
+		'clear_cache' 				  => FALSE
 	);
 
 $EGA_SHORTCODE_DEFAULTS = array(
@@ -70,6 +72,7 @@ $EGA_SHORTCODE_DEFAULTS = array(
 	'include'		=> '',
 	'exclude'		=> '',
 	'nofollow'		=>  0,
+	'icon_image'	=>  'icon',
 	'target'		=>  0,
 	'exclude_thumbnail' => 1
 );
@@ -213,6 +216,42 @@ if (! class_exists('EG_Attachments_Common')) {
 			return wp_parse_args($values, $EGA_SHORTCODE_DEFAULTS);
 
 		} // End of get_shortcode_defaults
+
+		/**
+		 * list_of_cache
+		 *
+		 * Build and return list of cache entries
+		 *
+		 * @param 	none
+		 * @return 	none
+		 */
+		static function list_of_cache($name) {
+
+			global $wpdb;
+
+			$cache_list = FALSE;
+
+			/* --- Get list of cache items --- */
+			$pattern = '_transient_'.strtolower($name).'-cache-';
+			$transient_list = $wpdb->get_results('SELECT option_name FROM '.$wpdb->options.' WHERE option_name like "'.$pattern.'%"');
+
+			if ( $transient_list ) {
+				$attach_id = array();
+				foreach ($transient_list as $value) {
+					$attach_id[] = str_replace( $pattern, '', $value->option_name );
+				}
+
+				if ( 0 < sizeof($attach_id) ) {
+					$attachments_list = $wpdb->get_results('SELECT ID, post_title FROM '.$wpdb->posts.' WHERE ID in ('.implode(',',$attach_id).')' );
+					if ($attachments_list) {
+						foreach ($attachments_list as $value) {
+							$cache_list[$value->ID] = $value->ID.' - '.esc_html($value->post_title);
+						}
+					}
+				}
+			}
+			return ($cache_list);
+		} // End of list_of_cache
 
 	} // End of class
 

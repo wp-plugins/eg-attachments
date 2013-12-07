@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_130 {
+	Class EG_Attachments_Admin extends EG_Plugin_132 {
 
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
 		/* Q: what about other post type ? */
@@ -689,7 +689,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function install_upgrade() {
 			global $wpdb;
-
+// eg_plugin_error_log($this->name, 'Starting child install_upgrade');
 			$previous_options = parent::install_upgrade();
 // eg_plugin_error_log($this->name, 'Previous options : ', $previous_options);
 
@@ -698,7 +698,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 // eg_plugin_error_log($this->name, 'Upgrade from previous options');
 
 				/**
-				 * From version 1.4.3 to 2.0.0
+				 * From version 1.4.3 
 				 */
 				if (isset($this->options['uninstall_del_option'])) {
 					$this->options['uninstall_del_options'] = $previous_options['uninstall_del_option'];
@@ -727,7 +727,6 @@ if (! class_exists('EG_Attachments_Admin')) {
 				/**
 				 * From version 1.x.x to 1.9.2
 				 */
-//				if (version_compare('1.9.2', $previous_version)>1) {
 				if (! is_array($this->options['shortcode_auto_where'])) {
 					if ($this->options['shortcode_auto_where'] == 'post')
 						$this->options['shortcode_auto_where'] = array( 'post', 'page');
@@ -735,95 +734,112 @@ if (! class_exists('EG_Attachments_Admin')) {
 						$this->options['shortcode_auto_where'] = array( 'home', 'post', 'page', 'index');
 
 					update_option($this->options_entry, $this->options);
-//				} // End of version older than 1.9.2
 				} // End of modify shortcode_auto_where
 
 				/**
-				 * From 1.9.2 to 2.0.0
+				 * From 1.9.x to 2.x
 				 */
-//				if (version_compare($this->version, $previous_version)>0) {
 
-					/* ---- Create default templates --- */
-					// Get the number of templates installed
-					//$templates_count = (array)wp_count_posts( EGA_TEMPLATE_POST_TYPE );
-					$templates = get_posts(array(
-								'post_status' 	=> 'publish',
-								'post_type'		=> EGA_TEMPLATE_POST_TYPE,
-								'numberposts' 	=> -1
-							)
-						);
-					if (FALSE === $templates || 0 == sizeof($templates)) {
+				/* ---- Create default templates --- */
+				// Get the number of templates installed
+				//$templates_count = (array)wp_count_posts( EGA_TEMPLATE_POST_TYPE );
+				$templates = get_posts(array(
+							'post_status' 	=> 'publish',
+							'post_type'		=> EGA_TEMPLATE_POST_TYPE,
+							'numberposts' 	=> -1
+						)
+					);
+				if (FALSE === $templates || 0 == sizeof($templates)) {
 
-						// No templates installed. Creating standard templates.
-						$path = $this->path.'inc/templates';
-						if ($handle = opendir($path)) {
+					// No templates installed. Creating standard templates.
+					$path = $this->path.'inc/templates';
+					if ($handle = opendir($path)) {
 
-							while (($file = readdir($handle)) !== false) {
-								if ($file != '..' && $file != '.') {
+						while (($file = readdir($handle)) !== false) {
+							if ($file != '..' && $file != '.') {
 
-									$string = file_get_contents($path.'/'.$file);;
-									preg_match_all('/\[title\](.*)\[\/title\](.*)\[description\](.*)\[\/description\](.*)/is', $string, $matches);
-									if (sizeof($matches)>4) {
-										$template = array(
-											'post_title'   => trim($matches[1][0]),
+								$string = file_get_contents($path.'/'.$file);;
+								preg_match_all('/\[title\](.*)\[\/title\](.*)\[description\](.*)\[\/description\](.*)/is', $string, $matches);
+								if (sizeof($matches)>4) {
+									$template = array(
+										'post_title'   => trim($matches[1][0]),
 
-											'post_excerpt'	 => trim($matches[3][0]),
-											'post_content'	 => trim($matches[4][0]),
-											'post_status'    => 'publish',
-											'post_type'      => EGA_TEMPLATE_POST_TYPE,
-											'comment_status' => 'closed',
-											'ping_status'	 => 'closed'
-										);
-										$new_id = wp_insert_post($template);
-										if (is_numeric($new_id) && $new_id > 0) {
-											$this->options['standard_templates'] .= ('' == $this->options['standard_templates'] ? '' : ',').$new_id;
-											update_option($this->options_entry, $this->options);
-										} // End of insert post succeed
-									} // End of preg_match_all matching
-								} // End file != .. and .
-							} // End of while
-							closedir($handle);
-						} // End of if opendir
-					} // End of no template defined
+										'post_excerpt'	 => trim($matches[3][0]),
+										'post_content'	 => trim($matches[4][0]),
+										'post_status'    => 'publish',
+										'post_type'      => EGA_TEMPLATE_POST_TYPE,
+										'comment_status' => 'closed',
+										'ping_status'	 => 'closed'
+									);
+									$new_id = wp_insert_post($template);
+									if (is_numeric($new_id) && $new_id > 0) {
+										$this->options['standard_templates'] .= ('' == $this->options['standard_templates'] ? '' : ',').$new_id;
+										update_option($this->options_entry, $this->options);
+									} // End of insert post succeed
+								} // End of preg_match_all matching
+							} // End file != .. and .
+						} // End of while
+						closedir($handle);
+					} // End of if opendir
+				} // End of no template defined
 
-					/* --- Convert custom format --- */
-					if ( (isset($previous_options['custom_format_pre'])  && $previous_options['custom_format_pre']  != '') ||
-						 (isset($previous_options['custom_format']) 	 && $previous_options['custom_format']      != '') ||
-						 (isset($previous_options['custom_format_post']) && $previous_options['custom_format_post'] != '')) {
+				/* --- Convert custom format --- */
+				if ( (isset($previous_options['custom_format_pre'])  && $previous_options['custom_format_pre']  != '') ||
+					 (isset($previous_options['custom_format']) 	 && $previous_options['custom_format']      != '') ||
+					 (isset($previous_options['custom_format_post']) && $previous_options['custom_format_post'] != '')) {
 
-						$args = array(
-							'post_title'     => wp_strip_all_tags(__('Custom', $this->textdomain)),
-							'post_excerpt'   => sprintf(__('Custom format from previous version %s', $this->textdomain), $previous_version),
-							'post_content'   => '[before]'.trim(isset($previous_options['custom_format_pre']) ? $previous_options['custom_format_pre'] : '').'[/before]'.
-									  '[loop]'.trim(isset($previous_options['custom_format']) ? $previous_options['custom_format'] : '').'[/loop]'.
-									  '[after]'.trim(isset($previous_options['custom_format_post']) ? $previous_options['custom_format_post'] : '').'[/after]',
-							'post_status'    => 'publish',
-							'post_type'      => EGA_TEMPLATE_POST_TYPE,
-							'comment_status' => 'closed',
-							'ping_status'	 => 'closed'
-						);
-						$new_id = wp_insert_post($args);
-						if (is_numeric($new_id) && $new_id > 0) {
-							$new_post = get_post($new_id);
-							if ('custom' == $previous_options['shortcode_auto_size']) {
-								$this->options['shortcode_auto_template'] = $new_post->post_name;
-							}
-							$this->options['legacy_custom_format'] = $new_post->post_name;
-							update_option($this->options_entry, $this->options);
-						} // End of post created succeeded
-					} // End of custom_format
-
-					if (isset($previous_options['shortcode_auto_size']) && '' != $previous_options['shortcode_auto_size']) {
-						$this->options['shortcode_auto_template'] = $previous_options['shortcode_auto_size'];
-						if ('custom' != $previous_options['shortcode_auto_size'] &&
-							(! isset($previous_options['shortcode_auto_icon']) || 0 == $previous_options['shortcode_auto_icon'])) {
-							// Size is becoming depredicated.
-							// $this->options['shortcode_auto_size'] = $previous_options['shortcode_auto_size'].'-list';
-							$this->options['shortcode_auto_template'] .= '-list';
+					$args = array(
+						'post_title'     => esc_html__('Custom', $this->textdomain),
+						'post_excerpt'   => sprintf(__('Custom format from previous version %s', $this->textdomain), $previous_version),
+						'post_content'   => '[before]'.trim(isset($previous_options['custom_format_pre']) ? $previous_options['custom_format_pre'] : '').'[/before]'.
+								  '[loop]'.trim(isset($previous_options['custom_format']) ? $previous_options['custom_format'] : '').'[/loop]'.
+								  '[after]'.trim(isset($previous_options['custom_format_post']) ? $previous_options['custom_format_post'] : '').'[/after]',
+						'post_status'    => 'publish',
+						'post_type'      => EGA_TEMPLATE_POST_TYPE,
+						'comment_status' => 'closed',
+						'ping_status'	 => 'closed'
+					);
+					$new_id = wp_insert_post($args);
+					if (is_numeric($new_id) && $new_id > 0) {
+						$new_post = get_post($new_id);
+						if ('custom' == $previous_options['shortcode_auto_size']) {
+							$this->options['shortcode_auto_template'] = $new_post->post_name;
 						}
+						$this->options['legacy_custom_format'] = $new_post->post_name;
 						update_option($this->options_entry, $this->options);
-					} // End of shortcode_auto_size
-//				} // End of version 2.0.0
+					} // End of post created succeeded
+				} // End of custom_format
+
+				if (isset($previous_options['shortcode_auto_size']) && '' != $previous_options['shortcode_auto_size']) {
+					$this->options['shortcode_auto_template'] = $previous_options['shortcode_auto_size'];
+					if ('custom' != $previous_options['shortcode_auto_size'] &&
+						(! isset($previous_options['shortcode_auto_icon']) || 0 == $previous_options['shortcode_auto_icon'])) {
+						// Size is becoming depredicated.
+						// $this->options['shortcode_auto_size'] = $previous_options['shortcode_auto_size'].'-list';
+						$this->options['shortcode_auto_template'] .= '-list';
+					}
+					update_option($this->options_entry, $this->options);
+				} // End of shortcode_auto_size
+
+				/* --- Version upper than 2.0.0 --- */
+				if ( TRUE == version_compare($this->version, '2.0.0', ">" ) && 
+					 TRUE == version_compare($previous_version, '2.0.0', ">=" ) ) {
+						$templates = get_posts(array( 'post_type' => EGA_TEMPLATE_POST_TYPE ) ); 
+// eg_plugin_error_log($this->name, 'Managing the update for the following templates: ', $templates);
+						foreach ($templates as $template) {
+							$updated_post = array(
+								'ID'           => (int) $template->ID,
+								'post_type'	   => EGA_TEMPLATE_POST_TYPE,
+								'post_content' => str_replace('%LINK%', '%URL%', $template->post_content)
+							);
+
+// eg_plugin_error_log($this->name, 'Updating post '.$template->post_title.' : ', $updated_post);
+							wp_update_post($updated_post);
+						} // End of foreach $template
+						
+				} // End of %LINK% replaced by %URL%
+
+
 			} // End of update
 
 			$table_name = $wpdb->prefix . 'eg_attachments_clicks';
@@ -1431,6 +1447,61 @@ if (! class_exists('EG_Attachments_Admin')) {
 		} // End of pointer_ega_template_keywords
 
 		/**
+		 * options_validation
+		 *
+		 * Validate outputs
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 * @param	array	input	list of fields of the option form
+		 * @return	string			all updated options
+		 *
+		 */
+		function options_validation($inputs) {
+			$all_options = parent::options_validation($inputs);
+// eg_plugin_error_log($this->name, 'Entering in options_validation', $this->changed_options);
+			if ( FALSE !== $this->changed_options &&
+				isset($this->changed_options['clear_cache']) &&
+				FALSE !== $this->changed_options['clear_cache'] ) {
+
+				foreach ($this->changed_options['clear_cache'] as $key) {
+					if ( '' != $key ) {
+						$cache_id = strtolower($this->name).'-cache-'.$key;
+// eg_plugin_error_log($this->name, 'Deleting cache entry', $cache_id );
+						delete_transient($cache_id);
+					}
+				} // End of foreach list of cache
+
+// eg_plugin_error_log($this->name, 'clean up the options' );
+			} // End of check changed options
+
+			return ($all_options);
+		} // End of function options_validation
+
+
+
+		function update_attachement($id) {
+// eg_plugin_error_log($this->name, 'calling wp_update_attachement_metadata, post', $post_id);
+			$post_id = wp_get_post_parent_id( $id );
+
+			if ( FALSE !== $post_id )
+				$this->clear_cache($post_id);
+		} // End of delete_attachement
+
+		function update_post($post_id, $post, $flag ) {
+// eg_plugin_error_log($this->name, 'calling save post, post', $post_id);
+			$this->clear_cache($post_id);
+		} // End of function update_post
+
+		function clear_cache($post_id) {
+			$cache_entry = strtolower($this->name).'-cache-'.$post_id;
+			if ( FALSE !== get_transient($cache_entry) ) {
+// eg_plugin_error_log($this->name, 'Delete cache for entry, post:', $post_id);
+				delete_transient($cache_entry);
+			}
+		} // End of function clear_cache
+
+		/**
 		 * load
 		 *
 		 * Load the plugin
@@ -1445,6 +1516,16 @@ if (! class_exists('EG_Attachments_Admin')) {
 		function load() {
 			parent::load();
 			add_action('init', array(&$this, 'init'));
+
+			/* --- [2.0.1] to be tested --- */
+			add_filter('sanitize_file_name', 'remove_accents');
+
+			/* --- [2.0.1] ---*/
+			// add_filter( 'wp_update_attachment_metadata', array( $this, 'wp_update_attachment_metadata' ), 10, 2 );
+			add_filter( 'add_attachment',    array( $this, 'update_attachement' ) );
+			add_filter( 'edit_attachment',   array( $this, 'update_attachement' ) );
+			add_filter( 'delete_attachment', array( $this, 'update_attachement' ) );
+			add_action( 'save_post', 		 array( $this, 'update_post' ), 10, 3 );
 		} // End of load
 
 	} // End of Class

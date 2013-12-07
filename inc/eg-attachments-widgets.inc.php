@@ -53,6 +53,8 @@ if (! class_exists('EG_Attachments_Widget')) {
 					'list' => array( 'Check if you want to automatically add <code>rel="nofollow"</code> to attachment links' )),
 				'target'	  		=> array( 'type'  => 'checkbox', 'label'  => '&laquo;Target&raquo; attribute',
 					'list'	=> array( 'Check if you want to automatically add <code>target="_blank"</code> to attachment links' )),
+				'icon_image'    => array( 'type' => 'radio', 'label' => 'When a list of attachments includes images, do you want to display',
+					'list' => array( 'icon'	=> 'The icon of the file type', 'thumbnail' => 'The Thumbnail of the image')),
 				'logged_users' 		 => array( 'type'  => 'select', 'label' => 'Attachments access',
 					'list' => array( -1 => 'Use default parameter', 
 							  0 => 'Display attachments for all users', 

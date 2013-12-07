@@ -8,16 +8,16 @@ if (! defined('EG_PLUGIN_ENABLE_CACHE')) {
 	define('EG_PLUGIN_ENABLE_CACHE', TRUE);
 }
 
-if (! class_exists('EG_Plugin_130')) {
+if (! class_exists('EG_Plugin_132')) {
 
 	/**
-	 * Class EG_Plugin_130
+	 * Class EG_Plugin_132
 	 *
 	 *
 	 *
 	 * @package EG-Plugin
 	 */
-	Class EG_Plugin_130 {
+	Class EG_Plugin_132 {
 
 		var $name				= '';
 		var $version			= '';
@@ -147,7 +147,7 @@ if (! class_exists('EG_Plugin_130')) {
 		 *
 		 */
 		function load_options_page() {
-			if (!class_exists('EG_Form_221')) {
+			if (!class_exists('EG_Form_223')) {
 				require($this->path.'lib/eg-forms.inc.php');
 			}
 		} // End of load_options_page
@@ -204,7 +204,7 @@ if (! class_exists('EG_Plugin_130')) {
 		 */
 		function options_page() {
 
-			$option_form = new EG_Form_221($this->options_page_id, $this->options_page_id.'-group', $this->options_page_title, $this->options_entry, $this->textdomain, '', '', array(&$this, 'display_sidebar'));
+			$option_form = new EG_Form_223($this->options_page_id, $this->options_page_id.'-group', $this->options_page_title, $this->options_entry, $this->textdomain, '', '', array(&$this, 'display_sidebar'));
 			require($this->path.'inc/'.$this->options_page_file);
 			$option_form->display($this->options);
 		} // End of options_page
@@ -426,6 +426,7 @@ if (! class_exists('EG_Plugin_130')) {
 
 			$new_options      = FALSE;
 			$previous_options = FALSE;
+//eg_plugin_error_log('Install upgrade', 'Starting');
 
 			// Read options
 			if (FALSE === $this->options)
@@ -433,11 +434,14 @@ if (! class_exists('EG_Plugin_130')) {
 
 			// Options empty => First installation
 			if (FALSE === $this->options) {
+//eg_plugin_error_log('Install upgrade', 'Fresh install');
 				$new_options = $this->default_options;
 			} // End of options empty (first install)
 			else {
 				$previous_options = $this->options;
+//eg_plugin_error_log('Install upgrade', 'Old and new version', $this->options['version'].'-'.$this->version);
 				if (version_compare($this->options['version'], $this->version, '<')) {
+//eg_plugin_error_log('Install upgrade', 'Upgrade');
 					// Plugin already installed previously => upgrade
 					$new_options = array();
 					foreach ($this->default_options as $key => $value) {
@@ -446,7 +450,9 @@ if (! class_exists('EG_Plugin_130')) {
 					} // End foreach
 				} // End of options not empty (update)
 			}
+
 			if (FALSE !== $new_options) {
+// eg_plugin_error_log('Install upgrade', 'New options', $new_options);
 				$new_options['version'] = $this->version;
 				update_option($this->options_entry, $new_options);
 				$this->options = $new_options;
@@ -585,13 +591,15 @@ if (! class_exists('EG_Plugin_130')) {
 			<?php if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME']=='localhost') { ?>
 				<a href="#"><?php esc_html_e('PayPal - The safer, easier way to pay online!', $this->textdomain); ?></a>
 			<?php } else { ?>
-
-<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-">
-<input type="image" src="https://www.paypalobjects.com/<?php echo $long_lang; ?>/<?php echo $short_lang; ?>/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="<?php esc_html_e('PayPal - The safer, easier way to pay online!', $this->textdomain); ?>">
-<img alt="" border="0" src="https://www.paypalobjects.com/<?php echo $long_lang; ?>/i/scr/pixel.gif" width="1" height="1">
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_donations" />
+<input type="hidden" name="business" value="CPCKAJFRB5NNA" />
+<input type="hidden" name="lc" value="FR" />
+<input type="hidden" name="item_name" value="<?php echo $this->name; ?>" />
+<input type="hidden" name="currency_code" value="EUR" />
+<input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_LG.gif:NonHosted" />
+<input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - la solution de paiement en ligne la plus simple et la plus sécurisée !" />
+<img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1" />
 </form>
 			<?php }
 		} // End of display_donate
@@ -685,47 +693,49 @@ if (! class_exists('EG_Plugin_130')) {
 			} // End of pointers available in the current page
 		} // End of pointers_enqueue_scripts
 
-	} // End of EG_Plugin_130
+	} // End of EG_Plugin_132
 
 } // End of class_exists
 
 
-/**
- * eg_plugin_error_log
- *
- * write a message to WordPress error log
- *
- * @package EG-Plugin
- * @since 	1.0
- * @param 	$mixed	string
- *
- */
-function eg_plugin_error_log($plugin_name, $msg='', $mixed=null) {
-	if (WP_DEBUG === true) {
+if ( ! function_exists( 'eg_plugin_error_log' ) ) {
+	/**
+	 * eg_plugin_error_log
+	 *
+	 * write a message to WordPress error log
+	 *
+	 * @package EG-Plugin
+	 * @since 	1.0
+	 * @param 	$mixed	string
+	 *
+	 */
+	function eg_plugin_error_log($plugin_name, $msg='', $mixed=null) {
+		if (WP_DEBUG === true) {
 
-		$debug_info = debug_backtrace(FALSE);
-		$output = /*date('d-M-Y H:i:s').' - '.*/$plugin_name.'-'.(isset($debug_info[1]) ? $debug_info[1]['function'] : '').($msg!=''?' - '.$msg:'');
-		if (! is_null($mixed)) {
-			$output .= ' - ('.gettype($mixed). ') ';
-			switch (gettype($mixed)) {
-				case 'boolean':
+			$debug_info = debug_backtrace(FALSE);
+			$output = /*date('d-M-Y H:i:s').' - '.*/$plugin_name.'-'.(isset($debug_info[1]) ? $debug_info[1]['function'] : '').($msg!=''?' - '.$msg:'');
+			if (! is_null($mixed)) {
+				$output .= ' - ('.gettype($mixed). ') ';
+				switch (gettype($mixed)) {
+					case 'boolean':
 
-					$output .= ($mixed === TRUE ? 'TRUE' : 'FALSE');
-				break;
+						$output .= ($mixed === TRUE ? 'TRUE' : 'FALSE');
+					break;
 
-				case 'array':
-				case 'object':
-				case 'resource':
-					$output .= var_export($mixed, TRUE);
-				break;
+					case 'array':
+					case 'object':
+					case 'resource':
+						$output .= var_export($mixed, TRUE);
+					break;
 
-				case 'NULL':
-					$output .= 'NULL';
-				break;
+					case 'NULL':
+						$output .= 'NULL';
+					break;
 
-				default: $output .= $mixed;
+					default: $output .= $mixed;
+				}
 			}
-		}
-		error_log($output);
-	} // End of WP_DEBUG===True
-} // End of eg_plugin_error_log
+			error_log($output);
+		} // End of WP_DEBUG===True
+	} // End of eg_plugin_error_log
+}
