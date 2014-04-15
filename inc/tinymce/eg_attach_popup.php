@@ -210,9 +210,16 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 			}
 
 			var tagtext = tagtext + "]";
+			
+			// EGE - 2.0.2 - Run with TinyMCE 3.x and 4.x
 			if(window.tinyMCE) {
-				window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, tagtext);
+				window.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, tagtext);
 			}
+			
+			// Run only with TinyMCE 33.x
+			// if(window.tinyMCE) {
+			//	window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, tagtext);
+			// }
 			tinyMCEPopup.close();
 			return;
 

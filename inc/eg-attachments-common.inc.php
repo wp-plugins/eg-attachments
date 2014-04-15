@@ -42,7 +42,7 @@ $EGA_DEFAULT_OPTIONS = array(
 		'purge_stats'				  => 24,
 		'date_format'				  => '',
 		'tags_assignment'			  => 0,
-		/*'icon_set'					  => 0,*/
+		'icon_set'					  => 'flags',
 		'icon_path'					  => '',
 		'icon_url'					  => '',
 		'icon_image'				  => 'icon',    /* icon or thumbnail */
@@ -83,20 +83,29 @@ $EGA_SHORTCODE_DEFAULTS = array(
 	'date'			=> 'Date',
 	'description' 	=> 'Description',
 	'filename'		=> 'File name',
+	'filedate'		=> 'File date',
 	'menu_order'	=> 'Menu order',
 	'title' 		=> 'Title',
-	'type'			=> 'Type'
+	'type'			=> 'Type',
+	'size'			=> 'Size'
 );
 
  $EGA_FIELDS_ORDER_KEY = array(
 	'id'			=> 'ID',
 	'caption' 		=> 'post_excerpt',
-	'date'			=> 'post_date',
+	'date'			=> 'date',
 	'description' 	=> 'post_content',
 	'filename'		=> 'post_name',
+	'filedate'		=> 'file_date',
+	'size'			=> 'file_size',
 	'menu_order'	=> 'menu_order',
-	'title' 		=> 'post_title',
-	'type'			=> 'post_mime_type'
+	'title' 		=> 'title',
+	'type'			=> 'post_mime_type',
+	'name'			=> 'name',
+	'author'		=> 'author',
+	'modified'		=> 'modified',
+	'rand'			=> 'rand',
+	'comment_count'	=> 'comment_count'
 );
 
 
@@ -232,16 +241,20 @@ if (! class_exists('EG_Attachments_Common')) {
 			$cache_list = FALSE;
 
 			/* --- Get list of cache items --- */
-			$pattern = '_transient_'.strtolower($name).'-cache-';
-			$transient_list = $wpdb->get_results('SELECT option_name FROM '.$wpdb->options.' WHERE option_name like "'.$pattern.'%"');
+			$pattern1 = '_transient_'.strtolower($name).'-cache-';
+			$pattern2 = '_transient_'.strtolower($name).'-cache-click-';
+			$transient_list = $wpdb->get_results('SELECT option_name FROM '.$wpdb->options.' WHERE option_name like "'.$pattern1.'%"');
 
 			if ( $transient_list ) {
 				$attach_id = array();
 				foreach ($transient_list as $value) {
-					$attach_id[] = str_replace( $pattern, '', $value->option_name );
+					$attach_id[] = str_replace( $pattern1, '', str_replace( $pattern2, '', $value->option_name ) );
 				}
 
 				if ( 0 < sizeof($attach_id) ) {
+
+					$attach_id = array_unique($attach_id, SORT_NUMERIC );
+
 					$attachments_list = $wpdb->get_results('SELECT ID, post_title FROM '.$wpdb->posts.' WHERE ID in ('.implode(',',$attach_id).')' );
 					if ($attachments_list) {
 						foreach ($attachments_list as $value) {
@@ -249,7 +262,7 @@ if (! class_exists('EG_Attachments_Common')) {
 						}
 					}
 				}
-			}
+			} // End of cache entry exist
 			return ($cache_list);
 		} // End of list_of_cache
 

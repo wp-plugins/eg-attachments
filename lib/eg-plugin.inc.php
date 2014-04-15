@@ -8,16 +8,16 @@ if (! defined('EG_PLUGIN_ENABLE_CACHE')) {
 	define('EG_PLUGIN_ENABLE_CACHE', TRUE);
 }
 
-if (! class_exists('EG_Plugin_132')) {
+if (! class_exists('EG_Plugin_133')) {
 
 	/**
-	 * Class EG_Plugin_132
+	 * Class EG_Plugin_133
 	 *
 	 *
 	 *
 	 * @package EG-Plugin
 	 */
-	Class EG_Plugin_132 {
+	Class EG_Plugin_133 {
 
 		var $name				= '';
 		var $version			= '';
@@ -125,12 +125,14 @@ if (! class_exists('EG_Plugin_132')) {
 				register_setting($this->options_page_id.'-group', $this->options_entry, array(&$this, 'options_validation'));
 			}
 
-			if ( sizeof($this->tinyMCE_buttons)>0 && get_user_option('rich_editing') == 'true') {
+			if ( 0 < sizeof($this->tinyMCE_buttons) && get_user_option('rich_editing') == 'true') {
 			//	current_user_can( 'edit_posts' ) && current_user_can( 'edit_pages' ))
 
 				add_filter( 'mce_buttons', 			array( &$this, 'tinymce_button' ) );
 				add_filter( 'mce_external_plugins', array( &$this, 'tinymce_plugin' ) );
-				add_filter( 'tiny_mce_version', 	array( &$this, 'tinymce_version') );
+				
+				// EGE - 2.0.2 - Comment 
+				// add_filter( 'tiny_mce_version', 	array( &$this, 'tinymce_version') );
 			}
 
 		} // End of admin_init
@@ -147,7 +149,7 @@ if (! class_exists('EG_Plugin_132')) {
 		 *
 		 */
 		function load_options_page() {
-			if (!class_exists('EG_Form_223')) {
+			if (!class_exists('EG_Form_224')) {
 				require($this->path.'lib/eg-forms.inc.php');
 			}
 		} // End of load_options_page
@@ -204,7 +206,7 @@ if (! class_exists('EG_Plugin_132')) {
 		 */
 		function options_page() {
 
-			$option_form = new EG_Form_223($this->options_page_id, $this->options_page_id.'-group', $this->options_page_title, $this->options_entry, $this->textdomain, '', '', array(&$this, 'display_sidebar'));
+			$option_form = new EG_Form_224($this->options_page_id, $this->options_page_id.'-group', $this->options_page_title, $this->options_entry, $this->textdomain, '', '', array(&$this, 'display_sidebar'));
 			require($this->path.'inc/'.$this->options_page_file);
 			$option_form->display($this->options);
 		} // End of options_page
@@ -390,7 +392,7 @@ if (! class_exists('EG_Plugin_132')) {
 		} // End of add_tinymce_button
 
 		function tinymce_button( $buttons ) {
-			// add a separation before our button, here our button's id is &quot;mygallery_button&quot;
+
 			array_push($buttons, '|');
 			foreach ($this->tinyMCE_buttons as $name => $js_file) {
 				array_push($buttons, $name);
@@ -693,7 +695,7 @@ if (! class_exists('EG_Plugin_132')) {
 			} // End of pointers available in the current page
 		} // End of pointers_enqueue_scripts
 
-	} // End of EG_Plugin_132
+	} // End of EG_Plugin_133
 
 } // End of class_exists
 
@@ -710,6 +712,7 @@ if ( ! function_exists( 'eg_plugin_error_log' ) ) {
 	 *
 	 */
 	function eg_plugin_error_log($plugin_name, $msg='', $mixed=null) {
+
 		if (WP_DEBUG === true) {
 
 			$debug_info = debug_backtrace(FALSE);
