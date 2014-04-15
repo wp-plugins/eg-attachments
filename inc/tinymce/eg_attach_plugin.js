@@ -23,11 +23,11 @@
 				image : url + '/img/egattachments.png'
 			});
 		},
-
+		/* 
 		createControl : function(n, cm) {
 			return null;
-		},
-
+		},*/
+		
 		getInfo : function() {
 			return {
 				longname  : 'EG-Attachments',

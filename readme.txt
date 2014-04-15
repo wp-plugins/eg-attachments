@@ -3,8 +3,8 @@ Contributors: EmmanuelG
 Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode
 Requires at least: 3.5.0
-Tested up to: 3.8-RC1
-Stable tag: 2.0.1
+Tested up to: 3.9.0
+Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -198,7 +198,14 @@ Just copy/upload your own icons in the `images` subdirectory of the plugin.
 Size of icons must be 52x52 or 48x48. Name of icons must be the mimetype or file extension.
 
 = I click on a document to test statistics, but counters stay flat =
-EG-Attachments uses a *cache system* to build statistics, avoiding to launch heavy queries, each time you want to see statistics. The cache duration is 15 minutes. If you want to test statistics, click on several attached files, and then wait 15 minutes, your clicks will appear.
+EG-Attachments uses a *cache* to build statistics, avoiding to launch heavy queries, each time you want to see statistics. The cache duration is 15 minutes. If you want to test statistics, click on several attached files, and then wait 15 minutes, your clicks will appear.
+
+= I put %TARGET% tag in templates, but the attribut `target="_blank"`doesn't appear =
+The %TARGET% tag is used only when the parameter *target* is specified in the shortcode, or the option *target=blank attribute* is checked in the plugin settings page (Menu Settings / EG-Attachments)
+
+= When I ask to display the image thumbnails, the thumbnail displayed is bigger than expected =
+If the size of the image thumbnail is set to 150x150 in WordPress, or in your theme, in the attachment list, the thumbnail displayed will be 150x150, even if you request a smaller size like 48x48 in EG-Attachment.
+This issue is coming from the styles used by your theme. If your theme is responsive, then the stylesheet should contain some styles to adapt the image size according the screen size. To solve this issue, you need to change these styles, in order to exclude the images of the attachments' list.
 
 == Screenshots ==
 
@@ -213,6 +220,18 @@ EG-Attachments uses a *cache system* to build statistics, avoiding to launch hea
 9. **Template editor**: Build easily your own list, using standard HTML tags, and some specific keyworkds.
 
 == Changelog ==
+
+= Version 2.0.2 - Apr 15th, 2014 =
+
+* Change: Compatibility with WordPress 3.9 (TinyMCE button),
+* Change: Little optimisation when getting file information,
+* Bug fix: Error message (in eg-attachments-admin.inc.php on line 1491),
+* Bug fix: Featured image was excluded, whatever options used,
+* Bug fix: The menu "cache" doesn't appear in the options page,
+* Bug fix: Some sort options didn't work properly,
+* Bug fix: Mistakes in the french translation,
+* Change: Optimize cache (avoid requests to DB for displaying the number of clicks),
+* Change: Internal librairies updates.
 
 = Version 2.0.1 - Dec 7th, 2013 =
 

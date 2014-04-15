@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 2.0.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/eg-attachments\n"
 "POT-Creation-Date: 2013-02-10 23:52:03+00:00\n"
-"PO-Revision-Date: 2013-12-03 06:30+0100\n"
+"PO-Revision-Date: 2013-12-15 20:49+0100\n"
 "Last-Translator: Emmanuel Georjon <blog@emmanuelgeorjon.com>\n"
 "Language-Team: Emmanuel GEORJON <blog@emmanuelgeorjon.com>\n"
 "MIME-Version: 1.0\n"
@@ -354,7 +354,7 @@ msgstr "Mois"
 
 #: inc/eg-attachments-admin.inc.php:935
 msgid "\\W"
-msgstr "S"
+msgstr "\\S"
 
 #: inc/eg-attachments-admin.inc.php:936
 #: inc/eg-attachments-admin.inc.php:976
@@ -1114,7 +1114,7 @@ msgstr "Limiter l'acc&egrave;s des pi&egrave;ces jointes aux utilisateurs enregi
 
 #: /inc/eg-attachments-settings.inc.php:
 msgid "Some comments about security:<ul><li>- &laquo;Private&raquo; Attachments, or documents attached to a &laquo;Private&raquo; post, are not displayed, if the user is not logged,</li><li>- &laquo;Protected&raquo; Attachments, or documents attached to a &laquo;Protected&raquo; post, are not displayed, if users don't give the right password,</li><li>- For non private, and non protected posts, you can choose with the following options, to display attachments, to display without link, or hide attachments.</li></ul>"
-msgstr "Commentaires au sujet de l'acc&egrave;s aux pi&egrave;ces jointes : <ul><li>- Les pi&egrave;ces jointes &laquo;Priv&eacute;es&raquo; ou les pi&egrave;ces jointes attach&eacute;es &agrave; un article &laquo;Priv&eacute;s&raquo;, ne sont pas affich&eacute;es, si l'utilisateur n'est pas connect&eacute;,</li><li>- Les pi&egrave;ces jointes &laquo;Prot&eacute;g&eacute;es&raquo; ou les pi&egrave;ces jointes attach&eacute;es &agrave; un article &laquo;Prot&eacute;g&eacute;&raquo;, ne sont pas affich&eacute;es, si l'utilisateur n'a pas saisi le bon mot de passe,</li><li>- Pour les articles publics, ou non prot&eacute;g&eacute;s, vous pouvez choisir l'une des options suivantes, vous permettant d'afficher les p&egrave;ces jointes, avec ou sans les liens, ou de les cacher.</li></ul>"
+msgstr "Commentaires au sujet de l'acc&egrave;s aux pi&egrave;ces jointes : <ul><li>- Les pi&egrave;ces jointes &laquo;Priv&eacute;es&raquo; ou les pi&egrave;ces jointes attach&eacute;es &agrave; un article &laquo;Priv&eacute;&raquo;, ne sont pas affich&eacute;es, si l'utilisateur n'est pas connect&eacute;,</li><li>- Les pi&egrave;ces jointes &laquo;Prot&eacute;g&eacute;es&raquo; ou les pi&egrave;ces jointes attach&eacute;es &agrave; un article &laquo;Prot&eacute;g&eacute;&raquo;, ne sont pas affich&eacute;es, si l'utilisateur n'a pas saisi le bon mot de passe,</li><li>- Pour les articles publics, ou non prot&eacute;g&eacute;s, vous pouvez choisir l'une des options suivantes, vous permettant d'afficher les pi&egrave;ces jointes, avec ou sans les liens, ou de les cacher.</li></ul>"
 
 #: inc/eg-attachments-settings.inc.php:
 msgid "List with details, and big icon"

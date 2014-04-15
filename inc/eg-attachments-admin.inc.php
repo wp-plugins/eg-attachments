@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_132 {
+	Class EG_Attachments_Admin extends EG_Plugin_133 {
 
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
 		/* Q: what about other post type ? */
@@ -689,16 +689,13 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function install_upgrade() {
 			global $wpdb;
-// eg_plugin_error_log($this->name, 'Starting child install_upgrade');
-			$previous_options = parent::install_upgrade();
-// eg_plugin_error_log($this->name, 'Previous options : ', $previous_options);
 
+			$previous_options = parent::install_upgrade();
 			$previous_version = ($previous_options === FALSE ? '0.0.0' : $previous_options['version']);
 			if (version_compare($this->version, $previous_version)>0) {
-// eg_plugin_error_log($this->name, 'Upgrade from previous options');
 
 				/**
-				 * From version 1.4.3 
+				 * From version 1.4.3
 				 */
 				if (isset($this->options['uninstall_del_option'])) {
 					$this->options['uninstall_del_options'] = $previous_options['uninstall_del_option'];
@@ -822,10 +819,10 @@ if (! class_exists('EG_Attachments_Admin')) {
 				} // End of shortcode_auto_size
 
 				/* --- Version upper than 2.0.0 --- */
-				if ( TRUE == version_compare($this->version, '2.0.0', ">" ) && 
+				if ( TRUE == version_compare($this->version, '2.0.0', ">" ) &&
 					 TRUE == version_compare($previous_version, '2.0.0', ">=" ) ) {
-						$templates = get_posts(array( 'post_type' => EGA_TEMPLATE_POST_TYPE ) ); 
-// eg_plugin_error_log($this->name, 'Managing the update for the following templates: ', $templates);
+						$templates = get_posts(array( 'post_type' => EGA_TEMPLATE_POST_TYPE ) );
+
 						foreach ($templates as $template) {
 							$updated_post = array(
 								'ID'           => (int) $template->ID,
@@ -833,10 +830,9 @@ if (! class_exists('EG_Attachments_Admin')) {
 								'post_content' => str_replace('%LINK%', '%URL%', $template->post_content)
 							);
 
-// eg_plugin_error_log($this->name, 'Updating post '.$template->post_title.' : ', $updated_post);
 							wp_update_post($updated_post);
 						} // End of foreach $template
-						
+
 				} // End of %LINK% replaced by %URL%
 
 
@@ -1459,46 +1455,78 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function options_validation($inputs) {
 			$all_options = parent::options_validation($inputs);
-// eg_plugin_error_log($this->name, 'Entering in options_validation', $this->changed_options);
+
 			if ( FALSE !== $this->changed_options &&
 				isset($this->changed_options['clear_cache']) &&
 				FALSE !== $this->changed_options['clear_cache'] ) {
 
 				foreach ($this->changed_options['clear_cache'] as $key) {
 					if ( '' != $key ) {
-						$cache_id = strtolower($this->name).'-cache-'.$key;
-// eg_plugin_error_log($this->name, 'Deleting cache entry', $cache_id );
-						delete_transient($cache_id);
+						$this->clear_cache($key);
 					}
 				} // End of foreach list of cache
-
-// eg_plugin_error_log($this->name, 'clean up the options' );
 			} // End of check changed options
 
 			return ($all_options);
 		} // End of function options_validation
 
-
-
+		/**
+		 * update_attachement
+		 *
+		 * Clear cache according a specific attachment
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 * @param	int		$id		id the attachment
+		 * @return	none
+		 *
+		 */
 		function update_attachement($id) {
-// eg_plugin_error_log($this->name, 'calling wp_update_attachement_metadata, post', $post_id);
+
 			$post_id = wp_get_post_parent_id( $id );
 
 			if ( FALSE !== $post_id )
 				$this->clear_cache($post_id);
 		} // End of delete_attachement
 
-		function update_post($post_id, $post, $flag ) {
-// eg_plugin_error_log($this->name, 'calling save post, post', $post_id);
+		/**
+		 * update_post
+		 *
+		 * Clear cache according a post
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 * @param	int			$post_id		id the post
+		 * @param	object		$post			post
+		 * @param	int			$flag
+		 * @return	none
+		 *
+		 */
+		function update_post($post_id, $post ) {
 			$this->clear_cache($post_id);
 		} // End of function update_post
 
+		/**
+		 * clear_cache
+		 *
+		 * Clear cache according a post
+		 *
+		 * @package EG-Attachments
+		 * @since 	1.0
+		 * @param	int			$post_id		id the post
+		 * @param	object		$post			post
+		 * @param	int			$flag
+		 * @return	none
+		 *
+		 */
 		function clear_cache($post_id) {
-			$cache_entry = strtolower($this->name).'-cache-'.$post_id;
-			if ( FALSE !== get_transient($cache_entry) ) {
-// eg_plugin_error_log($this->name, 'Delete cache for entry, post:', $post_id);
-				delete_transient($cache_entry);
-			}
+			$cache_id = array( '-cache-', '-cache-click-');
+			foreach ($cache_id as $value) {
+				$cache_entry = strtolower($this->name).$value.$post_id;
+				if ( FALSE !== get_transient($cache_entry) ) {
+					delete_transient($cache_entry);
+				}
+			} // End of foreach
 		} // End of function clear_cache
 
 		/**
@@ -1525,7 +1553,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 			add_filter( 'add_attachment',    array( $this, 'update_attachement' ) );
 			add_filter( 'edit_attachment',   array( $this, 'update_attachement' ) );
 			add_filter( 'delete_attachment', array( $this, 'update_attachement' ) );
-			add_action( 'save_post', 		 array( $this, 'update_post' ), 10, 3 );
+			add_action( 'save_post', 		 array( $this, 'update_post' ), 10, 2 );
 		} // End of load
 
 	} // End of Class

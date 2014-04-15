@@ -95,7 +95,7 @@ $fields = array(
 			'link' => '<strong>Permalink</strong>.<br /><em>The URL of the attachment is using defined permalink structure. For example: <code>http://blog url/post url/attachment slug/</code>, or <code>http://blog url/?p=xx</code>.<br/>The attachment will be displayed inside your blog, as a post.</em>',
 			'file' => '<strong>File</strong>.<br /><em>The URL is the document\'s address. For example: <code>http://blog url/wp-content/upload/2011/09/file name.file extension/</code>.<br />When you click on the attachment, it is displayed directly, as a document, and not as a page of blog. WordPress mechanisms are not used</em>'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'force_saveas' => array(
@@ -109,7 +109,7 @@ $fields = array(
 		'desc'		=> 'In normal mode, when you click on the attachments\' links, according their mime type, documents are displayed, or a dialog box appears to choose \'run with\' or \'Save As\'. By activating the following option, the dialog box will appear for all cases.',
 		'options'	=> array('Force "Save As" when users click on the attachments'),
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'icon_image' => array(
@@ -123,7 +123,7 @@ $fields = array(
 		'desc'		=> 'The thumbnail will be displayed with the size specified in the template',
 		'options'	=> array( 'icon' => 'The icon of the file type', 'thumbnail' => 'The Thumbnail of the image'),
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'nofollow' => array(
@@ -137,7 +137,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array( 'Check if you want to automatically add <code>rel="nofollow"</code> to attachment links' ),
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'nofollow' => array(
@@ -151,7 +151,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array( 'Check if you want to automatically add <code>rel="nofollow"</code> to attachment links' ),
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'target_blank' => array(
@@ -165,7 +165,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array( 'Check if you want to automatically add <code>target="_blank"</code> to attachment links' ),
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'exclude_thumbnail' => array(
@@ -179,7 +179,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array( 'Check if you want to exclude featured image (thumbnail) from the list of attachments' ),
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'stats_enable' => array(
@@ -193,7 +193,7 @@ $fields = array(
 		'desc'		=> 'Record all clicks occuring in the listed attachements.',
 		'options'	=> array('Activate statistics'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'stats_ip_exclude' => array(
@@ -207,7 +207,7 @@ $fields = array(
 		'desc'		=> 'List of IP address you want to exclude',
 		'options'	=> FALSE,
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'purge_stats' => array(
@@ -221,7 +221,7 @@ $fields = array(
 		'desc'		=> 'Enter 0 (zero), if you wand to disable the maintenance',
 		'options'	=> FALSE,
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 
@@ -239,7 +239,7 @@ $fields = array(
 							  2 => 'Display attachments for logged users only'
 					),
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'login_url' => array(
@@ -253,7 +253,7 @@ $fields = array(
 		'desc'		=> sprintf(__('If you leave the field empty, the usual WordPress login form will be used (<code>%s</code>).', $this->textdomain), wp_login_url() ),
 		'options'	=> FALSE,
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'date_format' => array(
@@ -267,7 +267,7 @@ $fields = array(
 		'desc'		=> 'Use PHP <strong>date()</strong> parameters to configure the date:<br />d&nbsp;&nbsp;&nbsp;&nbsp;Day of the month, 2 digits with leading zeros<br />D&nbsp;&nbsp;&nbsp;&nbsp;A textual representation of a day, three letters<br />j&nbsp;&nbsp;&nbsp;&nbsp;Day of the month without leading zeros<br />S&nbsp;&nbsp;&nbsp;&nbsp;English ordinal suffix for the day of the month, 2 characters<br />F&nbsp;&nbsp;&nbsp;&nbsp;A full textual representation of a month, such as January or March<br />m&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, with leading zeros<br />M&nbsp;&nbsp;&nbsp;&nbsp;A short textual representation of a month, three letters<br />n&nbsp;&nbsp;&nbsp;&nbsp;Numeric representation of a month, without leading zeros<br />Y&nbsp;&nbsp;&nbsp;&nbsp;A full numeric representation of a year, 4 digits<br />y&nbsp;&nbsp;&nbsp;&nbsp;A two digit representation of a year',
 		'options'	=> FALSE,
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'custom_format_obsolete' => array(
@@ -281,7 +281,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> FALSE,
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 
@@ -296,7 +296,7 @@ $fields = array(
 		'desc'		=> 'With this option, you can automaticaly add the list of attachments in your blog, without using shortcode',
 		'options'	=> array( 0 => 'Not activated', 2 => 'At the end', 3 => 'Before the excerpt', 4 => 'Between excerpt and content'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'shortcode_auto_exclusive' => array(
@@ -310,7 +310,7 @@ $fields = array(
 		'desc'		=> 'If this option is activated, auto shortcode won\'t be generated if a manual shortcode is detected in the post being displayed',
 		'options'	=> array('Disable auto-shortcode when a manual shortcode is detected'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'shortcode_auto_where' => array(
@@ -324,7 +324,7 @@ $fields = array(
 		'desc'		=> 'If this option is activated, auto shortcode won\'t be generated if a manual shortcode is detected in the post being displayed',
 		'options'	=> array_merge(array( 'home' => 'Homepage,', 'post' => 'Posts,', 'page' => 'Pages,', 'index' => 'Lists of posts (archives, categories, ...).'),$ega_post_type_list),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'shortcode_auto_title' => array(
@@ -338,7 +338,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> FALSE,
 		'size'		=> 'medium',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'shortcode_auto_title_tag' => array(
@@ -352,7 +352,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> FALSE,
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 	'shortcode_auto_template' => array(
 		'name'		=> 'shortcode_auto_template',
@@ -365,7 +365,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> $templates_list,
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE,
 		'list_options'  => array(
 			'no_option'	=> 'No template available',
@@ -384,7 +384,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array( 'all' => 'All', 'document' => 'Documents', 'image' => 'Images'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'shortcode_auto_orderby' => array(
@@ -398,7 +398,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> $EGA_FIELDS_ORDER_LABEL,
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'shortcode_auto_order' => array(
@@ -412,7 +412,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array('ASC' => 'Ascending', 'DESC' => 'Descending'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'shortcode_auto_limit' => array(
@@ -426,7 +426,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> FALSE,
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'shortcode_auto_default_opts' => array(
@@ -440,7 +440,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array('Do you want that auto shortcode options become the default options for the TinyMCE EG-Attachments Editor?'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'display_admin_bar' => array(
@@ -454,7 +454,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array( 'Display a <strong>EG-Attachments</strong> menu in the administration bar'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'use_metabox' => array(
@@ -468,7 +468,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array( 'Show metabox to display list of attachments of the current post/page'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'tinymce_button' => array(
@@ -482,7 +482,7 @@ $fields = array(
 		'desc'		=> '',
 		'options'	=> array( 'Show EG-Attachments button in post text editor ?'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'tags_assignment' => array(
@@ -496,9 +496,9 @@ $fields = array(
 		'desc'		=> 'If you select this option, you will be able to select attachments by using the <strong>tags</strong> parameter in the shortcode.',
 		'options'	=> array( 'Do you want to assign tags to attachments?'),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
-/*
+
 	'icon_set'	=> array(
 		'name'		=> 'icon_set',
 		'label'		=> 'Icon set',
@@ -509,14 +509,13 @@ $fields = array(
 		'after' 	=> '',
 		'desc'		=> '',
 		'options'	=> array(
-			0    	=> '<strong>Default</strong>. Set of icons based on Crystal package',
-			1 		=> '<strong>Flat</strong>. Set of icons "Flat style" ',
-			2		=> '<strong>Custom</strong>. Enter the path, and url '),
+			'flags'    	 => 'Default (Crystal icons)'
+		),
 		'size'		=> 'small',
-		'status'	=> 'active',
+		'status'	=> 'disabled',
 		'multiple'	=> FALSE
 	),
-	*/	
+
 	'icon_path' => array(
 		'name'		=> 'icon_path',
 		'label'		=> 'Icon path',
@@ -528,7 +527,7 @@ $fields = array(
 		'desc'		=> 'Additional path where the plugin can get icons',
 		'options'	=> FALSE,
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'icon_url' => array(
@@ -542,7 +541,7 @@ $fields = array(
 		'desc'		=> 'Additional url where the plugin can get icons',
 		'options'	=> FALSE,
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'load_css' => array(
@@ -556,7 +555,7 @@ $fields = array(
 		'desc'		=> 'Check if you want to use the plugin stylesheet file, uncheck if you want to use your own styles, or include styles on the theme stylesheet.',
 		'options'	=> array('Automatically load plugins\' stylesheet'),
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE),
 
 	'uninstall_del_options' => array(
@@ -570,9 +569,46 @@ $fields = array(
 		'desc'		=> 'Be careful: these actions cannot be cancelled. All plugin\'s datas, including options, templates, and statistics will be deleted while plugin uninstallation.',
 		'options'	=> array('Delete data during uninstallation.'),
 		'size'		=> 'regular',
-		'status'	=> 'active',
+		'status'	=> '',
 		'multiple'	=> FALSE)
 );
+
+	$clear_cache_options = EG_Attachments_Common::list_of_cache($this->name);
+	if ( FALSE !== $clear_cache_options && is_array($clear_cache_options) ) {
+
+		/* --- Clear the option --- */
+		$this->options['clear_cache'] = FALSE;
+		update_option($this->options_entry, $this->options);
+
+		$tabs[4] = array(
+			'label' => 'Cache',
+			'header' => ''
+		);
+
+		$sections['cache'] = array(
+			'label' => 'Clear plugin cache',
+			'tab' => 4,
+			'header' => 'The plugin is using cache to store the list of attachments. If the changes you make in the administration interface, are not seen in the front-end, you can use this option to clear the cache',
+			'footer' => ''
+		);
+
+		$fields['clear_cache'] = array(
+			'name'		=> 'clear_cache',
+			'label'		=> 'Clear cache entries',
+			'type'		=> 'checkbox',
+			'section'	=> 'cache',
+			'group'		=> 0,
+			'before'	=> 'Check the options, if you want to delete the following cache entries:',
+			'after'		=> '',
+			'desc'		=> '',
+			'options'	=> $clear_cache_options,
+			'size'		=> 'regular',
+			'status'	=> '',
+			'multiple'	=> TRUE
+		);
+	} // End of cache not empty
+
+
 $option_form->set_form($tabs, $sections, $fields);
 
 ?>

@@ -3,7 +3,7 @@
 Package Name: EG-Forms
 Package URI:
 Description: Class for WordPress plugins
-Version: 2.2.3
+Version: 2.2.4
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,15 +26,15 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Form_223')) {
+if (!class_exists('EG_Form_224')) {
 
 	/**
-	  * Class EG_Form_223
+	  * Class EG_Form_224
 	  *
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Form_223 {
+	Class EG_Form_224 {
 
 		var $page_id;
 		var $options_entry;
@@ -77,6 +77,7 @@ if (!class_exists('EG_Form_223')) {
 			$this->tabs 	= $tabs;
 			$this->sections = $sections;
 			$this->fields	= $fields;
+
 		} // End of set_form
 
 		function add_tab($label, $header='') {
@@ -111,7 +112,7 @@ if (!class_exists('EG_Form_223')) {
 					'desc'		=> $desc,
 					'options'	=> $options,
 					'size'		=> $size,
-					'status'	=> $status,
+					'status'	=> ( '' == $status || 'active' == $status ? '' : 'disabled' ),
 					'multiple'	=> $multiple
 				);
 			return (sizeof($this->fields)-1);
@@ -228,7 +229,7 @@ if (!class_exists('EG_Form_223')) {
 					$output .= '<tr '.('' == $alternate ? $alternate = 'class="alternate"' : $alternate = '').'>'.
 									'<th class="check-column" scope="row">'.
 										'<label for="'.$entry_name.'">'.
-										'<input type="radio" value="'.esc_attr($value).'" name="'.$entry_name.'"'.$checked.'/> '.
+										'<input type="radio" value="'.esc_attr($value).'" name="'.$entry_name.'"'.$checked.' '.$field['status'].'/> '.
 										'</label>'.
 									'</th>';
 					foreach ($field['list_options']['fields'] as $value) {
@@ -273,7 +274,7 @@ if (!class_exists('EG_Form_223')) {
 			foreach ($field['options'] as $value => $text) {
 				$checked = ($value == $default ? ' checked' : '');
 				$output .= '<label for="'.$entry_name.'">'.
-							'<input type="radio" value="'.esc_attr($value).'" name="'.$entry_name.'"'.$checked.'/> '.
+							'<input type="radio" value="'.esc_attr($value).'" name="'.$entry_name.'"'.$checked.' '.$field['status'].' /> '.
 							__($text, $this->textdomain).
 							'</label>'.
 							(++$num != sizeof($field['options']) ? '<br />' : '');
@@ -305,7 +306,7 @@ if (!class_exists('EG_Form_223')) {
 			if (sizeof($field['options']) == 1 && !$field['multiple']) {
 				$output .= '<label for="'.$entry_name.'">'.
 							'<input type="hidden" value="0" name="'.$entry_name.'" /> '.
-							'<input type="checkbox" value="1" id="'.$field['name'].'" name="'.$entry_name.'"'.($default ? ' checked' : '').' /> '.
+							'<input type="checkbox" value="1" id="'.$field['name'].'" name="'.$entry_name.'"'.($default ? ' checked' : '').' '.$field['status'].' /> '.
 							__(current($field['options']), $this->textdomain).
 							'</label>';
 			}
@@ -322,7 +323,7 @@ if (!class_exists('EG_Form_223')) {
 						$options = (isset($field['list_options']) && isset($field['list_options'][$value]) ? $field['list_options'][$value] : '');
 						$output .=  ('disabled' == $options ? '' : '<input type="hidden" value="" name="'.$entry_name.'['.$num.']" />').
 									'<label for="'.$entry_name.'['.$num.']">'.
-									'<input type="checkbox" value="'.esc_attr($value).'" name="'.$entry_name.'['.$num.']"'.$checked.' '.$options.' /> '.
+									'<input type="checkbox" value="'.esc_attr($value).'" name="'.$entry_name.'['.$num.']"'.$checked.' '.$options.' '.$field['status'].' /> '.
 									('disabled' == $options && '' != $checked ? '<input type="hidden" value="'.esc_attr($value).'" name="'.$entry_name.'['.$num.']" />' : '').
 									__($text, $this->textdomain).
 									'</label>'.
@@ -352,7 +353,7 @@ if (!class_exists('EG_Form_223')) {
 			if ($field['type'] != 'hidden') $class = 'class="'.$field['size'].'-text" ';
 			else $class = '';
 
-			return '<input '.$class.'type="'.$field['type'].'" value="'.esc_attr($default).'" name="'.$entry_name.'" id="'.$field['name'].'" />';
+			return '<input '.$class.'type="'.$field['type'].'" value="'.esc_attr($default).'" name="'.$entry_name.'" id="'.$field['name'].'" '.' '.$field['status'].' />';
 		} // End of display_text
 
 		/**
@@ -371,7 +372,7 @@ if (!class_exists('EG_Form_223')) {
 		 */
 		function display_select($field, $entry_name, $default) {
 
-			$output = '<select id="'.$field['name'].'" name="'. $entry_name.'" '.($field['multiple'] ? 'multiple' : '').'>';
+			$output = '<select id="'.$field['name'].'" name="'. $entry_name.'" '.($field['multiple'] ? 'multiple' : '').' '.$field['status'].' >';
 			foreach ($field['options'] as $id => $value) {
 				$selected = ( $default == $id ) ? ' selected' : '';
 				$output .= '<option value="'.esc_attr($id).'" '.$selected.'>'.esc_html__($value, $this->textdomain).'</option>';
@@ -467,7 +468,7 @@ if (!class_exists('EG_Form_223')) {
 		 */
 		function display_sections($default_options, $current_tab='') {
 			foreach ($this->sections as $id => $section) {
-				if ($current_tab == $section['tab'] ) {
+				if ( !isset($section['tab']) || FALSE == $section['tab'] || (isset($section['tab']) && $current_tab == $section['tab']) ) {
 					// Creating metaboxes
 					add_meta_box( 'eg-form-section-'.$id,
 								esc_html__($section['label'], $this->textdomain),
@@ -495,7 +496,7 @@ if (!class_exists('EG_Form_223')) {
 		 */
 		function display_tabs($current_page, &$current_tab=0) {
 			$output = '';
-			if (sizeof($this->tabs)>1) {
+			if ( $this->tabs && sizeof($this->tabs)>1) {
 
 				if ( $current_tab > sizeof($this->tabs) ) 
 					$current_tab = 1;

@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments_Public')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Public extends EG_Plugin_132 {
+	Class EG_Attachments_Public extends EG_Plugin_133 {
 
 		var $order_by 	= 'title';
 		var $order 		= 'ASC';
@@ -39,15 +39,6 @@ if (! class_exists('EG_Attachments_Public')) {
 				}
 			}
 		} // End of init
-
-//		function enqueue_scripts() {
-//			wp_enqueue_script( 'eg-attachments-ajax-request', $this->url.'inc/js/click_counter.js', array( 'jquery' ) );
-//			wp_localize_script( 'eg-attachments-ajax-request', 'EgaAjax', array(
-//				'ajax_url'		=> admin_url('admin-ajax.php'),
-//				'nonce' 		=> wp_create_nonce( 'egattach-ajax' )
-//				)
-//			);
-//		} // End of enqueue_scripts
 
 		/**
 		  *  manage_link
@@ -177,18 +168,6 @@ if (! class_exists('EG_Attachments_Public')) {
 		function record_click($parent_id, $parent_title, $attach_id, $attach_title) {
 			global $wpdb;
 
-//			if (! isset($_REQUEST['nonce'])) {
-//				die ( 'Bad request, or security issue!');
-//			}
-//			elseif ( ! wp_verify_nonce( $_REQUEST['nonce'], 'egattach-ajax' ) ) {
-//				die ( 'Security issue!');
-//			}
-
-//			if (! isset($_REQUEST['parent_id']) || !is_numeric($_REQUEST['parent_id']) ||
-//				!isset($_REQUEST['attach_id']) || !is_numeric($_REQUEST['attach_id'])) {
-//				die('Wrong parameters');
-//			}
-
 			$stats_enable = $this->options['stats_enable'] && $this->options['clicks_table'];
 			if ($stats_enable && $this->options['stats_ip_exclude'] != '') {
 				$stat_ip = (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : FALSE);
@@ -198,16 +177,6 @@ if (! class_exists('EG_Attachments_Public')) {
 			}
 
 			if ($stats_enable) {
-
-//				$parent_id 		= $_REQUEST['parent_id'];
-//				$attach_id 		= $_REQUEST['attach_id'];
-//				$attach_title 	= $_REQUEST['title'];
-
-				/* Get some details from post parent */
-//				$post = get_post($parent_id);
-
-//				if (! $post)
-//					die('Incorrect parameter <strong>parent_id</strong>');
 
 				// Count click
 				$sql = $wpdb->prepare('INSERT INTO '.$wpdb->prefix.'eg_attachments_clicks '.
@@ -227,21 +196,19 @@ if (! class_exists('EG_Attachments_Public')) {
 		  * @param  int     $attachment_id		id of attachment to get size
 		  * @return	float 						size of the attachment
 		  */
-		function get_file_size($attachment_id) {
+		function get_file_size( $attachment) {
 
-			// Get the path of the file
-			$file_path = get_attached_file($attachment_id);
-
-			// size calculation
-			$docsize = @filesize($file_path);
-			if ($docsize === FALSE)
-				$docsize = '';
-			else {
+			$docsize = $attachment->file_size;
+			if ( FALSE !== $docsize && 0 != $docsize && '' != $docsize ) {
 				$size_value = explode(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
 				$docsize = $size_value[0].' '.__($size_value[1]);
 			}
-			if ($docsize == 0 || $docsize == '') return __('unknown', $this->textdomain);
-			else return ($docsize);
+
+			if ( FALSE === $docsize || 0 == $docsize | '' == $docsize )
+				return __('unknown', $this->textdomain);
+			else
+				return ($docsize);
+
 		} /* End of get_file_size */
 
 		/**
@@ -279,21 +246,23 @@ if (! class_exists('EG_Attachments_Public')) {
 		  * @return 		array		the previous array, with additional paths
 		  */
 		function icon_dirs($args) {
+
 			// If $args is not an array => return directly the value
-			if (!is_array($args))
+			if (!is_array($args)) {
 				$new_args = $args ;
+			}
 			else {
 				// Add the icons path of the current plugin
 				//$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),$args);
 				if ($this->options['icon_path'] !='' &&
 					$this->options['icon_url']  !='' &&
 					file_exists(str_replace('\\','/',trailingslashit(ABSPATH).$this->options['icon_path']))) {
-					$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),
-										array(str_replace('\\','/',trailingslashit(ABSPATH).$this->options['icon_path']) => trailingslashit(get_bloginfo('home')).$this->options['icon_url']),
-										$args);
+
+					$new_args = array_merge(array($this->path.'img/'.$this->options['icon_set'] => $this->url.'img/'.$this->options['icon_set']),
+							array(str_replace('\\','/',trailingslashit(ABSPATH).$this->options['icon_path']) => trailingslashit(get_bloginfo('home')).$this->options['icon_url']),	$args);
 				}
 				else {
-					$new_args = array_merge(array($this->path.'img/flags' => $this->url.'img/flags'),$args);
+					$new_args = array_merge(array($this->path.'img/'.$this->options['icon_set'] => $this->url.'img/'.$this->options['icon_set']),$args);
 				}
 			}
 			return ($new_args);
@@ -302,61 +271,54 @@ if (! class_exists('EG_Attachments_Public')) {
 
 		function get_icon_url($id, $doctype, $icon_image) {
 
+			$icon_url = false;
 			// --- New in 2.0.1
-			if ( ($image = image_downsize($id, 'thumbnail')) && 'thumbnail' == $icon_image )
+			if ( 'thumbnail' == $icon_image && $image = image_downsize($id, 'thumbnail'))
 				$icon_url = $image[0];
 			else
 				$icon_url = wp_mime_type_icon($id);
 
-			if ( ! $icon_url )
-				$icon_url = trailingslashit(get_bloginfo('wpurl')).WPINC.'/images/crystal/default.png';
-
+			if ( ! $icon_url ) {
+				if (function_exists('includes_url'))
+					$icon_url = includes_url('/images/crystal/default.png');
+				else
+					$icon_url = trailingslashit(get_bloginfo('wpurl')).WPINC.'/images/crystal/default.png';
+			}
 			return ($icon_url);
 		} // End of get_icon_url
 
 		/**
-		  *  get_icon() - Get the thumbnail of the atttachment
+		  * Get_icon() - Get the thumbnail of the atttachment
 		  *
 		  * @package EG-Attachments
-		  * @param int 		$id				attachment id
-		  * @param object 	$attachment 	the attachment metadata
+		  *
 		  * @return string html entities IMG
 		  */
 		function get_icon($html, $attachment, $doctype, $icon_image) {
 			$output = $html;
 
-			// --- 2.0.1 -> change the Regex.
-			// preg_match_all("/%ICON-[0-9][0-9]x[0-9][0-9]%/", $html, $matches);
 			preg_match_all("/%ICON-([0-9]+)x([0-9]+)%/", $html, $matches);
 			if ($matches) {
 				$icon_url = $this->get_icon_url($attachment->ID, $doctype, $icon_image);
-				if ($attachment->post_content != '')
+				if ( '' != $attachment->post_content )
 					$description = esc_html($attachment->post_content);
-				elseif ($attachment->post_title !='')
+				elseif ( '' != $attachment->post_title )
 					$description = esc_html($attachment->post_title);
 				else
 					$description = esc_html($attachment->post_name);
 
 				foreach ($matches[0] as $key => $pattern) {
-					// list($string, $size)  = explode('-', $pattern);
-					// list($width, $height) = explode('x', str_replace('%', '', $size));
-					$width  = $matches[1][$key];
-					$height = $matches[2][$key];
+					$width  = $matches[1][$key].'px';
+					$height = $matches[2][$key].'px';
+
+// style=\"width='.$width.'!important; height='.$height.'!important; max-width=none!important;\"
 
 					$output = preg_replace('/'.$pattern.'/', '<img src="'.$icon_url.'" width="'.$width.'" height="'.$height.'" alt="'.$description.'" />', $output);
+
 				} // End of foreach
 			} // End of if matches
 			return ($output);
 		} /* end of get_icon */
-
-//		function add_click_counter($input) {
-//			$regex_pattern = "/<a(\s[^>]*)href=\"([^\"]*)\"([^>]*)>(.*)<\/a>/siU";
-//			preg_match_all($regex_pattern,$input,$matches);
-//			for ($i=0; $i < sizeof($matches[0]); $i++) {
-//				$link = '<a'.$matches[1][$i].'href="'.$matches[2][$i].'"'.$matches[3][$i].' onclick="ega_click_counter()
-//			}
-//			return ($input);
-//		} // End of add_click_counter
 
 		function where_post_mime_type($args) {
 
@@ -365,6 +327,14 @@ if (! class_exists('EG_Attachments_Public')) {
 				return (str_replace($wpdb->prefix.'posts.post_mime_type LIKE \'notimage/%\'', $wpdb->prefix.'posts.post_mime_type NOT LIKE \'image/%\'',$args));
 			}
 		} // End of where_post_mime_type
+
+
+		function sort_list($a, $b) {
+			return ( 'ASC' === $this->order
+						?  $a->{$this->order_by} > $b->{$this->order_by}
+						:  $a->{$this->order_by} < $b->{$this->order_by}
+					);
+		} // End of function sort_list
 
 		/**
 		  * The eg-attachments shortcode.
@@ -389,14 +359,13 @@ if (! class_exists('EG_Attachments_Public')) {
 			  *
 			  */
 			 // TODO: replace with get_shortcode_defaults
-			$EGA_SHORTCODE_DEFAULTS['force_saveas'] 	= $this->options['force_saveas'];
-			$EGA_SHORTCODE_DEFAULTS['logged_users'] 	= $this->options['logged_users_only'];
-			$EGA_SHORTCODE_DEFAULTS['login_url'] 		= $this->options['login_url'];
-			$EGA_SHORTCODE_DEFAULTS['nofollow'] 		= $this->options['nofollow'];
-			$EGA_SHORTCODE_DEFAULTS['icon_image'] 		= $this->options['icon_image'];
-			$EGA_SHORTCODE_DEFAULTS['target'] 			= $this->options['target_blank'];
-			$EGA_SHORTCODE_DEFAULTS['exclude_thumbnail'] = $this->options['exclude_thumbnail'];
-
+			$EGA_SHORTCODE_DEFAULTS['force_saveas'] 		= $this->options['force_saveas'];
+			$EGA_SHORTCODE_DEFAULTS['logged_users'] 		= $this->options['logged_users_only'];
+			$EGA_SHORTCODE_DEFAULTS['login_url'] 			= $this->options['login_url'];
+			$EGA_SHORTCODE_DEFAULTS['nofollow'] 			= $this->options['nofollow'];
+			$EGA_SHORTCODE_DEFAULTS['icon_image'] 			= $this->options['icon_image'];
+			$EGA_SHORTCODE_DEFAULTS['target'] 				= $this->options['target_blank'];
+			$EGA_SHORTCODE_DEFAULTS['exclude_thumbnail']	= $this->options['exclude_thumbnail'];
 
 			extract( shortcode_atts( $EGA_SHORTCODE_DEFAULTS, $atts ) );
 
@@ -423,6 +392,7 @@ if (! class_exists('EG_Attachments_Public')) {
 			  */
 			list($this->order_by, $this->order) = explode(' ', strtolower($orderby));
 			list($orderby_default, $order_default) = $EGA_SHORTCODE_DEFAULTS['orderby'];
+
 			$this->order_by = (isset($EGA_FIELDS_ORDER_KEY[$this->order_by]) ? $EGA_FIELDS_ORDER_KEY[$this->order_by] : $orderby_default);
 			$this->order    = strtoupper(in_array($this->order, array('asc', 'desc')) ? $this->order : $order_default);
 
@@ -443,7 +413,7 @@ if (! class_exists('EG_Attachments_Public')) {
 			  */
 			$error_msg = '';
 			$cache_entry = strtolower($this->name).'-shortcode-tmpl';
-			$templates = (EG_PLUGIN_ENABLE_CACHE ? get_transient($cache_entry) : FALSE);
+			$templates = (EGA_ENABLE_CACHE ? get_transient($cache_entry) : FALSE);
 			if (FALSE !== $templates && isset($templates[$template])) {
 				$template_content = $templates[$template];
 			}
@@ -463,7 +433,7 @@ if (! class_exists('EG_Attachments_Public')) {
 					if (FALSE === $template) {
 						$error_msg = esc_html__('Error during processing shortcode template', $this->textdomain);
 					}
-					elseif (EG_PLUGIN_ENABLE_CACHE) {
+					elseif (EGA_ENABLE_CACHE) {
 						$templates[$template] = $template_content;
 						set_transient($cache_entry, $templates, EGA_TEMPLATE_CACHE_EXPIRATION);
 					}
@@ -476,24 +446,25 @@ if (! class_exists('EG_Attachments_Public')) {
 			  */
 			$params = array('numberposts' 		=> $limit,
 							'post_type'   		=> 'attachment',
-							'suppress_filters' 	=> false);
-
-			if ($id > 0) {
+							'suppress_filters' 	=> false,
+							'orderby'			=> $this->order_by,
+							'order'				=> $this->order);
+			if ( 0 < $id ) {
 				$params['post_parent'] = $id;
-				if ( 0 !== $exclude_thumbnail ) {
+				if ( 0 !== intval($exclude_thumbnail) ) {
 					$featured_id = get_post_thumbnail_id($id);
 					if ( FALSE !== $featured_id && '' != $featured_id )
-						$exclude = ( ''== $exclude ? $featured_id : ','.$featured_id );
+						$exclude = ( '' == $exclude ? $featured_id : $exclude.','.$featured_id );
 				} // End of exclude thumbnail
 			} // End of parent specified
 
-			if ('' != $include)
+			if ( '' != $include )
 				$params['include'] = $include;
 
-			if ('' != $exclude)
+			if ( '' != $exclude )
 				$params['exclude'] = $exclude;
 
-			if ('image' == $doctype)
+			if ( 'image' == $doctype )
 				$params['post_mime_type'] = 'image';
 			elseif ('' != $doctype && 'all' != $doctype)
 				$params['post_mime_type'] = 'notimage';
@@ -523,13 +494,11 @@ if (! class_exists('EG_Attachments_Public')) {
 			  */
 			$cache_entry = strtolower($this->name).'-cache-'.$id;
 			$cache_id    = md5(implode('', $params));
-			$cache 		 = (EG_PLUGIN_ENABLE_CACHE ? get_transient($cache_entry) : FALSE);
+			$cache 		 = (EGA_ENABLE_CACHE ? get_transient($cache_entry) : FALSE);
 			if (FALSE !== $cache && isset($cache[$cache_id])) {
-//eg_plugin_error_log($this->name, 'Get attachments: Use Cache, post:', $id);
 				$attachments = $cache[$cache_id];
 			}
 			else {
-// eg_plugin_error_log($this->name, 'Get attachments: No cache, post:', $id);
 				/**
 				  * Query DB
 				  */
@@ -537,10 +506,29 @@ if (! class_exists('EG_Attachments_Public')) {
 				$attachments = get_posts($params);
 				remove_filter('posts_where',array(&$this, 'where_post_mime_type') );
 
-				if (EG_PLUGIN_ENABLE_CACHE && $attachments && sizeof($attachments) > 0) {
-					$cache[$cache_id] = $attachments;
-					set_transient($cache_entry, $cache, EGA_SHORTCODE_CACHE_EXPIRATION);
-				}
+				if ( $attachments && sizeof($attachments) > 0 ) {
+
+					/* --- Get file date and size --- */
+					foreach ($attachments as $attachment) {
+						$info = @stat(get_attached_file($attachment->ID));
+						if ( FALSE !== $info ) {
+							$attachment->file_date = date('Y-m-d H:i:s', $info['mtime']);
+							$attachment->file_size = intval($info['size']);
+						} // End of get info
+					} // End of foreach attachment
+
+					/* --- Sort list of --- */
+					/* Get posts allows only the following sort keys: 'name', 'author', 'date', 'title', 'modified', 'menu_order', 'ID', 'rand', 'comment_count' */
+					if ( ! in_array( $this->order_by, array( 'name', 'author', 'date', 'title', 'modified', 'menu_order', 'ID', 'rand', 'comment_count' ) ) ) {
+						uasort($attachments, array($this, 'sort_list') );
+					}
+
+					if ( EGA_ENABLE_CACHE ) {
+						$cache[$cache_id] = $attachments;
+						set_transient($cache_entry, $cache, EGA_SHORTCODE_CACHE_EXPIRATION);
+					}
+
+				} // End of list of attachments not found
 			}
 
 			/**
@@ -551,24 +539,35 @@ if (! class_exists('EG_Attachments_Public')) {
 				return '';
 			}
 
-			/* --- Replace the date with the file date --- */
-			if ($attachments) {
-				foreach ($attachments as $attachment) {
-					$file_date = filemtime(get_attached_file($attachment->ID));
-					if ($file_date !== FALSE) $attachment->post_date = date('Y-m-d H:i:s', $file_date);
-				}
-			}
-
-			/* --- Sort attachments --- */
-			$compare = ($this->order === 'ASC')
-						? 'return strcmp($a->'.$this->order_by.', $b->'.$this->order_by.');'
-						: 'return -strcmp($a->'.$this->order_by.', $b->'.$this->order_by.');';
-			uasort($attachments, create_function('$a,$b', $compare));
-
 			/* --- Prepare loop --- */
 			$date_format = ( $this->options['date_format']!='' ? $this->options['date_format'] : get_option('date_format') );
 			$output = '';
 			add_filter('icon_dirs', array(&$this, 'icon_dirs'));
+
+			/* ---  if required, getting statistics --- */
+			$click_counts = array();
+			if (FALSE !== strpos($template_content['loop'], '%COUNTER%') && $this->options['stats_enable'] && $this->options['clicks_table']) {
+
+				$cache_entry = strtolower($this->name).'-cache-click-'.$id;
+				$click_counts = (EGA_ENABLE_CACHE ? get_transient($cache_entry) : FALSE);
+
+				if ( FALSE === $click_counts ) {
+
+					$sql = $wpdb->prepare('SELECT attach_id, SUM(clicks_number) AS clicks_number'.
+							' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
+							' WHERE post_id=%d'.
+							' GROUP BY attach_id', $post->ID);
+
+					$results = $wpdb->get_results($sql);
+					foreach ($results as $value) {
+						$click_counts[intval($value->attach_id)] = intval($value->clicks_number);
+					}
+
+					if ( EGA_ENABLE_CACHE ) {
+						set_transient($cache_entry, $click_counts, 60 );
+					}
+				} // End of nothing in the cache
+			} // End of get click counters
 
 			/* --- Starting loop --- */
 			reset($attachments);
@@ -578,11 +577,6 @@ if (! class_exists('EG_Attachments_Public')) {
 					continue;
 				}
 
-				$click_stat = '';
-/*				if ( $this->options['stats_enable'] > 0 ) {
-					$click_stat = '" onclick="return TrackClick(this,'.$attachment->ID.','.$post->ID.');';
-				}
-*/
 				$alt_img_icon 	= '';
 				$lock_icon 		= '';
 				$url 			= '';
@@ -602,10 +596,10 @@ if (! class_exists('EG_Attachments_Public')) {
 
 				if ('' == $url) {
 					$query_args = array('aid' => $attachment->ID, 'sa' => $force_saveas);
-					$attach_url = add_query_arg(array_merge(array('pid' => $post->ID),$query_args), get_permalink($attachment->ID));
+					$attach_url = add_query_arg( array_merge(array('pid' => $post->ID),$query_args), get_permalink($attachment->ID) );
 
-					$file_url   = wp_get_attachment_url($attachment->ID);
-					$direct_url = add_query_arg($query_args, get_permalink($post->ID));
+					$file_url   = wp_get_attachment_url( $attachment->ID );
+					$direct_url = add_query_arg( $query_args, get_permalink($post->ID) );
 
 					if ('link' == $this->options['link'])
 						$url = $attach_url;
@@ -615,26 +609,10 @@ if (! class_exists('EG_Attachments_Public')) {
 						$url = $direct_url;
 				} // Url empty
 
-				$item = html_entity_decode($template_content['loop']);
-				if (FALSE !== strpos($item, '%COUNTER%') && $this->options['stats_enable'] && $this->options['clicks_table']) {
-					$sql = $wpdb->prepare('SELECT SUM(clicks_number) '.
-							'FROM '.$wpdb->prefix.'eg_attachments_clicks '.
-							'WHERE attach_id=%d '.
-							'AND post_id=%d ',
-							array($attachment->ID,$post->ID));
-					$click_count = $wpdb->get_var($sql);
-					if (!is_numeric($click_count))
-						$click_count = 0;
-				}
-/*
-				$file_date = '';
-				if (FALSE !== strpos($item, '%DATE%')) {
-					$file_date = filemtime(get_attached_file($attachment->ID));
-					if ($file_date !== FALSE) $file_date = date($date_format, $file_date);
-					else $file_date = mysql2date($date_format, $attachment->post_date, TRUE);
-				}
-*/
-				$file_date = mysql2date($date_format, $attachment->post_date, TRUE);
+				$file_date = mysql2date($date_format, $attachment->file_date, TRUE);
+				$post_date = mysql2date($date_format, $attachment->post_date, TRUE);
+
+				$counter = (isset($click_counts[$attachment->ID]) ? $click_counts[$attachment->ID] : 0);
 
 				$item = html_entity_decode(stripslashes($template_content['loop']));
 				$item = preg_replace("/%LINK_URL%/",		$attach_url,													$item);
@@ -652,19 +630,20 @@ if (! class_exists('EG_Attachments_Public')) {
 				$item = preg_replace("/%DESCRIPTION_LABEL%/", esc_html__('Description', $this->textdomain),			 		$item);
 				$item = preg_replace("/%FILENAME%/",		esc_html(basename(get_attached_file($attachment->ID))),			$item);
 				$item = preg_replace("/%FILENAME_LABEL%/",	esc_html__('Filename', $this->textdomain), 						$item);
-				$item = preg_replace("/%FILESIZE%/",		esc_html($this->get_file_size($attachment->ID)),				$item);
+				$item = preg_replace("/%FILESIZE%/",		esc_html($this->get_file_size($attachment /* ->ID)*/)),			$item);
 				$item = preg_replace("/%FILESIZE_LABEL%/",	esc_html__('Size', $this->textdomain), 							$item);
 				$item = preg_replace("/%ATTID%/",       	$attachment->ID,												$item); //For use with stylesheets
 				$item = preg_replace("/%TYPE%/",		  	esc_html(strtoupper($this->get_type($attachment->post_mime_type))),	$item);
 				$item = preg_replace("/%TYPE_LABEL%/",	 	esc_html__('Type', $this->textdomain), 							$item);
 				$item = preg_replace("/%DATE%/",		   	esc_html($file_date),											$item);
+				$item = preg_replace("/%POSTDATE%/",		esc_html($post_date),											$item);
 				$item = preg_replace("/%DATE_LABEL%/",  	esc_html__('Date', $this->textdomain), 							$item);
 				$item = preg_replace("/%SHOWLOCK%/",  		$lock_icon, 													$item);
-				$item = preg_replace("/%COUNTER%/",  		esc_html($click_count), 										$item);
+				$item = preg_replace("/%COUNTER%/",  		esc_html( $counter ), 											$item);
 				//if ('' === $click_count || 0 == $click_count)
 				//	$item = preg_replace("/%COUNTER_LABEL%/",	'', 														$item);
 				//else
-					$item = preg_replace("/%COUNTER_LABEL%/",	esc_html__((2>$click_count?'click':'clicks'), $this->textdomain),		$item);
+					$item = preg_replace("/%COUNTER_LABEL%/",	esc_html__((2>$counter?'click':'clicks'), $this->textdomain),		$item);
 
 				if ( $nofollow )
 					$item = preg_replace("/%NOFOLLOW%/",	'rel="nofollow"', 										$item);
