@@ -434,7 +434,7 @@ if (!class_exists('EG_Form_224')) {
 		function display_section($default_options, $box) {
 			$section_id	= substr($box['id'], strlen('eg-form-section-'));
 			$section    = $this->sections[$section_id];
-
+			
 			$output = ('' == $section['header'] ? '' : '<p>'.__($section['header'], $this->textdomain).'</p>'."\n");
 			$output .= '<table class="form-table">'."\n".
 					'<tbody>'."\n";
@@ -443,6 +443,7 @@ if (!class_exists('EG_Form_224')) {
 					$output .= $this->display_field($field, $default_options);
 				} // Endif
 			} // End Foreach
+
 			$output .= '</tbody>'."\n".
 						'</table>'."\n".
 						('' == $section['footer'] ? '' : '<p>'.__($section['footer'], $this->textdomain).'</p>'."\n").

@@ -6,17 +6,23 @@ global $post;
 // Build the list of post_types
 $ega_post_type_list = array();
 if (function_exists('get_post_types')) {
-	$custom_post_types = get_post_types(array(), 'objects');
-	$exclusion_list    = array('post', 'page', 'attachment', 'nav_menu_item', 'revision', EGA_TEMPLATE_POST_TYPE, 'wpcf7_contact_form');
-
-	foreach ($custom_post_types as $post_type_id => $post_type_value) {
-		if (! in_array($post_type_id, $exclusion_list)) {
-			$ega_post_type_list[$post_type_id] = $post_type_value->label;
+	$all_post_types = get_post_types( array('public' => true, 'publicly_queryable' => true), 'object');
+	$exclusion_list    = array('post', 'page', 'attachment');
+	foreach ($all_post_types as $key => $post_type) {
+		if (! in_array($key, $exclusion_list)) {
+			$ega_post_type_list[$key] = $post_type->labels->name;
 		}
-	} // End of foreach
+	} // End foreach
 } // End of function get_post_types exists
 
+// Load list of existing templates
 $templates_list = EG_Attachments_Common::get_templates($this->options, 'all', FALSE);
+
+// Load list of existing icons sets
+$icon_set_list  = EG_Attachments_Common::get_icon_set_list($this->textdomain);
+// If the current icon set doesn't exist in the list, go back to the default one
+// This is to prevent issues with icons plugins
+EG_Attachments_Common::check_icons_set($icon_set_list, $this->options);
 
 $tabs = array(
 	1	=> array( 'label' => 'Shortcodes behavior',	'header' => ''),
@@ -32,6 +38,11 @@ $sections = array(
 						'footer' => ''
 					),
 	'stat' 		=> array( 'label' => 'Statistics', 			'tab' => 1, 	'header' => '', 'footer' => ''),
+	'paths' 	=> array( 'label' => 'Icons set',			
+						'tab' => 1, 	
+						'header' => 'In this section, you can <strong>Choose a set of icons</strong>, or <strong>give a path, and an url</strong> where you put your own icons.</li></ul><br/>', 
+						'footer' => sprintf(__('<strong>Notes</strong><br /><ol><li>Icons sets are coming from this plugins, but can also be provided by other plugins. An example of this kind of plugin is <a href="%1s" title="%2s">%3s</a>.<br />If you want to add a new icons set to the EG-Attachments plugin, please read the source code of the plugin <strong>%4s</strong>,</li><li>The icon set selection is active only if nothing is specified in the fieds <em>Icon path</em>, and <em>Icon url</em>.</li><li>The fieds <em>Icon path</em>, and <em>Icon url</em> are working only for file types, not for file extensions. For example, if you have two icons in the path specified: one for the type <em>document</em>, the other for the file extension <em>pdf</em>, then a PDF file will be displayed with the icon <em>document</em>.</li><li>The file types are the "WordPress file types": %5s.</li></ol>', $this->textdomain), 'http://wordpress.org/plugins/eg-attachments-flat-icons', 'EG-Attachments Flat Icons in the WordPress plugin repository', 'EG-Attachments Flat Icons', 'EG-Attachments Flat Icons', 'image, audio, video, document, spreadsheet, interactive, text, archive, code')
+						),
 	'security'	=> array( 'label' => 'Security',
 						'tab' => 1,
 						'header' => 'Some comments about security:'.
@@ -50,7 +61,6 @@ $sections = array(
 	'asbehavior'=> array( 'label' => 'Behavior', 			'tab' => 2,		'header' => '', 'footer' => ''),
 	'admin_bar'	=> array( 'label' => 'Administration bar', 	'tab' => 3, 	'header' => '', 'footer' => ''),
 	'editor'	=> array( 'label' => 'Post editor page', 	'tab' => 3,		'header' => '', 'footer' => ''),
-	'paths' 	=> array( 'label' => 'Paths', 				'tab' => 3, 	'header' => '', 'footer' => ''),
 	'styles' 	=> array( 'label' => 'Styles', 				'tab' => 3, 	'header' => '', 'footer' => ''),
 	'uninstall' => array( 'label' => 'Uninstallation', 		'tab' => 3, 	'header' => '', 'footer' => '')
 );
@@ -508,11 +518,9 @@ $fields = array(
 		'before'	=> '',
 		'after' 	=> '',
 		'desc'		=> '',
-		'options'	=> array(
-			'flags'    	 => 'Default (Crystal icons)'
-		),
+		'options'	=> $icon_set_list,
 		'size'		=> 'small',
-		'status'	=> 'disabled',
+		'status'	=> ( 1 < sizeof( $icon_set_list ) ? '' : 'disabled'),
 		'multiple'	=> FALSE
 	),
 
@@ -522,7 +530,7 @@ $fields = array(
 		'type'		=> 'text',
 		'section'	=> 'paths',
 		'group'		=> 0,
-		'before'	=> trailingslashit(str_replace('\\', '/', ABSPATH)),
+		'before'	=> trailingslashit(wp_normalize_path( ABSPATH ) ),
 		'after'		=> '',
 		'desc'		=> 'Additional path where the plugin can get icons',
 		'options'	=> FALSE,
@@ -560,26 +568,41 @@ $fields = array(
 
 	'uninstall_del_options' => array(
 		'name'		=> 'uninstall_del_options',
+		'label'		=> 'Options',
+		'type'		=> 'checkbox',
+		'section'	=> 'uninstall',
+		'group'		=> 0,
+		'before'	=> '',
+		'after'		=> '',
+		'desc'		=> 'Be careful: these actions cannot be cancelled. Plugin\'s data, including options, and templates will be deleted while plugin uninstallation.',
+		'options'	=> array('Delete options and templates, during uninstallation.'),
+		'size'		=> 'regular',
+		'status'	=> '',
+		'multiple'	=> FALSE),
+		
+	'uninstall_del_stats' => array(
+		'name'		=> 'uninstall_del_stats',
 		'label'		=> 'Data',
 		'type'		=> 'checkbox',
 		'section'	=> 'uninstall',
 		'group'		=> 0,
 		'before'	=> '',
 		'after'		=> '',
-		'desc'		=> 'Be careful: these actions cannot be cancelled. All plugin\'s datas, including options, templates, and statistics will be deleted while plugin uninstallation.',
-		'options'	=> array('Delete data during uninstallation.'),
+		'desc'		=> 'Be careful: these actions cannot be cancelled. All statistics about downloads / views of attached files, will be deleted while plugin uninstallation.',
+		'options'	=> array('Delete statistics during uninstallation.'),
 		'size'		=> 'regular',
 		'status'	=> '',
 		'multiple'	=> FALSE)
+		
 );
 
-	$clear_cache_options = EG_Attachments_Common::list_of_cache($this->name);
+	$clear_cache_options = EG_Attachments_Common::list_of_cache($this->name, $this->textdomain);
 	if ( FALSE !== $clear_cache_options && is_array($clear_cache_options) ) {
 
 		/* --- Clear the option --- */
 		$this->options['clear_cache'] = FALSE;
 		update_option($this->options_entry, $this->options);
-
+    
 		$tabs[4] = array(
 			'label' => 'Cache',
 			'header' => ''

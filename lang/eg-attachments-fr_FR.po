@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: EG-Attachments 2.0.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/eg-attachments\n"
 "POT-Creation-Date: 2013-02-10 23:52:03+00:00\n"
-"PO-Revision-Date: 2013-12-15 20:49+0100\n"
+"PO-Revision-Date: 2014-05-12 09:48+0100\n"
 "Last-Translator: Emmanuel Georjon <blog@emmanuelgeorjon.com>\n"
 "Language-Team: Emmanuel GEORJON <blog@emmanuelgeorjon.com>\n"
 "MIME-Version: 1.0\n"
@@ -43,6 +43,10 @@ msgstr "Label pour description (Description en anglais)"
 #: inc/eg-attachment-keywords-help.inc.php:29
 msgid "Label for filename (filename in english)"
 msgstr "Label pour le nom du fichier (filename en anglais)"
+
+#: inc/eg-attachment-keywords-help.inc.php:29
+msgid "Label for file extension"
+msgstr "Label pour l'extensiion du fichier"
 
 #: inc/eg-attachment-keywords-help.inc.php:33
 msgid "Label for the size of the file (<strong>size</strong> in english)"
@@ -520,6 +524,10 @@ msgstr "L&eacute;gende"
 #: inc/eg-attachments-public.inc.php:616
 msgid "Filename"
 msgstr "Nom du fichier"
+
+#: inc/eg-attachments-public.inc.php:616
+msgid "Extension"
+msgstr "Extension"
 
 #: inc/eg-attachments-settings.inc.php:22
 #: inc/eg-attachments-widgets.inc.php:26
@@ -1152,9 +1160,9 @@ msgstr "L'attribut &laquo; nofollow &raquo; est affich&eacute; uniquement si l'o
 msgid "The &laquo; target &raquo; attributs are displayed only if the option &laquo; target &raquo; is checked in the <a href=\"%s\">Settings / EG-Attachments</a> menu"
 msgstr "L'attribut &laquo; target &raquo; est affich&eacute; uniquement si l'option &laquo; target &raquo; est activ&eacute;e dans le menu <a href=\"%s\">Settings / EG-Attachments</a>"
 
-#: inc/eg-attachments-admin.inc.php:
-msgid "Extension"
-msgstr "Extension"
+#: inc/eg-attachment-keywords-help.inc.php
+msgid "Extension of the attached file"
+msgstr "Extensionde la pi&egrave;ce jointe"
 
 #: inc/eg-attachments-admin.inc.php:
 msgid "Cache"

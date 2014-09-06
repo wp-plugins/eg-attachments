@@ -8,16 +8,16 @@ if (! defined('EG_PLUGIN_ENABLE_CACHE')) {
 	define('EG_PLUGIN_ENABLE_CACHE', TRUE);
 }
 
-if (! class_exists('EG_Plugin_133')) {
+if (! class_exists('EG_Plugin_134')) {
 
 	/**
-	 * Class EG_Plugin_133
+	 * Class EG_Plugin_134
 	 *
 	 *
 	 *
 	 * @package EG-Plugin
 	 */
-	Class EG_Plugin_133 {
+	Class EG_Plugin_134 {
 
 		var $name				= '';
 		var $version			= '';
@@ -170,10 +170,11 @@ if (! class_exists('EG_Plugin_133')) {
 			$this->changed_options = array();
 			$all_options = get_option($this->options_entry);
 			foreach ($inputs as $key => $value) {
-				// If field exist in plugin options
+				// If field exist in plugin options, then
 				if ( isset($all_options[$key])) {
+					// If the value changed, we track it
 					if ( $value != $all_options[$key] ) {
-						$this->changed_options[$key] = $value;
+						$this->changed_options[$key] = $all_options[$key];
 					}
 					if (is_array($value)) {
 						$all_options[$key] = array_filter($value);
@@ -701,6 +702,7 @@ if (! class_exists('EG_Plugin_133')) {
 
 
 if ( ! function_exists( 'eg_plugin_error_log' ) ) {
+
 	/**
 	 * eg_plugin_error_log
 	 *
@@ -741,4 +743,22 @@ if ( ! function_exists( 'eg_plugin_error_log' ) ) {
 			error_log($output);
 		} // End of WP_DEBUG===True
 	} // End of eg_plugin_error_log
+}
+
+
+if ( ! function_exists( 'wp_normalize_path' ) ) {
+
+	/**
+	 * Normalize a filesystem path.
+	 *
+	 * The function is available since WP 3.9, not before
+	 *
+	 * @param string $path Path to normalize.
+	 * @return string Normalized path.
+	 */
+	function wp_normalize_path( $path ) {
+		$path = str_replace( '\\', '/', $path );
+		$path = preg_replace( '|/+|','/', $path );
+		return $path;
+	}
 }

@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_133 {
+	Class EG_Attachments_Admin extends EG_Plugin_134 {
 
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
 		/* Q: what about other post type ? */
@@ -36,9 +36,12 @@ if (! class_exists('EG_Attachments_Admin')) {
 						'name' 		    => __( 'EG-Attachment templates', $this->textdomain ),
 						'singular_name' => __( 'EG-Attachment template', $this->textdomain )
 					),
-					'rewrite' 	=> false,
-					'query_var' => false,
-					'exclude_from_search' => false
+					'rewrite' 			  => false,
+					'query_var' 		  => false,
+					'exclude_from_search' => false,
+					/* Added in EGA 2.0.3 */
+					'public'			  => false,
+					'publicly_queryable'  => false
 				)
 			);
 
@@ -838,9 +841,9 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			} // End of update
 
+
 			$table_name = $wpdb->prefix . 'eg_attachments_clicks';
-			$sql = '';
-			if (0 == $this->options['clicks_table']) {
+			if ( 1 > floatval($this->options['clicks_table']) ) {
 
 				$sql = "CREATE TABLE " . $table_name . " (
 						click_id bigint(20) NOT NULL auto_increment,
@@ -850,27 +853,65 @@ if (! class_exists('EG_Attachments_Admin')) {
 						post_id bigint(20) unsigned,
 						post_title text NOT NULL,
 						clicks_number int(10) NOT NULL,
-						PRIMARY KEY (click_date,post_id, attach_id),
-						KEY click_date (click_date),
-						KEY click_id (click_id)
+						PRIMARY KEY  (click_date,post_id,attach_id),
+						KEY  click_date (click_date),
+						KEY  click_id (click_id)
 					);";
-			} // End of first install
-			else {
-			/*
-				'SHOW KEYS FROM ' . $table_name . ' WHERE KEY_NAME = "date_attach_post"';
-			*/
-				if (FALSE !== $previous_version && version_compare($this->version, $previous_version)>1) {
-					$sql = 'ALTER TABLE '.$table_name.' DROP PRIMARY KEY;'."\n".
-							'ALTER TABLE '.$table_name.' ADD PRIMARY KEY (click_date,post_id, attach_id);';
-				}
-			} // End of update to 2.0.0
 
-			if ($sql != '') {
 				require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 				dbDelta($sql);
+
 				$this->options['clicks_table'] = '1.1';
 				update_option($this->options_entry, $this->options);
-			} // End of table check
+			} // End of first install
+			elseif ( 1.1 > floatval($this->options['clicks_table']) ) {
+
+				$sql = 'ALTER TABLE '.$table_name."\n".
+						' DROP KEY attach_date, '."\n".
+						' DROP KEY date_attach_post, '."\n".
+						' ADD PRIMARY KEY (click_date,post_id,attach_id);';
+
+				$results = $wpdb->query( $sql );
+				if ( ! $results ) {
+					$this->options['clicks_table'] = '1.1';
+					update_option($this->options_entry, $this->options);
+				}
+			} // End of update to 1.1
+
+			if ( ! $this->options['on_duplicate'] &&
+				version_compare($this->version, $previous_version) > 0 &&
+				version_compare($this->version, '2.0.2') > 0 ) {
+
+				$tableindices = $wpdb->get_results("SHOW INDEX FROM {$table_name};");
+
+				if ( $tableindices ) {
+// eg_plugin_error_log('EGA', 'Test indexes');
+					// For every index in the table
+					foreach ($tableindices as $tableindex) {
+						// Add the index to the index data array
+						$keyname = $tableindex->Key_name;
+						$index_list[$keyname]['columns'][] = $tableindex->Column_name;
+						$index_list[$keyname]['unique']    = ($tableindex->Non_unique == 0 ? true : false);
+					} // End of foreach
+
+					if ( isset($index_list['PRIMARY']) && sizeof($index_list['PRIMARY']['columns']) > 2 ) {
+						sort($index_list['PRIMARY']['columns'], SORT_STRING);
+						if ( strtolower( implode(',', $index_list['PRIMARY']['columns'])) == 'attach_id,click_date,post_id' ) {
+// eg_plugin_error_log('EGA', 'Primary key found with column'.strtolower(implode(',', $index_list['PRIMARY']['columns'])));
+							$this->options['on_duplicate'] = 1;
+						}
+					}
+					elseif ( isset($index_list['date_attach_post']) ) {
+						if ( $index_list['date_attach_post']['unique'] ) {
+// eg_plugin_error_log('EGA', 'date_attach_post key found and it is unique');
+							$this->options['on_duplicate'] = 1;
+						}
+					}
+					update_option($this->options_entry, $this->options);
+				} // End of get index / keys
+
+			} // End of (New version && version > 2.0.2)
+
 		} // End of install_upgrade
 
 		/**
@@ -1282,7 +1323,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$sql = 'SELECT post_id as id, post_title as title, SUM(clicks_number) as total'.
 				' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
 				' WHERE '.$sql_params['where'].
-				' GROUP BY attach_title'.
+			/*	' GROUP BY attach_title'. */
+				' GROUP BY attach_id'.
 				' ORDER BY total DESC';
 			$results = $wpdb->get_results($sql);
 			$this->display_stats_sheet($results, $total_download, 'post');
@@ -1456,15 +1498,48 @@ if (! class_exists('EG_Attachments_Admin')) {
 		function options_validation($inputs) {
 			$all_options = parent::options_validation($inputs);
 
-			if ( FALSE !== $this->changed_options &&
-				isset($this->changed_options['clear_cache']) &&
-				FALSE !== $this->changed_options['clear_cache'] ) {
+			if ( FALSE !== $this->changed_options ) {
+			
+				// Check request for cache clearance
+				if ( isset($this->changed_options['clear_cache']) &&
+					FALSE !== $all_options['clear_cache'] ) {
 
-				foreach ($this->changed_options['clear_cache'] as $key) {
-					if ( '' != $key ) {
-						$this->clear_cache($key);
+					foreach ($this->changed_options['clear_cache'] as $key) {
+						if ( '' != $key ) {
+							$this->clear_cache($key);
+						}
+					} // End of foreach list of cache
+				} // End of clear cache
+				
+				// Check icon path
+				if ( isset( $this->changed_options['icon_path'] ) ) {
+				
+					$icon_path = trim($all_options['icon_path']);
+					if ('' != $icon_path ) {
+					
+						if ( ! file_exists( path_join( ABSPATH, $icon_path ) ) ) {
+							add_settings_error(
+									'ega_options', 
+									'path-not-exist', 
+									sprintf(__('The path %1s specified in the section <a href="%2s">Icons set</a>, doesn\'t exist', $this->textdomain), $icon_path, '#icon_path'),
+									'error'
+								);
+						} // End of icon_path doesn't exist
+						elseif ( ! is_dir( path_join( ABSPATH, $icon_path ) ) ) {
+							add_settings_error(
+									'ega_options', 
+									'path-not-dir',
+									sprintf(__('The path %1s specified in the section <a href="%2s">Icons set</a>, is not a directory.', $this->textdomain), $icon_path, '#icon_path'),
+									'error'
+								);
+						}
+					} // End of icon_path not empty
+					else {
+						// if icon_path='', ensure that icon_url is also empty
+						$all_options['icon_url'] = '';
 					}
-				} // End of foreach list of cache
+				} // End of icon_path changed
+				
 			} // End of check changed options
 
 			return ($all_options);
@@ -1483,10 +1558,14 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function update_attachement($id) {
 
-			$post_id = wp_get_post_parent_id( $id );
+			// Added in 2.0.3 - Clear cache containing all attachments ( id=-1 )
+			$this->clear_cache('all');
 
-			if ( FALSE !== $post_id )
-				$this->clear_cache($post_id);
+			if ( is_numeric($id) && 0 < $id ) {
+				$post_id = wp_get_post_parent_id( $id );
+				if ( $post_id )
+					$this->clear_cache($post_id);
+			}
 		} // End of delete_attachement
 
 		/**
@@ -1503,7 +1582,9 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 *
 		 */
 		function update_post($post_id, $post ) {
-			$this->clear_cache($post_id);
+			if ( 0 < $post_id ) {
+				$this->clear_cache($post_id);
+			}
 		} // End of function update_post
 
 		/**
@@ -1520,13 +1601,10 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 *
 		 */
 		function clear_cache($post_id) {
-			$cache_id = array( '-cache-', '-cache-click-');
-			foreach ($cache_id as $value) {
-				$cache_entry = strtolower($this->name).$value.$post_id;
-				if ( FALSE !== get_transient($cache_entry) ) {
-					delete_transient($cache_entry);
-				}
-			} // End of foreach
+		
+			$cache_entry = EG_Attachments_Common::get_cache_entry($this->name, $post_id );
+			delete_transient($cache_entry);
+
 		} // End of function clear_cache
 
 		/**
@@ -1545,17 +1623,16 @@ if (! class_exists('EG_Attachments_Admin')) {
 			parent::load();
 			add_action('init', array(&$this, 'init'));
 
-			/* --- [2.0.1] to be tested --- */
+			/* --- Added in 2.0.1 --- */
 			add_filter('sanitize_file_name', 'remove_accents');
 
-			/* --- [2.0.1] ---*/
-			// add_filter( 'wp_update_attachment_metadata', array( $this, 'wp_update_attachment_metadata' ), 10, 2 );
+			/* --- Added in 2.0.1 --- */
 			add_filter( 'add_attachment',    array( $this, 'update_attachement' ) );
 			add_filter( 'edit_attachment',   array( $this, 'update_attachement' ) );
 			add_filter( 'delete_attachment', array( $this, 'update_attachement' ) );
 			add_action( 'save_post', 		 array( $this, 'update_post' ), 10, 2 );
 		} // End of load
-
+		
 	} // End of Class
 
 } // End of if class_exists

@@ -25,12 +25,20 @@
 		<td><?php esc_html_e('Label for description (description in english)', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
+		<td><strong>%EXT_LABEL%</strong></td>
+		<td><?php esc_html_e('Label for file extension', $this->textdomain); ?>,</td>
+	</tr>
+	<tr>
 		<td><strong>%FILENAME_LABEL%</strong></td>
 		<td><?php esc_html_e('Label for filename (filename in english)', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
 		<td><strong>%FILESIZE_LABEL%</strong></td>
 		<td><?php esc_html_e('Label for the size of the file (<strong>size</strong> in english)', $this->textdomain); ?>,</td>
+	</tr>
+	<tr>
+		<td><strong>%MIME_LABEL%</strong></td>
+		<td><?php esc_html_e('Label for the mime type of the file', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
 		<td><strong>%TYPE_LABEL%</strong></td>
@@ -80,6 +88,10 @@
 		<td><?php esc_html_e('Name of the attached file', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
+		<td><strong>%EXT%</strong></td>
+		<td><?php esc_html_e('Extension of the attached file', $this->textdomain); ?>,</td>
+	</tr>
+	<tr>
 		<td><strong>%FILESIZE%</strong></td>
 		<td><?php esc_html_e('Size of the attached document', $this->textdomain); ?>,</td>
 	</tr>
@@ -102,6 +114,10 @@
 	<tr>
 		<td><strong>%LINK_URL%</strong></td>
 		<td><?php _e('The URL of the attachment, as defined by the permalink structure chosen. For example: <code>http://blog url/post url/attachment slug/</code>, or <code>http://blog url/?p=xx</code>.', $this->textdomain); ?>,</td>
+	</tr>
+	<tr>
+		<td><strong>%MIME%</strong></td>
+		<td><?php esc_html_e('Mime type of the documents', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
 		<td><strong>%NOFOLLOW%</strong>(2)</td>

@@ -1,7 +1,18 @@
 <?php
-	if ( !defined( 'WP_UNINSTALL_PLUGIN' ) )
-		exit ();
 
+	if (
+		!defined( 'WP_UNINSTALL_PLUGIN' )
+	||
+		!WP_UNINSTALL_PLUGIN
+	||
+		dirname( WP_UNINSTALL_PLUGIN ) != dirname( plugin_basename( __FILE__ ) )
+	) {
+		status_header( 404 );
+		exit;
+	}
+
+	global $wpdb;
+		
 	$options = get_option('EG-Attachments-Options');
 	if ( isset($options) && $options['uninstall_del_options']) {
 
@@ -13,17 +24,24 @@
 		/*
 		 * Remove templates
 		 */
-		global $wpdb;
 		$wpdb->query("DELETE FROM $wpdb->posts WHERE post_type = 'egatmpl'");
 
 		/*
+		 * Remove transients / cache
+		 */
+		delete_transient('eg-attachments-templates');
+		
+		/*
 		 * Remove all entries related to EG-Attachments, including transient
 		 */
-		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name like '%eg-attachments%'");
-
+		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name like '%eg-attachments_cache_%' ");
+		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name like '%eg-attachments-shortcode-tmpl%' ");
+	}
+	
+	if ( isset($options) && $options['uninstall_del_stats']) {
 		/*
 		 * Remove stats table
 		 */
-		$wpdb->query("DROP TABLE IF EXISTS ${wpdb->prefix}eg_attachments_clicks");
+		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}eg_attachments_clicks");
 	}
 ?>

@@ -2,8 +2,8 @@
 Contributors: EmmanuelG
 Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode
-Requires at least: 3.5.0
-Tested up to: 3.9.0
+Requires at least: 3.6.0
+Tested up to: 4.0.0
 Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -14,8 +14,6 @@ This plugin add a shortcode to display the list of attachments of a post, with i
 
 EG-Attachments add a new shortcode attachements. This shortcode can be used with many options.
 But you don't need to know all of these options, because the plugin is "TinyMCE integrated" : from the post editor, just click on the EG-Attachments button, and a window allows you to choose documents to display, title of the list, size of icons ... Nothing to learn.
-
-**CAUTION: Version 2.0 brings a lot of changes, compared to the version 1.9.x. If you are using EG-Attachments 1.9.x, it's recommended to test the new version on a test platform, before moving to "production" environment.**
 
 You can insert the **shortcode** by hand if you want, or use it in a template using the **do_shortcode** function.
 
@@ -55,7 +53,7 @@ Thanks to
 
 = Translations =
 
-The plugin comes up with 10 translations. Two translations are completed for the version 2.0.0:
+The plugin comes up with 10 translations. Two translations are completed for the version 2.0.3:
 
 * English (EN) - [Emmanuel](http://www.emmanuelgeorjon.com/)
 * French (FR) - [Emmanuel](http://www.emmanuelgeorjon.com/),
@@ -112,20 +110,20 @@ Four ways to include the list of attachments into a post:
 
 The shortcode options are:
 
-* **template**: if the parameter **size** is set to *custom*, the template is designing the template to be used to display attachments
-* **doctype**: type of documents to display. Values: image or document. Defaults: document,
-* **id**: id of the post we want to display attachments. Possible values: id of a post, 0 for the current post, -1 to display attachments that are not attached to the current post. Default value: 0,
+* **template**: the template to be used to display attachments. Possibles values: one of the template listed in the menu Tools > EGA Templates. Default value: *large*,
+* **doctype**: type of documents to display. Values: *image*, *document*, or *all*. Defaults: *document*,
+* **id**: id of the post we want to display attachments. Possible values: id of a post, 0 for the current post, -1 to display attachments that are not attached to a post. Default value: 0,
 * **include**: list of attachments' id (comma separated) you want to display. Default: nothing, to display all attachments. This option is not supporting the value *first*, and *end* supported previously by **docid**,
 * **exclude**: list of attachments's id to exclude from the list,
-* **orderby**: sort option. Values: title, caption, description, file name, size, date, type, menu_order and ASC or DESC. `ASC`is the default sort order. Default: `title ASC`.
+* **orderby**: sort option. Values: title, caption, description, file name, size, date, type, menu_order and ASC or DESC. `ASC` is the default sort order. Default: `title ASC`.
 * **title**: title to display before the list. Default: '',
 * **titletag**: tag to add before and after the title. Default: h2
 * **force_saveas** forces the browser to show the dialog box (Run / Save as) rather than display attachment. Values: true or false. Default: the default value is defined in the **Settings page** in administration interface.
 * **limit**: choose the number of attachements you want to display. Default: all attachments are displayed
-* **nofollow**: add the attribut "nofollow" to the link, if value is set to 1 or TRUE. Default nofollow=0
+* **nofollow**: add the attribut "nofollow" to the link, if value is set to 1 or TRUE. Default nofollow=0. This parameter can also be defined in the settings page,
 * **logged_users** authorizes access to the file, to logged users only, or to all users. Possible values: 0, all users can visualize or download attachments, and 1, only logged users can access to attachments. Default value: the default value is defined in the **Settings page** in administration interface.
 * **tags** allows you to select attachments according tags (post tags). Syntax: tags=tag1,tag2. The shortcode will display attachments with either tag1 or tag2,
-* **tags_and** allows to select attachments linked to all tags specified. Syntax: tags_and=tag3,tag4. The attachments displayed are linked to tag3 AND tag4.
+* **tags_and** allows to select attachments linked to all tags specified. Syntax: tags_and=tag3,tag4. The attachments displayed are linked to tag3 AND tag4,
 
 Depredicated options
 
@@ -137,13 +135,12 @@ In future posts, please use **template** and **include** parameters.
  
 Remove options:
 
-* **fields**, list of fields to display. Values: Document label, Title, Caption, Description, File name, Size, Small size, Date, Type, or a set of values such as "caption,description" (comma separated).
-* **icon** specify if icons will be displayed or not. Default value: 1 or TRUE. If value is 0 or FALSE, list displayed will be ul/li (html simple list) rather than dl/dt/dd (definition list).
-* **display_label**: for size=small only. Allow to display label of fields, when value is set to 1. Default display_label=0
-* **label** label of each document. Values: filename, doctitle. Default: filename. Option available for size=small or size=medium only.
+* **fields**, list of fields to display,
+* **icon** specify if icons will be displayed or not,
+* **display_label**: Allow to display label of fields,
+* **label** label of each document
 
-These parameters don't work even in existing posts. But you can easily get the results you want, by modifying templates.
-
+These parameters don't work anymore with the latest versions. But you can easily get the results you want, by modifying templates.
 
 ** Examples :**
 
@@ -160,7 +157,7 @@ The options in the section are
 * used as options for the automatic shortcode,
 * used as default value for the shortcode manually inserted into posts.
 
-**Example:** if you check the option *Force "Save As" when users click on the attachments*, you force download for all attachments displayed by auto-shortcodes, and manual shortcode, except if you specify `force_saveas` in a shortcode option.
+**Example:** if you check the option *Force "Save As" when users click on the attachments*, you force the download for all attachments displayed by auto-shortcodes, and manual shortcode, except if you specify `force_saveas` in a shortcode option.
 
 = Statistics =
 
@@ -204,7 +201,7 @@ EG-Attachments uses a *cache* to build statistics, avoiding to launch heavy quer
 The %TARGET% tag is used only when the parameter *target* is specified in the shortcode, or the option *target=blank attribute* is checked in the plugin settings page (Menu Settings / EG-Attachments)
 
 = When I ask to display the image thumbnails, the thumbnail displayed is bigger than expected =
-If the size of the image thumbnail is set to 150x150 in WordPress, or in your theme, in the attachment list, the thumbnail displayed will be 150x150, even if you request a smaller size like 48x48 in EG-Attachment.
+If the size of the image thumbnail is set to 150x150 in WordPress, or in your theme, the thumbnail displayed could be 150x150 in the attachment list, even if you request a smaller size like 48x48 in EG-Attachment,
 This issue is coming from the styles used by your theme. If your theme is responsive, then the stylesheet should contain some styles to adapt the image size according the screen size. To solve this issue, you need to change these styles, in order to exclude the images of the attachments' list.
 
 == Screenshots ==
@@ -220,6 +217,20 @@ This issue is coming from the styles used by your theme. If your theme is respon
 9. **Template editor**: Build easily your own list, using standard HTML tags, and some specific keyworkds.
 
 == Changelog ==
+
+= Version 2.0.3 - June 14th, 2014 =
+
+* New: add keywords %EXT%, and %EXT_LABEL% to display the extension of a file,
+* New: add keywords %MIME% and %MIME_LABEL% to display the mime type,
+* Change: Keyword %TYPE% doesn't return the mime type anymore, but a simple type (image, document, text, ...),
+* New: add a "clicks number" as sort key,
+* New: new icons set (flat),
+* New: ability to add icons set through plugins,
+* Change: Better management of icons (look for icon for file extension first, and then look for icon for file type). With WP 3.9, default icons are "Crystal",
+* Change: (tentative) Improvment of the cache management, for files that are not attached to a post (and when use id=-1).
+* Bug fix: Error during uninstallation,
+* Bug fix: Error during installation/update update,
+* Change: Update the widget to use cache, and manage the preview mode of WP 3.9.x.
 
 = Version 2.0.2 - Apr 15th, 2014 =
 

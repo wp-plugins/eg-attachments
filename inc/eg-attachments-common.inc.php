@@ -1,23 +1,26 @@
 <?php
 
-define('EGA_TEXTDOMAIN',  		'eg-attachments' );
+define('EGA_TEXTDOMAIN',  		'eg-attachments' 		);
 define('EGA_OPTIONS_ENTRY',		'EG-Attachments-Options');
-define('EGA_OPTIONS_PAGE_ID', 	'ega_options');
-define('EGA_SHORTCODE',     	'attachments');
-define('EGA_TEMPLATE_POST_TYPE','egatmpl');
+define('EGA_OPTIONS_PAGE_ID', 	'ega_options'			);
+define('EGA_SHORTCODE',     	'attachments'			);
+define('EGA_TEMPLATE_POST_TYPE','egatmpl'				);
 
-define('EGA_READ_TEMPLATES', 	'edit_posts');
-define('EGA_EDIT_TEMPLATES', 	'publish_pages');
-define('EGA_CREATE_TEMPLATES', 	'publish_pages');
-define('EGA_DELETE_TEMPLATES', 	'delete_others_posts');
-define('EGA_VIEW_STATS', 		EGA_READ_TEMPLATES);
+define('EGA_READ_TEMPLATES', 	'edit_posts'			);
+define('EGA_EDIT_TEMPLATES', 	'publish_pages'			);
+define('EGA_CREATE_TEMPLATES', 	'publish_pages'			);
+define('EGA_DELETE_TEMPLATES', 	'delete_others_posts'	);
+define('EGA_VIEW_STATS', 		EGA_READ_TEMPLATES		);
+
+define('EGA_DEFAULT_ICON_SET_ID', 'flags');
 
 define('EGA_TEMPLATE_CACHE_EXPIRATION', 604800); /* 1 week = 7 * 24 * 3600 */
 define('EGA_SHORTCODE_CACHE_EXPIRATION', 86400); /* 1 day = 24 * 3600 */
 
 $EGA_DEFAULT_OPTIONS = array(
 		'load_css'					  => 1,
-		'uninstall_del_options'		  => 0,
+		'uninstall_del_options'		  => 1,
+		'uninstall_del_stats'		  => 0,
 		'display_admin_bar'			  => 1,
 		'tinymce_button'			  => 1,
 		'use_metabox'				  => 0,
@@ -33,7 +36,7 @@ $EGA_DEFAULT_OPTIONS = array(
 		'shortcode_auto_limit'		  => -1,
 		'shortcode_auto_default_opts' => 0,
 		'clicks_table'				  => 0,
-		'standard_templates'		  => '',
+		'standard_templates'		  => '',   /* list of templates created during the plugin installation */
 		'force_saveas' 				  => 0,
 		'logged_users_only'			  => 0,
 		'login_url'					  => '',
@@ -42,7 +45,7 @@ $EGA_DEFAULT_OPTIONS = array(
 		'purge_stats'				  => 24,
 		'date_format'				  => '',
 		'tags_assignment'			  => 0,
-		'icon_set'					  => 'flags',
+		'icon_set'					  => EGA_DEFAULT_ICON_SET_ID,
 		'icon_path'					  => '',
 		'icon_url'					  => '',
 		'icon_image'				  => 'icon',    /* icon or thumbnail */
@@ -51,7 +54,8 @@ $EGA_DEFAULT_OPTIONS = array(
 		'target_blank'				  => 0,
 		'exclude_thumbnail'			  => 0,
 		'legacy_custom_format'		  => '',
-		'clear_cache' 				  => FALSE
+		'clear_cache' 				  => FALSE,
+		'on_duplicate'				  => 0
 	);
 
 $EGA_SHORTCODE_DEFAULTS = array(
@@ -59,15 +63,15 @@ $EGA_SHORTCODE_DEFAULTS = array(
 	'titletag' 		=> 'h2',
 	'orderby'  		=> 'title ASC',
 	'template'		=> 'large',
- 	'size'     		=> 'large',  /* For compatibility only */
+ 	'size'     		=> 'large',  /* deprecated attribut, keep it for compatibility only */
 	'doctype'  		=> 'document',
 	'limit'			=> -1,
-	'docid'    		=>  0,
+	'docid'    		=>  0,		/* deprecated attribut, keep it for compatibility only */
 	'id'            =>  0,
 	'force_saveas'	=> -1,
 	'tags'			=> '',
 	'tags_and'		=> '',
-	'icon'			=>  1,
+	'icon'			=>  1,		/* deprecated attribut, keep it for compatibility only */
 	'logged_users'  => -1,
 	'include'		=> '',
 	'exclude'		=> '',
@@ -83,11 +87,16 @@ $EGA_SHORTCODE_DEFAULTS = array(
 	'date'			=> 'Date',
 	'description' 	=> 'Description',
 	'filename'		=> 'File name',
-	'filedate'		=> 'File date',
-	'menu_order'	=> 'Menu order',
+	'filedate'		=> 'File Date',
+	'size'			=> 'Size',
+	'menu_order'	=> 'Menu Order',
 	'title' 		=> 'Title',
 	'type'			=> 'Type',
-	'size'			=> 'Size'
+	'name'			=> 'Name',
+	'author'		=> 'Author',
+	'modified'		=> 'Attachment date',
+	'comment_count'	=> 'Comments (number of)',
+	'clicks'		=> 'Number of click(s)'
 );
 
  $EGA_FIELDS_ORDER_KEY = array(
@@ -105,7 +114,8 @@ $EGA_SHORTCODE_DEFAULTS = array(
 	'author'		=> 'author',
 	'modified'		=> 'modified',
 	'rand'			=> 'rand',
-	'comment_count'	=> 'comment_count'
+	'comment_count'	=> 'comment_count',
+	'clicks'		=> 'clicks'
 );
 
 
@@ -163,13 +173,17 @@ if (! class_exists('EG_Attachments_Common')) {
 							'post_type'		=> EGA_TEMPLATE_POST_TYPE,
 							'orderby' 		=> 'title',
 							'order' 		=> 'ASC',
-							'numberposts' 	=> -1 /*,
-							$include_exclude=> $options['standard_templates'] */
+							'numberposts' 	=> -1
 						)
 					);
 				$template_list = array( 'standard' => array(), 'custom' => array() );
+				
+				/* Extract list of templates created during the plugin installation */
 				$std_tmpl = explode(',', $options['standard_templates']);
+				
+				/* If we find templates ... */
 				if ($results) {
+					/* Record each template, in custom or standard categories */
 					foreach ($results as $template) {
 						if (in_array($template->ID, $std_tmpl)) {
 							$template_list['standard'][$template->post_name] = $template;
@@ -183,6 +197,8 @@ if (! class_exists('EG_Attachments_Common')) {
 					set_transient('eg-attachments-templates', $template_list, EGA_TEMPLATE_CACHE_EXPIRATION);
 
 			} // End of no data in cache
+			
+			/* Prepare the list */
 			$returned_list = FALSE;
 			if (FALSE !== $template_list)
 
@@ -196,7 +212,10 @@ if (! class_exists('EG_Attachments_Common')) {
 						$returned_list[$key] = esc_html($value->post_title);
 				} // End of foreach
 			}
+			
+			/* Return the list */
 			return ($returned_list);
+
 		} // End of get_templates
 
 		/**
@@ -219,6 +238,7 @@ if (! class_exists('EG_Attachments_Common')) {
 				'logged_users'		=> $options['logged_users_only'],
 				'login_url' 		=> $options['login_url'],
 				'nofollow' 			=> $options['nofollow'],
+				'icon_image' 		=> $options['icon_image'],  /* Added in 2.0.3 */
 				'target' 			=> $options['target_blank'],
 				'exclude_thumbnail'	=> $options['exclude_thumbnail'],
 			);
@@ -226,6 +246,19 @@ if (! class_exists('EG_Attachments_Common')) {
 
 		} // End of get_shortcode_defaults
 
+		
+		/**
+		 * get_cache_entry
+		 *
+		 * Build and return list of cache entries
+		 *
+		 * @param 	none
+		 * @return 	none
+		 */
+		static function get_cache_entry($name, $id='') {
+			return strtolower($name).'_cache_'.( '' == $id ? '' : ( 0 < $id ? $id : 'all'));
+		} // End of get_cache_entry
+		
 		/**
 		 * list_of_cache
 		 *
@@ -234,27 +267,34 @@ if (! class_exists('EG_Attachments_Common')) {
 		 * @param 	none
 		 * @return 	none
 		 */
-		static function list_of_cache($name) {
+		static function list_of_cache($name, $textdomain) {
 
 			global $wpdb;
 
 			$cache_list = FALSE;
 
 			/* --- Get list of cache items --- */
-			$pattern1 = '_transient_'.strtolower($name).'-cache-';
-			$pattern2 = '_transient_'.strtolower($name).'-cache-click-';
-			$transient_list = $wpdb->get_results('SELECT option_name FROM '.$wpdb->options.' WHERE option_name like "'.$pattern1.'%"');
+			$pattern = '_transient_' . self::get_cache_entry($name);
+			$transient_list = $wpdb->get_results('SELECT option_name FROM '.$wpdb->options.' WHERE option_name like "'.$pattern.'%"');
 
+			/* --- Transients found --- */
 			if ( $transient_list ) {
+			
+				/* --- Build the list of post id --- */
 				$attach_id = array();
 				foreach ($transient_list as $value) {
-					$attach_id[] = str_replace( $pattern1, '', str_replace( $pattern2, '', $value->option_name ) );
+					$id = str_replace( $pattern, '', $value->option_name );
+					$attach_id[$id] = $id;
 				}
 
+				/* --- Add 'all' found, remove it from the initial list --- */
+				if ( isset($attach_id['all']) ) {
+					$cache_list['all'] = __('Attachments not linked to posts', $textdomain);
+					unset($attach_id['all']);
+				}
 				if ( 0 < sizeof($attach_id) ) {
 
-					$attach_id = array_unique($attach_id, SORT_NUMERIC );
-
+					/* --- Getting title of attachments --- */
 					$attachments_list = $wpdb->get_results('SELECT ID, post_title FROM '.$wpdb->posts.' WHERE ID in ('.implode(',',$attach_id).')' );
 					if ($attachments_list) {
 						foreach ($attachments_list as $value) {
@@ -265,6 +305,127 @@ if (! class_exists('EG_Attachments_Common')) {
 			} // End of cache entry exist
 			return ($cache_list);
 		} // End of list_of_cache
+
+		/**
+		 * get_icon_set_list
+		 *
+		 * Get the list of available icon set.
+		 *
+		 * Setting the list with the icons sets provided by the plugin
+		 * Apply 
+		 *
+		 * @param 	string	Textdomain - Textdomain to be used to translate the icon set label
+		 * @return 	array	list of icons sets
+		 */
+		static function get_icon_set_list($textdomain) {
+			$icon_set = array(  
+							EGA_DEFAULT_ICON_SET_ID =>  __('Default', $textdomain),
+							'metro' 				=>  __('Metro UI', $textdomain)
+						);
+						
+			/**
+			 * Filter the list of icons sets.
+			 *
+			 * This filter should be used to add an icons set.
+			 * If you use this filter, you need also to use get_icon_for_file_ext, and get_icon_for_type
+			 *
+			 * If you want to know, how to add an icon set, you can take a look to the plugin EG-Attach-Icons-Oxygen (http://wordpress.org/plugins/eg-attach-icons-oxiygen)
+			 *
+			 * @since 2.0.3
+			 *
+			 * @param array $icon_set list of icons set ( id => label).
+			 */
+			return apply_filters('ega_add_icon_set', $icon_set);
+
+		} // End of get_icon_set_list
+
+		/**
+		 * get_icon_for_file_ext
+		 *
+		 * Return the list of (Path => url) for file extensions
+		 *
+		 * @param 	string	absolute path of the plugin,
+		 * 			string  url of the plugin
+		 * @return 	array 	Library => (path => url)
+		 */
+		static function get_icon_for_file_ext($plugin_path, $plugin_url) {
+	
+			$icon_path_url = array( 
+								EGA_DEFAULT_ICON_SET_ID => array(  path_join($plugin_path, 'img/flags/file-ext') => path_join($plugin_url, 'img/flags/file-ext') ),
+								'metro' 				=> array(  path_join($plugin_path, 'img/metro/file-ext') => path_join($plugin_url, 'img/metro/file-ext') ) 
+							);
+
+			/**
+			 * Filter the list.
+			 *
+			 * This filter should be used to set the paths and urls for new icon set.
+			 * The directory specified by the path/url contains a list of icons for file extensions ( <extension>.png )
+			 * If you use this filter, you need also to use get_icon_set_list, and get_icon_for_type
+			 *
+			 * If you want to know, how to add an icon set, you can take a look to the plugin EG-Attach-Icons-Oxygen (http://wordpress.org/plugins/eg-attach-icons-oxiygen)
+			 *
+			 * @since 2.0.3
+			 *
+			 * @param array $icon_path_url list of path/url for new icons set ( id => array( path => url)).
+			 */
+			return apply_filters('ega_add_icon_for_file_ext', $icon_path_url);
+		} // End of add_icon_for_file_ext
+		
+		/**
+		 * get_icon_for_type
+		 *
+		 * Return the list of (Path => url) for file type
+		 *
+		 * @param 	string	absolute path of the plugin,
+		 * 			string  url of the plugin
+		 * @return 	array 	Library => (path => url)
+		 */
+		static function get_icon_for_type($plugin_path, $plugin_url) {
+
+			$icon_path_url = array( 
+								EGA_DEFAULT_ICON_SET_ID => array( path_join($plugin_path, 'img/flags') => path_join($plugin_url, 'img/flags') ),
+								'metro' 				=> array( path_join($plugin_path, 'img/metro') => path_join($plugin_url, 'img/metro') )
+							);
+							
+			/**
+			 * Filter the list.
+			 *
+			 * This filter should be used to set the paths and urls for new icon set.
+			 * The directory specified by the path/url contains a list of icons for file type: image, audio, video, document, spreadsheet, interactive, text, archive, code
+			 * If you use this filter, you need also to use get_icon_set_list, and get_icon_for_ext
+			 *
+			 * If you want to know, how to add an icon set, you can take a look to the plugin EG-Attach-Icons-Oxygen (http://wordpress.org/plugins/eg-attach-icons-oxiygen)
+			 *
+			 * @since 2.0.3
+			 *
+			 * @param array $icon_path_url list of path/url for new icons set ( id => array( path => url)).
+			 */
+			return apply_filters('ega_add_icon_for_type', $icon_path_url);
+		} // End of add_icon_for_type
+
+		/**
+		 * check_icons_set
+		 *
+		 * Check if the icon set is still valid
+		 *
+		 * If the current selected icons set is no more available (because a plugin was disabled, for example), we need to update it.
+		 *
+		 * @param 	string	icon set id,
+		 * 			string  the options
+		 * @return 	none
+		 */
+		static function check_icons_set($list, & $options) {
+			
+			$id = $options['icon_set'];
+			if ( EGA_DEFAULT_ICON_SET_ID != $id ) {
+
+				if ( ! isset( $list[$id] ) ) {
+					 $options['icon_set'] = EGA_DEFAULT_ICON_SET_ID;
+					 update_option(EGA_OPTIONS_ENTRY, $options);
+				} // End of id doesn't exist in the list
+			} // End of id is not the default
+
+		} // End of check_icons_set
 
 	} // End of class
 

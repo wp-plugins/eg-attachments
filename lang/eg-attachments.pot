@@ -44,6 +44,10 @@ msgstr ""
 msgid "Label for filename (filename in english)"
 msgstr ""
 
+#: inc/eg-attachment-keywords-help.inc.php:29
+msgid "Label for file extension"
+msgstr ""
+
 #: inc/eg-attachment-keywords-help.inc.php:33
 msgid "Label for the size of the file (<strong>size</strong> in english)"
 msgstr ""
@@ -521,6 +525,10 @@ msgstr ""
 
 #: inc/eg-attachments-public.inc.php:616
 msgid "Filename"
+msgstr ""
+
+#: inc/eg-attachments-public.inc.php:616
+msgid "Extension"
 msgstr ""
 
 #: inc/eg-attachments-settings.inc.php:22
@@ -1152,8 +1160,8 @@ msgstr ""
 msgid "The &laquo; target &raquo; attributs are displayed only if the option &laquo; target &raquo; is checked in the <a href=\"%s\">Settings / EG-Attachments</a> menu"
 msgstr ""
 
-#: inc/eg-attachments-admin.inc.php:
-msgid "Extension"
+#: inc/eg-attachment-keywords-help.inc.php
+msgid "Extension of the attached file"
 msgstr ""
 
 #: inc/eg-attachments-admin.inc.php:
