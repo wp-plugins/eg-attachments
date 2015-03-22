@@ -9,6 +9,11 @@
 	margin-right: 2%;
 }
 
+table.eg-attach-custom-format {
+	font-size: small;
+}
+
+
 @media only screen and (max-width: 768px) {
 
 	.ega-col-left,

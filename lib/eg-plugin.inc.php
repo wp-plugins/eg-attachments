@@ -4,8 +4,8 @@ if (! defined('DAY_IN_SECONDS')) {
 	define('DAY_IN_SECONDS', 86400);
 }
 
-if (! defined('EG_PLUGIN_ENABLE_CACHE')) {
-	define('EG_PLUGIN_ENABLE_CACHE', TRUE);
+if (! defined('EGA_ENABLE_CACHE')) {
+	define('EGA_ENABLE_CACHE', TRUE);
 }
 
 if (! class_exists('EG_Plugin_134')) {
@@ -86,7 +86,7 @@ if (! class_exists('EG_Plugin_134')) {
 			if (FALSE === $this->options) {
 				$this->options = get_option($this->options_entry);
 			}
-			$this->install_upgrade();
+			// $this->install_upgrade();
 
 			load_plugin_textdomain( $this->textdomain,
 									false,
@@ -120,6 +120,11 @@ if (! class_exists('EG_Plugin_134')) {
 			}
 		} // End of admin_menu
 
+		function init() {
+
+			$this->install_upgrade();
+		}
+		
 		function admin_init() {
 			if ($this->options_page_id) {
 				register_setting($this->options_page_id.'-group', $this->options_entry, array(&$this, 'options_validation'));
@@ -482,6 +487,7 @@ if (! class_exists('EG_Plugin_134')) {
 			if (is_admin()) {
 				add_action( 'admin_menu',   		array( &$this, 'admin_menu') );
 				add_action( 'admin_init',   		array( &$this, 'admin_init') );
+				add_action( 'init',   				array( &$this, 'init') 		 );
 				add_action('admin_enqueue_scripts', array(&$this, 'pointers_enqueue_scripts'));
 				add_filter( 'plugin_action_links_' . plugin_basename( $this->core_file) , array( &$this, 'settings_links') );
 			}

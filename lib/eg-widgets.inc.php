@@ -200,7 +200,7 @@ if (!class_exists('EG_Widget_220')) {
 
 			if ( $this->cache_id ) {
 				wp_cache_delete( $this->cache_id );
-eg_plugin_error_log('Widget', 'Cache delete');
+// eg_plugin_error_log('Widget', 'Cache delete');
 			}
 
 			foreach ($new_instance as $key => $value) {

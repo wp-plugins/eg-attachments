@@ -2,8 +2,8 @@
 Contributors: EmmanuelG
 Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode
-Requires at least: 3.6.0
-Tested up to: 4.0.0
+Requires at least: 3.9.0
+Tested up to: 4.2.0 Beta 2
 Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -218,19 +218,22 @@ This issue is coming from the styles used by your theme. If your theme is respon
 
 == Changelog ==
 
-= Version 2.0.3 - June 14th, 2014 =
+= Version 2.1.0 - March 21st, 2015 =
 
 * New: add keywords %EXT%, and %EXT_LABEL% to display the extension of a file,
 * New: add keywords %MIME% and %MIME_LABEL% to display the mime type,
-* Change: Keyword %TYPE% doesn't return the mime type anymore, but a simple type (image, document, text, ...),
-* New: add a "clicks number" as sort key,
+* New: add keywords %POSTDATE% to display the attachment date, rather than the file date,
+* New: in the statistics page, add a "clicks number" as sort key,
 * New: new icons set (flat),
-* New: ability to add icons set through plugins,
+* New: ability to add icons set through plugins ( see plugin [EGA-Human-O2-Icons](http://wordpress.org/plugins/ega-human-o2-icons/) ),
+* Change: Keyword %TYPE% doesn't return the mime type anymore, but a simple type (image, document, text, ...),
 * Change: Better management of icons (look for icon for file extension first, and then look for icon for file type). With WP 3.9, default icons are "Crystal",
-* Change: (tentative) Improvment of the cache management, for files that are not attached to a post (and when use id=-1).
-* Bug fix: Error during uninstallation,
-* Bug fix: Error during installation/update update,
 * Change: Update the widget to use cache, and manage the preview mode of WP 3.9.x.
+* Change: (tentative) Improvement of the cache management, for files that are not attached to a post (and when use id=-1).
+* Bug fix: orderby=size didn't work properly,
+* Bug fix: Security enhancement,
+* Bug fix: Error during uninstallation,
+* Bug fix: Error during installation and update,
 
 = Version 2.0.2 - Apr 15th, 2014 =
 
@@ -242,7 +245,7 @@ This issue is coming from the styles used by your theme. If your theme is respon
 * Bug fix: Some sort options didn't work properly,
 * Bug fix: Mistakes in the french translation,
 * Change: Optimize cache (avoid requests to DB for displaying the number of clicks),
-* Change: Internal librairies updates.
+* Change: Internal libraries updates.
 
 = Version 2.0.1 - Dec 7th, 2013 =
 
@@ -283,14 +286,14 @@ This issue is coming from the styles used by your theme. If your theme is respon
 * Bug fix: option *where* for the auto shortcode didn't work properly,
 * Bug fix: conflict with custom post type
 * Change: updated translations for Czech, and Italian languages,
-* Change: internal librairies updates.
+* Change: internal libraries updates.
 
 = Version 1.9.4.3 - March 2nd, 2011 =
 
 * Bug fix: option *where* for the auto shortcode didn't work properly,
 * Bug fix: conflict with custom post type
 * Change: updated translations for Czech, and Italian languages,
-* Change: internal librairies updates.
+* Change: internal libraries updates.
 
 = Version 1.9.4.2 - Feb 9th, 2011 =
 
@@ -315,7 +318,7 @@ This issue is coming from the styles used by your theme. If your theme is respon
 * New: ability to add `target=blank` attribute to the links,
 * New: ability to add a path to store your own icons,
 * New: Select attachments with tags in the widget,
-* Change: internal librairies updates
+* Change: internal libraries updates
 
 = Version 1.9.3 - Jan 24th, 2011 =
 
@@ -328,7 +331,7 @@ This issue is coming from the styles used by your theme. If your theme is respon
 * New: ability to choose the size of the icon with custom format,
 * New: add "menu_order" as sort key for auto-shortcode,
 * Change: documentation updated
-* Change: internal librairies updates because of bug fix, and recommendations about enqueuing styles and scripts (for WP 3.3)
+* Change: internal libraries updates because of bug fix, and recommendations about enqueuing styles and scripts (for WP 3.3)
 
 = Version 1.9.2 - Nov 1st, 2011 =
 
@@ -337,7 +340,7 @@ This issue is coming from the styles used by your theme. If your theme is respon
 = Version 1.9.1 - Oct 27th, 2011 =
 
 * Bug fix: error message from the file eg-attachments-settings.inc.php
-* Change: internal librairies
+* Change: internal libraries
 
 = Version 1.9.0 - Oct 25th, 2011 =
 

@@ -275,7 +275,7 @@ function get_select($html_id, $key, $current_values, $default_values, $blank_val
 					<?php echo get_select('force_saveas', 'force_saveas', $current_values, $default_values); ?>
 				</p>
 				<p>
-					<label for="icon_image"><strong><?php _e('Icons for the images:',EGA_TEXTDOMAIN); ?></strong></label><br />
+					<label for="icon_image"><strong><?php _e('Icons for the images: ',EGA_TEXTDOMAIN); ?></strong></label><br />
 					<?php echo get_select('icon_image', 'icon_image', $current_values, $default_values); ?>
 				</p>
 				<p>

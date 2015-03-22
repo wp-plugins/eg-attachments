@@ -166,7 +166,8 @@ if (! class_exists('EG_Attachments_Common')) {
 		 */
 		static function get_templates($options, $type='all', $title_only=TRUE) {
 
-			$template_list = (EG_PLUGIN_ENABLE_CACHE ? get_transient('eg-attachments-templates') : FALSE);
+			$template_list = ( EGA_ENABLE_CACHE ? get_transient('eg-attachments-templates') : FALSE );
+// eg_plugin_error_log('EGA', "Templates from cache", $template_list);
 			if (FALSE === $template_list) {
 				$results = get_posts(array(
 							'post_status' 	=> 'publish',
@@ -176,6 +177,8 @@ if (! class_exists('EG_Attachments_Common')) {
 							'numberposts' 	=> -1
 						)
 					);
+// eg_plugin_error_log('EGA', "Templates from get_post", $results);
+					
 				$template_list = array( 'standard' => array(), 'custom' => array() );
 				
 				/* Extract list of templates created during the plugin installation */
@@ -193,7 +196,10 @@ if (! class_exists('EG_Attachments_Common')) {
 						}
 					}
 				}
-				if (EG_PLUGIN_ENABLE_CACHE)
+				
+// eg_plugin_error_log('EGA', "Templates from get_post", $template_list);
+
+				if (EGA_ENABLE_CACHE)
 					set_transient('eg-attachments-templates', $template_list, EGA_TEMPLATE_CACHE_EXPIRATION);
 
 			} // End of no data in cache

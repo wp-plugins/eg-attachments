@@ -11,8 +11,8 @@ if (! class_exists('EG_Attachments_Public')) {
 	 */
 	Class EG_Attachments_Public extends EG_Plugin_134 {
 
-		var $order_by 		= 'title';
-		var $order 			= 'ASC';
+		// var $order_by 		= 'title';
+		var $order 			= array();
 		var $stats_enabled  = FALSE;
 		var $id				= 0;
 
@@ -28,6 +28,8 @@ if (! class_exists('EG_Attachments_Public')) {
 		  */
 		function init() {
 
+			parent::init();
+		
 			// Define if we can collect statistics or not.
 			$this->stats_enabled = $this->options['stats_enable'] && $this->options['clicks_table'];
 			if ($this->stats_enabled && $this->options['stats_ip_exclude'] != '') {
@@ -66,7 +68,7 @@ if (! class_exists('EG_Attachments_Public')) {
 			// Ensure that the link is coming from EG-Attachment
 			if ( isset($_GET['aid']) /*&& is_numeric($_GET['aid']) */) {
 
-				// First security check. If post not defined, potential hack tentative.
+				// First security check. If post not defined, something strange happens.
 				if (! isset($post)) {
 					wp_die(__('Something is going wrong. Bad address, or perhaps you try to access to a private document.', $this->textdomain));
 				}
@@ -81,31 +83,52 @@ if (! class_exists('EG_Attachments_Public')) {
 				}
 				else {
 
-					$parent_id    = $post->ID;
-					$parent_title = $post->post_title;
-					$attach       = get_post($_GET['aid']);
+					$parent_id    		= $post->ID;
+					$parent_title 		= $post->post_title;
+					$attach       		= get_post($_GET['aid']);
 					if (isset($attach) && $attach && 'attachment' == $attach->post_type) {
-						$attach_id    = $attach->ID;
-						$attach_title = get_post_field('post_title',$attach_id) ;
+						$attach_id    	= $attach->ID;
+						$attach_title 	= get_post_field('post_title',$attach_id) ;
 					}
 				}
 
 				if ( isset($attach_id) ) {
 
-					$this->record_click($parent_id, $parent_title, $attach_id, $attach_title);
+// eg_plugin_error_log('EGA', 'download', $parent_id);
+// eg_plugin_error_log('EGA', 'download', $parent_title);
+// eg_plugin_error_log('EGA', 'download', $attach_id);
+// eg_plugin_error_log('EGA', 'download', $attach_title);
+// eg_plugin_error_log('EGA', 'download, Post status', get_post_field('post_status', $parent_id));
 
 					// $parent_id = reset(get_post_ancestors($attach_id));
 
-					// Second security check: private posts / pages
-					if ('private' == get_post_field('post_status', $parent_id) && !is_user_logged_in()) {
-						wp_die(__('This post is private. You must be a user of the site, and logged in, to display this file.', $this->textdomain));
+					// Security check: private posts / pages
+					if ( 'private' == get_post_field('post_status', $parent_id) && !is_user_logged_in() ) {
+						wp_die(__('The parent post of this document is private. You must be a user of the site, and logged in, to display this file.', $this->textdomain));
 					}
 
-					// Third security check: protected post
-					if (post_password_required($parent_id)) {
-						wp_die(__('This post is password protected. Please go to the site, and enter the password required to display the document', $this->textdomain));
+					// Security check: protected post
+					if ( post_password_required($parent_id) ) {
+						wp_die(__('The parent post of this document is password protected. Please go to the site, and enter the password required to display the document', $this->textdomain));
+					}
+					
+					// Security check: private Attachment
+					if ( 'private' == get_post_field('post_status', $attach_id) && !is_user_logged_in() ) {
+						wp_die(__('This document is private. You must be a user of the site, and logged in, to display this file.', $this->textdomain));
 					}
 
+					// Security check: protected attachment
+					if ( post_password_required($attach_id) ) {
+						wp_die(__('This document is password protected. Please go to the site, and enter the password required to display the document', $this->textdomain));
+					}
+					
+					// Security check: Attachments not accessible (through EG-Attachments rule)
+					if ( 0 < $this->options['logged_users_only'] && !is_user_logged_in() ) {
+						wp_die(__('This document is available only to the connected site\'s users.', $this->textdomain));
+					}
+
+					$this->record_click($parent_id, $parent_title, $attach_id, $attach_title);
+					
 					if ($_GET['sa'] < 1) {
 						if ( !is_attachment() ) {
 							wp_redirect(esc_url(wp_get_attachment_url($attach_id)));
@@ -216,28 +239,6 @@ if (! class_exists('EG_Attachments_Public')) {
 				}
 			} // End of stat enable
 		} // End of record_click
-
-		/**
-		  *  get_file_size() - Try to get the size of the specified file
-		  *
-		  * @package EG-Attachments
-		  *
-		  * @param  int     $attachment_id		id of attachment to get size
-		  * @return	float 						size of the attachment
-		  */
-//		function get_file_size( $attachment ) {
-//
-//			$docsize = $attachment->file_size;
-//			if ( 0 == $docsize ) {
-//				$docsize = __('unknown', $this->textdomain);
-//			}
-//			else {
-//				$size_value = explode(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
-//				$docsize = $size_value[0].' '.__($size_value[1]);
-//			}
-//
-//			return ($docsize);
-//		} /* End of get_file_size */
 
 		/**
 		  *  get_type() - Try to get type of document according mime type
@@ -450,9 +451,9 @@ if (! class_exists('EG_Attachments_Public')) {
 		  * @return
 		  */
 		function sort_list($a, $b) {
-			return ( 'ASC' === $this->order
-						?  $a->{$this->order_by} > $b->{$this->order_by}
-						:  $a->{$this->order_by} < $b->{$this->order_by}
+			return ( 'ASC' === $this->order[1]
+						?  $a->{$this->order[0]} > $b->{$this->order[0]}
+						:  $a->{$this->order[0]} < $b->{$this->order[0]}
 					);
 		} // End of function sort_list
 
@@ -487,7 +488,8 @@ if (! class_exists('EG_Attachments_Public')) {
 						}
 						else {
 							$size_value = explode(' ',size_format($docsize, 0)); // WP function found in file wp-includes/functions.php
-							$attachment->file_size = $size_value[0].' '.__($size_value[1]);
+							$attachment->file_size = $size_value[0];
+							$attachment->file_size_unit = __($size_value[1]);
 						}
 					} // End of get info
 
@@ -595,18 +597,22 @@ if (! class_exists('EG_Attachments_Public')) {
 				$include = $docid;
 
 			// Manage sort parameters
-			list($this->order_by, $this->order) = explode(' ', strtolower($orderby));     // Get shortcodee parameters
+			//list($this->order_by, $this->order) = explode(' ', strtolower($orderby));     // Get shortcodee parameters
+			$this->order = explode(' ', strtolower($orderby));     // Get shortcodee parameters
 			list($orderby_default, $order_default) = $EGA_SHORTCODE_DEFAULTS['orderby'];  // Get default values
 
-			$this->order_by = (isset($EGA_FIELDS_ORDER_KEY[$this->order_by]) ? $EGA_FIELDS_ORDER_KEY[$this->order_by] : $orderby_default);
-			$this->order    = strtoupper(in_array($this->order, array('asc', 'desc')) ? $this->order : $order_default);
+			$this->order[0] = (isset($EGA_FIELDS_ORDER_KEY[$this->order[0]]) ? $EGA_FIELDS_ORDER_KEY[$this->order[0]] : $orderby_default);
+			if ( ! isset( $this->order[1] ) )
+				$this->order[1] = 'ASC';
+			else
+				$this->order[1] = strtoupper(in_array($this->order[1], array('asc', 'desc')) ? $this->order[1] : $order_default);
 
 			/* -------------------------------------------------------------------
 			   Manage deprecated parameter "size", and "icon"
-			   - $template is already set, with shortcode_atts. So we use it as default value			   
+			   - $template is already set, with shortcode_atts. So we use it as default value
 			   ------------------------------------------------------------------- */
-			   
-			// If size is used, and template is not used, 
+
+			// If size is used, and template is not used,
 			if ( '' != $size && ! isset($atts['template']) ) {
 				// If size = custom, try to get the old custom template get from the previous version
 				if ( 'custom' == $size ) {
@@ -630,8 +636,8 @@ if (! class_exists('EG_Attachments_Public')) {
 							'posts_per_page'	=> -1,
 							'post_type'   		=> 'attachment',
 							'suppress_filters' 	=> false,
-							'orderby'			=> $this->order_by,
-							'order'				=> $this->order,
+							'orderby'			=> $this->order[0],
+							'order'				=> $this->order[1],
 							'post_mime_type'	=> ( 'image' == $doctype ? 'image' : 'notimage' )
 						);
 
@@ -709,9 +715,10 @@ if (! class_exists('EG_Attachments_Public')) {
 				if (! $attachments || sizeof($attachments) == 0 ) {
 					return '';
 				}
-
+// eg_plugin_error_log('EG-Attachments', 'Before add fields: ', $attachments);
 				// Add missing fields: file date, file size, click counter, ...
 				$this->add_fields( $attachments );
+// eg_plugin_error_log('EG-Attachments', 'After add fields: ', $attachments);
 
 				if ( EGA_ENABLE_CACHE ) {
 					$cache[$cache_id] = $attachments;
@@ -722,7 +729,7 @@ if (! class_exists('EG_Attachments_Public')) {
 
 			/* --- Sort list of --- */
 			/* get_posts allows only the following sort keys: 'name', 'author', 'date', 'title', 'modified', 'menu_order', 'ID', 'rand', 'comment_count' */
-			if ( ! in_array( $this->order_by, array( 'name', 'author', 'date', 'title', 'modified', 'menu_order', 'ID', 'rand', 'comment_count' ) ) ) {
+			if ( ! in_array( $this->order[0], array( 'name', 'author', 'date', 'title', 'modified', 'menu_order', 'ID', 'rand', 'comment_count' ) ) ) {
 				uasort($attachments, array($this, 'sort_list') );
 			}
 
@@ -756,7 +763,7 @@ if (! class_exists('EG_Attachments_Public')) {
 							wp_login_url( apply_filters( 'the_permalink', get_permalink( $post->ID )))
 					);
 					$alt_img_icon = __('You need to login to access to the attachments', $this->textdomain);
-				} // End of attachments requied login
+				} // End of attachments required login
 
 				if ($alt_img_icon != '') {
 					$lock_icon = '<img class="lock" src="'.$this->url.'img/lock.png" height="16" width="16" alt="'.$alt_img_icon.'" />';
@@ -806,7 +813,7 @@ if (! class_exists('EG_Attachments_Public')) {
 				$item = preg_replace("/%MIME_LABEL%/",		esc_html__('Mime type', $this->textdomain), 					$item);
 
 				// Change in 2.0.3
-				$item = preg_replace("/%FILESIZE%/",		esc_html($attachment->file_size),								$item);
+				$item = preg_replace("/%FILESIZE%/",		esc_html($attachment->file_size.' '.$attachment->file_size_unit),$item);
 				// $item = preg_replace("/%FILESIZE%/",		esc_html($this->get_file_size($attachment /* ->ID)*/)),			$item);
 				$item = preg_replace("/%FILESIZE_LABEL%/",	esc_html__('Size', $this->textdomain), 							$item);
 

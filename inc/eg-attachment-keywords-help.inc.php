@@ -50,7 +50,7 @@
 	</tr>
 	<tr>
 		<td><strong>%COUNTER_LABEL%</strong></td>
-		<td><?php esc_html_e('Label of the counter (number of downloads of the document', $this->textdomain); ?>,</td>
+		<td><?php esc_html_e('Label of the counter (number of downloads of the document)', $this->textdomain); ?>,</td>
 	</tr>
 </tbody>
 </table>
@@ -73,11 +73,11 @@
 	</tr>
 	<tr>
 		<td><strong>%DATE%</strong></td>
-		<td><?php esc_html_e('Date of last modification', $this->textdomain); ?></td>
+		<td><?php esc_html_e('Date of last modification of the file', $this->textdomain); ?></td>
 	</tr>
 	<tr>
 		<td><strong>%DESCRIPTION%</strong></td>
-		<td><?php esc_html_e('description of the document', $this->textdomain); ?>,</td>
+		<td><?php esc_html_e('Description of the document', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
 		<td><strong>%DIRECT_URL%</strong></td>
@@ -124,6 +124,10 @@
 		<td><?php _e('HTML attribut <code>rel="nofollow"</code>', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
+		<td><strong>%POSTDATE%</strong></td>
+		<td><?php esc_html_e('Date of last modification of the attachment', $this->textdomain); ?></td>
+	</tr>	
+	<tr>
 		<td><strong>%SHOWLOCK%</strong></td>
 		<td><?php esc_html_e('Show the lock icon for documents that require login or password', $this->textdomain); ?></td>
 	</tr>
@@ -141,11 +145,11 @@
 	</tr>
 	<tr>
 		<td><strong>%TYPE%</strong></td>
-		<td><?php esc_html_e('Type of the documents', $this->textdomain); ?>,</td>
+		<td><?php esc_html_e('Type of the documents (image, document, ...)', $this->textdomain); ?>,</td>
 	</tr>
 	<tr>
 		<td><strong>%URL%</strong></td>
-		<td><?php esc_html_e('Same than %LINK_URL%, %FILE_URL%, or %DIRECT_URL%, according the option choosen in the Settings/Options menu.', $this->textdomain); ?>,</td>
+		<td><?php esc_html_e('Same than %LINK_URL%, %FILE_URL%, or %DIRECT_URL%, according the option chosen in the Settings/Options menu.', $this->textdomain); ?>,</td>
 	</tr>
 </tbody>
 </table>

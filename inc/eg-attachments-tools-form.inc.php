@@ -51,6 +51,7 @@ if ( ! class_exists( 'EG_Attachments_Form_List_Table' ) ) {
 			$sortable = $this->get_sortable_columns();
 			$this->_column_headers = array($columns, $hidden, $sortable);
 
+/* --- suppressed 2.1.0
 			$args = array(
 				'post_type' 		=> EGA_TEMPLATE_POST_TYPE,
 				'posts_per_page' 	=> $per_page,
@@ -59,13 +60,13 @@ if ( ! class_exists( 'EG_Attachments_Form_List_Table' ) ) {
 				'offset' 			=> ( $this->get_pagenum() - 1 ) * $per_page 
 			);
 
-			if (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array('title'/*, 'author'*/, 'date'))) {
+			if (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array('title', 'date'))) {
 				$args['orderby'] = $_REQUEST['orderby'];
 			}
 			if (isset($_REQUEST['order']) && in_array(strtoupper($_REQUEST['order']), array('ASC', 'DESC'))) {
 				$args['order'] = $_REQUEST['order'];
 			}
-
+--- */
 			$this->items = EG_Attachments_Common::get_templates(get_option(EGA_OPTIONS_ENTRY), 'all', FALSE);
 
 			$total_items = (array)wp_count_posts( EGA_TEMPLATE_POST_TYPE );

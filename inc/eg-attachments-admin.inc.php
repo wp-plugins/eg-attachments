@@ -30,6 +30,8 @@ if (! class_exists('EG_Attachments_Admin')) {
 		 */
 		function init() {
 
+			parent::init();
+		
 			// Add a new post type
 			register_post_type( EGA_TEMPLATE_POST_TYPE, array(
 					'labels' => array(
@@ -419,7 +421,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 				<h2>
 					<?php esc_html_e($this->name.' templates', $this->textdomain); ?>
 					<?php if ('new' != $this->post_id && current_user_can(EGA_CREATE_TEMPLATES)) { ?>
-					<a href="<?php echo add_query_arg( array( 'id' => 'new', 'action' => 'edit' )); ?>" class="add-new-h2"><?php esc_html_e( 'Add New', 'post'); ?></a>
+					<a href="<?php echo add_query_arg( array( 'id' => 'new', 'action' => 'edit' )); ?>" class="add-new-h2"><?php esc_html_e( 'Add New'); ?></a>
 					<?php } ?>
 				</h2>
 				<?php $this->admin_notices(); ?>
@@ -758,19 +760,26 @@ if (! class_exists('EG_Attachments_Admin')) {
 						while (($file = readdir($handle)) !== false) {
 							if ($file != '..' && $file != '.') {
 
-								$string = file_get_contents($path.'/'.$file);;
+// eg_plugin_error_log('EGA', 'File', $file);
+							
+								$string = file_get_contents($path.'/'.$file);
+								
 								preg_match_all('/\[title\](.*)\[\/title\](.*)\[description\](.*)\[\/description\](.*)/is', $string, $matches);
-								if (sizeof($matches)>4) {
+								
+								if ( 4 < sizeof($matches) && 0 < sizeof($matches[0]) ) {
+									
 									$template = array(
-										'post_title'   => trim($matches[1][0]),
-
-										'post_excerpt'	 => trim($matches[3][0]),
-										'post_content'	 => trim($matches[4][0]),
-										'post_status'    => 'publish',
-										'post_type'      => EGA_TEMPLATE_POST_TYPE,
-										'comment_status' => 'closed',
-										'ping_status'	 => 'closed'
+										'post_status' 	=> 'publish', 
+										'post_type' 	=> EGA_TEMPLATE_POST_TYPE,
+										'ping_status' 	=> 'closed', 
+										'post_excerpt'	=> trim($matches[3][0]),
+										'post_content'	=> trim($matches[4][0]),
+										'post_title'	=> trim($matches[1][0]),
+										'comment_status'=> 'closed'
 									);
+									
+// eg_plugin_error_log('EGA', 'New template', $template);
+									
 									$new_id = wp_insert_post($template);
 									if (is_numeric($new_id) && $new_id > 0) {
 										$this->options['standard_templates'] .= ('' == $this->options['standard_templates'] ? '' : ',').$new_id;
@@ -1116,7 +1125,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 			$results = $wpdb->get_results($sql);
 			$data = array();
 			if (! $results) {
-				echo '<p>No data available</p>';
+				echo '<p>'.__('No data available', $this->textdomain ).'</p>';
 			}
 			else {
 				$data[] = array($sql_params['axis'], ucfirst(esc_html__('clicks', $this->textdomain)) );
@@ -1180,7 +1189,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 					<tr>
 						<th scope="col" class="column-cb check-column">&nbsp;</th>
 						<th scope="col"><?php esc_html_e('Title'); ?></th>
-						<th scope="col"><?php echo ucfirst(esc_html('click(s)', $this->textdomain)); ?></th>
+						<th scope="col"><?php esc_html_e('Click(s)', $this->textdomain); ?></th>
 						<th scope="col"><?php esc_html_e('% Clicks', $this->textdomain); ?></th>
 					</tr>
 				</thead>
@@ -1188,7 +1197,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 					<tr>
 						<th scope="col" class="column-cb check-column">&nbsp;</th>
 						<th scope="col"><?php esc_html_e('Title'); ?></th>
-						<th scope="col"><?php echo ucfirst(esc_html('click(s)', $this->textdomain)); ?></th>
+						<th scope="col"><?php esc_html_e('Click(s)', $this->textdomain); ?></th>
 						<th scope="col"><?php esc_html_e('% Clicks', $this->textdomain); ?></th>
 					</tr>
 				</tfoot>
@@ -1318,7 +1327,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 
 			$sql_params = $this->display_stat_groupby_where($begin_date, $end_date, $step_date, $attach_id );
 
-			$total_download = $this->display_stats_history_graph($begin_date, $end_date, $step_date, $sql_params, $attach_id);
+			$total_download = $this->display_stats_history_graph($begin_date, $display_begin, $end_date, $display_end, $step_date, $sql_params, $attach_id);
 
 			$sql = 'SELECT post_id as id, post_title as title, SUM(clicks_number) as total'.
 				' FROM '.$wpdb->prefix.'eg_attachments_clicks '.
