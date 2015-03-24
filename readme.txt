@@ -4,7 +4,7 @@ Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode
 Requires at least: 3.9.0
 Tested up to: 4.2.0 Beta 2
-Stable tag: 2.0.2
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -218,7 +218,7 @@ This issue is coming from the styles used by your theme. If your theme is respon
 
 == Changelog ==
 
-= Version 2.1.0 - March 21st, 2015 =
+= Version 2.1.0 - March 24th, 2015 =
 
 * New: add keywords %EXT%, and %EXT_LABEL% to display the extension of a file,
 * New: add keywords %MIME% and %MIME_LABEL% to display the mime type,
@@ -612,3 +612,7 @@ List of changes and bug fixes:
 
 = From 1.x to 2.x =
 In version 1.x, the unique custom format is defined in the options page. During update to version 2.x, this custom format is automatically converted to a template. The choice of **fields** are no more available in the version 2.x
+
+== Credits ==
+
+* The icon of the plugin in the WordPress' plugins repository is from [Ionicons](http://ionicons.com/). MIT license
