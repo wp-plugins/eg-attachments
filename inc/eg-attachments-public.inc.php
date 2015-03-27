@@ -29,7 +29,7 @@ if (! class_exists('EG_Attachments_Public')) {
 		function init() {
 
 			parent::init();
-		
+
 			// Define if we can collect statistics or not.
 			$this->stats_enabled = $this->options['stats_enable'] && $this->options['clicks_table'];
 			if ($this->stats_enabled && $this->options['stats_ip_exclude'] != '') {
@@ -37,6 +37,7 @@ if (! class_exists('EG_Attachments_Public')) {
 					$this->stats_enabled = (! in_array($_SERVER['REMOTE_ADDR'], explode(',', $this->options['stats_ip_exclude'])) );
 				}
 			}
+
 			add_action('template_redirect', array(&$this, 'manage_link'));
 
 			// Add the shortcode
@@ -111,7 +112,7 @@ if (! class_exists('EG_Attachments_Public')) {
 					if ( post_password_required($parent_id) ) {
 						wp_die(__('The parent post of this document is password protected. Please go to the site, and enter the password required to display the document', $this->textdomain));
 					}
-					
+
 					// Security check: private Attachment
 					if ( 'private' == get_post_field('post_status', $attach_id) && !is_user_logged_in() ) {
 						wp_die(__('This document is private. You must be a user of the site, and logged in, to display this file.', $this->textdomain));
@@ -121,14 +122,14 @@ if (! class_exists('EG_Attachments_Public')) {
 					if ( post_password_required($attach_id) ) {
 						wp_die(__('This document is password protected. Please go to the site, and enter the password required to display the document', $this->textdomain));
 					}
-					
+
 					// Security check: Attachments not accessible (through EG-Attachments rule)
 					if ( 0 < $this->options['logged_users_only'] && !is_user_logged_in() ) {
 						wp_die(__('This document is available only to the connected site\'s users.', $this->textdomain));
 					}
 
 					$this->record_click($parent_id, $parent_title, $attach_id, $attach_title);
-					
+
 					if ($_GET['sa'] < 1) {
 						if ( !is_attachment() ) {
 							wp_redirect(esc_url(wp_get_attachment_url($attach_id)));
@@ -145,7 +146,7 @@ if (! class_exists('EG_Attachments_Public')) {
 						$etag		= sprintf('%x-%x-%x', $stat['ino'], $stat['size'], $stat['mtime'] * 1000000);
 						$path 		= pathinfo($file_path);
 
-						if (isset($path['extension']) && strtolower($path['extension']) == 'zip' && $is_IE && ini_get('zlib.output_compression')) {
+						if ( isset($path['extension']) && strtolower($path['extension']) == 'zip' && $is_IE && ini_get('zlib.output_compression') ) {
 							ini_set('zlib.output_compression', 'Off');
 							// apache_setenv('no-gzip', '1');
 						}
@@ -637,9 +638,15 @@ if (! class_exists('EG_Attachments_Public')) {
 							'post_type'   		=> 'attachment',
 							'suppress_filters' 	=> false,
 							'orderby'			=> $this->order[0],
-							'order'				=> $this->order[1],
-							'post_mime_type'	=> ( 'image' == $doctype ? 'image' : 'notimage' )
+							'order'				=> $this->order[1] /*,
+							'post_mime_type'	=> ( 'image' == $doctype ? 'image' : 'notimage' ) */
 						);
+
+			// --- V2.1.2
+			if ( 'image' == $doctype )
+				$params['post_mime_type'] = 'image';
+			elseif ( 'document' == $doctype )
+				$params['post_mime_type'] = 'notimage';
 
 			// Add include parameter
 			if ( '' != $include )

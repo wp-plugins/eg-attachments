@@ -4,7 +4,7 @@ Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode
 Requires at least: 3.9.0
 Tested up to: 4.2.0 Beta 2
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,7 +133,7 @@ Depredicated options
 In the old posts, shortcodes using **size** and **docid** are still working, these two parameters are emulated using the new parameters **template** and **include**. 
 In future posts, please use **template** and **include** parameters.
  
-Remove options:
+Removed options:
 
 * **fields**, list of fields to display,
 * **icon** specify if icons will be displayed or not,
@@ -218,6 +218,14 @@ This issue is coming from the styles used by your theme. If your theme is respon
 
 == Changelog ==
 
+= Version 2.1.2 - March 24th, 2015 =
+
+* Bug fix: doctype didn't work
+
+= Version 2.1.1 - March 24th, 2015 =
+
+* Change: cache enabled
+
 = Version 2.1.0 - March 24th, 2015 =
 
 * New: add keywords %EXT%, and %EXT_LABEL% to display the extension of a file,
@@ -225,7 +233,7 @@ This issue is coming from the styles used by your theme. If your theme is respon
 * New: add keywords %POSTDATE% to display the attachment date, rather than the file date,
 * New: in the statistics page, add a "clicks number" as sort key,
 * New: new icons set (flat),
-* New: ability to add icons set through plugins ( see plugin [EGA-Human-O2-Icons](http://wordpress.org/plugins/ega-human-o2-icons/) ),
+* New: ability to add icons set through plugins ( see plugin [EG-Attachments-Human-O2-Icons](http://wordpress.org/plugins/eg-attachments-human-o2-icons/) ),
 * Change: Keyword %TYPE% doesn't return the mime type anymore, but a simple type (image, document, text, ...),
 * Change: Better management of icons (look for icon for file extension first, and then look for icon for file type). With WP 3.9, default icons are "Crystal",
 * Change: Update the widget to use cache, and manage the preview mode of WP 3.9.x.
