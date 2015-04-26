@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments_Admin')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Admin extends EG_Plugin_134 {
+	Class EG_Attachments_Admin extends EG_Plugin_135 {
 
 		var $edit_posts_pages = array('post.php', 'post-new.php', 'page.php', 'page-new.php');
 		/* Q: what about other post type ? */

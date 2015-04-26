@@ -8,16 +8,16 @@ if (! defined('EGA_ENABLE_CACHE')) {
 	define('EGA_ENABLE_CACHE', TRUE);
 }
 
-if (! class_exists('EG_Plugin_134')) {
+if (! class_exists('EG_Plugin_135')) {
 
 	/**
-	 * Class EG_Plugin_134
+	 * Class EG_Plugin_135
 	 *
 	 *
 	 *
 	 * @package EG-Plugin
 	 */
-	Class EG_Plugin_134 {
+	Class EG_Plugin_135 {
 
 		var $name				= '';
 		var $version			= '';
@@ -123,7 +123,8 @@ if (! class_exists('EG_Plugin_134')) {
 		function init() {
 
 			$this->install_upgrade();
-		}
+
+		} // End of init
 		
 		function admin_init() {
 			if ($this->options_page_id) {

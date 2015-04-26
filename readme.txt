@@ -3,8 +3,8 @@ Contributors: EmmanuelG
 Donate link: http://www.emmanuelgeorjon.com/donate?plugin=eg-attachments
 Tags: posts, attachments, shortcode
 Requires at least: 3.9.0
-Tested up to: 4.2.0 Beta 2
-Stable tag: 2.1.2
+Tested up to: 4.2.0
+Stable tag: 2.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -217,6 +217,10 @@ This issue is coming from the styles used by your theme. If your theme is respon
 9. **Template editor**: Build easily your own list, using standard HTML tags, and some specific keyworkds.
 
 == Changelog ==
+
+= Version 2.1.3 - April 26th, 2015 =
+
+* Bug fix: number of clicks / downloads always 0.
 
 = Version 2.1.2 - March 24th, 2015 =
 

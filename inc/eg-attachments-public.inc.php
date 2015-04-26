@@ -9,7 +9,7 @@ if (! class_exists('EG_Attachments_Public')) {
 	 *
 	 * @package EG-Attachments
 	 */
-	Class EG_Attachments_Public extends EG_Plugin_134 {
+	Class EG_Attachments_Public extends EG_Plugin_135 {
 
 		// var $order_by 		= 'title';
 		var $order 			= array();
@@ -401,9 +401,11 @@ if (! class_exists('EG_Attachments_Public')) {
 			$table_name = $wpdb->prefix . 'eg_attachments_clicks';
 			$join .= ' LEFT JOIN '. $table_name .' ON '.$wpdb->posts.'.ID='.$table_name.'.attach_id' ;
 			if ( 0 < $this->id ) {
-				$join .= ' AND '.$wpdb->posts.'.ID='.$table_name.'.post_id';
+				// 2.1.3 => Replace posts.ID by posts.post_parent
+				$join .= ' AND '.$wpdb->posts.'.post_parent='.$table_name.'.post_id';
 			}
 			return ($join);
+
 		} // End of posts_join
 
 
